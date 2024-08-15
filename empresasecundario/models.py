@@ -1,0 +1,82 @@
+from django.db import models
+from empresaprimaria.models import EmpresaPrimaria
+from utils.utils import resize_image
+from utils.utils import generate_id_random
+
+# Create your models here.
+class EmpresaSecundaria(models.Model):
+    id_random = models.CharField(
+        unique=True,
+        default=generate_id_random,
+        max_length=20
+    )
+
+    nome = models.CharField(
+        blank=False,
+        null=False,
+        max_length=40
+    )
+
+    razao_social = models.CharField(
+        blank=False,
+        null=False,
+        max_length=120,
+    )
+
+    CNPJ = models.CharField(
+        blank=False,
+        null=False,
+        max_length=40,
+    )
+
+    logo = models.ImageField(
+        upload_to="media/%Y/%m/%d/",
+        blank=True,
+        max_length=1000
+    )
+
+    status_options = [
+        ('Mobilizado', 'Mobilizado'),
+        ('Desmobilizado', 'Desmobilizado'),
+        ('Desmobilizaçao permanente', 'Desmobilizaçao permanente'),
+        ('Deletado', 'Deletado'),
+    ]
+
+    status = models.CharField(
+        max_length=60,
+        blank=False,
+        null=False,
+        choices=status_options,
+        default='Mobilizado'
+    )
+
+    setor_options = [
+        ('Jardinagem', 'Jardinagem'),
+        ('Limpeza predial', 'Limpeza predial'),
+        ('Controle de pragas', 'Controle de pragas'),
+        ('Controle de instalações elétricas', 'Controle de instalações elétricas'),
+    ]
+
+    setor = models.CharField(
+        blank=False,
+        null=False,
+        choices=setor_options,
+        max_length=40
+    )
+
+    EmpresaPrimaria = models.ForeignKey(
+        to=EmpresaPrimaria,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='REmpresaPrimaria'
+    )
+
+    def save(self, *args, **kwargs):
+        if self.logo:
+            self.logo = resize_image(self.logo, max_width=40)
+
+        super(EmpresaSecundaria, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.nome} | {self.setor}'

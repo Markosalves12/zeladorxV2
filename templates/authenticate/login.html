@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AdminLTE 3 | Log in</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+</head>
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <a href="../../index2.html"><b>Zelador</b>X</a>
+  </div>
+<!--  <div data-width="400" align="center">-->
+<!--    <img src="{% static 'docs/assets/img/logo.png' %}" alt="logo">-->
+<!--  </div>-->
+  <!-- /.login-logo -->
+  <div class="card">
+    <div class="card-body login-card-body">
+      <p class="login-box-msg">Login para iniciar a sessão</p>
+
+
+<!--      <form action="../../index3.html" method="post">-->
+<!--        <div class="input-group mb-3">-->
+<!--          <input type="email" class="form-control" placeholder="Email">-->
+<!--          <div class="input-group-append">-->
+<!--            <div class="input-group-text">-->
+<!--              <span class="fas fa-envelope"></span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="input-group mb-3">-->
+<!--          <input type="password" class="form-control" placeholder="Password">-->
+<!--          <div class="input-group-append">-->
+<!--            <div class="input-group-text">-->
+<!--              <span class="fas fa-lock"></span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--          <div class="col-8">-->
+<!--            <div class="icheck-primary">-->
+<!--              <input type="checkbox" id="remember">-->
+<!--              <label for="remember">-->
+<!--                Lembre-se de mim-->
+<!--              </label>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          &lt;!&ndash; /.col &ndash;&gt;-->
+<!--          <div class="col-4">-->
+<!--            <button type="submit" class="btn btn-primary btn-block">Login</button>-->
+<!--          </div>-->
+<!--          &lt;!&ndash; /.col &ndash;&gt;-->
+<!--        </div>-->
+<!--      </form>-->
+
+      <form action="{% url 'login' %}" method="POST" enctype="multipart/form-data">
+        <div class="card-body">
+          <div class="form-group">
+            {% csrf_token %}
+              <div class="form-group">
+                {% for field in forms.visible_fields %}
+                  <div class="form-group">
+                    <label for="{{ field.id_for_label }}" >
+                      {{ field.label }}
+                    </label>
+                    {{ field }}
+                  </div>
+                {% endfor %}
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="POST" class="btn btn-primary">login</button>
+          </div>
+        </div>
+      </form>
+
+<!--      <div class="social-auth-links text-center mb-3">-->
+<!--        <p>- ou -</p>-->
+<!--        <a href="#" class="btn btn-block btn-primary">-->
+<!--          <i class="fab fa-facebook mr-2"></i> Login com Facebook-->
+<!--        </a>-->
+<!--        <a href="#" class="btn btn-block btn-danger">-->
+<!--          <i class="fab fa-google-plus mr-2"></i> Login com Google-->
+<!--        </a>-->
+<!--      </div>-->
+      <!-- /.social-auth-links -->
+
+      <p class="mb-1">
+        <a href="forgot-password.html">Esqueci minha senha</a>
+      </p>
+      <p class="mb-0">
+        <a href="register.html" class="text-center">Criar conta</a>
+      </p>
+    </div>
+    <!-- /.login-card-body -->
+  </div>
+</div>
+<!-- /.login-box -->
+
+<!-- jQuery -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+</body>
+</html>

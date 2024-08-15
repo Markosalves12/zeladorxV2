@@ -1,0 +1,540 @@
+{% load static %}
+<div class="sidebar">
+  <!-- Sidebar user panel (optional) -->
+  <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+    <div class="image">
+      <img src="{% static 'dist/img/user test.jpeg' %}" class="img-circle elevation-2" alt="User Image">
+    </div>
+    <div class="info">
+      <a href="#" class="d-block">{{ nome }}</a>
+    </div>
+  </div>
+
+  <!-- SidebarSearch Form -->
+  <div class="form-inline">
+    <div class="input-group" data-widget="sidebar-search">
+      <input class="form-control form-control-sidebar" type="search" placeholder="Pesquisar" aria-label="Search">
+      <div class="input-group-append">
+        <button class="btn btn-sidebar">
+          <i class="fas fa-search fa-fw"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Menu -->
+  <nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      <!-- Add icons to the links using the .nav-icon class
+           with font-awesome or any other icon font library -->
+      <!--Relatórios-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-book"></i>
+          <p>
+            Relatórios
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'relatorios_de_servicos_xlsx_concluidos' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Serviços Excel</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../index2.html" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Manutenção de equipamentos</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../index3.html" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Manutenção de ferramentas</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'relatorios_de_servicos_pdf_concluidos' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Relatório PDF</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="UI/timeline.html" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Timeline</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+
+      <!--Dashboards-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-tachometer-alt"></i>
+          <p>
+            Dashboard
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'dashboard_produtividade' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Produtividade</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../index2.html" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Gerencial</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../index3.html" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Colaborador</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="UI/timeline.html" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Timeline</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!--Catálogo de serviços-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-edit"></i>
+          <p>
+            Catálogo de serviços
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'catalogo_de_servicos_jardinagem' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Jardinagem</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'catalogo_de_servicos_limpeza_predial' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Limpeza predial</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!--Serviços agendados-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-edit"></i>
+          <p>
+            Serviços agendados
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'servicos_agendados' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Jardinagem</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Limpeza predial</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Controle de pragas</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!--Serviços-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-edit"></i>
+          <p>
+            Agendar serviço
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'agendar_servico' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Jardinagem</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Limpeza predial</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Controle de pragas</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!--Unidades-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-ellipsis-h"></i>
+          <p>
+            Unidades
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'unidades' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Unidades</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'localidades_jardinagem' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Localidades</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'areas_jardins' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Áreas</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'terrenos' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Terrenos</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'vegetacao' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Vegetação</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <!--Gestores-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-ellipsis-h"></i>
+          <p>
+            Gestores
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'gestores' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Gestores</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <!--Gerentes-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-ellipsis-h"></i>
+          <p>
+            Gerentes
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'gerentes' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Gerentes</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <!--Empresas-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-ellipsis-h"></i>
+          <p>
+            Empresas
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'empresas' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Empresas</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!--Colaboradores-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-ellipsis-h"></i>
+          <p>
+            Colaboradores
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'colaboradores' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Colaboradores</p>
+            </a>
+          </li>
+<!--          <li class="nav-item">-->
+<!--            <a href="../index.html" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Desmobilizados</p>-->
+<!--            </a>-->
+<!--          </li>-->
+        </ul>
+      </li>
+
+      <!--Materiais-->
+<!--      <li class="nav-item">-->
+<!--        <a href="#" class="nav-link">-->
+<!--          <i class="nav-icon fas fa-ellipsis-h"></i>-->
+<!--          <p>-->
+<!--            Materiais-->
+<!--            <i class="right fas fa-angle-left"></i>-->
+<!--          </p>-->
+<!--        </a>-->
+<!--        <ul class="nav nav-treeview">-->
+<!--          <li class="nav-item">-->
+<!--            <a href="{% url 'materiais' %}" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Materiais</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li class="nav-item">-->
+<!--            <a href="{% url 'categoria_material' %}" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Categorias</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li class="nav-item">-->
+<!--            <a href="{% url 'consumo_material' %}" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Consumo</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--&lt;!&ndash;              <li class="nav-item">&ndash;&gt;-->
+<!--&lt;!&ndash;                <a href="../index3.html" class="nav-link">&ndash;&gt;-->
+<!--&lt;!&ndash;                  <i class="far fa-circle nav-icon"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                  <p>Áreas</p>&ndash;&gt;-->
+<!--&lt;!&ndash;                </a>&ndash;&gt;-->
+<!--&lt;!&ndash;              </li>&ndash;&gt;-->
+<!--        </ul>-->
+<!--      </li>-->
+
+      <!--Equipamentos-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-ellipsis-h"></i>
+          <p>
+            Equipamentos
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'catalogo_de_equipamentos' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Catálogo</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'equipamentos_disponiveis' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Equipamentos</p>
+            </a>
+          </li>
+<!--          <li class="nav-item">-->
+<!--            <a href="../index2.html" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Desmobilizados</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--              <li class="nav-item">-->
+<!--                <a href="../index3.html" class="nav-link">-->
+<!--                  <i class="far fa-circle nav-icon"></i>-->
+<!--                  <p>Áreas</p>-->
+<!--                </a>-->
+<!--              </li>-->
+        </ul>
+      </li>
+
+      <!--Ferramentas-->
+<!--      <li class="nav-item">-->
+<!--        <a href="#" class="nav-link">-->
+<!--          <i class="nav-icon fas fa-ellipsis-h"></i>-->
+<!--          <p>-->
+<!--            Ferramentas-->
+<!--            <i class="right fas fa-angle-left"></i>-->
+<!--          </p>-->
+<!--        </a>-->
+<!--        <ul class="nav nav-treeview">-->
+<!--          <li class="nav-item">-->
+<!--            <a href="../index.html" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Catálogo</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li class="nav-item">-->
+<!--            <a href="../index.html" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Ferramentas</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li class="nav-item">-->
+<!--            <a href="../index2.html" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Desmobilizadas</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--&lt;!&ndash;              <li class="nav-item">&ndash;&gt;-->
+<!--&lt;!&ndash;                <a href="../index3.html" class="nav-link">&ndash;&gt;-->
+<!--&lt;!&ndash;                  <i class="far fa-circle nav-icon"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                  <p>Áreas</p>&ndash;&gt;-->
+<!--&lt;!&ndash;                </a>&ndash;&gt;-->
+<!--&lt;!&ndash;              </li>&ndash;&gt;-->
+<!--        </ul>-->
+<!--      </li>-->
+
+      <!--Manutenção-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-ellipsis-h"></i>
+          <p>
+            Manutenção
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'catalogo_manutencao' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Catálogo</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'catalogo_motivos' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Motivos</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'manutencao_de_equipametos' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Equipamentos</p>
+            </a>
+          </li>
+<!--          <li class="nav-item">-->
+<!--            <a href="../index2.html" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Ferramentas</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--              <li class="nav-item">-->
+<!--                <a href="../index3.html" class="nav-link">-->
+<!--                  <i class="far fa-circle nav-icon"></i>-->
+<!--                  <p>Áreas</p>-->
+<!--                </a>-->
+<!--              </li>-->
+        </ul>
+      </li>
+
+      <!--Mantenedores-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-ellipsis-h"></i>
+          <p>
+            Mantenedores
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="../index.html" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Solicitações</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../index.html" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Histórico</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <!--Authenticate-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-ellipsis-h"></i>
+          <p>
+            Usuário
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'configuracoes_do_gestor' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Configurações</p>
+            </a>
+            <a href="{% url 'configuracoes_do_colaborador' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Configurações</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'logout' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Logout</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-header">EXAMPLES</li>
+      <li class="nav-item">
+        <a href="{% url 'calendario' %}" class="nav-link active">
+          <i class="nav-icon far fa-calendar-alt"></i>
+          <p>
+            Calendar
+            <span class="badge badge-info right">2</span>
+          </p>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.sidebar-menu -->
+</div>
