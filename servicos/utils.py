@@ -1,11 +1,11 @@
-from servicos.models_jardinagem import FatoServico
+from servicos.models_jardinagem import FatoServicoJardinagem
 from django.db.models import (ExpressionWrapper, F, CharField,
                               IntegerField, DurationField, DateField, DateTimeField
                               )
 
 def colect_dados():
     # Adicione os dados do relatório ao arquivo Excel
-    dados = FatoServico.objects.annotate(
+    dados = FatoServicoJardinagem.objects.annotate(
         tipodeempresa=ExpressionWrapper(
             F('Servico__ColaboradoresEscalados__gerente__gestor__EmpresaSecundaria__setor'),
             output_field=CharField()

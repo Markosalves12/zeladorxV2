@@ -1,19 +1,18 @@
 from django.shortcuts import render, redirect, reverse
-from servicos.models_jardinagem import ServicoAgendado
-from servicos.forms_jardinagem import ServicoAgendadoForms, FatoServicoForms
+from servicos.models_jardinagem import ServicoJardinagemAgendado
+from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms, FatoServicoJardinagemForms
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
-from utils.utils import paginate
 from utils.views import generic_view, edit_generic_view
 from colaborador.models import Colaborador
 from notifications.utils import enviar_notificacao
 from django.utils import timezone
 
 # Create your views here.
-def agendar_servico(request):
-    forms = ServicoAgendadoForms()
+def agendar_servico_jardinagem(request):
+    forms = ServicoJaridinagemAgendadoForms()
 
     if request.method == 'POST':
-        form = ServicoAgendadoForms(request.POST, request.FILES)
+        form = ServicoJaridinagemAgendadoForms(request.POST, request.FILES)
         if form.is_valid():
             #mensagem de sucesso
             ColaboradoresEscalados = form.cleaned_data['ColaboradoresEscalados']
@@ -61,22 +60,21 @@ def agendar_servico(request):
                     template='notifications/new_service.html'
                 )
 
-
             form.save()
-            return redirect('agendar_servico')
+            return redirect('agendar_servico_jardinagem')
 
     return render(
         request=request,
         template_name='servicos/agendar_servico.html',
         context={
             'forms': forms,
-            'app_name': 'Agendar serviço',
+            'app_name': 'Agendar serviço de jardinagem',
             'redirect_close_button': reverse('calendario'),
             'text_button_save': 'Agendar Serviço'
         }
     )
 
-def servicos_agendados(request):
+def servicos_agendados_jardinagem(request):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
@@ -89,37 +87,44 @@ def servicos_agendados(request):
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 
+    tipos = [
+        {'nome': 'Serviços agendados', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem')},
+        {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial')}
+    ]
+
     return generic_view(
         request=request,
-        model=ServicoAgendado,
-        form_class=ServicoAgendado,
+        model=ServicoJardinagemAgendado,
+        form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
-        edition_rout='editar_servico_agendado',
-        app_name='serviços agendados',
+        edition_rout='editar_servico_jardinagem_agendado',
+        app_name='serviços agendados jardinagem',
         text_button_open_modal='agendar novo serviço',
         text_button_save='agendar serviço',
         header_model='solicitar serviço',
-        redirect_url='servicos_agendados'
+        redirect_url='servicos_agendados_jardinagem',
+        link_tipos=tipos
     )
 
 
-def editar_servico_agendado(request, id_random):
+def editar_servico_jardinagem_agendado(request, id_random):
     return edit_generic_view(
         request=request,
-        model_class=ServicoAgendado,
-        form_class=ServicoAgendadoForms,
+        model_class=ServicoJardinagemAgendado,
+        form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar serviço',
-        redirect_url_name='editar_servico_agendado',
-        redirect_close_button='servicos_agendados'
+        redirect_url_name='editar_servico_jardinagem_agendado',
+        redirect_close_button='servicos_agendados_jardinagem'
     )
 
 
-def realizar_servico_agendado(request, id_random):
-    objeto = ServicoAgendado.objects.get(id_random=id_random)
-    forms = FatoServicoForms(
+def realizar_servico_jardinagem_agendado(request, id_random):
+    objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
+    forms = FatoServicoJardinagemForms(
         instance=objeto,
         id_random_servico=id_random,
         initial={
@@ -128,7 +133,7 @@ def realizar_servico_agendado(request, id_random):
     )
 
     if request.method == 'POST':
-        form = FatoServicoForms(request.POST)
+        form = ServicoJaridinagemAgendadoForms(request.POST)
         if form.is_valid():
             form.save()
             objeto.status = 'Em andamento'
@@ -142,7 +147,7 @@ def realizar_servico_agendado(request, id_random):
         context={
             'forms': forms,
             'app_name': 'Realizar serviço',
-            'redirect_url_name': 'realizar_servico_agendado',
+            'redirect_url_name': 'realizar_servico_jardinagem_agendado',
             'id_random': id_random,
             'redirect_close_button': 'calendario',
             'text_button': 'Salvar',
@@ -150,16 +155,16 @@ def realizar_servico_agendado(request, id_random):
     )
 
 
-def cancelar_servico(request, id_random):
-    objeto = ServicoAgendado.objects.get(id_random=id_random)
+def cancelar_servico_jardinagem(request, id_random):
+    objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     objeto.status = 'Cancelado'
     objeto.save()
 
     return redirect('calendario')
 
 
-def concluir_servico(request, id_random):
-    objeto = ServicoAgendado.objects.get(id_random=id_random)
+def concluir_servico_jardinagem(request, id_random):
+    objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     objeto.status = 'Concluido'
     objeto.DataDeConclusao = timezone.now()
     objeto.save()

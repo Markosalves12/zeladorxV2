@@ -1,4 +1,4 @@
-from servicos.models_jardinagem import ServicoAgendado
+from servicos.models_jardinagem import ServicoJardinagemAgendado
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -10,7 +10,7 @@ from utils.utils import formatar_atributos
 
 
 def exportar_relatorio_de_serivos_pdf(request):
-    dados = ServicoAgendado.objects.filter(
+    dados = ServicoJardinagemAgendado.objects.filter(
         status="Concluido"
     )
 

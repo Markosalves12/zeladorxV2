@@ -6,7 +6,7 @@ from equipamentos.models import EquipamentoDisponiveis
 from utils.utils import generate_id_random
 
 # Create your models here.
-class ServicoAgendado(models.Model):
+class ServicoJardinagemAgendado(models.Model):
     id_random = models.CharField(
         unique=True,
         default=generate_id_random,
@@ -114,7 +114,7 @@ class ServicoAgendado(models.Model):
 
 
 
-class FatoServico(models.Model):
+class FatoServicoJardinagem(models.Model):
     id_random = models.CharField(
         unique=True,
         default=generate_id_random,
@@ -122,7 +122,7 @@ class FatoServico(models.Model):
     )
 
     Servico = models.ForeignKey(
-        to=ServicoAgendado,
+        to=ServicoJardinagemAgendado,
         null=False,
         blank=False,
         on_delete=models.CASCADE,

@@ -10,7 +10,6 @@ def areas_jardins(request):
         {'nome': 'nome', 'label': 'Nome'},
         {'nome': 'Terreno', 'label': 'Terreno'},
         {'nome': 'vegetacao', 'label': 'vegetação'},
-        {'nome': 'vegetacao', 'label': 'vegetação'},
         {'nome': 'servico', 'label': 'Serviços'},
         {'nome': 'localidade', 'label': 'Localidade'},
         {'nome': 'acoes', 'label': 'Ações'},
@@ -19,7 +18,7 @@ def areas_jardins(request):
     tipos = [
         {'nome': 'Tipo de área', 'link': ''},
         {'nome': 'Jardinagem', 'link': reverse('areas_jardins')},
-        {'nome': 'Limpeza predial', 'link': reverse('areas_jardins')}
+        {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial')}
     ]
 
     return generic_view(
@@ -29,7 +28,7 @@ def areas_jardins(request):
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_area_jardins',
-        app_name='áreas jardinagem',
+        app_name='Áreas Jardinagem',
         text_button_open_modal='Adicionar nova área',
         text_button_save='Salvar área',
         header_model='Nova área',

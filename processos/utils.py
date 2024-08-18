@@ -1,11 +1,11 @@
 from django.http import JsonResponse
-from servicos.models_jardinagem import ServicoAgendado
+from servicos.models_jardinagem import ServicoJardinagemAgendado
 from colaborador.models import Colaborador
 
 
 # Create your views here.
 def aceitar_servico(request, id_random, id_random_colaborador):
-    servico = ServicoAgendado.objects.get(id_random=id_random)
+    servico = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     colaborador = Colaborador.objects.get(id_random=id_random_colaborador)
 
     if colaborador not in servico.ColaboradoresConfirmados.all() and not colaborador in servico.ColaboradoresNegados.all():
@@ -20,7 +20,7 @@ def aceitar_servico(request, id_random, id_random_colaborador):
 
 
 def rejeitar_servico(request, id_random, id_random_colaborador):
-    servico = ServicoAgendado.objects.get(id_random=id_random)
+    servico = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     colaborador = Colaborador.objects.get(id_random=id_random_colaborador)
 
     if colaborador not in servico.ColaboradoresConfirmados.all() and not colaborador in servico.ColaboradoresNegados.all():

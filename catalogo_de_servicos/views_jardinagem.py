@@ -1,6 +1,7 @@
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from catalogo_de_servicos.forms_jardinagem import CatalogoServicoJardinagemForms
 from utils.views import generic_view, edit_generic_view
+from django.shortcuts import reverse
 
 
 # Create your views here.
@@ -10,6 +11,12 @@ def catalogo_de_servicos_jardinagem(request):
         {'nome': 'nome', 'label': 'Nome'},
         {'nome': 'EmpresaSecundaria', 'label': 'Empresa'},
         {'nome': 'acoes', 'label': 'Ações'},
+    ]
+
+    tipos = [
+        {'nome': 'Catálogo de serviços', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('catalogo_de_servicos_jardinagem')},
+        {'nome': 'Limpeza predial', 'link': reverse('catalogo_de_servicos_limpeza_predial')}
     ]
 
     return generic_view(
@@ -23,7 +30,8 @@ def catalogo_de_servicos_jardinagem(request):
         text_button_open_modal='Adicionar novo serviço',
         text_button_save='Salvar serviço',
         header_model='Novo serviço',
-        redirect_url='catalogo_de_servicos_jardinagem'
+        redirect_url='catalogo_de_servicos_jardinagem',
+        link_tipos=tipos
     )
 
 

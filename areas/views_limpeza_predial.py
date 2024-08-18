@@ -8,10 +8,8 @@ def areas_limpeza_predial(request):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
-        {'nome': 'Terreno', 'label': 'Terreno'},
-        {'nome': 'vegetacao', 'label': 'vegetação'},
-        {'nome': 'vegetacao', 'label': 'vegetação'},
-        {'nome': 'servico', 'label': 'Serviços'},
+        {'nome': 'dimensao', 'label': 'Dimensão'},
+        {'nome': 'servico', 'label': 'Serviço'},
         {'nome': 'localidade', 'label': 'Localidade'},
         {'nome': 'acoes', 'label': 'Ações'},
     ]
@@ -19,7 +17,7 @@ def areas_limpeza_predial(request):
     tipos = [
         {'nome': 'Tipo de área', 'link': ''},
         {'nome': 'Jardinagem', 'link': reverse('areas_jardins')},
-        {'nome': 'Limpeza predial', 'link': reverse('areas_jardins')}
+        {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial')}
     ]
 
     return generic_view(
@@ -28,12 +26,12 @@ def areas_limpeza_predial(request):
         form_class=AreasLimpezaPredialForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
-        edition_rout='editar_area_jardins',
-        app_name='áreas jardinagem',
+        edition_rout='editar_area_limpeza_predial',
+        app_name='Áreas Limpeza Predial',
         text_button_open_modal='Adicionar nova área',
         text_button_save='Salvar área',
         header_model='Nova área',
-        redirect_url='areas_jardins',
+        redirect_url='areas_limpeza_predial',
         link_tipos=tipos
     )
 
@@ -44,7 +42,7 @@ def editar_area_limpeza_predial(request, id_random):
         form_class=AreasLimpezaPredialForms,
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
-        app_name='Editar área Jardins',
-        redirect_url_name='editar_area_jardins',
-        redirect_close_button='areas_jardins'
+        app_name='Editar área limpeza predial',
+        redirect_url_name='editar_area_limpeza_predial',
+        redirect_close_button='areas_limpeza_predial'
     )

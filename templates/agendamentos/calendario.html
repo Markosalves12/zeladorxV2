@@ -41,7 +41,7 @@
     <!-- Content Header (Page header) -->
     {% include 'partials/_left_sidebar_links.html' %}
     <div class="card-body d-flex justify-content-end">
-      <a href="{% url 'agendar_servico' %}">
+      <a href="{% url 'agendar_servico_jardinagem' %}">
         <button type="button" class="btn btn-block btn-primary btn-sm">Agendar novo serviço</button>
       </a>
     </div>
@@ -164,10 +164,10 @@
         var modal = $('#modal-default');
         var modalTitle = modal.find('.modal-title');
         var modalBody = modal.find('.modal-body');
-        var editUrl = "{% url 'editar_servico_agendado' '__id__' %}".replace('__id__', info.event.id);
-        var acompUrl = "{% url 'realizar_servico_agendado' '__id__' %}".replace('__id__', info.event.id);
-        var cancelUrl = "{% url 'cancelar_servico' '__id__' %}".replace('__id__', info.event.id);
-        var concluirUrl = "{% url 'concluir_servico' '__id__' %}".replace('__id__', info.event.id);
+        var editUrl = "{% url 'editar_servico_jardinagem_agendado' '__id__' %}".replace('__id__', info.event.id);
+        var acompUrl = "{% url 'realizar_servico_jardinagem_agendado' '__id__' %}".replace('__id__', info.event.id);
+        var cancelUrl = "{% url 'cancelar_servico_jardinagem' '__id__' %}".replace('__id__', info.event.id);
+        var concluirUrl = "{% url 'concluir_servico_jardinagem' '__id__' %}".replace('__id__', info.event.id);
         var status = info.event.extendedProps.status;
 
         var formattedStart = moment(info.event.start).format('dddd DD/MM/YYYY HH:mm');

@@ -18,8 +18,6 @@ def localidades_jardinagem(request):
         {'nome': 'Tipo de localidade', 'link': ''},
         {'nome': 'Jardinagem', 'link': reverse('localidades_jardinagem')},
         {'nome': 'Limpeza predial', 'link': reverse('localidades_limpeza_predial')},
-        # {'nome': 'Controle de pragas', 'link': ''},
-        # {'nome': 'Limpeza urbana', 'link': ''},
     ]
 
     return generic_view(

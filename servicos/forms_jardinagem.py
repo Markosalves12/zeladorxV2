@@ -1,9 +1,9 @@
-from servicos.models_jardinagem import ServicoAgendado, FatoServico
+from servicos.models_jardinagem import ServicoJardinagemAgendado, FatoServicoJardinagem
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from colaborador.models import Colaborador
 from django import forms
 
-class ServicoAgendadoForms(forms.ModelForm):
+class ServicoJaridinagemAgendadoForms(forms.ModelForm):
     ServicosEscalados = forms.ModelMultipleChoiceField(
         queryset=CatalogodeServicoJardinagem.objects.all(),
         widget=forms.CheckboxSelectMultiple(
@@ -27,7 +27,7 @@ class ServicoAgendadoForms(forms.ModelForm):
     )
 
     class Meta:
-        model = ServicoAgendado
+        model = ServicoJardinagemAgendado
         fields = ['DataDeInicio', 'DataDeConclusao', 'ServicosEscalados', 'ColaboradoresEscalados',
                   'DescricaoDoServico', 'Areas', 'foto_solicitacao', 'foto_entrega', 'ServicoCompunsivo']
 
@@ -87,9 +87,9 @@ class ServicoAgendadoForms(forms.ModelForm):
         }
 
 
-class FatoServicoForms(forms.ModelForm):
+class FatoServicoJardinagemForms(forms.ModelForm):
     def __init__(self, *args, id_random_servico=None, empresa=None, **kwargs):
-        super(FatoServicoForms, self).__init__(*args, **kwargs)
+        super(FatoServicoJardinagemForms, self).__init__(*args, **kwargs)
         if id_random_servico is not None:
             self.fields['Servico'].queryset = self.fields['Servico'].queryset.exclude(
                 status__in=['Cancelado', 'Concluido']
@@ -98,7 +98,7 @@ class FatoServicoForms(forms.ModelForm):
             )
 
     class Meta:
-        model = FatoServico
+        model = FatoServicoJardinagem
         fields = ['Servico', 'data_hora_chegada_na_area', 'EquipamentoUsado', 'data_hora_retorno_area', 'Colaborador']
 
         labels = {

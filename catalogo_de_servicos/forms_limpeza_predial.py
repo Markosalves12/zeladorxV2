@@ -1,4 +1,4 @@
-from django.forms import forms
+from django import forms
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 
 class CatalogoServicoLimpezaPredialForms(forms.ModelForm):

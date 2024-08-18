@@ -19,15 +19,15 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES)
         if form.is_valid():
-            email = form.cleaned_data['email']
+            # email = form.cleaned_data['email']
             form.save()
-            print("formulario salvo")
-            define_setting(
-                request=request,
-                model_class=model,
-                form_class=form_class,
-                email=email
-            )
+            # print("formulario salvo")
+            # define_setting(
+            #     request=request,
+            #     model_class=model,
+            #     form_class=form_class,
+            #     email=email
+            # )
             return redirect(redirect_url)
 
 

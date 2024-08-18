@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from servicos.models_jardinagem import ServicoAgendado
+from servicos.models_jardinagem import ServicoJardinagemAgendado
 from django.db.models.functions import Now, TruncDate, ExtractDay
 from django.db.models import F, Q, ExpressionWrapper, IntegerField, DurationField
 
 # Create your views here.
 def calendario(request):
-    agendado = ServicoAgendado.objects.all().annotate(
+    agendado = ServicoJardinagemAgendado.objects.all().annotate(
         data_atual=Now(),
         status_agendamento=ExpressionWrapper(
             F('DataDeInicio') - F('data_atual'),
@@ -49,11 +49,11 @@ def calendario(request):
             "allDay": "false",
             "backgroundColor": background_color,
             "borderColor": border_color,
-            "url": "{% url 'agendar_servico' %}",
-            "url_acompanhemento": "{% url 'realizar_servico_agendado' %}",
+            "url": "{% url 'agendar_servico_jardinagem' %}",
+            "url_acompanhemento": "{% url 'realizar_servico_jardinagem_agendado' %}",
             'status_agendamento': servico.status_agendamento,
             'status': servico.status,
-            'dataconclusao': servico.DataDeConclusao
+            'dataconclusao': servico.DataDeConclusao,
         }
 
     formatted_events = [format_event(servico) for servico in agendado]

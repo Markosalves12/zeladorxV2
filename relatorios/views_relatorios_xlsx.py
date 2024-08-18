@@ -1,8 +1,8 @@
 from servicos.utils import colect_dados
-from servicos.models_jardinagem import ServicoAgendado
-from servicos.forms_jardinagem import ServicoAgendadoForms
-from utils.views import generic_view
+from servicos.models_jardinagem import ServicoJardinagemAgendado
+from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from django.urls import reverse
+from utils.views import generic_view
 
 # Create your views here.
 def relatorios_de_servicos_xlsx_concluidos(request):
@@ -28,7 +28,7 @@ def relatorios_de_servicos_xlsx_concluidos(request):
     return generic_view(
         request=request,
         model=dados,
-        form_class=ServicoAgendadoForms,
+        form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_servico_agendado',
@@ -68,7 +68,7 @@ def relatorios_de_servicos_xlsx_agendados(request):
     return generic_view(
         request=request,
         model=dados,
-        form_class=ServicoAgendadoForms,
+        form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_servico_agendado',
