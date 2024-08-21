@@ -69,7 +69,7 @@ def agendar_servico_jardinagem(request):
         context={
             'forms': forms,
             'app_name': 'Agendar serviço de jardinagem',
-            'redirect_close_button': reverse('calendario'),
+            'redirect_close_button': reverse('calendario_jardinagem'),
             'text_button_save': 'Agendar Serviço'
         }
     )
@@ -138,7 +138,7 @@ def realizar_servico_jardinagem_agendado(request, id_random):
             form.save()
             objeto.status = 'Em andamento'
             objeto.save()
-            return redirect('calendario')
+            return redirect('calendario_jardinagem')
 
 
     return render(
@@ -160,7 +160,7 @@ def cancelar_servico_jardinagem(request, id_random):
     objeto.status = 'Cancelado'
     objeto.save()
 
-    return redirect('calendario')
+    return redirect('calendario_jardinagem')
 
 
 def concluir_servico_jardinagem(request, id_random):
@@ -169,4 +169,4 @@ def concluir_servico_jardinagem(request, id_random):
     objeto.DataDeConclusao = timezone.now()
     objeto.save()
 
-    return redirect('calendario')
+    return redirect('calendario_jardinagem')

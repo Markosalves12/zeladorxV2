@@ -1,5 +1,4 @@
 from django.contrib import admin
-from servicos.models_jardinagem import ServicoJardinagemAgendado, FatoServicoJardinagem
 
 # Register your models here.
 class ServicoJardinagemAgendadoAdmin(admin.ModelAdmin):
@@ -18,5 +17,4 @@ class FatoServicoJardinagemAdmin(admin.ModelAdmin):
 
     list_per_page = 20
 
-admin.site.register(FatoServicoJardinagem, FatoServicoJardinagemAdmin)
-admin.site.register(ServicoJardinagemAgendado, ServicoJardinagemAgendadoAdmin)
+

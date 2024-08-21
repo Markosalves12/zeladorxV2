@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'equipamentos.apps.EquipamentosConfig',
     'servicos.apps.ServicosConfig',
     'settings.apps.SettingsConfig',
+    'schedules.apps.SchedulesConfig',
     'authenticate.apps.AuthenticateConfig',
 ]
 

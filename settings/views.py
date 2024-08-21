@@ -18,7 +18,7 @@ def configuracoes_do_gestor(request):
         context={
             'forms': forms,
             'app_name': 'Gerência de configuração - Gestor',
-            'redirect_close_button': reverse('calendario'),
+            'redirect_close_button': reverse('calendario_jardinagem'),
             'text_button_save': 'Salvar configuração'
         }
     )
@@ -38,7 +38,7 @@ def configuracoes_do_colaborador(request):
         context={
             'forms': forms,
             'app_name': 'Gerência de configuração - Colaborador',
-            'redirect_close_button': reverse('calendario'),
+            'redirect_close_button': reverse('calendario_jardinagem'),
             'text_button_save': 'Salvar configuração'
         }
     )

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse
-from servicos.models_limpeza_predial import ServicoLimpezaPredial, FatoServicoLimpezaPredial
-from servicos.forms_limpeza_predial import ServicoLimpezaPredialForms, FatoServicoLimpezaPredialForms
+from servicos.models_limpeza_predial import ServicoLimpezaPredialConfigurado, FatoServicoLimpezaPredial
+from servicos.forms_limpeza_predial import ServicoLimpezaPredialConfiguradoForms, FatoServicoLimpezaPredialForms
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from utils.views import generic_view, edit_generic_view
 from colaborador.models import Colaborador
@@ -8,32 +8,33 @@ from notifications.utils import enviar_notificacao
 from django.utils import timezone
 
 
-def agendar_servico_limpeza_predial(request):
-    forms = ServicoLimpezaPredialForms()
+def configurar_servico_limpeza_predial(request):
+    forms = ServicoLimpezaPredialConfiguradoForms()
 
     if request.method == 'POST':
-        form = ServicoLimpezaPredialForms(request.POST, request.FILES)
+        form = ServicoLimpezaPredialConfiguradoForms(request.POST, request.FILES)
         if form.is_valid():
             #mensagem de sucesso
             form.save()
-            return redirect('agendar_servico_limpeza_predial')
+            return redirect('configurar_servico_limpeza_predial')
 
     return render(
         request=request,
         template_name='servicos/agendar_servico.html',
         context={
             'forms': forms,
-            'app_name': 'Agendar serviço de limpeza predial',
-            'redirect_close_button': reverse('calendario'),
+            'app_name': 'Configurar serviço de limpeza predial',
+            'redirect_close_button': reverse('calendario_limpeza_predial'),
             'text_button_save': 'Agendar Serviço'
         }
     )
 
-def servicos_agendados_limpeza_predial(request):
+def servicos_configurados_limpeza_predial(request):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'area', 'label': 'Área'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
+        {'nome': 'tempomedioplanejado', 'label': 'Tempo médio planejado'},
         {'nome': 'horario_1', 'label': 'Horario 1'},
         {'nome': 'horario_2', 'label': 'Horario 2'},
         {'nome': 'horario_3', 'label': 'Horario 3'},
@@ -49,40 +50,40 @@ def servicos_agendados_limpeza_predial(request):
     tipos = [
         {'nome': 'Serviços agendados', 'link': ''},
         {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem')},
-        {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial')}
+        {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial')}
     ]
 
     return generic_view(
         request=request,
-        model=ServicoLimpezaPredial,
-        form_class=ServicoLimpezaPredialForms,
+        model=ServicoLimpezaPredialConfigurado,
+        form_class=ServicoLimpezaPredialConfiguradoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
-        edition_rout='editar_servico_jardinagem_agendado',
-        app_name='serviços agendados limpeza predial',
-        text_button_open_modal='agendar novo serviço',
-        text_button_save='agendar serviço',
+        edition_rout='editar_servico_limpezapredial_configurado',
+        app_name='serviços configurados limpeza predial',
+        text_button_open_modal='configurar novo serviço',
+        text_button_save='configurar serviço',
         header_model='solicitar serviço',
-        redirect_url='servicos_agendados_limpeza_predial',
+        redirect_url='servicos_configurados_limpeza_predial',
         link_tipos=tipos
     )
 
 
-def editar_servico_limpezapredial_agendado(request, id_random):
+def editar_servico_limpezapredial_configurado(request, id_random):
     return edit_generic_view(
         request=request,
-        model_class=ServicoLimpezaPredial,
-        form_class=ServicoLimpezaPredialForms,
+        model_class=ServicoLimpezaPredialConfigurado,
+        form_class=ServicoLimpezaPredialConfiguradoForms,
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar serviço',
-        redirect_url_name='editar_servico_limpezapredial_agendado',
-        redirect_close_button='servicos_agendados_limpeza_predial'
+        redirect_url_name='editar_servico_limpezapredial_configurado',
+        redirect_close_button='servicos_configurados_limpeza_predial'
     )
 
 
 def realizar_servico_limpeza_predial_agendado(request, id_random):
-    objeto = ServicoLimpezaPredial.objects.get(id_random=id_random)
+    objeto = ServicoLimpezaPredialConfigurado.objects.get(id_random=id_random)
     forms = FatoServicoLimpezaPredialForms(
         instance=objeto,
         id_random_servico=id_random,
@@ -92,7 +93,7 @@ def realizar_servico_limpeza_predial_agendado(request, id_random):
     )
 
     if request.method == 'POST':
-        form = ServicoLimpezaPredialForms(request.POST)
+        form = ServicoLimpezaPredialConfiguradoForms(request.POST)
         if form.is_valid():
             form.save()
             objeto.status = 'Em andamento'

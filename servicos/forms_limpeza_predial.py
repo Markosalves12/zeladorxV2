@@ -1,9 +1,10 @@
 from django import forms
-from servicos.models_limpeza_predial import ServicoLimpezaPredial, FatoServicoLimpezaPredial
+from servicos.models_limpeza_predial import (ServicoLimpezaPredialAgendado, ServicoLimpezaPredialConfigurado,
+                                             FatoServicoLimpezaPredial)
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 
 
-class ServicoLimpezaPredialForms(forms.ModelForm):
+class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
     ServicosEscalados = forms.ModelMultipleChoiceField(
         queryset=CatalogodeServicoLimpezaPredial.objects.all(),
         widget=forms.CheckboxSelectMultiple(
@@ -16,13 +17,14 @@ class ServicoLimpezaPredialForms(forms.ModelForm):
     )
 
     class Meta:
-        model = ServicoLimpezaPredial
-        fields = ['area', 'ServicosEscalados', 'horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5',
+        model = ServicoLimpezaPredialConfigurado
+        fields = ['area', 'ServicosEscalados', 'tempomedioplanejado', 'horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5',
                   'horario_6', 'horario_7', 'horario_8', 'horario_9']
 
         labels = {
             'area': 'Área',
             'ServicosEscalados': 'Serviços Escalados',
+            'tempomedioplanejado': 'Tempo médio planejado',
             'horario_1': 'Horario 1',
             'horario_2': 'Horario 2',
             'horario_3': 'Horario 3',
@@ -36,6 +38,11 @@ class ServicoLimpezaPredialForms(forms.ModelForm):
 
         widgets = {
             'area': forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+            'tempomedioplanejado': forms.TimeInput(
                 attrs={
                     'class': 'form-control'
                 }
