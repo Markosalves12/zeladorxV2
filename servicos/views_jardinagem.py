@@ -13,6 +13,7 @@ def agendar_servico_jardinagem(request):
 
     if request.method == 'POST':
         form = ServicoJaridinagemAgendadoForms(request.POST, request.FILES)
+        print(form.errors)
         if form.is_valid():
             #mensagem de sucesso
             ColaboradoresEscalados = form.cleaned_data['ColaboradoresEscalados']
@@ -63,13 +64,16 @@ def agendar_servico_jardinagem(request):
             form.save()
             return redirect('agendar_servico_jardinagem')
 
+        print("formulario invalido")
+
     return render(
         request=request,
-        template_name='servicos/agendar_servico.html',
+        template_name='DataTableAndForms/CreateObject.html',
         context={
             'forms': forms,
             'app_name': 'Agendar serviço de jardinagem',
             'redirect_close_button': reverse('calendario_jardinagem'),
+            'redirect_url_name': reverse('agendar_servico_jardinagem'),
             'text_button_save': 'Agendar Serviço'
         }
     )
@@ -90,7 +94,7 @@ def servicos_agendados_jardinagem(request):
     tipos = [
         {'nome': 'Serviços agendados', 'link': ''},
         {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem')},
-        {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial')}
+        {'nome': 'Limpeza predial', 'link': ''}
     ]
 
     return generic_view(

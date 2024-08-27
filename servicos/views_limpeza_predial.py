@@ -13,6 +13,7 @@ def configurar_servico_limpeza_predial(request):
 
     if request.method == 'POST':
         form = ServicoLimpezaPredialConfiguradoForms(request.POST, request.FILES)
+        print(form.errors)
         if form.is_valid():
             #mensagem de sucesso
             form.save()
@@ -20,12 +21,13 @@ def configurar_servico_limpeza_predial(request):
 
     return render(
         request=request,
-        template_name='servicos/agendar_servico.html',
+        template_name='DataTableAndForms/CreateObject.html',
         context={
             'forms': forms,
             'app_name': 'Configurar serviço de limpeza predial',
             'redirect_close_button': reverse('calendario_limpeza_predial'),
-            'text_button_save': 'Agendar Serviço'
+            'redirect_url_name': reverse('configurar_servico_limpeza_predial'),
+            'text_button_save': 'Configurar Serviço',
         }
     )
 

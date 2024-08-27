@@ -1,4 +1,3 @@
-from django.shortcuts import render, redirect
 from unidade.models import Unidade
 from unidade.forms import UnidadeForms
 from utils.views import generic_view, edit_generic_view

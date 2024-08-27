@@ -16,15 +16,28 @@ class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
         required=True  # Defina como True se a seleção de colaboradores for obrigatória
     )
 
+    diasaseremrealizado = forms.MultipleChoiceField(
+        choices=ServicoLimpezaPredialConfigurado.diasaseremrealizado_options,  # Usa as opções definidas no modelo
+        widget=forms.CheckboxSelectMultiple(
+            attrs={
+                'class': 'checkbox'
+            }
+        ),
+        label='Dias a serem realizados',
+        required=True  # Defina como True se a seleção de dias for obrigatória
+    )
+
     class Meta:
         model = ServicoLimpezaPredialConfigurado
-        fields = ['area', 'ServicosEscalados', 'tempomedioplanejado', 'horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5',
+        fields = ['area', 'ServicosEscalados', 'tempomedioplanejado', 'diasaseremrealizado','horario_1',
+                  'horario_2', 'horario_3', 'horario_4', 'horario_5',
                   'horario_6', 'horario_7', 'horario_8', 'horario_9']
 
         labels = {
             'area': 'Área',
             'ServicosEscalados': 'Serviços Escalados',
             'tempomedioplanejado': 'Tempo médio planejado',
+            'diasaseremrealizado': 'Dias a serem realizados',
             'horario_1': 'Horario 1',
             'horario_2': 'Horario 2',
             'horario_3': 'Horario 3',
@@ -43,52 +56,81 @@ class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
                 }
             ),
             'tempomedioplanejado': forms.TimeInput(
+                format='%H:%M',
                 attrs={
+                    'type': 'time',
                     'class': 'form-control'
                 }
             ),
+
             'horario_1': forms.TimeInput(
+                format='%H:%M',
                 attrs={
+                    'type': 'time',
                     'class': 'form-control'
                 }
             ),
+
             'horario_2': forms.TimeInput(
+                format='%H:%M',
                 attrs={
+                    'type': 'time',
                     'class': 'form-control'
                 }
             ),
+
             'horario_3': forms.TimeInput(
+                format='%H:%M',
                 attrs={
+                    'type': 'time',
                     'class': 'form-control'
                 }
             ),
+
             'horario_4': forms.TimeInput(
+                format='%H:%M',
                 attrs={
+                    'type': 'time',
                     'class': 'form-control'
                 }
             ),
+
             'horario_5': forms.TimeInput(
+                format='%H:%M',
                 attrs={
+                    'type': 'time',
                     'class': 'form-control'
                 }
             ),
+
             'horario_6': forms.TimeInput(
+                format='%H:%M',
                 attrs={
+                    'type': 'time',
                     'class': 'form-control'
                 }
             ),
+
             'horario_7': forms.TimeInput(
+                format='%H:%M',
                 attrs={
+                    'type': 'time',
                     'class': 'form-control'
                 }
             ),
+
             'horario_8': forms.TimeInput(
+                format='%H:%M',
                 attrs={
+                    'type': 'time',
                     'class': 'form-control'
                 }
             ),
+
             'horario_9': forms.TimeInput(
+                format='%H:%M',
                 attrs={
+                    'type': 'time',
                     'class': 'form-control'
                 }
             ),
