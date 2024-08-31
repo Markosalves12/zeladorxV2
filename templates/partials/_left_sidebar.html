@@ -175,15 +175,28 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'configurar_servico_limpeza_predial' %}" class="nav-link">
+            <a href="{% url 'agendar_servico_limpeza_predial' %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Limpeza predial</p>
             </a>
           </li>
+        </ul>
+      </li>
+
+            <!--Serviços-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-edit"></i>
+          <p>
+            Configurar serviços
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="" class="nav-link">
+            <a href="{% url 'configurar_servico_limpeza_predial' %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
-              <p>Controle de pragas</p>
+              <p>Limpeza predial</p>
             </a>
           </li>
         </ul>

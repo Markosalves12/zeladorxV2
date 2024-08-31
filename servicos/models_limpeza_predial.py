@@ -4,6 +4,7 @@ from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpeza
 from areas.models_limpeza_predial import AreaLimpezaPredial
 from colaborador.models import Colaborador
 from datetime import timedelta
+from semana.models import DiasDaSemana
 
 
 class ServicoLimpezaPredialConfigurado(models.Model):
@@ -28,22 +29,11 @@ class ServicoLimpezaPredialConfigurado(models.Model):
         related_name='RServicosEscaladosLimpezaPredialServicoConfigurado'
     )
 
-    diasaseremrealizado_options = [
-        ('Segunda-Feira', 'Segunda-Feira'),
-        ('Terça-Feira', 'Terça-Feira'),
-        ('Quarta-Feira', 'Quarta-Feira'),
-        ('Quinta-Feira', 'Quinta-Feira'),
-        ('Sexta-Feira', 'Sexta-Feira'),
-        ('Sábado', 'Sábado'),
-        ('Domingo', 'Domingo'),
-    ]
-
-    diasaseremrealizado = models.CharField(
-        choices=diasaseremrealizado_options,
+    diasaseremrealizado = models.ManyToManyField(
+        to=DiasDaSemana,
         null=False,
         blank=False,
-        max_length=50,
-        default=''
+        related_name="Rsemanadiasdasemana"
     )
 
     tempomedioplanejado = models.DurationField(
@@ -137,6 +127,26 @@ class ServicoLimpezaPredialAgendado(models.Model):
     DataDeConclusao = models.DateTimeField(
         blank=True,
         null=True
+    )
+
+    DescricaoDoServico = models.TextField(
+        max_length = 200,
+        blank=False,
+        null=False,
+    )
+
+    status_options = [
+        ('Agendado', 'Agendado'),
+        ('Cancelado', 'Cancelado'),
+        ('Em andamento', 'Em andamento'),
+        ('Concluido', 'Concluido')
+    ]
+    status = models.CharField(
+        max_length=60,
+        blank=False,
+        null=False,
+        choices=status_options,
+        default='Agendado'
     )
 
     # horario_1 = models.TimeField(

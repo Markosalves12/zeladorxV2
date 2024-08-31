@@ -4,10 +4,10 @@ from django.contrib import admin
 
 class ServicoLimpezaPredialConfiguradoAdmin(admin.ModelAdmin):
     list_display = (
-    'area', 'tempomedioplanejado', 'diasaseremrealizado','horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5', 'horario_6',
+    'area', 'tempomedioplanejado', 'horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5', 'horario_6',
     'horario_7', 'horario_8', 'horario_9',)
     list_display_links = (
-    'area', 'tempomedioplanejado', 'diasaseremrealizado', 'horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5', 'horario_6',
+    'area', 'tempomedioplanejado', 'horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5', 'horario_6',
     'horario_7', 'horario_8', 'horario_9',)
     # search_fields = ('ServicosEscalados', )
     # list_filter = ('ServicosEscalados', )
@@ -16,8 +16,8 @@ class ServicoLimpezaPredialConfiguradoAdmin(admin.ModelAdmin):
 
 
 class ServicoLimpezaPredialAgendadoAdmin(admin.ModelAdmin):
-    list_display = ('area', 'DataDeInicio', 'DataDeConclusao', )
-    list_display_links = ('area', 'DataDeInicio', 'DataDeConclusao', )
+    list_display = ('area', 'DataDeInicio', 'DataDeConclusao', 'status', )
+    list_display_links = ('area', 'DataDeInicio', 'DataDeConclusao', 'status', )
     # search_fields = ('ServicosEscalados', )
     # list_filter = ('ServicosEscalados', )
 

@@ -1,12 +1,42 @@
 from django.shortcuts import render, redirect, reverse
-from servicos.models_limpeza_predial import ServicoLimpezaPredialConfigurado, FatoServicoLimpezaPredial
-from servicos.forms_limpeza_predial import ServicoLimpezaPredialConfiguradoForms, FatoServicoLimpezaPredialForms
+from servicos.models_limpeza_predial import ServicoLimpezaPredialConfigurado, FatoServicoLimpezaPredial, ServicoLimpezaPredialAgendado
+from servicos.forms_limpeza_predial import ServicoLimpezaPredialConfiguradoForms, FatoServicoLimpezaPredialForms, ServicoLimpezaPredialAgendadoForm
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from utils.views import generic_view, edit_generic_view
 from colaborador.models import Colaborador
 from notifications.utils import enviar_notificacao
 from django.utils import timezone
 
+
+def agendar_servico_limpeza_predial(request):
+    forms = ServicoLimpezaPredialAgendadoForm()
+
+    if request.method == 'POST':
+        form = ServicoLimpezaPredialAgendadoForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+
+            return redirect('agendar_servico_limpeza_predial')
+
+    tipos = [
+        {'nome': 'Agendar serviços', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('agendar_servico_jardinagem')},
+        {'nome': 'Limpeza predial', 'link': reverse('agendar_servico_limpeza_predial')}
+    ]
+
+
+    return render(
+        request=request,
+        template_name='DataTableAndForms/CreateObject.html',
+        context={
+            'forms': forms,
+            'app_name': 'Agendar serviço limpeza predial',
+            'redirect_close_button': reverse('calendario_limpeza_predial'),
+            'text_button_save': 'Agendar Serviço',
+            "link_tipos": tipos
+        }
+    )
 
 def configurar_servico_limpeza_predial(request):
     forms = ServicoLimpezaPredialConfiguradoForms()

@@ -14,7 +14,7 @@ def configuracoes_do_gestor(request):
 
     return render(
         request=request,
-        template_name='servicos/agendar_servico.html',
+        template_name='DataTableAndForms/CreateObject.html',
         context={
             'forms': forms,
             'app_name': 'Gerência de configuração - Gestor',
@@ -34,7 +34,7 @@ def configuracoes_do_colaborador(request):
 
     return render(
         request=request,
-        template_name='servicos/agendar_servico.html',
+        template_name='DataTableAndForms/CreateObject.html',
         context={
             'forms': forms,
             'app_name': 'Gerência de configuração - Colaborador',
