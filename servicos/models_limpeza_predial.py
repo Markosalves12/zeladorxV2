@@ -4,6 +4,7 @@ from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpeza
 from areas.models_limpeza_predial import AreaLimpezaPredial
 from colaborador.models import Colaborador
 from datetime import timedelta
+from semana.models import DiasDaSemana
 
 
 class ServicoLimpezaPredialConfigurado(models.Model):
@@ -28,22 +29,11 @@ class ServicoLimpezaPredialConfigurado(models.Model):
         related_name='RServicosEscaladosLimpezaPredialServicoConfigurado'
     )
 
-    diasaseremrealizado_options = [
-        ('Segunda-Feira', 'Segunda-Feira'),
-        ('Terça-Feira', 'Terça-Feira'),
-        ('Quarta-Feira', 'Quarta-Feira'),
-        ('Quinta-Feira', 'Quinta-Feira'),
-        ('Sexta-Feira', 'Sexta-Feira'),
-        ('Sábado', 'Sábado'),
-        ('Domingo', 'Domingo'),
-    ]
-
-    diasaseremrealizado = models.CharField(
-        choices=diasaseremrealizado_options,
+    diasaseremrealizado = models.ManyToManyField(
+        to=DiasDaSemana,
         null=False,
         blank=False,
-        max_length=50,
-        default=''
+        related_name='Rdiasdasemana'
     )
 
     tempomedioplanejado = models.DurationField(
@@ -108,6 +98,12 @@ class ServicoLimpezaPredialAgendado(models.Model):
         max_length=20
     )
 
+    DescricaoDoServico = models.TextField(
+        max_length = 200,
+        blank=False,
+        null=False,
+    )
+
     area = models.ForeignKey(
         to=AreaLimpezaPredial,
         blank=False,
@@ -123,12 +119,6 @@ class ServicoLimpezaPredialAgendado(models.Model):
         related_name='RServicosEscaladosLimpezaPredialServicoAgendado'
     )
 
-    # tempomedioplanejado = models.DurationField(
-    #     null=False,
-    #     blank=False,
-    #     default=timedelta(minutes=30)
-    # )
-
     DataDeInicio = models.DateTimeField(
         null=True,
         blank=True
@@ -139,50 +129,19 @@ class ServicoLimpezaPredialAgendado(models.Model):
         null=True
     )
 
-    # horario_1 = models.TimeField(
-    #     null=False,
-    #     blank=False,
-    # )
-    #
-    # horario_2 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_3 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_4 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_5 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_6 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_7 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_8 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_9 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
+    status_options = [
+        ('Agendado', 'Agendado'),
+        ('Cancelado', 'Cancelado'),
+        ('Em andamento', 'Em andamento'),
+        ('Concluido', 'Concluido')
+    ]
+    status = models.CharField(
+        max_length=60,
+        blank=False,
+        null=False,
+        choices=status_options,
+        default='Agendado'
+    )
 
     def __str__(self):
         return f'{self.area} | {self.ServicosEscalados} | {self.DataDeInicio}'

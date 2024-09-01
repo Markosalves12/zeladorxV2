@@ -69,7 +69,7 @@ def calendario_limpeza_predial(request):
         template_name='agendamentos/calendario.html',
         context={
             'formatted_events': formatted_events,
-            'app_name': 'Calendário',
+            'app_name': 'Calendário Limpeza Predial',
             'link_tipos': tipos
         }
     )

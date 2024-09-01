@@ -150,7 +150,32 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link">
+            <a href="{% url 'servicos_agendados_limpeza_predial' %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Limpeza predial</p>
+            </a>
+          </li>
+        </ul>
+      </li>
+
+            <!--Serviços agendados-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-edit"></i>
+          <p>
+            Serviços configurados
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Jardinagem</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'servicos_configurados_limpeza_predial' %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Limpeza predial</p>
             </a>
@@ -175,15 +200,29 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'configurar_servico_limpeza_predial' %}" class="nav-link">
+            <a href="{% url 'agendar_servico_limpeza_predial' %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Limpeza predial</p>
             </a>
           </li>
+        </ul>
+      </li>
+
+
+            <!--Serviços-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-edit"></i>
+          <p>
+            Configurar serviço
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="" class="nav-link">
+            <a href="{% url 'configurar_servico_limpeza_predial' %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
-              <p>Controle de pragas</p>
+              <p>Limpeza predial</p>
             </a>
           </li>
         </ul>
@@ -302,51 +341,8 @@
               <p>Colaboradores</p>
             </a>
           </li>
-<!--          <li class="nav-item">-->
-<!--            <a href="../index.html" class="nav-link">-->
-<!--              <i class="far fa-circle nav-icon"></i>-->
-<!--              <p>Desmobilizados</p>-->
-<!--            </a>-->
-<!--          </li>-->
         </ul>
       </li>
-
-      <!--Materiais-->
-<!--      <li class="nav-item">-->
-<!--        <a href="#" class="nav-link">-->
-<!--          <i class="nav-icon fas fa-ellipsis-h"></i>-->
-<!--          <p>-->
-<!--            Materiais-->
-<!--            <i class="right fas fa-angle-left"></i>-->
-<!--          </p>-->
-<!--        </a>-->
-<!--        <ul class="nav nav-treeview">-->
-<!--          <li class="nav-item">-->
-<!--            <a href="{% url 'materiais' %}" class="nav-link">-->
-<!--              <i class="far fa-circle nav-icon"></i>-->
-<!--              <p>Materiais</p>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--          <li class="nav-item">-->
-<!--            <a href="{% url 'categoria_material' %}" class="nav-link">-->
-<!--              <i class="far fa-circle nav-icon"></i>-->
-<!--              <p>Categorias</p>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--          <li class="nav-item">-->
-<!--            <a href="{% url 'consumo_material' %}" class="nav-link">-->
-<!--              <i class="far fa-circle nav-icon"></i>-->
-<!--              <p>Consumo</p>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--&lt;!&ndash;              <li class="nav-item">&ndash;&gt;-->
-<!--&lt;!&ndash;                <a href="../index3.html" class="nav-link">&ndash;&gt;-->
-<!--&lt;!&ndash;                  <i class="far fa-circle nav-icon"></i>&ndash;&gt;-->
-<!--&lt;!&ndash;                  <p>Áreas</p>&ndash;&gt;-->
-<!--&lt;!&ndash;                </a>&ndash;&gt;-->
-<!--&lt;!&ndash;              </li>&ndash;&gt;-->
-<!--        </ul>-->
-<!--      </li>-->
 
       <!--Equipamentos-->
       <li class="nav-item">
@@ -370,57 +366,8 @@
               <p>Equipamentos</p>
             </a>
           </li>
-<!--          <li class="nav-item">-->
-<!--            <a href="../index2.html" class="nav-link">-->
-<!--              <i class="far fa-circle nav-icon"></i>-->
-<!--              <p>Desmobilizados</p>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--              <li class="nav-item">-->
-<!--                <a href="../index3.html" class="nav-link">-->
-<!--                  <i class="far fa-circle nav-icon"></i>-->
-<!--                  <p>Áreas</p>-->
-<!--                </a>-->
-<!--              </li>-->
         </ul>
       </li>
-
-      <!--Ferramentas-->
-<!--      <li class="nav-item">-->
-<!--        <a href="#" class="nav-link">-->
-<!--          <i class="nav-icon fas fa-ellipsis-h"></i>-->
-<!--          <p>-->
-<!--            Ferramentas-->
-<!--            <i class="right fas fa-angle-left"></i>-->
-<!--          </p>-->
-<!--        </a>-->
-<!--        <ul class="nav nav-treeview">-->
-<!--          <li class="nav-item">-->
-<!--            <a href="../index.html" class="nav-link">-->
-<!--              <i class="far fa-circle nav-icon"></i>-->
-<!--              <p>Catálogo</p>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--          <li class="nav-item">-->
-<!--            <a href="../index.html" class="nav-link">-->
-<!--              <i class="far fa-circle nav-icon"></i>-->
-<!--              <p>Ferramentas</p>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--          <li class="nav-item">-->
-<!--            <a href="../index2.html" class="nav-link">-->
-<!--              <i class="far fa-circle nav-icon"></i>-->
-<!--              <p>Desmobilizadas</p>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--&lt;!&ndash;              <li class="nav-item">&ndash;&gt;-->
-<!--&lt;!&ndash;                <a href="../index3.html" class="nav-link">&ndash;&gt;-->
-<!--&lt;!&ndash;                  <i class="far fa-circle nav-icon"></i>&ndash;&gt;-->
-<!--&lt;!&ndash;                  <p>Áreas</p>&ndash;&gt;-->
-<!--&lt;!&ndash;                </a>&ndash;&gt;-->
-<!--&lt;!&ndash;              </li>&ndash;&gt;-->
-<!--        </ul>-->
-<!--      </li>-->
 
       <!--Manutenção-->
       <li class="nav-item">
@@ -450,18 +397,6 @@
               <p>Equipamentos</p>
             </a>
           </li>
-<!--          <li class="nav-item">-->
-<!--            <a href="../index2.html" class="nav-link">-->
-<!--              <i class="far fa-circle nav-icon"></i>-->
-<!--              <p>Ferramentas</p>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--              <li class="nav-item">-->
-<!--                <a href="../index3.html" class="nav-link">-->
-<!--                  <i class="far fa-circle nav-icon"></i>-->
-<!--                  <p>Áreas</p>-->
-<!--                </a>-->
-<!--              </li>-->
         </ul>
       </li>
 

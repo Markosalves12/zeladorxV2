@@ -94,7 +94,7 @@ def servicos_agendados_jardinagem(request):
     tipos = [
         {'nome': 'Serviços agendados', 'link': ''},
         {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem')},
-        {'nome': 'Limpeza predial', 'link': ''}
+        {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial')}
     ]
 
     return generic_view(

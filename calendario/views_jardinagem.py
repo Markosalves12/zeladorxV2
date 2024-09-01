@@ -69,7 +69,7 @@ def calendario_jardinagem(request):
         template_name='agendamentos/calendario.html',
         context={
             'formatted_events': formatted_events,
-            'app_name': 'Calendário',
+            'app_name': 'Calendário Jardinagem',
             'link_tipos': tipos
         }
     )

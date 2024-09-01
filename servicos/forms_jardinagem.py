@@ -33,6 +33,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
 
         labels = {
             'DataDeInicio': 'Data marcada para inicio',
+            'DataDeConclusao': 'Data prevista para conclusao',
             'ServicosEscalados': 'Serviços Escalados',
             'ColaboradoresEscalados': 'Colaboradores escalados',
             'DescricaoDoServico': 'Descrição do serviço',

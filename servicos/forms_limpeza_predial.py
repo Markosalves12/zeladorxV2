@@ -2,6 +2,55 @@ from django import forms
 from servicos.models_limpeza_predial import (ServicoLimpezaPredialAgendado, ServicoLimpezaPredialConfigurado,
                                              FatoServicoLimpezaPredial)
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
+from semana.models import DiasDaSemana
+
+
+class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
+    ServicosEscalados = forms.ModelMultipleChoiceField(
+        queryset=CatalogodeServicoLimpezaPredial.objects.all(),
+        widget=forms.CheckboxSelectMultiple(
+            attrs={
+                'class': 'checkbox'
+            }
+        ),
+        label='Serviços escalados',
+        required=True  # Defina como True se a seleção de colaboradores for obrigatória
+    )
+
+    class Meta:
+        model = ServicoLimpezaPredialAgendado
+        fields = ['area', 'ServicosEscalados', 'DataDeInicio', 'DataDeConclusao']
+        labels = {
+            'area': 'Área',
+            'ServicosEscalados': 'Serviços Escalados',
+            'DataDeInicio': 'Data marcada para inicio',
+            'DataDeConclusao': 'Data prevista para conclusao',
+        }
+
+        widgets = {
+            'DataDeInicio': forms.DateTimeInput(
+                format='%d/%m/%Y %H:%M',
+                attrs={
+                    'type': 'datetime-local',
+                    'class': 'form-control',
+                    'placeholder': 'DD/MM/AAAA HH:MM',
+                }
+            ),
+            'DataDeConclusao': forms.DateTimeInput(
+                format='%d/%m/%Y %H:%M',
+                attrs={
+                    'type': 'datetime-local',
+                    'class': 'form-control',
+                    'placeholder': 'DD/MM/AAAA HH:MM',
+                }
+            ),
+            'area': forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+        }
+
 
 
 class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
@@ -16,8 +65,8 @@ class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
         required=True  # Defina como True se a seleção de colaboradores for obrigatória
     )
 
-    diasaseremrealizado = forms.MultipleChoiceField(
-        choices=ServicoLimpezaPredialConfigurado.diasaseremrealizado_options,  # Usa as opções definidas no modelo
+    diasaseremrealizado = forms.ModelMultipleChoiceField(
+        queryset=DiasDaSemana.objects.all(),  # Usa as opções definidas no modelo
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'
@@ -135,6 +184,7 @@ class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
                 }
             ),
         }
+
 
 class FatoServicoLimpezaPredialForms(forms.ModelForm):
     # def __init__(self, *args, id_random_servico=None, empresa=None, **kwargs):
