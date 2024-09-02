@@ -99,6 +99,12 @@
                                                 {{ colaborador }}</br>
                                             {% endfor %}
                                         </td>
+                                    {% elif coluna.nome == 'Permissions' %}
+                                        <td>
+                                            {% for permission in dado.Permissions.all %}
+                                                {{ permission }},
+                                            {% endfor %}
+                                        </td>
                                     {% else %}
                                         <td>{{ dado|get_item:coluna.nome }}</td>
                                     {% endif %}

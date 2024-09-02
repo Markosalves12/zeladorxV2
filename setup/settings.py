@@ -75,7 +75,7 @@ INSTALLED_APPS = [
     'schedules.apps.SchedulesConfig',
     'authenticate.apps.AuthenticateConfig',
     'semana.apps.SemanaConfig',
-    'permissionscontrol.apps.PermissionscontrolConfig'
+    'permissionscontrol.apps.PermissionscontrolConfig',
 ]
 
 MIDDLEWARE = [

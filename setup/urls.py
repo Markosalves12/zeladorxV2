@@ -47,6 +47,7 @@ urlpatterns = [
     path('', include('manutencao.urls')),
     path('', include('processos.urls')),
     path('', include('settings.urls')),
+    path('', include('permissionscontrol.urls_jardinagem')),
 ]+static(
     settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT

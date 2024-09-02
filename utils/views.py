@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from utils.utils import DataTableAndForms
 from django.urls import reverse
 from settings.utils import define_setting
+from permissionscontrol.utils import configurate_permissions
 
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
                  text_button_open_modal, text_button_save,  header_model,
                  redirect_url, button_export_tittle=False, button_export_link=False,
-                 link_tipos=None, modal_button=True):
+                 link_tipos=None, modal_button=True, configurate_gerente=False):
     dt_and_forms = DataTableAndForms(
         request=request,
         model=model,
@@ -19,17 +20,28 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES)
         if form.is_valid():
-            # email = form.cleaned_data['email']
-            form.save()
-            # print("formulario salvo")
-            # define_setting(
-            #     request=request,
-            #     model_class=model,
-            #     form_class=form_class,
-            #     email=email
-            # )
-            return redirect(redirect_url)
+            if configurate_gerente:
+                email = form.cleaned_data['email']
+                form.save()
 
+                define_setting(
+                    request=request,
+                    model_class=model,
+                    form_class=form_class,
+                    email=email
+                )
+
+                configurate_permissions(
+                    request=request,
+                    model_class=model,
+                    email=email
+                )
+
+                return redirect(redirect_url)
+
+            else:
+                form.save()
+                return redirect(redirect_url)
 
     forms, dados_paginados = dt_and_forms.get_data_and_forms()
 

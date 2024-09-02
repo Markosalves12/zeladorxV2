@@ -25,7 +25,8 @@ def gerentes(request):
         text_button_open_modal='Adicionar novo gerente',
         text_button_save='Salvar gerente',
         header_model='Novo gerente',
-        redirect_url='gerentes'
+        redirect_url='gerentes',
+        configurate_gerente=True,
     )
 
 
