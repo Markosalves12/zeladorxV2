@@ -69,6 +69,12 @@
                                                 <button type="button" class="btn btn-block btn-info btn-sm">Ações</button>
                                             </a>
                                         </td>
+                                    {% elif coluna.nome == 'historico' %}
+                                        <td>
+                                            <a href="{{ dado.editar_url }}">
+                                                <button type="button" class="btn btn-block btn-secondary btn-sm">Histórico</button>
+                                            </a>
+                                        </td>
                                     {% elif coluna.nome == 'gerente' %}
                                         <td>
                                             {% for gerentes in dado.gerente.all %}

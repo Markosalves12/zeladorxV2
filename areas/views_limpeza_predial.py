@@ -12,6 +12,7 @@ def areas_limpeza_predial(request):
         {'nome': 'servico', 'label': 'Serviço'},
         {'nome': 'localidade', 'label': 'Localidade'},
         {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Histórico'},
     ]
 
     tipos = [

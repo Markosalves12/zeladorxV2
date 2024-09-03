@@ -13,6 +13,7 @@ def areas_jardins(request):
         {'nome': 'servico', 'label': 'Serviços'},
         {'nome': 'localidade', 'label': 'Localidade'},
         {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Histórico'},
     ]
 
     tipos = [
