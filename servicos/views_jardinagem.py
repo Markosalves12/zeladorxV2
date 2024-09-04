@@ -66,6 +66,13 @@ def agendar_servico_jardinagem(request):
 
         print("formulario invalido")
 
+    tipos = [
+        {'nome': 'Agendar serviços', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('agendar_servico_jardinagem')},
+        {'nome': 'Limpeza predial', 'link': reverse('agendar_servico_limpeza_predial')}
+    ]
+
+
     return render(
         request=request,
         template_name='DataTableAndForms/CreateObject.html',
@@ -74,7 +81,8 @@ def agendar_servico_jardinagem(request):
             'app_name': 'Agendar serviço de jardinagem',
             'redirect_close_button': reverse('calendario_jardinagem'),
             'redirect_url_name': reverse('agendar_servico_jardinagem'),
-            'text_button_save': 'Agendar Serviço'
+            'text_button_save': 'Agendar Serviço',
+            "link_tipos": tipos
         }
     )
 

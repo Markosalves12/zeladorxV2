@@ -129,6 +129,12 @@ class ServicoLimpezaPredialAgendado(models.Model):
         null=True
     )
 
+    DescricaoDoServico = models.TextField(
+        max_length = 200,
+        blank=False,
+        null=False,
+    )
+
     status_options = [
         ('Agendado', 'Agendado'),
         ('Cancelado', 'Cancelado'),
@@ -142,6 +148,51 @@ class ServicoLimpezaPredialAgendado(models.Model):
         choices=status_options,
         default='Agendado'
     )
+
+    # horario_1 = models.TimeField(
+    #     null=False,
+    #     blank=False,
+    # )
+    #
+    # horario_2 = models.TimeField(
+    #     null=True,
+    #     blank=True,
+    # )
+    #
+    # horario_3 = models.TimeField(
+    #     null=True,
+    #     blank=True,
+    # )
+    #
+    # horario_4 = models.TimeField(
+    #     null=True,
+    #     blank=True,
+    # )
+    #
+    # horario_5 = models.TimeField(
+    #     null=True,
+    #     blank=True,
+    # )
+    #
+    # horario_6 = models.TimeField(
+    #     null=True,
+    #     blank=True,
+    # )
+    #
+    # horario_7 = models.TimeField(
+    #     null=True,
+    #     blank=True,
+    # )
+    #
+    # horario_8 = models.TimeField(
+    #     null=True,
+    #     blank=True,
+    # )
+    #
+    # horario_9 = models.TimeField(
+    #     null=True,
+    #     blank=True,
+    # )
 
     def __str__(self):
         return f'{self.area} | {self.ServicosEscalados} | {self.DataDeInicio}'

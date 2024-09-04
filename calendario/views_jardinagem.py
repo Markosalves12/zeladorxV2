@@ -70,7 +70,10 @@ def calendario_jardinagem(request):
         context={
             'formatted_events': formatted_events,
             'app_name': 'Calendário Jardinagem',
-            'link_tipos': tipos
+            'link_tipos': tipos,
+            # 'app_name': 'Calendário de serviços jardinagem',
+            # 'link_tipos': tipos,
+            "url_agendamento": "agendar_servico_jardinagem",
         }
     )
 #

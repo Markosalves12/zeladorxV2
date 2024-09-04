@@ -16,8 +16,8 @@ class ServicoLimpezaPredialConfiguradoAdmin(admin.ModelAdmin):
 
 
 class ServicoLimpezaPredialAgendadoAdmin(admin.ModelAdmin):
-    list_display = ('area', 'DataDeInicio', 'DataDeConclusao', )
-    list_display_links = ('area', 'DataDeInicio', 'DataDeConclusao', )
+    list_display = ('area', 'DataDeInicio', 'DataDeConclusao', 'status', )
+    list_display_links = ('area', 'DataDeInicio', 'DataDeConclusao', 'status', )
     # search_fields = ('ServicosEscalados', )
     # list_filter = ('ServicosEscalados', )
 

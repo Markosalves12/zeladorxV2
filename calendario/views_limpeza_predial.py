@@ -57,6 +57,9 @@ def calendario_limpeza_predial(request):
             "borderColor": border_color,
             "url": "{% url 'agendar_servico_jardinagem' %}",
             "url_acompanhemento": "{% url 'realizar_servico_jardinagem_agendado' %}",
+            # "url": "{% url 'agendar_servico_limpeza_predial' %}",
+            # "url_acompanhemento": "{% url 'realizar_servico_jardinagem_agendado' %}",
+            # "url_acompanhemento": "",
             'status_agendamento': servico.status_agendamento,
             'status': servico.status,
             'dataconclusao': servico.DataDeConclusao,
@@ -70,6 +73,9 @@ def calendario_limpeza_predial(request):
         context={
             'formatted_events': formatted_events,
             'app_name': 'Calendário Limpeza Predial',
-            'link_tipos': tipos
+            'link_tipos': tipos,
+            # 'app_name': 'Calendário de serviços limpeza predial',
+            # 'link_tipos': tipos,
+            "url_agendamento": "agendar_servico_limpeza_predial",
         }
     )

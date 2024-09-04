@@ -52,7 +52,6 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
         }
 
 
-
 class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
     ServicosEscalados = forms.ModelMultipleChoiceField(
         queryset=CatalogodeServicoLimpezaPredial.objects.all(),
