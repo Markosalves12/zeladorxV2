@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from unidade.models import Unidade
 from unidade.forms import UnidadeForms
 from utils.views import generic_view, edit_generic_view
@@ -10,6 +11,7 @@ def unidades(request):
         {'nome': 'linkmapa', 'label': 'Mapa'},
         {'nome': 'EmpresaSecundaria', 'label': 'Empresa'},
         {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Mapa'},
     ]
 
     return generic_view(
@@ -19,6 +21,7 @@ def unidades(request):
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_unidade',
+        history_rout='visualizar_unidade',
         app_name='Unidades',
         text_button_open_modal='Adicionar nova unidade',
         text_button_save='Salvar unidade',
@@ -38,3 +41,16 @@ def editar_unidade(request, id_random):
         redirect_url_name='editar_unidade'
     )
 
+def visualizar_unidade(request, id_random):
+    objeto = Unidade.objects.get(
+        id_random=id_random
+    )
+
+    return render(
+        request=request,
+        template_name="VisualizationMaps/VisualizationMaps.html",
+        context={
+            'app_name': f'Unidade {objeto.nome}',
+            'objeto': objeto,
+        }
+    )

@@ -16,7 +16,6 @@ def relatorios_de_servicos_xlsx_concluidos(request):
         {'nome': 'descricao_do_servico', 'label': 'Descrição serviço'},
         {'nome': 'colaboradores_chamados', 'label': 'Colaboradores'},
         {'nome': 'servicos_solicitados', 'label': 'Servicos solicitados'},
-        # {'nome': 'acoes', 'label': 'Ações'},
     ]
 
     tipos = [
@@ -56,7 +55,6 @@ def relatorios_de_servicos_xlsx_agendados(request):
         {'nome': 'descricao_do_servico', 'label': 'Descrição serviço'},
         {'nome': 'colaboradores_chamados', 'label': 'Colaboradores'},
         {'nome': 'servicos_solicitados', 'label': 'Servicos solicitados'},
-        # {'nome': 'acoes', 'label': 'Ações'},
     ]
 
     tipos = [

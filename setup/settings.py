@@ -38,6 +38,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+Q_CLUSTER = {
+    'name': 'DjangORM',
+    'workers': 4,
+    'recycle': 500,
+    'timeout': 60,
+    'compress': True,
+    'save_limit': 250,
+    'queue_limit': 500,
+    'label': 'Django Q',
+    'orm': 'default',  # Usando o ORM como backend
+}
 
 # Application definition
 

@@ -11,11 +11,8 @@ def relatorios_de_servicos_pdf_concluidos(request):
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
-        # {'nome': 'ColaboradoresConfirmados', 'label': 'Colaboradores confirmados'},
-        # {'nome': 'ColaboradoresNegados', 'label': 'Colaboradores negados'},
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'status', 'label': 'Status'},
-        # {'nome': 'acoes', 'label': 'Ações'},
     ]
 
     tipos = [
@@ -30,7 +27,7 @@ def relatorios_de_servicos_pdf_concluidos(request):
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
-        edition_rout='editar_servico_agendado',
+        edition_rout='editar_servico_jardinagem_agendado',
         app_name='relatório de serviços pdf - Concluidos',
         text_button_open_modal='Adicionar nova manutenção',
         text_button_save='Salvar manutenção',
@@ -49,11 +46,8 @@ def relatorios_de_servicos_pdf_agendados(request):
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
-        # {'nome': 'ColaboradoresConfirmados', 'label': 'Colaboradores confirmados'},
-        # {'nome': 'ColaboradoresNegados', 'label': 'Colaboradores negados'},
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'status', 'label': 'Status'},
-        # {'nome': 'acoes', 'label': 'Ações'},
     ]
 
     tipos = [
@@ -68,7 +62,7 @@ def relatorios_de_servicos_pdf_agendados(request):
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
-        edition_rout='editar_servico_agendado',
+        edition_rout='editar_servico_jardinagem_agendado',
         app_name='relatório de serviços pdf - Planejados',
         text_button_open_modal='Adicionar nova manutenção',
         text_button_save='Salvar manutenção',

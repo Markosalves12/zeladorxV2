@@ -21,3 +21,6 @@ def historico_de_servicos_areas_jardinagem(request, id_random):
             'dados_paginados': dados_paginados
         }
     )
+
+def exportar_pdf_historico_de_servicos_areas_jardinagem(request, id_random):
+    pass
