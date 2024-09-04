@@ -71,8 +71,8 @@
                                         </td>
                                     {% elif coluna.nome == 'historico' %}
                                         <td>
-                                            <a href="{{ dado.editar_url }}">
-                                                <button type="button" class="btn btn-block btn-secondary btn-sm">Histórico</button>
+                                            <a href="{{ dado.history_rout }}">
+                                                <button type="button" class="btn btn-block btn-secondary btn-sm">{{ coluna.label }}</button>
                                             </a>
                                         </td>
                                     {% elif coluna.nome == 'gerente' %}

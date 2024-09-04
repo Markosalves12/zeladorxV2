@@ -1,9 +1,8 @@
 from django.urls import path
-from gestor.views import gestores, editar_gestor
+from history.views_jardinagem import historico_de_servicos_areas_jardinagem
 
 
 urlpatterns = [
     # rota na raiz do sistema
-    path('gestores', gestores, name='gestores'),
-    path('editar_gestor/<str:id_random>', editar_gestor, name='editar_gestor'),
+    path('historico_de_servicos_areas_jardinagem/<str:id_random>', historico_de_servicos_areas_jardinagem, name='historico_de_servicos_areas_jardinagem'),
 ]

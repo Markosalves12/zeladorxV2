@@ -3,7 +3,7 @@ from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from colaborador.models import Colaborador
 from areas.models_jardinagem import AreasJardins
 from equipamentos.models import EquipamentoDisponiveis
-from utils.utils import generate_id_random
+from utils.utils import generate_id_random, resize_image
 
 # Create your models here.
 class ServicoJardinagemAgendado(models.Model):
@@ -107,6 +107,15 @@ class ServicoJardinagemAgendado(models.Model):
         null=True,
         default=False
     )
+
+    def save(self, *args, **kwargs):
+        if self.foto_solicitacao:
+            self.foto_solicitacao = resize_image(self.foto_solicitacao, max_width=500)
+
+        if self.foto_entrega:
+            self.foto_entrega = resize_image(self.foto_entrega, max_width=500)
+
+        super(ServicoJardinagemAgendado, self).save(*args, **kwargs)
 
     def __str__(self):
         colaboradores_nomes = ", ".join(colaborador.username for colaborador in self.ColaboradoresEscalados.all())

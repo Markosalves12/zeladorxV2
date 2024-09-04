@@ -1,11 +1,23 @@
 from django.shortcuts import render
 from areas.models_limpeza_predial import AreaLimpezaPredial
 from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado, FatoServicoLimpezaPredial
+from utils.utils import paginate
 
 # Create your views here.
 def historico_de_servicos_areas_limpeza_predial(request, id_random):
     objeto = AreaLimpezaPredial.objects.get(id_random=id_random)
 
-    history_objetos = ServicoLimpezaPredialAgendado.objects.all()
+    objetos = ServicoLimpezaPredialAgendado.objects.all()
 
-    return render
+    dados_paginados = paginate(request=request, data_objects=objetos, per_page=1)
+
+    return render(
+        request=request,
+        template_name="history/history.html",
+        context={
+            'app_name': f'Histórico de serviços {objeto.nome}',
+            'objeto': objeto,
+            'foto_objeto': objeto.foto.url if objeto.foto else None,
+            'dados_paginados': dados_paginados
+        }
+    )

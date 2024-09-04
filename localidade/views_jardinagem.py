@@ -12,6 +12,7 @@ def localidades_jardinagem(request):
         {'nome': 'long_med', 'label': 'Long. média'},
         {'nome': 'unidade', 'label': 'unidade'},
         {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Áreas associadas'},
     ]
 
     tipos = [
@@ -27,6 +28,7 @@ def localidades_jardinagem(request):
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_localidade_jardinagem',
+        history_rout='areas_associadas_localidades_jardinagem',
         app_name='localidades jardinagem',
         text_button_open_modal='Adicionar nova localidade',
         text_button_save='Salvar localidade',

@@ -7,14 +7,15 @@ from permissionscontrol.utils import configurate_permissions
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
                  text_button_open_modal, text_button_save,  header_model,
                  redirect_url, button_export_tittle=False, button_export_link=False,
-                 link_tipos=None, modal_button=True, configurate_gerente=False):
+                 link_tipos=None, modal_button=True, configurate_gerente=False, history_rout=False):
     dt_and_forms = DataTableAndForms(
         request=request,
         model=model,
         modelforms=form_class,
-        per_page=10,
+        per_page=15,
         columns=columns,
-        edition_rout=edition_rout
+        edition_rout=edition_rout,
+        history_rout=history_rout
     )
 
     if request.method == 'POST':

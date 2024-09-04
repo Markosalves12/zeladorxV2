@@ -66,13 +66,14 @@ def resize_image(image, max_width=620):
 
 
 class DataTableAndForms:
-    def __init__(self, request, model, modelforms, per_page, columns, edition_rout):
+    def __init__(self, request, model, modelforms, per_page, columns, edition_rout, history_rout=False):
         self.request = request
         self.model = model
         self.modelforms = modelforms
         self.per_page = per_page
         self.columns = columns
         self.edition_rout = edition_rout
+        self.history_rout = history_rout
 
 
     def get_data_and_forms(self):
@@ -95,6 +96,8 @@ class DataTableAndForms:
         formatted_event = {coluna['nome']: getattr(dado, coluna['nome'], None) for coluna in self.columns}
         formatted_event['id_random'] = dado.id_random
         formatted_event['editar_url'] = reverse(f'{self.edition_rout}', kwargs={'id_random': dado.id_random})
+        if self.history_rout:
+            formatted_event['history_rout'] = reverse(f'{self.history_rout}', kwargs={'id_random': dado.id_random})
 
         return formatted_event
 

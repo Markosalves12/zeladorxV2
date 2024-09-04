@@ -2,6 +2,7 @@ from django.db import models
 from utils.utils import generate_id_random
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from localidade.models_limpeza_predial import LocalidadeLimpezaPredial
+from utils.utils import resize_image
 
 
 class AreaLimpezaPredial(models.Model):
@@ -60,6 +61,13 @@ class AreaLimpezaPredial(models.Model):
 
     class Meta:
         unique_together = ('nome', 'localidade')
+
+
+    def save(self, *args, **kwargs):
+        if self.foto:
+            self.foto = resize_image(self.foto, max_width=700)
+
+        super(AreaLimpezaPredial, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.nome

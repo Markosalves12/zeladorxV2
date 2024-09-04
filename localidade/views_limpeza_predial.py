@@ -12,6 +12,7 @@ def localidades_limpeza_predial(request):
         {'nome': 'long_med', 'label': 'Long. média'},
         {'nome': 'unidade', 'label': 'unidade'},
         {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Áreas associadas'},
     ]
 
     tipos = [
@@ -27,6 +28,7 @@ def localidades_limpeza_predial(request):
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_localidade_limpeza_predial',
+        history_rout='areas_associadas_localidades_limpeza_predial',
         app_name='localidades limpeza predial',
         text_button_open_modal='Adicionar nova localidade',
         text_button_save='Salvar localidade',

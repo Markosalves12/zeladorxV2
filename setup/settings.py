@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'authenticate.apps.AuthenticateConfig',
     'semana.apps.SemanaConfig',
     'permissionscontrol.apps.PermissionscontrolConfig',
+    'history.apps.HistoryConfig',
 ]
 
 MIDDLEWARE = [
