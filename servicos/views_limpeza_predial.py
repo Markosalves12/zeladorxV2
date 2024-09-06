@@ -1,12 +1,7 @@
 from django.shortcuts import render, redirect, reverse
-from servicos.models_limpeza_predial import ServicoLimpezaPredialConfigurado, FatoServicoLimpezaPredial, ServicoLimpezaPredialAgendado
+from servicos.models_limpeza_predial import ServicoLimpezaPredialConfigurado, ServicoLimpezaPredialAgendado
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialConfiguradoForms, FatoServicoLimpezaPredialForms, ServicoLimpezaPredialAgendadoForms
-from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from utils.views import generic_view, edit_generic_view
-from colaborador.models import Colaborador
-from notifications.utils import enviar_notificacao
-from django.utils import timezone
-
 
 def agendar_servico_limpeza_predial(request):
     forms = ServicoLimpezaPredialAgendadoForms()
@@ -117,7 +112,7 @@ def servicos_configurados_limpeza_predial(request):
     ]
 
     tipos = [
-        {'nome': 'Serviços agendados', 'link': ''},
+        {'nome': 'Serviços Configurados', 'link': ''},
         {'nome': 'Jardinagem', 'link': ''},
         {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial')}
     ]

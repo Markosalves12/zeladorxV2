@@ -4,12 +4,11 @@ from gerente.models import Gerente
 class GerenteForms(forms.ModelForm):
     class Meta:
         model = Gerente
-        fields = ['username', 'email', 'funcao', 'gestor',]
+        fields = ['username', 'email', 'funcao']
         labels = {
             'username': 'Nome do gerente',
             'email': 'Email de contato',
             'funcao': 'Função principal',
-            'gestor': 'Gestor imediato',
         }
 
         widgets = {
@@ -24,11 +23,6 @@ class GerenteForms(forms.ModelForm):
                 }
             ),
             'funcao': forms.TextInput(
-                attrs={
-                    'class': 'form-control'
-                }
-            ),
-            'gestor': forms.Select(
                 attrs={
                     'class': 'form-control'
                 }

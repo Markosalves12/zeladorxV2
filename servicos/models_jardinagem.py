@@ -1,6 +1,6 @@
 from django.db import models
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
-from colaborador.models import Colaborador
+from gerente.models import Gerente
 from areas.models_jardinagem import AreasJardins
 from equipamentos.models import EquipamentoDisponiveis
 from utils.utils import generate_id_random, resize_image
@@ -26,21 +26,21 @@ class ServicoJardinagemAgendado(models.Model):
     )
 
     ColaboradoresEscalados = models.ManyToManyField(
-        to=Colaborador,
+        to=Gerente,
         blank=False,
         null=False,
         related_name='RColaboradoresEscaladosServicoAgendado',
     )
 
     ColaboradoresConfirmados = models.ManyToManyField(
-        to=Colaborador,
+        to=Gerente,
         blank=True,
         null=True,
         related_name='RColaboradoresConfirmados'
     )
 
     ColaboradoresNegados = models.ManyToManyField(
-        to=Colaborador,
+        to=Gerente,
         blank=True,
         null=True,
         related_name='RColaboradoresNegados'
@@ -156,8 +156,8 @@ class FatoServicoJardinagem(models.Model):
         null=False
     )
 
-    Colaborador = models.ForeignKey(
-        to=Colaborador,
+    Gerente = models.ForeignKey(
+        to=Gerente,
         blank=False,
         null=True,
         on_delete=models.CASCADE,

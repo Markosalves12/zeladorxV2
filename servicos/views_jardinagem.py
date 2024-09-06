@@ -3,7 +3,7 @@ from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms, FatoServicoJardinagemForms
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from utils.views import generic_view, edit_generic_view
-from colaborador.models import Colaborador
+from gerente.models import Gerente
 from notifications.utils import enviar_notificacao
 from django.utils import timezone
 
@@ -28,11 +28,11 @@ def agendar_servico_jardinagem(request):
             for colaborador in ColaboradoresEscalados:
                 print(colaborador)
 
-                email = Colaborador.objects.get(
+                email = Gerente.objects.get(
                     id_random=colaborador.id_random
                 ).email
 
-                username = Colaborador.objects.get(
+                username = Gerente.objects.get(
                     username=colaborador.username
                 ).username
 

@@ -3,7 +3,7 @@ from django.db.models import (ExpressionWrapper, F, CharField,
                               IntegerField, DurationField, DateField, DateTimeField
                               )
 
-def colect_dados():
+def colect_dados_fato_servico_jardinagem():
     # Adicione os dados do relatório ao arquivo Excel
     dados = FatoServicoJardinagem.objects.annotate(
         tipodeempresa=ExpressionWrapper(

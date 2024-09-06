@@ -11,6 +11,7 @@ def catalogo_de_servicos_jardinagem(request):
         {'nome': 'nome', 'label': 'Nome'},
         {'nome': 'EmpresaSecundaria', 'label': 'Empresa'},
         {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Histórico'},
     ]
 
     tipos = [
@@ -26,6 +27,7 @@ def catalogo_de_servicos_jardinagem(request):
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_catalogo_de_servicos_jardinagem',
+        history_rout='historico_de_servicos_catologo_de_servicos_jardinagem',
         app_name='catálogo de serviços Jardinagem',
         text_button_open_modal='Adicionar novo serviço',
         text_button_save='Salvar serviço',

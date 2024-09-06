@@ -53,8 +53,8 @@ class EmpresaSecundaria(models.Model):
     setor_options = [
         ('Jardinagem', 'Jardinagem'),
         ('Limpeza predial', 'Limpeza predial'),
-        ('Controle de pragas', 'Controle de pragas'),
-        ('Controle de instalações elétricas', 'Controle de instalações elétricas'),
+        # ('Controle de pragas', 'Controle de pragas'),
+        # ('Controle de instalações elétricas', 'Controle de instalações elétricas'),
     ]
 
     setor = models.CharField(

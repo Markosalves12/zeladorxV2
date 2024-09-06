@@ -11,6 +11,7 @@ def catalogo_de_servicos_limpeza_predial(request):
         {'nome': 'nome', 'label': 'Nome'},
         {'nome': 'EmpresaSecundaria', 'label': 'Empresa'},
         {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Histórico'},
     ]
 
     tipos = [
@@ -26,6 +27,7 @@ def catalogo_de_servicos_limpeza_predial(request):
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_catalogo_de_servicos_limpeza_predial',
+        history_rout='historico_de_servicos_catologo_de_servicos_limpeza_predial',
         app_name='catálogo de serviços limpeza predial',
         text_button_open_modal='Adicionar novo serviço',
         text_button_save='Salvar serviço',

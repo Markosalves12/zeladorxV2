@@ -62,6 +62,9 @@ class PermissionsJardinagem(models.Model):
         ('287: Pode editar permissões dos gerentes', '287: Pode editar permissões dos gerentes'),
         ('288: Pode editar permissões dos colaboradores', '288: Pode editar permissões dos colaboradores'),
         ('289: Pode visualizar permissões dos colaboradores', '289: Pode visualizar permissões dos colaboradores'),
+
+        ('290: Recebe serviços', '290: Recebe serviços'),
+        ('291: Pode acompanhar serviços agendados para si próprio', '291: Pode acompanhar serviços agendados para si próprio'),
     ]
 
     Permissions = models.CharField(

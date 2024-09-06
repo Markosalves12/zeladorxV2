@@ -24,7 +24,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('authenticate.urls')),
-    path('', include('colaborador.urls')),
+    # path('', include('colaborador.urls')),
     path('', include('calendario.urls_jardinagem')),
     path('', include('calendario.urls_limpeza_predial')),
     path('', include('unidade.urls')),
@@ -36,7 +36,7 @@ urlpatterns = [
     path('', include('catalogo_de_servicos.urls')),
     path('', include('terrenos.urls')),
     path('', include('vegetacao.urls')),
-    path('', include('gestor.urls')),
+    # path('', include('gestor.urls')),
     path('', include('gerente.urls')),
     path('', include('servicos.urls_jardinagem')),
     path('', include('servicos.urls_limpeza_predial')),

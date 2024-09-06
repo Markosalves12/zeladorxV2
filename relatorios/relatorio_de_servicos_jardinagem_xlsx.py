@@ -1,20 +1,7 @@
-# from django.shortcuts import render, redirect
-# from utils.utils import paginate, formatar_atributos
 import openpyxl
 from servicos.headers_report_jardinagem import headers_report_services
-from servicos.utils import colect_dados
+from servicos.utils import colect_dados_fato_servico_jardinagem
 from django.http import HttpResponse
-# from dashboards.forms import FiltroTableForms, FiltroTableManutencaoForms
-# from utils.utils import block_view
-# from dashboards.utils import colect_dados, colect_dados_manutencao_equipamentos, colect_dados_manutencao_ferramentas
-# from servico.models import Servicos
-from datetime import datetime
-from django.conf import settings
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from reportlab.lib.utils import ImageReader
-from io import BytesIO
-import os
 
 
 def exportar_relatorio_de_serivos_excel(request):
@@ -29,7 +16,7 @@ def exportar_relatorio_de_serivos_excel(request):
         cell.value = header_title
 
     # Adicione os dados do relatório ao arquivo Excel
-    dados = colect_dados()
+    dados = colect_dados_fato_servico_jardinagem()
 
     for row_num, row in enumerate(dados, start=2):
         row_data = [

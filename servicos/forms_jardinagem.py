@@ -1,6 +1,6 @@
 from servicos.models_jardinagem import ServicoJardinagemAgendado, FatoServicoJardinagem
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
-from colaborador.models import Colaborador
+from gerente.models import Gerente
 from django import forms
 
 class ServicoJaridinagemAgendadoForms(forms.ModelForm):
@@ -16,7 +16,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
     )
 
     ColaboradoresEscalados = forms.ModelMultipleChoiceField(
-        queryset=Colaborador.objects.all(),
+        queryset=Gerente.objects.all(),
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'
@@ -100,7 +100,7 @@ class FatoServicoJardinagemForms(forms.ModelForm):
 
     class Meta:
         model = FatoServicoJardinagem
-        fields = ['Servico', 'data_hora_chegada_na_area', 'EquipamentoUsado', 'data_hora_retorno_area', 'Colaborador']
+        fields = ['Servico', 'data_hora_chegada_na_area', 'EquipamentoUsado', 'data_hora_retorno_area', 'Gerente']
 
         labels = {
             'Servico': 'Serviço agendado',
@@ -133,7 +133,7 @@ class FatoServicoJardinagemForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
-            'Colaborador': forms.Select(
+            'Gerente': forms.Select(
                 attrs={
                     'class': 'form-control'
                 }

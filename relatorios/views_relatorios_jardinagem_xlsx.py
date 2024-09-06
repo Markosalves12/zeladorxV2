@@ -1,4 +1,4 @@
-from servicos.utils import colect_dados
+from servicos.utils import colect_dados_fato_servico_jardinagem
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from django.urls import reverse
@@ -6,7 +6,7 @@ from utils.views import generic_view
 
 # Create your views here.
 def relatorios_de_servicos_xlsx_concluidos(request):
-    dados = colect_dados()
+    dados = colect_dados_fato_servico_jardinagem()
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'tipodeempresa', 'label': 'Tipo de empresa'},
@@ -45,7 +45,7 @@ def relatorios_de_servicos_xlsx_concluidos(request):
 
 
 def relatorios_de_servicos_xlsx_agendados(request):
-    dados = colect_dados()
+    dados = colect_dados_fato_servico_jardinagem()
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'tipodeempresa', 'label': 'Tipo de empresa'},

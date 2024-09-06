@@ -1,4 +1,3 @@
-from servicos.utils import colect_dados
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from utils.views import generic_view

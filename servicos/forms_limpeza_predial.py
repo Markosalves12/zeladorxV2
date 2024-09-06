@@ -191,7 +191,7 @@ class FatoServicoLimpezaPredialForms(forms.ModelForm):
 
     class Meta:
         model = FatoServicoLimpezaPredial
-        fields = ['Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area','Colaborador']
+        fields = ['Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area','Gerente']
 
         labels = {
             'Servico': 'Serviço',

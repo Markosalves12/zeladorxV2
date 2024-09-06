@@ -7,11 +7,12 @@ from io import BytesIO
 import os
 from django.conf import settings
 from utils.utils import formatar_atributos
+from relatorios.utils import draw_image, draw_footer
 
 
 def exportar_relatorio_de_serivos_pdf(request):
     dados = ServicoJardinagemAgendado.objects.filter(
-        status="Concluido"
+        # status="Concluido"
     )
 
     # cria um buffer para inserir os dados no pdf
@@ -65,12 +66,6 @@ def exportar_relatorio_de_serivos_pdf(request):
                      f"")
 
         c.setFont("Helvetica", 12)  # Set font back to normal for the rest of the content
-
-    def draw_footer(c, page_number, is_last_page=False):
-        c.setFont("Helvetica", 9)
-        if is_last_page:
-            last_page_text = "zeladorX"
-            c.drawString((width - c.stringWidth(last_page_text, fontSize=12)) / 2, 50, last_page_text)
 
     # Draw the header for the first page
     draw_header(p)
@@ -127,17 +122,6 @@ def exportar_relatorio_de_serivos_pdf(request):
                 new_height = img_height / 2.4
                 return new_width, new_height
 
-            def draw_image(image_path, x, y):
-                try:
-                    img_data = ImageReader(image_path)
-                    img_width, img_height = img_data.getSize()
-                    new_width, new_height = calculate_new_dimensions(img_width, img_height)
-                    p.drawImage(img_data, x, y - new_height, width=new_width, height=new_height, mask='auto')
-                    return new_height
-                except Exception as e:
-                    p.drawString(x, y, f"Erro ao carregar a imagem: {str(e)}")
-                    return 0
-
             # Draw the first image (foto_inicio)
             if dado.foto_solicitacao:
                 y -= 7
@@ -150,7 +134,7 @@ def exportar_relatorio_de_serivos_pdf(request):
                 y -= 7
                 image_path = os.path.join(settings.MEDIA_ROOT, 'static/assets/image not found (1).png')
 
-            height1 = draw_image(image_path, x, y)
+            height1 = draw_image(image_path, x, y, p)
 
             # Update y position for the next image
             y -= height1 + 10  # 10 is the space between images
@@ -167,14 +151,14 @@ def exportar_relatorio_de_serivos_pdf(request):
                 y -= 7
                 image_path = os.path.join(settings.MEDIA_ROOT, 'static/assets/image not found (1).png')
 
-            draw_image(image_path, x, y)
+            draw_image(image_path, x, y, p)
 
 
         add_images_to_canvas(p, dado, x, y)
 
 
         # Draw the footer on the current page
-        draw_footer(p, page_number)
+        draw_footer(p, page_number, width)
 
         # Show the current page and prepare for the next record
         p.showPage()
@@ -186,6 +170,7 @@ def exportar_relatorio_de_serivos_pdf(request):
     draw_footer(
         p,
         page_number,
+        width,
         is_last_page=True
     )
 
@@ -201,6 +186,5 @@ def exportar_relatorio_de_serivos_pdf(request):
     response['Content-Disposition'] = 'attachment; filename="relatorio de servicos.pdf"'
 
     return response
-
 
 

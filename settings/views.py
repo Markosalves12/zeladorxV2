@@ -1,47 +1,47 @@
-from django.shortcuts import render, redirect, reverse
-from settings.forms import SettingServicosGestorForms, SettingServicosColaboradorForms
-
-
-# Create your views here.
-def configuracoes_do_gestor(request):
-    forms = SettingServicosGestorForms()
-
-    if request.method == 'POST':
-        form = SettingServicosGestorForms(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('configuracoes_do_gestor')
-
-    return render(
-        request=request,
-        template_name='DataTableAndForms/CreateObject.html',
-        context={
-            'forms': forms,
-            'app_name': 'Gerência de configuração - Gestor',
-            'redirect_close_button': reverse('calendario_jardinagem'),
-            'text_button_save': 'Salvar configuração'
-        }
-    )
-
-def configuracoes_do_colaborador(request):
-    forms = SettingServicosColaboradorForms()
-
-    if request.method == 'POST':
-        form = SettingServicosColaboradorForms(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('configuracoes_do_colaborador')
-
-    return render(
-        request=request,
-        template_name='DataTableAndForms/CreateObject.html',
-        context={
-            'forms': forms,
-            'app_name': 'Gerência de configuração - Colaborador',
-            'redirect_close_button': reverse('calendario_jardinagem'),
-            'text_button_save': 'Salvar configuração'
-        }
-    )
+# from django.shortcuts import render, redirect, reverse
+# from settings.forms import SettingServicosGestorForms, SettingServicosColaboradorForms
+#
+#
+# # Create your views here.
+# def configuracoes_do_gestor(request):
+#     forms = SettingServicosGestorForms()
+#
+#     if request.method == 'POST':
+#         form = SettingServicosGestorForms(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('configuracoes_do_gestor')
+#
+#     return render(
+#         request=request,
+#         template_name='DataTableAndForms/CreateObject.html',
+#         context={
+#             'forms': forms,
+#             'app_name': 'Gerência de configuração - Gestor',
+#             'redirect_close_button': reverse('calendario_jardinagem'),
+#             'text_button_save': 'Salvar configuração'
+#         }
+#     )
+#
+# def configuracoes_do_colaborador(request):
+#     forms = SettingServicosColaboradorForms()
+#
+#     if request.method == 'POST':
+#         form = SettingServicosColaboradorForms(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('configuracoes_do_colaborador')
+#
+#     return render(
+#         request=request,
+#         template_name='DataTableAndForms/CreateObject.html',
+#         context={
+#             'forms': forms,
+#             'app_name': 'Gerência de configuração - Colaborador',
+#             'redirect_close_button': reverse('calendario_jardinagem'),
+#             'text_button_save': 'Salvar configuração'
+#         }
+#     )
 
 # def configuracoes_do_gestor(request):
 #     colunas = [

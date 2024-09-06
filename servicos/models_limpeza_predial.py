@@ -2,9 +2,9 @@ from django.db import models
 from utils.utils import generate_id_random
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from areas.models_limpeza_predial import AreaLimpezaPredial
-from colaborador.models import Colaborador
 from datetime import timedelta
 from semana.models import DiasDaSemana
+from gerente.models import Gerente
 
 
 class ServicoLimpezaPredialConfigurado(models.Model):
@@ -224,8 +224,8 @@ class FatoServicoLimpezaPredial(models.Model):
         null=False
     )
 
-    Colaborador = models.ForeignKey(
-        to=Colaborador,
+    Gerente = models.ForeignKey(
+        to=Gerente,
         blank=False,
         null=True,
         on_delete=models.CASCADE,

@@ -5,27 +5,25 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group
 from utils.utils import generate_id_random
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
-from gestor.models import Gestor
+# from gestor.models import Gestor
 from notifications.utils import enviar_notificacao
 
 # Create your models here.
 class GerenteManager(BaseUserManager):
-    def create_user(self, email, username, funcao, password=None, gestor=None, status='Mobilizado'):
+    def create_user(self, email, username, funcao, password=None, status='Mobilizado'):
         if not email:
             raise ValueError('O campo email deve ser preenchido')
         if not username:
             raise ValueError('O campo nome deve ser preenchido')
         if not funcao:
             raise ValueError('O campo função deve ser preenchido')
-        if not gestor:
-            raise ValueError('O campo gestor deve ser preenchido')
 
         email = self.normalize_email(email)
         user = self.model(
             email=email,
             username=username,
             funcao=funcao,
-            gestor=gestor,
+            # gestor=gestor,
             status=status,
             id_random=generate_id_random()
         )
@@ -53,13 +51,13 @@ class GerenteManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, username, funcao, password, gestor):
+    def create_superuser(self, email, username, funcao, password):
         user = self.create_user(
             email=email,
             username=username,
             funcao=funcao,
             password=password,
-            gestor=gestor,
+            # gestor=gestor,
             status='Mobilizado'
         )
         user.is_admin = True
@@ -97,13 +95,13 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
         null=True
     )
 
-    gestor = models.ForeignKey(
-        to=Gestor,
-        on_delete=models.CASCADE,
-        blank=False,
-        null=False,
-        related_name='gestororigem'
-    )
+    # gestor = models.ForeignKey(
+    #     to=Gestor,
+    #     on_delete=models.CASCADE,
+    #     blank=False,
+    #     null=False,
+    #     related_name='gestororigem'
+    # )
 
     status_options = [
         ('Mobilizado', 'Mobilizado'),
@@ -121,9 +119,18 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(
         default=True
     )
+
     is_admin = models.BooleanField(
         default=False
     )
+
+    # EmpresaSecundaria = models.ForeignKey(
+    #     to=EmpresaSecundaria,
+    #     on_delete=models.CASCADE,
+    #     blank=False,
+    #     null=False,
+    #     related_name='REmpresaSecundariagestor'
+    # )
 
     groups = models.ManyToManyField(
         Group,

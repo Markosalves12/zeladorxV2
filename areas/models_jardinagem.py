@@ -3,7 +3,7 @@ from vegetacao.models import CatalogoVegetacao
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from localidade.models_Jardinagem import LocalidadeJardiangem
 from terrenos.models import Terreno
-from utils.utils import generate_id_random
+from utils.utils import generate_id_random, resize_image
 
 
 # Create your models here.
@@ -94,6 +94,12 @@ class AreasJardins(models.Model):
         choices=status_options,
         default='Mobilizado'
     )
+
+    def save(self, *args, **kwargs):
+        if self.foto:
+            self.foto = resize_image(self.foto, max_width=500)
+
+        super(AreasJardins, self).save(*args, **kwargs)
 
     class Meta:
         unique_together = ('nome', 'vegetacao', 'Terreno')

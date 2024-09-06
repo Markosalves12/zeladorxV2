@@ -65,7 +65,7 @@ class AreaLimpezaPredial(models.Model):
 
     def save(self, *args, **kwargs):
         if self.foto:
-            self.foto = resize_image(self.foto, max_width=700)
+            self.foto = resize_image(self.foto, max_width=500)
 
         super(AreaLimpezaPredial, self).save(*args, **kwargs)
 
