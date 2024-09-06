@@ -4,7 +4,7 @@ from empresasecundario.forms import EmpresaSecundariaForms
 from utils.views import generic_view, edit_generic_view
 
 # Create your views here.
-def empresas(request):
+def empresas(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
@@ -27,6 +27,7 @@ def empresas(request):
         header_model='Nova empresa',
         redirect_url='empresas'
     )
+
 
 def editar_empresa(request, id_random):
     return edit_generic_view(

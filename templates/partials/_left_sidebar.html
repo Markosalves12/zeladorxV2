@@ -43,18 +43,18 @@
               <p>Serviços Excel</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="../index2.html" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Manutenção de equipamentos</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="../index3.html" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Manutenção de ferramentas</p>
-            </a>
-          </li>
+<!--          <li class="nav-item">-->
+<!--            <a href="../index2.html" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Manutenção de equipamentos</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li class="nav-item">-->
+<!--            <a href="../index3.html" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Manutenção de ferramentas</p>-->
+<!--            </a>-->
+<!--          </li>-->
           <li class="nav-item">
             <a href="{% url 'relatorios_de_servicos_pdf_concluidos' %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
@@ -119,13 +119,13 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'catalogo_de_servicos_jardinagem' %}" class="nav-link">
+            <a href="{% url 'catalogo_de_servicos_jardinagem' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Jardinagem</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'catalogo_de_servicos_limpeza_predial' %}" class="nav-link">
+            <a href="{% url 'catalogo_de_servicos_limpeza_predial' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Limpeza predial</p>
             </a>
@@ -144,13 +144,13 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'servicos_agendados_jardinagem' %}" class="nav-link">
+            <a href="{% url 'servicos_agendados_jardinagem' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Jardinagem</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'servicos_agendados_limpeza_predial' %}" class="nav-link">
+            <a href="{% url 'servicos_agendados_limpeza_predial' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Limpeza predial</p>
             </a>
@@ -175,7 +175,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'servicos_configurados_limpeza_predial' %}" class="nav-link">
+            <a href="{% url 'servicos_configurados_limpeza_predial' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Limpeza predial</p>
             </a>
@@ -194,13 +194,13 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'agendar_servico_jardinagem' %}" class="nav-link">
+            <a href="{% url 'agendar_servico_jardinagem' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Jardinagem</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'agendar_servico_limpeza_predial' %}" class="nav-link">
+            <a href="{% url 'agendar_servico_limpeza_predial' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Limpeza predial</p>
             </a>
@@ -220,7 +220,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'configurar_servico_limpeza_predial' %}" class="nav-link">
+            <a href="{% url 'configurar_servico_limpeza_predial' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Limpeza predial</p>
             </a>
@@ -239,31 +239,31 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'unidades' %}" class="nav-link">
+            <a href="{% url 'unidades' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Unidades</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'localidades_jardinagem' %}" class="nav-link">
+            <a href="{% url 'localidades_jardinagem' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Localidades</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'areas_jardins' %}" class="nav-link">
+            <a href="{% url 'areas_jardins' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Áreas</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'terrenos' %}" class="nav-link">
+            <a href="{% url 'terrenos' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Terrenos</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'vegetacao' %}" class="nav-link">
+            <a href="{% url 'vegetacao' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Vegetação</p>
             </a>
@@ -281,7 +281,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'gerentes' %}" class="nav-link">
+            <a href="{% url 'gerentes' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Gerentes</p>
             </a>
@@ -299,7 +299,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'empresas' %}" class="nav-link">
+            <a href="{% url 'empresas' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Empresas</p>
             </a>
@@ -331,61 +331,61 @@
         </ul>
       </li>
 
-      <!--Manutenção-->
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="nav-icon fas fa-ellipsis-h"></i>
-          <p>
-            Manutenção
-            <i class="right fas fa-angle-left"></i>
-          </p>
-        </a>
-        <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="{% url 'catalogo_manutencao' %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Catálogo</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'catalogo_motivos' %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Motivos</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'manutencao_de_equipametos' %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Equipamentos</p>
-            </a>
-          </li>
-        </ul>
-      </li>
+<!--      &lt;!&ndash;Manutenção&ndash;&gt;-->
+<!--      <li class="nav-item">-->
+<!--        <a href="#" class="nav-link">-->
+<!--          <i class="nav-icon fas fa-ellipsis-h"></i>-->
+<!--          <p>-->
+<!--            Manutenção-->
+<!--            <i class="right fas fa-angle-left"></i>-->
+<!--          </p>-->
+<!--        </a>-->
+<!--        <ul class="nav nav-treeview">-->
+<!--          <li class="nav-item">-->
+<!--            <a href="{% url 'catalogo_manutencao' %}" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Catálogo</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li class="nav-item">-->
+<!--            <a href="{% url 'catalogo_motivos' %}" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Motivos</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li class="nav-item">-->
+<!--            <a href="{% url 'manutencao_de_equipametos' %}" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Equipamentos</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--      </li>-->
 
-      <!--Mantenedores-->
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="nav-icon fas fa-ellipsis-h"></i>
-          <p>
-            Mantenedores
-            <i class="right fas fa-angle-left"></i>
-          </p>
-        </a>
-        <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="../index.html" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Solicitações</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="../index.html" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Histórico</p>
-            </a>
-          </li>
-        </ul>
-      </li>
+<!--      &lt;!&ndash;Mantenedores&ndash;&gt;-->
+<!--      <li class="nav-item">-->
+<!--        <a href="#" class="nav-link">-->
+<!--          <i class="nav-icon fas fa-ellipsis-h"></i>-->
+<!--          <p>-->
+<!--            Mantenedores-->
+<!--            <i class="right fas fa-angle-left"></i>-->
+<!--          </p>-->
+<!--        </a>-->
+<!--        <ul class="nav nav-treeview">-->
+<!--          <li class="nav-item">-->
+<!--            <a href="../index.html" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Solicitações</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li class="nav-item">-->
+<!--            <a href="../index.html" class="nav-link">-->
+<!--              <i class="far fa-circle nav-icon"></i>-->
+<!--              <p>Histórico</p>-->
+<!--            </a>-->
+<!--          </li>-->
+<!--        </ul>-->
+<!--      </li>-->
 
       <!--Authenticate-->
       <li class="nav-item">
@@ -423,7 +423,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'permissoes_jardinagem' %}" class="nav-link">
+            <a href="{% url 'permissoes_jardinagem' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Gerentes</p>
             </a>
@@ -442,7 +442,7 @@
       </li>
       <li class="nav-header">EXAMPLES</li>
       <li class="nav-item">
-        <a href="{% url 'calendario_jardinagem' %}" class="nav-link active">
+        <a href="{% url 'calendario_jardinagem' userid %}" class="nav-link active">
           <i class="nav-icon far fa-calendar-alt"></i>
           <p>
             Calendar

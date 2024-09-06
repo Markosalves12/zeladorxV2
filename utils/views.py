@@ -38,15 +38,15 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                     email=email
                 )
 
-                return redirect(redirect_url)
+                return redirect(redirect_url, request.session.get('userid', ''))
 
             else:
                 form.save()
-                return redirect(redirect_url)
+                return redirect(redirect_url, request.session.get('userid', ''))
 
     forms, dados_paginados = dt_and_forms.get_data_and_forms()
 
-    url_action = reverse(redirect_url)
+    url_action = reverse(redirect_url, kwargs={'userid': request.session.get('userid', '')})
 
     return render(
         request=request,

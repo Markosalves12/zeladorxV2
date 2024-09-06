@@ -5,13 +5,13 @@ from gerente.forms import GerenteForms
 from utils.views import generic_view, edit_generic_view
 
 # Create your views here.
-def gerentes(request):
+def gerentes(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'username', 'label': 'Nome'},
         {'nome': 'email', 'label': 'E-mail'},
-        {'nome': 'gestor', 'label': 'Gestor imediato'},
-        {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'email', 'label': 'E-mail'},
+        {'nome': 'EmpresaSecundaria', 'label': 'Empresa(s)'},
     ]
 
     return generic_view(

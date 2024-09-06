@@ -3,7 +3,7 @@ from servicos.models_limpeza_predial import ServicoLimpezaPredialConfigurado, Se
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialConfiguradoForms, FatoServicoLimpezaPredialForms, ServicoLimpezaPredialAgendadoForms
 from utils.views import generic_view, edit_generic_view
 
-def agendar_servico_limpeza_predial(request):
+def agendar_servico_limpeza_predial(request, userid):
     forms = ServicoLimpezaPredialAgendadoForms()
 
     if request.method == 'POST':
@@ -13,7 +13,11 @@ def agendar_servico_limpeza_predial(request):
             form.save()
             return redirect('agendar_servico_limpeza_predial')
 
-        print("formulario invalido")
+    tipos = [
+        {'nome': 'Agendar serviços', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('agendar_servico_jardinagem', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('agendar_servico_limpeza_predial', kwargs={'userid': userid})},
+    ]
 
     return render(
         request=request,
@@ -21,13 +25,14 @@ def agendar_servico_limpeza_predial(request):
         context={
             'forms': forms,
             'app_name': 'Agendar serviço de limpeza predial',
-            'redirect_close_button': reverse('calendario_limpeza_predial'),
-            'redirect_url_name': reverse('agendar_servico_limpeza_predial'),
-            'text_button_save': 'Agendar Serviço'
+            'redirect_close_button': reverse('calendario_limpeza_predial', kwargs={'userid': userid}),
+            'redirect_url_name': reverse('agendar_servico_limpeza_predial', kwargs={'userid': userid}),
+            'text_button_save': 'Agendar Serviço',
+            "link_tipos": tipos
         }
     )
 
-def servicos_agendados_limpeza_predial(request):
+def servicos_agendados_limpeza_predial(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
@@ -39,8 +44,8 @@ def servicos_agendados_limpeza_predial(request):
 
     tipos = [
         {'nome': 'Serviços agendados', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem')},
-        {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial')}
+        {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})},
     ]
 
     return generic_view(
@@ -70,7 +75,7 @@ def editar_servico_limpeza_predial_agendado(request, id_random):
         redirect_close_button='servicos_agendados_limpeza_predial'
     )
 
-def configurar_servico_limpeza_predial(request):
+def configurar_servico_limpeza_predial(request, userid):
     forms = ServicoLimpezaPredialConfiguradoForms()
 
     if request.method == 'POST':
@@ -81,19 +86,26 @@ def configurar_servico_limpeza_predial(request):
             form.save()
             return redirect('configurar_servico_limpeza_predial')
 
+    tipos = [
+        {'nome': 'Configurar serviços', 'link': ''},
+        {'nome': 'Jardinagem', 'link': ''},
+        {'nome': 'Limpeza predial', 'link': reverse('configurar_servico_limpeza_predial', kwargs={'userid': userid})},
+    ]
+
     return render(
         request=request,
         template_name='DataTableAndForms/CreateObject.html',
         context={
             'forms': forms,
             'app_name': 'Configurar serviço de limpeza predial',
-            'redirect_close_button': reverse('calendario_limpeza_predial'),
-            'redirect_url_name': reverse('configurar_servico_limpeza_predial'),
+            'redirect_close_button': reverse('calendario_limpeza_predial', kwargs={'userid': userid}),
+            'redirect_url_name': reverse('configurar_servico_limpeza_predial', kwargs={'userid': userid}),
             'text_button_save': 'Configurar Serviço',
+            'link_tipos': tipos
         }
     )
 
-def servicos_configurados_limpeza_predial(request):
+def servicos_configurados_limpeza_predial(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'area', 'label': 'Área'},
@@ -114,7 +126,7 @@ def servicos_configurados_limpeza_predial(request):
     tipos = [
         {'nome': 'Serviços Configurados', 'link': ''},
         {'nome': 'Jardinagem', 'link': ''},
-        {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial')}
+        {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid})}
     ]
 
     return generic_view(

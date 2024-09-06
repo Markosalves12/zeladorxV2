@@ -4,7 +4,6 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 # from gestor.models import Gestor
 from gerente.models import Gerente
-# from colaborador.models import Colaborador
 from django.contrib.auth.hashers import check_password
 
 # Create your views here.
@@ -23,28 +22,19 @@ def login(request):
                     email=email
                 )
                 print(gerente)
-                print(gerente.password)
+                print(email)
+
                 if check_password(senha, gerente.password) and gerente.status == "Mobilizado":
-                    request.session['login_nome'] = gerente.username
-                    request.session['login_type'] = 'Gerente'
-                    request.session['login_id'] = gerente.id_random
-                    request.session['empresa'] = f'{gerente.EmpresaSecundaria.nome}'
-                    request.session['id_random_empresa'] = f'{gerente.EmpresaSecundaria.id_random}'
-                    usuario = User.objects.get(
-                        email=email
-                    )
+                    print("acesado")
+                    # request.session['login_nome'] = gerente.username
+                    request.session['userid'] = gerente.id_random
+                    # request.session['empresa'] = f'{gerente.EmpresaSecundaria.nome}'
+                    # request.session['id_random_empresa'] = f'{gerente.EmpresaSecundaria.id_random}'
 
-                    usuario = auth.authenticate(
-                        request,
-                        username=usuario,
-                        password=senha,
-                    )
-
-                    return redirect('calendario')
+                    return redirect('calendario_jardinagem', gerente.id_random)
 
             except:
                 pass
-
 
     return render(
         request=request,
@@ -53,6 +43,7 @@ def login(request):
            'forms': forms
         }
     )
+
 
 def logout(request):
     # nome = get_random_string(10)

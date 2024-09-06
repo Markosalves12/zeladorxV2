@@ -4,7 +4,7 @@ from unidade.forms import UnidadeForms
 from utils.views import generic_view, edit_generic_view
 
 # Create your views here.
-def unidades(request):
+def unidades(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},

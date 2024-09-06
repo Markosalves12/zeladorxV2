@@ -1,0 +1,32 @@
+from django import forms
+from permissionscontrol.models import PermissionsAccessLimpezaPredial, PermissionsLimpezaPredial
+
+class PermissionsAccessLimpezaPredialForms(forms.ModelForm):
+    Permissions = forms.ModelMultipleChoiceField(
+        queryset=PermissionsLimpezaPredial.objects.all(),
+        widget=forms.CheckboxSelectMultiple(
+            attrs={
+                'class': 'checkbox'
+            }
+        ),
+        label='Permissões concedidas',
+        required=True  # Defina como True se a seleção de colaboradores for obrigatória
+    )
+
+    class Meta:
+        model = PermissionsAccessLimpezaPredial
+
+        fields = ['Gerente', 'Permissions']
+
+        labels = {
+            'Gerente': 'Gerente',
+            'Permissions': 'Permissões concedidas',
+        }
+
+        widgets = {
+            'Gerente': forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+        }

@@ -4,7 +4,7 @@ from localidade.forms_jardinagem import LocalidadeJardinagemForms
 from utils.views import generic_view, edit_generic_view
 
 # Create your views here.
-def localidades_jardinagem(request):
+def localidades_jardinagem(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
@@ -17,8 +17,8 @@ def localidades_jardinagem(request):
 
     tipos = [
         {'nome': 'Tipo de localidade', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('localidades_jardinagem')},
-        {'nome': 'Limpeza predial', 'link': reverse('localidades_limpeza_predial')},
+        {'nome': 'Jardinagem', 'link': reverse('localidades_jardinagem', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('localidades_limpeza_predial', kwargs={'userid': userid})},
     ]
 
     return generic_view(

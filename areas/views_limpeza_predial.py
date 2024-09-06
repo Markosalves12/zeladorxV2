@@ -5,7 +5,7 @@ from utils.views import generic_view, edit_generic_view
 from localidade.models_limpeza_predial import LocalidadeLimpezaPredial
 
 # Create your views here.
-def areas_limpeza_predial(request):
+def areas_limpeza_predial(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
@@ -18,8 +18,8 @@ def areas_limpeza_predial(request):
 
     tipos = [
         {'nome': 'Tipo de área', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('areas_jardins')},
-        {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial')}
+        {'nome': 'Jardinagem', 'link': reverse('areas_jardins', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})}
     ]
 
     return generic_view(

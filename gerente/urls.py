@@ -4,6 +4,6 @@ from gerente.views import gerentes, editar_gerente
 
 urlpatterns = [
     # rota na raiz do sistema
-    path('gerentes', gerentes, name='gerentes'),
+    path('gerentes/<str:userid>', gerentes, name='gerentes'),
     path('editar_gerente/<str:id_random>', editar_gerente, name='editar_gerente'),
 ]

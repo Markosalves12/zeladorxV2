@@ -4,7 +4,7 @@ from terrenos.forms import TerrenoForms
 from utils.views import generic_view
 
 # Create your views here.
-def terrenos(request):
+def terrenos(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},

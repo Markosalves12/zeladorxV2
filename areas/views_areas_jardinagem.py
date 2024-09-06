@@ -5,7 +5,7 @@ from utils.views import generic_view, edit_generic_view
 from localidade.models_Jardinagem import LocalidadeJardiangem
 
 # Create your views here.
-def areas_jardins(request):
+def areas_jardins(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
@@ -19,8 +19,8 @@ def areas_jardins(request):
 
     tipos = [
         {'nome': 'Tipo de área', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('areas_jardins')},
-        {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial')}
+        {'nome': 'Jardinagem', 'link': reverse('areas_jardins', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})},
     ]
 
     return generic_view(

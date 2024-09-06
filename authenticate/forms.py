@@ -4,7 +4,6 @@ class LoginForms(forms.Form):
     def clean_email(self):
         return self.cleaned_data['email'].strip().lower()
 
-
     email = forms.EmailField(
         label="Email de usuário",
         required=True,

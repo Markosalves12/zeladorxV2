@@ -5,7 +5,7 @@ from django.shortcuts import reverse
 
 
 # Create your views here.
-def catalogo_de_servicos_limpeza_predial(request):
+def catalogo_de_servicos_limpeza_predial(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
@@ -16,8 +16,8 @@ def catalogo_de_servicos_limpeza_predial(request):
 
     tipos = [
         {'nome': 'Catálogo de serviços', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('catalogo_de_servicos_jardinagem')},
-        {'nome': 'Limpeza predial', 'link': reverse('catalogo_de_servicos_limpeza_predial')}
+        {'nome': 'Jardinagem', 'link': reverse('catalogo_de_servicos_jardinagem', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('catalogo_de_servicos_limpeza_predial', kwargs={'userid': userid})},
     ]
 
     return generic_view(

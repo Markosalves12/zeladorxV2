@@ -4,7 +4,7 @@ from django.db.models.functions import Now, TruncDate, ExtractDay
 from django.db.models import F, Q, ExpressionWrapper, IntegerField, DurationField
 
 # Create your views here.
-def calendario_jardinagem(request):
+def calendario_jardinagem(request, userid):
     agendado = ServicoJardinagemAgendado.objects.all().annotate(
         data_atual=Now(),
         status_agendamento=ExpressionWrapper(
@@ -15,8 +15,8 @@ def calendario_jardinagem(request):
 
     tipos = [
         {'nome': 'Calendário de serviços', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('calendario_jardinagem')},
-        {'nome': 'Limpeza predial', 'link': reverse('calendario_limpeza_predial')}
+        {'nome': 'Jardinagem', 'link': reverse('calendario_jardinagem', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('calendario_limpeza_predial', kwargs={'userid': userid})},
     ]
 
     def format_event(servico):

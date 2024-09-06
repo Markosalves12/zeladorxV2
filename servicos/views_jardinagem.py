@@ -8,7 +8,7 @@ from notifications.utils import enviar_notificacao
 from django.utils import timezone
 
 # Create your views here.
-def agendar_servico_jardinagem(request):
+def agendar_servico_jardinagem(request, userid):
     forms = ServicoJaridinagemAgendadoForms()
 
     if request.method == 'POST':
@@ -68,8 +68,8 @@ def agendar_servico_jardinagem(request):
 
     tipos = [
         {'nome': 'Agendar serviços', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('agendar_servico_jardinagem')},
-        {'nome': 'Limpeza predial', 'link': reverse('agendar_servico_limpeza_predial')}
+        {'nome': 'Jardinagem', 'link': reverse('agendar_servico_jardinagem', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('agendar_servico_limpeza_predial', kwargs={'userid': userid})},
     ]
 
 
@@ -79,14 +79,14 @@ def agendar_servico_jardinagem(request):
         context={
             'forms': forms,
             'app_name': 'Agendar serviço de jardinagem',
-            'redirect_close_button': reverse('calendario_jardinagem'),
-            'redirect_url_name': reverse('agendar_servico_jardinagem'),
+            'redirect_close_button': reverse('calendario_jardinagem', kwargs={'userid': userid}),
+            'redirect_url_name': reverse('agendar_servico_jardinagem', kwargs={'userid': userid}),
             'text_button_save': 'Agendar Serviço',
             "link_tipos": tipos
         }
     )
 
-def servicos_agendados_jardinagem(request):
+def servicos_agendados_jardinagem(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
@@ -101,8 +101,8 @@ def servicos_agendados_jardinagem(request):
 
     tipos = [
         {'nome': 'Serviços agendados', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem')},
-        {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial')}
+        {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})},
     ]
 
     return generic_view(

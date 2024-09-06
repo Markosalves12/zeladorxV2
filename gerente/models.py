@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group
 from utils.utils import generate_id_random
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
-# from gestor.models import Gestor
+from empresasecundario.models import EmpresaSecundaria
 from notifications.utils import enviar_notificacao
 
 # Create your models here.
@@ -23,7 +23,6 @@ class GerenteManager(BaseUserManager):
             email=email,
             username=username,
             funcao=funcao,
-            # gestor=gestor,
             status=status,
             id_random=generate_id_random()
         )
@@ -72,17 +71,20 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
         default=generate_id_random,
         max_length=20
     )
+
     username = models.CharField(
         max_length=100,
         blank=False,
         null=False
     )
+
     email = models.EmailField(
         max_length=100,
         blank=False,
         null=False,
         unique=True
     )
+
     funcao = models.CharField(
         max_length=100,
         blank=False,
@@ -95,19 +97,12 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
         null=True
     )
 
-    # gestor = models.ForeignKey(
-    #     to=Gestor,
-    #     on_delete=models.CASCADE,
-    #     blank=False,
-    #     null=False,
-    #     related_name='gestororigem'
-    # )
-
     status_options = [
         ('Mobilizado', 'Mobilizado'),
         ('Desmobilizado', 'Desmobilizado'),
         ('Desmobilizacao Permanente', 'Desmobilizacao Permanente')
     ]
+
     status = models.CharField(
         max_length=60,
         blank=False,
@@ -124,13 +119,13 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
         default=False
     )
 
-    # EmpresaSecundaria = models.ForeignKey(
-    #     to=EmpresaSecundaria,
-    #     on_delete=models.CASCADE,
-    #     blank=False,
-    #     null=False,
-    #     related_name='REmpresaSecundariagestor'
-    # )
+    EmpresaSecundaria = models.ManyToManyField(
+        to=EmpresaSecundaria,
+        # on_delete=models.CASCADE,
+        blank=False,
+        null=False,
+        related_name='REmpresaSecundariagerente'
+    )
 
     groups = models.ManyToManyField(
         Group,
@@ -147,7 +142,7 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
     objects = GerenteManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'funcao', 'gestor', 'username']
+    REQUIRED_FIELDS = ['username', 'funcao', 'username']
 
     def __str__(self):
         return self.username
@@ -168,6 +163,7 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
     # função dispara a senha por email caso o campo senha esteja em braco
     # nesse caso isso é ativado nos formularios html
     # pelo admin do django pode se criar alterar manualemnte
+
     def save(self, *args, **kwargs):
         if not self.pk and not self.password:
             random_password = get_random_string(

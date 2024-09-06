@@ -4,7 +4,7 @@ from vegetacao.forms import CatalogoVegetacaoForm
 from utils.views import generic_view
 
 # Create your views here.
-def vegetacao(request):
+def vegetacao(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
