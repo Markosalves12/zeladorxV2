@@ -49,31 +49,35 @@
                 </div>
               </div>
               <!-- /.card-header -->
-              <div class="card-body">
-                <form action="{% url redirect_url_name id_random %}" method="POST" enctype="multipart/form-data">
-                  <div class="card-body">
-                    <div class="form-group">
-                      {% csrf_token %}
-                        <div class="form-group">
-                          {% for field in forms.visible_fields %}
-                            <div class="form-group">
-                              <label for="{{ field.id_for_label }}" >
-                                {{ field.label }}
-                              </label>
-                              {{ field }}
-                            </div>
-                          {% endfor %}
-                        </div>
+              {% if permission_edit %}
+                <div class="card-body">
+                  <form action="{% url redirect_url_name userid id_random %}" method="POST" enctype="multipart/form-data">
+                    <div class="card-body">
+                      <div class="form-group">
+                        {% csrf_token %}
+                          <div class="form-group">
+                            {% for field in forms.visible_fields %}
+                              <div class="form-group">
+                                <label for="{{ field.id_for_label }}" >
+                                  {{ field.label }}
+                                </label>
+                                {{ field }}
+                              </div>
+                            {% endfor %}
+                          </div>
+                      </div>
+                      <div class="modal-footer justify-content-between">
+                        <a href="{% url redirect_close_button userid %}">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                        </a>
+                        <button type="POST" class="btn btn-primary">{{ text_button }}</button>
+                      </div>
                     </div>
-                    <div class="modal-footer justify-content-between">
-                      <a href="{% url redirect_close_button userid %}">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-                      </a>
-                      <button type="POST" class="btn btn-primary">{{ text_button }}</button>
-                    </div>
-                  </div>
-                </form>
-              </div>
+                  </form>
+                </div>
+              {% else %}
+                {% include 'partials/_access_rejected.html' %}
+              {% endif %}
             </div>
           </div>
         </div>

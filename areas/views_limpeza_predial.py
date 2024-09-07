@@ -3,9 +3,14 @@ from areas.models_limpeza_predial import AreaLimpezaPredial
 from areas.forms_limpeza_predial import AreasLimpezaPredialForms
 from utils.views import generic_view, edit_generic_view
 from localidade.models_limpeza_predial import LocalidadeLimpezaPredial
+from permissionscontrol.utils import validate_permissions
 
 # Create your views here.
 def areas_limpeza_predial(request, userid):
+    permission_view = validate_permissions(request, userid, ['252: Pode visualizar áreas de limpeza predial'])
+    permission_edit = validate_permissions(request, userid, ['251: Pode editar áreas de limpeza predial'])
+    permission_crate = validate_permissions(request, userid, ['250: Pode criar novas áreas de limpeza predial'])
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
@@ -35,11 +40,14 @@ def areas_limpeza_predial(request, userid):
         text_button_save='Salvar área',
         header_model='Nova área',
         redirect_url='areas_limpeza_predial',
-        link_tipos=tipos
+        link_tipos=tipos,
+        permission_view=permission_view,
+        permission_edit=permission_edit,
+        permission_crate=permission_crate
     )
 
 
-def editar_area_limpeza_predial(request, id_random):
+def editar_area_limpeza_predial(request, userid, id_random):
     return edit_generic_view(
         request=request,
         model_class=AreaLimpezaPredial,

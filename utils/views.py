@@ -7,7 +7,8 @@ from permissionscontrol.utils import configurate_permissions
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
                  text_button_open_modal, text_button_save,  header_model,
                  redirect_url, button_export_tittle=False, button_export_link=False,
-                 link_tipos=None, modal_button=True, configurate_gerente=False, history_rout=False):
+                 link_tipos=None, modal_button=True, configurate_gerente=False, history_rout=False,
+                 permission_view=True, permission_edit=True, permission_crate=True):
     dt_and_forms = DataTableAndForms(
         request=request,
         model=model,
@@ -63,12 +64,16 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
             'button_export_tittle': button_export_tittle,
             'button_export_link': button_export_link,
             'link_tipos': link_tipos,
-            'modal_button': modal_button
+            'modal_button': modal_button,
+            'permission_view': permission_view,
+            'permission_edit': permission_edit,
+            'permission_crate': permission_crate
         }
     )
 
 
-def edit_generic_view(request, model_class, form_class, template_name, id_random, app_name, redirect_url_name, redirect_close_button):
+def edit_generic_view(request, model_class, form_class, template_name, id_random, app_name, redirect_url_name,
+                      redirect_close_button, permission_edit=True):
     objeto = get_object_or_404(model_class, id_random=id_random)
     forms = form_class(instance=objeto)
 
@@ -76,7 +81,7 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
         form = form_class(request.POST, request.FILES, instance=objeto)
         if form.is_valid():
             form.save()
-            return redirect(reverse(redirect_url_name, kwargs={'id_random': id_random}))
+            return redirect(reverse(redirect_url_name, kwargs={'userid': request.session.get('userid', ''), 'id_random': id_random}))
 
     return render(
         request=request,
@@ -88,5 +93,6 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
             'text_button': 'Salvar',
             'redirect_url_name': redirect_url_name,
             'redirect_close_button': redirect_close_button,
+            'permission_edit': permission_edit
         }
     )

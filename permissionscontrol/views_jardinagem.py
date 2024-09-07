@@ -34,7 +34,7 @@ def permissoes_jardinagem(request, userid):
     )
 
 
-def editar_permissoes_jardinagem(request, id_random):
+def editar_permissoes_jardinagem(request, userid, id_random):
     # tipos = [
     #     {'nome': 'Editar permissões', 'link': ''},
     #     {'nome': 'Jardinagem', 'link': reverse('editar_permissoes_jardinagem', kwargs={'userid': userid})},

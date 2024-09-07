@@ -95,7 +95,7 @@ class DataTableAndForms:
     def format_event(self, dado):
         formatted_event = {coluna['nome']: getattr(dado, coluna['nome'], None) for coluna in self.columns}
         formatted_event['id_random'] = dado.id_random
-        formatted_event['editar_url'] = reverse(f'{self.edition_rout}', kwargs={'id_random': dado.id_random})
+        formatted_event['editar_url'] = reverse(f'{self.edition_rout}', kwargs={'userid': self.request.session.get('userid', '') ,'id_random': dado.id_random})
         if self.history_rout:
             formatted_event['history_rout'] = reverse(f'{self.history_rout}', kwargs={'id_random': dado.id_random})
 

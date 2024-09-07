@@ -55,3 +55,9 @@ def logout(request):
     # request.session['login_id'] = id
     #
     return redirect('login')
+
+def access_rejected(request, userid):
+    return render(
+        request=request,
+        template_name='authenticate/permission_rejected.html'
+    )

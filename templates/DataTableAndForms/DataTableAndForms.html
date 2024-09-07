@@ -51,82 +51,95 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            {% for coluna in colunas %}
-                                <th style="width: {{ coluna.largura }}">{{ coluna.label }}</th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for dado in dados_paginados %}
+                {% if permission_view %}
+                    <table class="table table-bordered">
+                        <thead>
                             <tr>
                                 {% for coluna in colunas %}
-                                    {% if coluna.nome == 'acoes' %}
-                                        <td>
-                                            <a href="{{ dado.editar_url }}">
-                                                <button type="button" class="btn btn-block btn-info btn-sm">Ações</button>
-                                            </a>
-                                        </td>
-                                    {% elif coluna.nome == 'historico' %}
-                                        <td>
-                                            <a href="{{ dado.history_rout }}">
-                                                <button type="button" class="btn btn-block btn-secondary btn-sm">{{ coluna.label }}</button>
-                                            </a>
-                                        </td>
-                                    {% elif coluna.nome == 'gerente' %}
-                                        <td>
-                                            {% for gerentes in dado.gerente.all %}
-                                                {{ gerentes }}</br>
-                                            {% endfor %}
-                                        </td>
-                                    {% elif coluna.nome == 'ServicosEscalados' %}
-                                        <td>
-                                            {% for servico in dado.ServicosEscalados.all %}
-                                                {{ servico }}</br>
-                                            {% endfor %}
-                                        </td>
-                                    {% elif coluna.nome == 'ColaboradoresEscalados' %}
-                                        <td>
-                                            {% for colaborador in dado.ColaboradoresEscalados.all %}
-                                                {{ colaborador }}</br>
-                                            {% endfor %}
-                                        </td>
-                                    {% elif coluna.nome == 'ColaboradoresConfirmados' %}
-                                        <td>
-                                            {% for colaborador in dado.ColaboradoresConfirmados.all %}
-                                                {{ colaborador }}</br>
-                                            {% endfor %}
-                                        </td>
-                                    {% elif coluna.nome == 'ColaboradoresNegados' %}
-                                        <td>
-                                            {% for colaborador in dado.ColaboradoresNegados.all %}
-                                                {{ colaborador }}</br>
-                                            {% endfor %}
-                                        </td>
-                                    {% elif coluna.nome == 'Permissions' %}
-                                        <td>
-                                            {% for permission in dado.Permissions.all %}
-                                                {{ permission }},
-                                            {% endfor %}
-                                        </td>
+                                    {% if coluna.nome == 'acoes' and permission_edit %}
+                                        <th style="width: {{ coluna.largura }}">{{ coluna.label }}</th>
+                                    {% elif coluna.nome == 'acoes' %}
+
                                     {% else %}
-                                        <td>{{ dado|get_item:coluna.nome }}</td>
+                                        <th style="width: {{ coluna.largura }}">{{ coluna.label }}</th>
                                     {% endif %}
                                 {% endfor %}
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for dado in dados_paginados %}
+                                <tr>
+                                    {% for coluna in colunas %}
+                                        {% if coluna.nome == 'acoes' and permission_edit %}
+                                            <td>
+                                                <a href="{{ dado.editar_url }}">
+                                                    <button type="button" class="btn btn-block btn-info btn-sm">Ações</button>
+                                                </a>
+                                            </td>
+                                        {% elif coluna.nome == 'acoes' %}
 
+                                        {% elif coluna.nome == 'historico' %}
+                                            <td>
+                                                <a href="{{ dado.history_rout }}">
+                                                    <button type="button" class="btn btn-block btn-secondary btn-sm">{{ coluna.label }}</button>
+                                                </a>
+                                            </td>
+                                        {% elif coluna.nome == 'gerente' %}
+                                            <td>
+                                                {% for gerentes in dado.gerente.all %}
+                                                    {{ gerentes }}</br>
+                                                {% endfor %}
+                                            </td>
+                                        {% elif coluna.nome == 'ServicosEscalados' %}
+                                            <td>
+                                                {% for servico in dado.ServicosEscalados.all %}
+                                                    {{ servico }}</br>
+                                                {% endfor %}
+                                            </td>
+                                        {% elif coluna.nome == 'ColaboradoresEscalados' %}
+                                            <td>
+                                                {% for colaborador in dado.ColaboradoresEscalados.all %}
+                                                    {{ colaborador }}</br>
+                                                {% endfor %}
+                                            </td>
+                                        {% elif coluna.nome == 'ColaboradoresConfirmados' %}
+                                            <td>
+                                                {% for colaborador in dado.ColaboradoresConfirmados.all %}
+                                                    {{ colaborador }}</br>
+                                                {% endfor %}
+                                            </td>
+                                        {% elif coluna.nome == 'ColaboradoresNegados' %}
+                                            <td>
+                                                {% for colaborador in dado.ColaboradoresNegados.all %}
+                                                    {{ colaborador }}</br>
+                                                {% endfor %}
+                                            </td>
+                                        {% elif coluna.nome == 'Permissions' %}
+                                            <td>
+                                                {% for permission in dado.Permissions.all %}
+                                                    {{ permission }},
+                                                {% endfor %}
+                                            </td>
+                                        {% else %}
+                                            <td>{{ dado|get_item:coluna.nome }}</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    {% include 'partials/_access_rejected.html' %}
+                {% endif %}
               </div>
               <!-- /.card-body -->
               <div class="card-body d-flex justify-content-end">
-                  {% if modal_button == True %}
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
-                        {{ text_button_open_modal }}
-                    </button>
+                  {% if permission_crate %}
+                      {% if modal_button == True %}
+                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
+                            {{ text_button_open_modal }}
+                        </button>
+                      {% endif %}
                   {% endif %}
                   {% if button_export_tittle != False %}
                       <a href={{ button_export_link }}>
@@ -136,8 +149,9 @@
                       </a>
                   {% endif %}
               </div>
-
-              {% include 'partials/_paginate.html' %}
+                {% if permission_view %}
+                    {% include 'partials/_paginate.html' %}
+                {% endif %}
               <div class="modal fade" id="modal-default">
                 <div class="modal-dialog">
                   <div class="modal-content">
