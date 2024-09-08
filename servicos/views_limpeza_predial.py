@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from servicos.models_limpeza_predial import ServicoLimpezaPredialConfigurado, ServicoLimpezaPredialAgendado
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialConfiguradoForms, FatoServicoLimpezaPredialForms, ServicoLimpezaPredialAgendadoForms
 from utils.views import generic_view, edit_generic_view
+from permissionscontrol.utils import validate_permissions
 
 def agendar_servico_limpeza_predial(request, userid):
     forms = ServicoLimpezaPredialAgendadoForms()
@@ -33,6 +34,27 @@ def agendar_servico_limpeza_predial(request, userid):
     )
 
 def servicos_agendados_limpeza_predial(request, userid):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['280: Pode visualizar serviços agendados']
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['279: Pode editar serviços agendados']
+    )
+
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['278: Pode agendar novos serviços']
+    )
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
@@ -60,10 +82,20 @@ def servicos_agendados_limpeza_predial(request, userid):
         text_button_save='agendar serviço',
         header_model='solicitar serviço',
         redirect_url='servicos_agendados_limpeza_predial',
-        link_tipos=tipos
+        link_tipos=tipos,
+        permission_view=permission_view,
+        permission_edit=permission_edit,
+        permission_crate=permission_crate
     )
 
-def editar_servico_limpeza_predial_agendado(request, id_random):
+def editar_servico_limpeza_predial_agendado(request, userid, id_random):
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['279: Pode editar serviços agendados']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=ServicoLimpezaPredialAgendado,
@@ -72,7 +104,8 @@ def editar_servico_limpeza_predial_agendado(request, id_random):
         id_random=id_random,
         app_name='Editar serviço',
         redirect_url_name='editar_servico_limpeza_predial_agendado',
-        redirect_close_button='servicos_agendados_limpeza_predial'
+        redirect_close_button='servicos_agendados_limpeza_predial',
+        permission_edit=permission_edit
     )
 
 def configurar_servico_limpeza_predial(request, userid):
@@ -82,7 +115,6 @@ def configurar_servico_limpeza_predial(request, userid):
         form = ServicoLimpezaPredialConfiguradoForms(request.POST, request.FILES)
         print(form.errors)
         if form.is_valid():
-            #mensagem de sucesso
             form.save()
             return redirect('configurar_servico_limpeza_predial')
 
@@ -142,11 +174,10 @@ def servicos_configurados_limpeza_predial(request, userid):
         header_model='solicitar serviço',
         redirect_url='servicos_configurados_limpeza_predial',
         link_tipos=tipos,
-        modal_button=False,
     )
 
 
-def editar_servico_limpezapredial_configurado(request, id_random):
+def editar_servico_limpezapredial_configurado(request, userid, id_random):
     return edit_generic_view(
         request=request,
         model_class=ServicoLimpezaPredialConfigurado,
@@ -190,4 +221,3 @@ def realizar_servico_limpeza_predial_agendado(request, id_random):
             'text_button': 'Salvar',
         }
     )
-

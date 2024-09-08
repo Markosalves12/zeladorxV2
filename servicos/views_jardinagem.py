@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, reverse
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms, FatoServicoJardinagemForms
-from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
+# from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from utils.views import generic_view, edit_generic_view
-from gerente.models import Gerente
-from notifications.utils import enviar_notificacao
+# from gerente.models import Gerente
+# from notifications.utils import enviar_notificacao
 from django.utils import timezone
+from permissionscontrol.utils import validate_permissions
 
 # Create your views here.
 def agendar_servico_jardinagem(request, userid):
@@ -13,58 +14,58 @@ def agendar_servico_jardinagem(request, userid):
 
     if request.method == 'POST':
         form = ServicoJaridinagemAgendadoForms(request.POST, request.FILES)
-        print(form.errors)
+
         if form.is_valid():
             #mensagem de sucesso
             ColaboradoresEscalados = form.cleaned_data['ColaboradoresEscalados']
-            descricao = form.cleaned_data['DescricaoDoServico']
-            area = form.cleaned_data['Areas']
-            data_inicio = form.cleaned_data['DataDeInicio']
-            id_random = form.instance.id_random
-
-            print(id_random)
+            # descricao = form.cleaned_data['DescricaoDoServico']
+            # area = form.cleaned_data['Areas']
+            # data_inicio = form.cleaned_data['DataDeInicio']
+            # id_random = form.instance.id_random
+            #
+            # print(id_random)
 
 
             for colaborador in ColaboradoresEscalados:
                 print(colaborador)
 
-                email = Gerente.objects.get(
-                    id_random=colaborador.id_random
-                ).email
-
-                username = Gerente.objects.get(
-                    username=colaborador.username
-                ).username
-
-                servicos = list()
-                servicos_escalados = form.cleaned_data['ServicosEscalados']
-                for servico_cat in servicos_escalados:
-                    servicos.append(
-                        CatalogodeServicoJardinagem.objects.get(
-                            id_random=servico_cat.id_random
-                        ).nome
-                    )
-
-                enviar_notificacao(
-                    destinatario=[email],
-                    assunto="Novo serviço",
-                    contexto={
-                        'id_random': id_random,
-                        'colaborador_nome': username,
-                        'id_random_colaborador': colaborador.id_random,
-                        'descricao': descricao,
-                        'area': area,
-                        'data_inicio': data_inicio,
-                        'servicos': ', '.join(servicos)
-
-                    },
-                    template='notifications/new_service.html'
-                )
+                # email = Gerente.objects.get(
+                #     id_random=colaborador.id_random
+                # ).email
+                #
+                # username = Gerente.objects.get(
+                #     username=colaborador.username
+                # ).username
+                #
+                # servicos = list()
+                # servicos_escalados = form.cleaned_data['ServicosEscalados']
+                # for servico_cat in servicos_escalados:
+                #     servicos.append(
+                #         CatalogodeServicoJardinagem.objects.get(
+                #             id_random=servico_cat.id_random
+                #         ).nome
+                #     )
+                #
+                # enviar_notificacao(
+                #     destinatario=[email],
+                #     assunto="Novo serviço",
+                #     contexto={
+                #         'id_random': id_random,
+                #         'colaborador_nome': username,
+                #         'id_random_colaborador': colaborador.id_random,
+                #         'descricao': descricao,
+                #         'area': area,
+                #         'data_inicio': data_inicio,
+                #         'servicos': ', '.join(servicos)
+                #
+                #     },
+                #     template='notifications/new_service.html'
+                # )
 
             form.save()
-            return redirect('agendar_servico_jardinagem')
+            return redirect('agendar_servico_jardinagem', userid)
 
-        print("formulario invalido")
+        # print("formulario invalido")
 
     tipos = [
         {'nome': 'Agendar serviços', 'link': ''},
@@ -87,8 +88,29 @@ def agendar_servico_jardinagem(request, userid):
     )
 
 def servicos_agendados_jardinagem(request, userid):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['280: Pode visualizar serviços agendados']
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['279: Pode editar serviços agendados']
+    )
+
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['278: Pode agendar novos serviços']
+    )
+
     colunas = [
-        {'nome': 'id', 'label': '#', 'largura': '10px'},
+        {'nome': 'id','label': '#','largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
@@ -117,11 +139,14 @@ def servicos_agendados_jardinagem(request, userid):
         text_button_save='agendar serviço',
         header_model='solicitar serviço',
         redirect_url='servicos_agendados_jardinagem',
-        link_tipos=tipos
+        link_tipos=tipos,
+        permission_crate=permission_crate,
+        permission_view=permission_view,
+        permission_edit=permission_edit
     )
 
 
-def editar_servico_jardinagem_agendado(request, id_random):
+def editar_servico_jardinagem_agendado(request, userid, id_random):
     return edit_generic_view(
         request=request,
         model_class=ServicoJardinagemAgendado,

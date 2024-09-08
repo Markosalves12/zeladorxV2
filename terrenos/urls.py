@@ -3,5 +3,5 @@ from terrenos.views import terrenos, editar_terreno
 
 urlpatterns = [
     path('terrenos/<str:userid>', terrenos, name='terrenos'),
-    path('editar_terreno/<str:id_random>', editar_terreno, name='editar_terreno'),
+    path('editar_terreno/<str:userid>/<str:id_random>', editar_terreno, name='editar_terreno'),
 ]

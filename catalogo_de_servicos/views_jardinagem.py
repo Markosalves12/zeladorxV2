@@ -2,22 +2,79 @@ from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from catalogo_de_servicos.forms_jardinagem import CatalogoServicoJardinagemForms
 from utils.views import generic_view, edit_generic_view
 from django.shortcuts import reverse
+from permissionscontrol.utils import validate_permissions
 
 
 # Create your views here.
 def catalogo_de_servicos_jardinagem(request, userid):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['268: Pode visualizar serviços do catálogo']
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['267: Pode editar serviços do catálogo']
+    )
+
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['266: Pode criar novos serviços ao catálogo']
+    )
+
     colunas = [
-        {'nome': 'id', 'label': '#', 'largura': '10px'},
-        {'nome': 'nome', 'label': 'Nome'},
-        {'nome': 'EmpresaSecundaria', 'label': 'Empresa'},
-        {'nome': 'acoes', 'label': 'Ações'},
-        {'nome': 'historico', 'label': 'Histórico'},
+        {
+            'nome': 'id',
+            'label': '#',
+            'largura': '10px'
+        },
+        {
+            'nome': 'nome',
+            'label': 'Nome'
+        },
+        {
+            'nome': 'EmpresaSecundaria',
+            'label': 'Empresa'
+        },
+        {
+            'nome': 'acoes',
+            'label': 'Ações'
+        },
+        {
+            'nome': 'historico',
+            'label': 'Histórico'
+        },
     ]
 
     tipos = [
-        {'nome': 'Catálogo de serviços', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('catalogo_de_servicos_jardinagem', kwargs={'userid': userid})},
-        {'nome': 'Limpeza predial', 'link': reverse('catalogo_de_servicos_limpeza_predial', kwargs={'userid': userid})},
+        {
+            'nome': 'Catálogo de serviços',
+            'link': ''
+        },
+        {
+            'nome': 'Jardinagem',
+            'link': reverse(
+                'catalogo_de_servicos_jardinagem',
+                kwargs={
+                    'userid': userid
+                }
+            )
+        },
+        {
+            'nome': 'Limpeza predial',
+            'link': reverse(
+                'catalogo_de_servicos_limpeza_predial',
+                kwargs={
+                    'userid': userid
+                }
+            )
+        },
     ]
 
     return generic_view(
@@ -33,11 +90,14 @@ def catalogo_de_servicos_jardinagem(request, userid):
         text_button_save='Salvar serviço',
         header_model='Novo serviço',
         redirect_url='catalogo_de_servicos_jardinagem',
-        link_tipos=tipos
+        link_tipos=tipos,
+        permission_view=permission_view,
+        permission_edit=permission_edit,
+        permission_crate=permission_crate
     )
 
 
-def editar_catalogo_de_servicos_jardinagem(request, id_random):
+def editar_catalogo_de_servicos_jardinagem(request, userid, id_random):
     return edit_generic_view(
         request=request,
         model_class=CatalogodeServicoJardinagem,

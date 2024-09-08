@@ -1,0 +1,9 @@
+from django.urls import path
+from gerente.views_jardinagem import gerentes_jardinagem, editar_gerente_jardinagem
+
+
+urlpatterns = [
+    # rota na raiz do sistema
+    path('gerentes_jardinagem/<str:userid>', gerentes_jardinagem, name='gerentes_jardinagem'),
+    path('editar_gerente_jardinagem/<str:userid>/<str:id_random>', editar_gerente_jardinagem, name='editar_gerente_jardinagem'),
+]

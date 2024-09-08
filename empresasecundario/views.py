@@ -6,12 +6,31 @@ from utils.views import generic_view, edit_generic_view
 # Create your views here.
 def empresas(request, userid):
     colunas = [
-        {'nome': 'id', 'label': '#', 'largura': '10px'},
-        {'nome': 'nome', 'label': 'Nome'},
-        {'nome': 'razao_social', 'label': 'Razão social'},
-        {'nome': 'CNPJ', 'label': 'CNPJ'},
-        {'nome': 'setor', 'label': 'Setor'},
-        {'nome': 'acoes', 'label': 'Ações'},
+        {
+            'nome': 'id',
+            'label': '#',
+            'largura': '10px'
+        },
+        {
+            'nome': 'nome',
+            'label': 'Nome'
+        },
+        {
+            'nome': 'razao_social',
+            'label': 'Razão social'
+        },
+        {
+            'nome': 'CNPJ',
+            'label': 'CNPJ'
+        },
+        {
+            'nome': 'setor',
+            'label': 'Setor'
+        },
+        {
+            'nome': 'acoes',
+            'label': 'Ações'
+        },
     ]
 
     return generic_view(
@@ -29,7 +48,7 @@ def empresas(request, userid):
     )
 
 
-def editar_empresa(request, id_random):
+def editar_empresa(request, userid, id_random):
     return edit_generic_view(
         request=request,
         model_class=EmpresaSecundaria,

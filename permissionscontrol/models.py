@@ -196,5 +196,5 @@ class PermissionsAccessLimpezaPredial(models.Model):
         to=PermissionsLimpezaPredial,
         null=False,
         blank=False,
-        related_name='RPermissionsAccessJardinagem'
+        related_name='RPermissionsAccessLimpezaPredial'
     )

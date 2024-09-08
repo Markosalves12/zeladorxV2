@@ -27,7 +27,7 @@ def vegetacao(request, userid):
     )
 
 
-def editar_vegetacao(request, id_random):
+def editar_vegetacao(request, userid, id_random):
     objeto = CatalogoVegetacao.objects.get(id_random=id_random)
     forms = CatalogoVegetacaoForm(instance=objeto)
 

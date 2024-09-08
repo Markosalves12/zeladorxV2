@@ -29,7 +29,7 @@ def unidades(request, userid):
         redirect_url='unidades'
     )
 
-def editar_unidade(request, id_random):
+def editar_unidade(request, userid, id_random):
     return edit_generic_view(
         request=request,
         model_class=Unidade,

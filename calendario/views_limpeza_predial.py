@@ -2,9 +2,30 @@ from django.shortcuts import render, reverse
 from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado
 from django.db.models.functions import Now, TruncDate, ExtractDay
 from django.db.models import F, Q, ExpressionWrapper, IntegerField, DurationField
+from calendario.utils import format_event
+from permissionscontrol.utils import validate_permissions
 
 
 def calendario_limpeza_predial(request, userid):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['280: Pode visualizar serviços agendados']
+    )
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['279: Pode editar serviços agendados']
+    )
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['278: Pode agendar novos serviços']
+    )
+
     agendado = ServicoLimpezaPredialAgendado.objects.all().annotate(
         data_atual=Now(),
         status_agendamento=ExpressionWrapper(
@@ -14,58 +35,39 @@ def calendario_limpeza_predial(request, userid):
     )
 
     tipos = [
-        {'nome': 'Calendário de serviços', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('calendario_jardinagem', kwargs={'userid': userid})},
-        {'nome': 'Limpeza predial', 'link': reverse('calendario_limpeza_predial', kwargs={'userid': userid})},
+        {
+            'nome': 'Calendário de serviços',
+            'link': ''
+        },
+        {
+            'nome': 'Jardinagem',
+            'link': reverse(
+                'calendario_jardinagem',
+                kwargs={
+                    'userid': userid
+                }
+            )
+        },
+        {
+            'nome': 'Limpeza predial',
+            'link': reverse(
+                'calendario_limpeza_predial',
+                kwargs={
+                    'userid': userid
+                }
+            )
+        },
     ]
 
-    def format_event(servico):
-        # Define a cor com base no status_agendamento
-        if servico.status == "Em andamento":
-            background_color = "#000080"
-            border_color = "#000080"
-
-        elif servico.status == "Cancelado":
-            background_color = "#808080 "
-            border_color = "#808080"
-
-        elif servico.status == "Concluido":
-            background_color = "#add8e6  "
-            border_color = "#add8e6 "
-
-        elif servico.status_agendamento >= 0 and servico.status_agendamento <= 5:
-            background_color = "#ffff00"
-            border_color = "#ffff00"
-
-        elif servico.status_agendamento < 0:
-            background_color = "#FF0000"
-            border_color = "#FF0000"
-
-        elif servico.status_agendamento > 5:
-            background_color = "#008000"
-            border_color = "#008000"
-
-        return {
-            "id_random": servico.id_random,
-            "title": servico.DescricaoDoServico,
-            "start": f"new Date({servico.DataDeInicio.year}, {servico.DataDeInicio.month - 1}, {servico.DataDeInicio.day}, "
-                     f"{servico.DataDeInicio.hour}, {servico.DataDeInicio.minute})",
-            "end": f"new Date({servico.DataDeConclusao.year}, {servico.DataDeConclusao.month - 1}, "
-                   f"{servico.DataDeConclusao.day}, {servico.DataDeConclusao.hour}, {servico.DataDeConclusao.minute})",
-            "allDay": "false",
-            "backgroundColor": background_color,
-            "borderColor": border_color,
-            "url": "{% url 'agendar_servico_jardinagem' %}",
-            "url_acompanhemento": "{% url 'realizar_servico_jardinagem_agendado' %}",
-            # "url": "{% url 'agendar_servico_limpeza_predial' %}",
-            # "url_acompanhemento": "{% url 'realizar_servico_jardinagem_agendado' %}",
-            # "url_acompanhemento": "",
-            'status_agendamento': servico.status_agendamento,
-            'status': servico.status,
-            'dataconclusao': servico.DataDeConclusao,
-        }
-
-    formatted_events = [format_event(servico) for servico in agendado]
+    formatted_events = [
+        format_event(
+            servico,
+            userid=userid,
+            url_agendamento='agendar_servico_limpeza_predial',
+            url_acompanahemnto='realizar_servico_limpeza_predial_agendado'
+        )
+        for servico in agendado
+    ]
 
     return render(
         request=request,
@@ -74,8 +76,9 @@ def calendario_limpeza_predial(request, userid):
             'formatted_events': formatted_events,
             'app_name': 'Calendário Limpeza Predial',
             'link_tipos': tipos,
-            # 'app_name': 'Calendário de serviços limpeza predial',
-            # 'link_tipos': tipos,
             "url_agendamento": "agendar_servico_limpeza_predial",
+            'permission_view': permission_view,
+            'permission_edit': permission_edit,
+            'permission_crate': permission_crate
         }
     )

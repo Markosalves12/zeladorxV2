@@ -4,7 +4,7 @@ from catalogo_de_materiais.forms import MaterialForms, CategoriaMaterialForms, C
 from utils.utils import paginate
 
 # Create your views here.
-def materiais(request):
+def materiais(request, userid):
     dados = CatalogoMaterial.objects.all()
     forms = MaterialForms()
 
@@ -32,7 +32,7 @@ def materiais(request):
         }
     )
 
-def categoria_material(request):
+def categoria_material(request, userid):
     dados = CategoriaMaterial.objects.all()
     forms = CategoriaMaterialForms()
 
@@ -59,7 +59,7 @@ def categoria_material(request):
         }
     )
 
-def consumo_material(request):
+def consumo_material(request, userid):
     dados = ConsumoMateriais.objects.all()
     forms = ConsumoMaterialForms()
 

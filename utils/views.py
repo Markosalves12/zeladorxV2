@@ -73,7 +73,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
 
 
 def edit_generic_view(request, model_class, form_class, template_name, id_random, app_name, redirect_url_name,
-                      redirect_close_button, permission_edit=True):
+                      redirect_close_button, link_tipos=None, permission_edit=True):
     objeto = get_object_or_404(model_class, id_random=id_random)
     forms = form_class(instance=objeto)
 
@@ -93,6 +93,7 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
             'text_button': 'Salvar',
             'redirect_url_name': redirect_url_name,
             'redirect_close_button': redirect_close_button,
-            'permission_edit': permission_edit
+            'permission_edit': permission_edit,
+            'link_tipos': link_tipos
         }
     )

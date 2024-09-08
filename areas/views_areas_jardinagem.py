@@ -8,9 +8,26 @@ from django.shortcuts import get_object_or_404, redirect
 
 # Create your views here.
 def areas_jardins(request, userid):
-    permission_view = validate_permissions(request, userid, ['252: Pode visualizar áreas de jardinagem'])
-    permission_edit = validate_permissions(request, userid, ['251: Pode editar áreas de jardinagem'])
-    permission_crate = validate_permissions(request, userid, ['250: Pode criar novas áreas de jardinagem'])
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['252: Pode visualizar áreas de jardinagem']
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['251: Pode editar áreas de jardinagem']
+    )
+
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['250: Pode criar novas áreas de jardinagem']
+    )
 
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
@@ -50,7 +67,12 @@ def areas_jardins(request, userid):
 
 
 def editar_area_jardins(request, userid, id_random):
-    permission_edit = validate_permissions(request, userid, ['251: Pode editar áreas de jardinagem'])
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['251: Pode editar áreas de jardinagem']
+    )
 
     return edit_generic_view(
         request=request,

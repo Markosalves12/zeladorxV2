@@ -2,23 +2,85 @@ from django.shortcuts import reverse
 from localidade.models_Jardinagem import LocalidadeJardiangem
 from localidade.forms_jardinagem import LocalidadeJardinagemForms
 from utils.views import generic_view, edit_generic_view
+from permissionscontrol.utils import validate_permissions
 
 # Create your views here.
 def localidades_jardinagem(request, userid):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['256: Pode visualizar localidades',]
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['255: Pode editar localidades']
+    )
+
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['254: Pode criar novas localidades',]
+    )
+
     colunas = [
-        {'nome': 'id', 'label': '#', 'largura': '10px'},
-        {'nome': 'nome', 'label': 'Nome'},
-        {'nome': 'lat_med', 'label': 'Lat. média'},
-        {'nome': 'long_med', 'label': 'Long. média'},
-        {'nome': 'unidade', 'label': 'unidade'},
-        {'nome': 'acoes', 'label': 'Ações'},
-        {'nome': 'historico', 'label': 'Áreas associadas'},
+        {
+            'nome': 'id',
+            'label': '#',
+            'largura': '10px'},
+        {
+            'nome': 'nome',
+            'label': 'Nome'
+        },
+        {
+            'nome': 'lat_med',
+            'label': 'Lat. média'
+        },
+        {
+            'nome': 'long_med',
+            'label': 'Long. média'
+        },
+        {
+            'nome': 'unidade',
+            'label': 'unidade'
+        },
+        {
+            'nome': 'acoes',
+            'label': 'Ações'
+        },
+        {
+            'nome': 'historico',
+            'label': 'Áreas associadas'
+        },
     ]
 
     tipos = [
-        {'nome': 'Tipo de localidade', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('localidades_jardinagem', kwargs={'userid': userid})},
-        {'nome': 'Limpeza predial', 'link': reverse('localidades_limpeza_predial', kwargs={'userid': userid})},
+        {
+            'nome': 'Tipo de localidade',
+            'link': ''
+        },
+        {
+            'nome': 'Jardinagem',
+            'link': reverse(
+                'localidades_jardinagem',
+                kwargs={
+                    'userid': userid
+                }
+            )
+        },
+        {
+            'nome': 'Limpeza predial',
+            'link': reverse(
+                'localidades_limpeza_predial',
+                kwargs={
+                    'userid': userid
+                }
+            )
+        },
     ]
 
     return generic_view(
@@ -34,11 +96,14 @@ def localidades_jardinagem(request, userid):
         text_button_save='Salvar localidade',
         header_model='Nova localidade',
         redirect_url='localidades_jardinagem',
-        link_tipos=tipos
+        link_tipos=tipos,
+        permission_view=permission_view,
+        permission_edit=permission_edit,
+        permission_crate=permission_crate
     )
 
 
-def editar_localidade_jardinagem(request, id_random):
+def editar_localidade_jardinagem(request, userid, id_random):
     return edit_generic_view(
         request=request,
         model_class=LocalidadeJardiangem,

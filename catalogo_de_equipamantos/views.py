@@ -4,7 +4,7 @@ from catalogo_de_equipamantos.models import CatalogoDeEquipamentos
 from catalogo_de_equipamantos.forms import CatalogoEquipamentoForms
 
 # Create your views here.
-def catalogo_de_equipamentos(request):
+def catalogo_de_equipamentos(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
@@ -26,7 +26,7 @@ def catalogo_de_equipamentos(request):
         redirect_url='catalogo_de_equipamentos'
     )
 
-def editar_equipamento_catalogo(request, id_random):
+def editar_equipamento_catalogo(request, userid, id_random):
     return edit_generic_view(
         request=request,
         model_class=CatalogoDeEquipamentos,
@@ -37,5 +37,3 @@ def editar_equipamento_catalogo(request, id_random):
         redirect_url_name='editar_equipamento_catalogo',
         redirect_close_button='catalogo_de_equipamentos'
     )
-
-
