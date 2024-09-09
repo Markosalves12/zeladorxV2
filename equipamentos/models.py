@@ -1,6 +1,6 @@
 from django.db import models
 from empresasecundario.models import EmpresaSecundaria
-from catalogo_de_equipamantos.models import CatalogoDeEquipamentos
+from catalogo_de_equipamantos.models_jardinagem import CatalogoDeEquipamentosJardinagem
 from utils.utils import generate_id_random
 
 # Create your models here.
@@ -12,11 +12,11 @@ class EquipamentoDisponiveis(models.Model):
     )
 
     Nome = models.ForeignKey(
-        to=CatalogoDeEquipamentos,
+        to=CatalogoDeEquipamentosJardinagem,
         blank=False,
         null=False,
         on_delete=models.CASCADE,
-        related_name='RNomeCatalogoEquipamentos'
+        related_name='RNomeCatalogoEquipamentosJardinagem'
     )
 
     DataDeAquisicao = models.DateField(

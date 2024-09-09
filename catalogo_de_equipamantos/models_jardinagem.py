@@ -3,7 +3,7 @@ from empresasecundario.models import EmpresaSecundaria
 from utils.utils import generate_id_random
 
 # Create your models here.
-class CatalogoDeEquipamentos(models.Model):
+class CatalogoDeEquipamentosJardinagem(models.Model):
     id_random = models.CharField(
         unique=True,
         default=generate_id_random,
@@ -21,7 +21,7 @@ class CatalogoDeEquipamentos(models.Model):
         blank=False,
         null=False,
         on_delete=models.CASCADE,
-        related_name='REmpresaSecundariaCatalogoEquipamentos',
+        related_name='REmpresaSecundariaCatalogoEquipamentosJardinagem',
     )
 
     status_options = [

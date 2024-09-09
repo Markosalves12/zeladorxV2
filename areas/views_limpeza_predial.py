@@ -27,58 +27,19 @@ def areas_limpeza_predial(request, userid):
     )
 
     colunas = [
-        {
-            'nome': 'id',
-            'label': '#',
-            'largura': '10px'
-        },
-        {
-            'nome': 'nome',
-            'label': 'Nome'},
-        {
-            'nome': 'dimensao',
-            'label': 'Dimensão'
-        },
-        {
-            'nome': 'servico',
-            'label': 'Serviço'},
-        {
-            'nome': 'localidade',
-            'label': 'Localidade'
-        },
-        {
-            'nome': 'acoes',
-            'label': 'Ações'},
-        {
-            'nome': 'historico',
-            'label': 'Histórico'
-        },
+        {'nome': 'id', 'label': '#','largura': '10px'},
+        {'nome': 'nome', 'label': 'Nome'},
+        {'nome': 'dimensao','label': 'Dimensão' },
+        {'nome': 'servico', 'label': 'Serviço'},
+        {'nome': 'localidade', 'label': 'Localidade'},
+        {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Histórico'},
     ]
 
     tipos = [
-        {
-            'nome':
-                'Tipo de área',
-            'link': ''
-        },
-        {
-            'nome': 'Jardinagem',
-            'link': reverse(
-                'areas_jardins',
-                kwargs={
-                    'userid': userid
-                }
-            )
-        },
-        {
-            'nome': 'Limpeza predial',
-            'link': reverse(
-                'areas_limpeza_predial',
-                kwargs={
-                    'userid': userid
-                }
-            )
-        }
+        {'nome': 'Tipo de área', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('areas_jardins', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})}
     ]
 
     return generic_view(

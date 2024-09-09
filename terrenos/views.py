@@ -53,6 +53,13 @@ def terrenos(request, userid):
 
 
 def editar_terreno(request, userid, id_random):
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['259: Pode editar terrenos']
+    )
+
     objeto = Terreno.objects.get(id_random=id_random)
     forms = TerrenoForms(instance=objeto)
 
@@ -69,6 +76,7 @@ def editar_terreno(request, userid, id_random):
             'forms': forms,
             'app_name': 'Editar terreno',
             'id_random': id_random,
-            'text_button': 'Salvar'
+            'text_button': 'Salvar',
+            'permission_edit': permission_edit
         }
     )

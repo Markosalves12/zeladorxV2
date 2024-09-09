@@ -42,10 +42,10 @@ class PermissionsJardinagem(models.Model):
         ('272: Pode visualizar colaboradores', '272: Pode visualizar colaboradores'),
         ('273: Pode excluir colaboradores', '273: Pode excluir colaboradores'),
 
-        # ('274: Pode criar novos gerentes', '274: Pode criar novos gerentes'),
-        # ('275: Pode editar gerentes', '275: Pode editar gerentes'),
-        # ('276: Pode visualizar gerentes', '276: Pode visualizar gerentes'),
-        # ('277: Pode excluir gerentes', '277: Pode excluir gerentes'),
+        ('274: Pode criar novos equipamamentos ao catalogo', '274: Pode criar novos equipamamentos ao catalogo'),
+        ('275: Pode editar equipamamentos do catalogo', '275: Pode editar equipamamentos do catalogo'),
+        ('276: Pode visualizar equipamamentos do catalogo', '276: Pode visualizar equipamamentos do catalogo'),
+        ('277: Pode excluir equipamamentos do catalogo', '277: Pode excluir equipamamentos do catalogo'),
 
         ('278: Pode agendar novos serviços', '278: Pode agendar novos serviços'),
         ('279: Pode editar serviços agendados', '279: Pode editar serviços agendados'),
@@ -140,10 +140,10 @@ class PermissionsLimpezaPredial(models.Model):
         ('272: Pode visualizar colaboradores', '272: Pode visualizar colaboradores'),
         ('273: Pode excluir colaboradores', '273: Pode excluir colaboradores'),
 
-        # ('274: Pode criar novos gerentes', '274: Pode criar novos gerentes'),
-        # ('275: Pode editar gerentes', '275: Pode editar gerentes'),
-        # ('276: Pode visualizar gerentes', '276: Pode visualizar gerentes'),
-        # ('277: Pode excluir gerentes', '277: Pode excluir gerentes'),
+        ('274: Pode criar novos equipamamentos ao catalogo', '274: Pode criar novos equipamamentos ao catalogo'),
+        ('275: Pode editar equipamamentos do catalogo', '275: Pode editar equipamamentos do catalogo'),
+        ('276: Pode visualizar equipamamentos do catalogo', '276: Pode visualizar equipamamentos do catalogo'),
+        ('277: Pode excluir equipamamentos do catalogo', '277: Pode excluir equipamamentos do catalogo'),
 
         ('278: Pode agendar novos serviços', '278: Pode agendar novos serviços'),
         ('279: Pode editar serviços agendados', '279: Pode editar serviços agendados'),

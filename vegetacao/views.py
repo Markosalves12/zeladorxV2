@@ -1,10 +1,32 @@
 from django.shortcuts import render, redirect
 from vegetacao.models import CatalogoVegetacao
 from vegetacao.forms import CatalogoVegetacaoForm
-from utils.views import generic_view
+from utils.views import generic_view, edit_generic_view
+from permissionscontrol.utils import validate_permissions
 
 # Create your views here.
 def vegetacao(request, userid):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['264: Pode visualizar vegetações']
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['263: Pode editar vegetações']
+    )
+
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['262: Pode criar novas vegetações']
+    )
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
@@ -23,27 +45,29 @@ def vegetacao(request, userid):
         text_button_open_modal='Adicionar nova vegetação',
         text_button_save='Salvar vegetação',
         header_model='Nova vegetação',
-        redirect_url='vegetacao'
+        redirect_url='vegetacao',
+        permission_view=permission_view,
+        permission_edit=permission_edit,
+        permission_crate=permission_crate
     )
 
 
 def editar_vegetacao(request, userid, id_random):
-    objeto = CatalogoVegetacao.objects.get(id_random=id_random)
-    forms = CatalogoVegetacaoForm(instance=objeto)
-
-    if request.method == 'POST':
-        form = CatalogoVegetacaoForm(request.POST, instance=objeto)
-        if form.is_valid():
-            form.save()
-            return redirect('editar_vegetacao', id_random)
-
-    return render(
+    permission_edit = validate_permissions(
         request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['263: Pode editar vegetações']
+    )
+
+    return edit_generic_view(
+        request=request,
+        model_class=CatalogoVegetacao,
+        form_class=CatalogoVegetacaoForm,
         template_name='DataTableAndForms/EditObject.html',
-        context={
-            'forms': forms,
-            'app_name': 'Editar vegetação',
-            'id_random': id_random,
-            'text_button': 'Salvar'
-        }
+        id_random=id_random,
+        app_name='Editar vegetação',
+        redirect_close_button='vegetacao',
+        redirect_url_name='editar_vegetacao',
+        permission_edit=permission_edit
     )

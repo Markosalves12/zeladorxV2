@@ -1,8 +1,8 @@
 from django.contrib import admin
-from equipamentos.models import CatalogoDeEquipamentos, EquipamentoDisponiveis
+from equipamentos.models import CatalogoDeEquipamentosJardinagem, EquipamentoDisponiveis
 
 # Register your models here.
-class CatalogoDeEquipamentosAdmin(admin.ModelAdmin):
+class CatalogoDeEquipamentosJardinagemAdmin(admin.ModelAdmin):
     list_display = ('id', 'nome', 'EmpresaSecundaria', 'status', )
     list_display_links = ('id', 'nome', 'EmpresaSecundaria', 'status', )
     search_fields = ('nome', )
@@ -18,5 +18,5 @@ class EquipamentoDisponiveisAdmin(admin.ModelAdmin):
 
     list_per_page = 20
 
-admin.site.register(CatalogoDeEquipamentos, CatalogoDeEquipamentosAdmin)
+admin.site.register(CatalogoDeEquipamentosJardinagem, CatalogoDeEquipamentosJardinagemAdmin)
 admin.site.register(EquipamentoDisponiveis, EquipamentoDisponiveisAdmin)

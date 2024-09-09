@@ -1,10 +1,10 @@
 from django import forms
-from catalogo_de_equipamantos.models import CatalogoDeEquipamentos
+from catalogo_de_equipamantos.models_jardinagem import CatalogoDeEquipamentosJardinagem
 
 
-class CatalogoEquipamentoForms(forms.ModelForm):
+class CatalogoEquipamentoFormsJardinagem(forms.ModelForm):
     class Meta:
-        model = CatalogoDeEquipamentos
+        model = CatalogoDeEquipamentosJardinagem
         fields = ['nome', 'EmpresaSecundaria']
         labels = {
             'nome': 'Nome do equipamento',
