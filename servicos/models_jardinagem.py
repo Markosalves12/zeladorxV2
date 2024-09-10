@@ -2,7 +2,7 @@ from django.db import models
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from gerente.models import Gerente
 from areas.models_jardinagem import AreasJardins
-from equipamentos.models import EquipamentoDisponiveis
+from equipamentos.models_jardinagem import EquipamentoDisponiveisJardinagem
 from utils.utils import generate_id_random, resize_image
 
 # Create your models here.
@@ -144,7 +144,7 @@ class FatoServicoJardinagem(models.Model):
     )
 
     EquipamentoUsado = models.ForeignKey(
-        to=EquipamentoDisponiveis,
+        to=EquipamentoDisponiveisJardinagem,
         blank=False,
         null=False,
         on_delete=models.CASCADE,

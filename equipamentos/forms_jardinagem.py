@@ -1,10 +1,10 @@
 from django import forms
-from equipamentos.models import EquipamentoDisponiveis
+from equipamentos.models_jardinagem import EquipamentoDisponiveisJardinagem
 
 
-class EquipamentoDisponivelForm(forms.ModelForm):
+class EquipamentoDisponivelJardinagemForm(forms.ModelForm):
     class Meta:
-        model = EquipamentoDisponiveis
+        model = EquipamentoDisponiveisJardinagem
         fields = ['Nome', 'DataDeAquisicao', 'DataDeDesmobilizacao', 'matricula', 'EmpresaSecundaria']
 
         widgets = {

@@ -36,7 +36,7 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Bordered Table</h3>
+<!--                <h3 class="card-title">Bordered Table</h3>-->
                 <div class="card-tools">
                   <div class="input-group input-group-sm" style="width: 150px;">
                     <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
@@ -55,22 +55,46 @@
                     <div class="card-body">
                       <div class="form-group">
                         {% csrf_token %}
-                          <div class="form-group">
-                            {% for field in forms.visible_fields %}
+
+                        <!-- Laço para outros campos -->
+                        <div class="form-group">
+                          {% for field in forms.visible_fields %}
+                            <!-- Identifique o campo 'Permissions' para aplicar a lógica de paginação -->
+                            {% if field.name == 'Permissions' %}
                               <div class="form-group">
-                                <label for="{{ field.id_for_label }}" >
-                                  {{ field.label }}
-                                </label>
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                                <!-- Container com checkboxes paginados -->
+                                <div id="checkbox-container">
+                                  {% for permission in field %}
+                                    <div class="checkbox-item">
+                                      {{ permission }}
+                                    </div>
+                                  {% endfor %}
+                                </div>
+
+                                <!-- Controles de paginação -->
+                                <div id="pagination-controls">
+                                  <button type="button" id="prev-page" onclick="prevPage()" class="btn btn-info">Anterior</button>
+                                  <button type="button" id="next-page" onclick="nextPage()" class="btn btn-info">Proximo</button>
+                                </div>
+                              </div>
+                            {% else %}
+                              <!-- Renderização normal para outros campos -->
+                              <div class="form-group">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                                 {{ field }}
                               </div>
-                            {% endfor %}
-                          </div>
+                            {% endif %}
+                          {% endfor %}
+                        </div>
                       </div>
+                      <!-- Botões de envio e fechar -->
                       <div class="modal-footer justify-content-between">
                         <a href="{% url redirect_close_button userid %}">
                           <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
                         </a>
-                        <button type="POST" class="btn btn-primary">{{ text_button }}</button>
+                        <button type="submit" class="btn btn-primary">{{ text_button }}</button>
                       </div>
                     </div>
                   </form>
@@ -107,7 +131,35 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{% static 'dist/js/demo.js' %}"></script>
 
+<script>
+  const itemsPerPage = 15;
+  let currentPage = 1;
 
+  function paginate() {
+    const items = document.querySelectorAll('.checkbox-item');
+    const totalItems = items.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    items.forEach((item, index) => {
+      item.style.display = (index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage) ? 'block' : 'none';
+    });
+
+    document.getElementById('prev-page').style.display = (currentPage === 1) ? 'none' : 'inline';
+    document.getElementById('next-page').style.display = (currentPage === totalPages) ? 'none' : 'inline';
+  }
+
+  function nextPage() {
+    currentPage++;
+    paginate();
+  }
+
+  function prevPage() {
+    currentPage--;
+    paginate();
+  }
+
+  window.onload = paginate;
+</script>
 
 <script>
   $(function() {

@@ -2,9 +2,31 @@ from django.shortcuts import reverse
 from utils.views import generic_view, edit_generic_view
 from catalogo_de_equipamantos.models_limpeza_predial import CatalogoDeEquipamentosLimpezaPredial
 from catalogo_de_equipamantos.forms_limpeza_predial import CatalogoEquipamentoFormsLimpezaPredial
+from permissionscontrol.utils import validate_permissions
 
 # Create your views here.
 def catalogo_de_equipamentos_limpeza_predial(request, userid):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['276: Pode visualizar equipamamentos do catalogo']
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['275: Pode editar equipamamentos do catalogo']
+    )
+
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['274: Pode criar novos equipamamentos ao catalogo']
+    )
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
@@ -29,11 +51,21 @@ def catalogo_de_equipamentos_limpeza_predial(request, userid):
         text_button_open_modal='Adicionar novo equipamento',
         text_button_save='Salvar equipamento',
         header_model='Novo equipamento',
-        redirect_url='editar_equipamento_catalogo_limpeza_predial',
-        link_tipos=tipos
+        redirect_url='catalogo_de_equipamentos_limpeza_predial',
+        link_tipos=tipos,
+        permission_edit=permission_edit,
+        permission_view=permission_view,
+        permission_crate=permission_crate
     )
 
 def editar_equipamento_catalogo_limpeza_predial(request, userid, id_random):
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['275: Pode editar equipamamentos do catalogo']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=CatalogoDeEquipamentosLimpezaPredial,
@@ -42,5 +74,6 @@ def editar_equipamento_catalogo_limpeza_predial(request, userid, id_random):
         id_random=id_random,
         app_name='Editar equipamento do catálogo',
         redirect_url_name='editar_equipamento_catalogo_limpeza_predial',
-        redirect_close_button='catalogo_de_equipamentos_limpeza_predial'
+        redirect_close_button='catalogo_de_equipamentos_limpeza_predial',
+        permission_edit=permission_edit
     )

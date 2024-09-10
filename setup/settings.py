@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'authenticate.apps.AuthenticateConfig',
     'permissionscontrol.apps.PermissionscontrolConfig',
     'history.apps.HistoryConfig',
+    'django_select2',
 ]
 
 MIDDLEWARE = [

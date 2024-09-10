@@ -77,6 +77,11 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
     objeto = get_object_or_404(model_class, id_random=id_random)
     forms = form_class(instance=objeto)
 
+    try:
+        print(forms['Permissions'])
+    except:
+        pass
+
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES, instance=objeto)
         if form.is_valid():

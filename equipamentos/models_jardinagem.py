@@ -4,7 +4,7 @@ from catalogo_de_equipamantos.models_jardinagem import CatalogoDeEquipamentosJar
 from utils.utils import generate_id_random
 
 # Create your models here.
-class EquipamentoDisponiveis(models.Model):
+class EquipamentoDisponiveisJardinagem(models.Model):
     id_random = models.CharField(
         unique=True,
         default=generate_id_random,
@@ -40,7 +40,7 @@ class EquipamentoDisponiveis(models.Model):
         blank=False,
         null=False,
         on_delete=models.CASCADE,
-        related_name='REmpresaSecundariaEquipamentosDisponiveis',
+        related_name='REmpresaSecundariaEquipamentosDisponiveisJardinagem',
     )
 
 

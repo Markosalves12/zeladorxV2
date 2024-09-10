@@ -3,7 +3,7 @@ from permissionscontrol.models import PermissionsAccessLimpezaPredial, Permissio
 
 class PermissionsAccessLimpezaPredialForms(forms.ModelForm):
     Permissions = forms.ModelMultipleChoiceField(
-        queryset=PermissionsLimpezaPredial.objects.all(),
+        queryset=PermissionsLimpezaPredial.objects.all().order_by('Permissions'),
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'

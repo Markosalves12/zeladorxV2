@@ -1,9 +1,10 @@
 from django import forms
 from permissionscontrol.models import PermissionsAccessJardinagem, PermissionsJardinagem
+from django_select2.forms import Select2MultipleWidget
 
 class PermissionsAccessJardinagemForms(forms.ModelForm):
     Permissions = forms.ModelMultipleChoiceField(
-        queryset=PermissionsJardinagem.objects.all(),
+        queryset=PermissionsJardinagem.objects.all().order_by('Permissions'),
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'
