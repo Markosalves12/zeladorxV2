@@ -28,11 +28,11 @@ class Unidade(models.Model):
         blank=True,
     )
 
-    EmpresaSecundaria = models.ForeignKey(
+    empresasecundaria = models.ManyToManyField(
         to=EmpresaSecundaria,
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
+        # on_delete=models.CASCADE,
         related_name='REmpresaSecundariaUnidade'
     )
 
@@ -51,8 +51,8 @@ class Unidade(models.Model):
         default='Mobilizado'
     )
 
-    class Meta:
-        unique_together = ('nome', 'EmpresaSecundaria', )
+    # class Meta:
+    #     unique_together = ('nome', 'empresasecundaria', )
 
     def __str__(self):
         return self.nome

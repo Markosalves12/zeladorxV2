@@ -7,48 +7,16 @@ from gerente.models import Gerente
 # Create your views here.
 def permissoes_limpeza_predial(request, userid):
     colunas = [
-        {
-            'nome': 'id',
-            'label': '#',
-            'largura': '10px'
-        },
-        {
-            'nome': 'Gerente',
-            'label': 'Nome'
-        },
-        {
-            'nome': 'Permissions',
-            'label': 'Permissões'
-        },
-        {
-            'nome': 'acoes',
-            'label': 'Ações'
-        },
+        {'nome': 'id', 'label': '#', 'largura': '10px'},
+        {'nome': 'Gerente','label': 'Nome'},
+        { 'nome': 'Permissions','label': 'Permissões' },
+        {'nome': 'acoes','label': 'Ações'},
     ]
 
     tipos = [
-        {
-            'nome': 'Tipo de permissão',
-            'link': ''
-        },
-        {
-            'nome': 'Jardinagem',
-            'link': reverse(
-                'permissoes_jardinagem',
-                kwargs={
-                    'userid': userid
-                }
-            )
-        },
-        {
-            'nome': 'Limpeza predial',
-            'link': reverse(
-                'permissoes_limpeza_predial',
-                kwargs={
-                    'userid': userid
-                }
-            )
-        },
+        {'nome': 'Tipo de permissão', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('permissoes_jardinagem', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('permissoes_limpeza_predial', kwargs={'userid': userid})},
     ]
 
     return generic_view(
@@ -63,7 +31,8 @@ def permissoes_limpeza_predial(request, userid):
         text_button_save='Salvar permissões',
         header_model='Novo gestor',
         redirect_url='permissoes_limpeza_predial',
-        link_tipos=tipos
+        link_tipos=tipos,
+        userid=userid
     )
 
 
@@ -78,30 +47,11 @@ def editar_permissoes_limpeza_predial(request, userid, id_random):
     )
 
     tipos = [
-        {
-            'nome': 'Editar permissões',
-            'link': ''
-        },
-        {
-            'nome': 'Jardinagem',
-            'link': reverse(
-                'editar_permissoes_jardinagem',
-                kwargs={
-                    'userid': userid,
-                    'id_random': permissions_instance.id_random
-                }
-            )
-        },
-        {
-            'nome': 'Limpeza predial',
-            'link': reverse(
-                'editar_permissoes_limpeza_predial',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random
-                }
-            )
-        },
+        {'nome': 'Editar permissões','link': '' },
+        {'nome': 'Jardinagem','link': reverse('editar_permissoes_jardinagem',kwargs={
+            'userid': userid, 'id_random': permissions_instance.id_random})},
+        {'nome': 'Limpeza predial','link': reverse('editar_permissoes_limpeza_predial',
+                                                   kwargs={'userid': userid, 'id_random': id_random})},
     ]
 
     return edit_generic_view(

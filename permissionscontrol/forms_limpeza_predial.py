@@ -13,6 +13,13 @@ class PermissionsAccessLimpezaPredialForms(forms.ModelForm):
         required=True  # Defina como True se a seleção de colaboradores for obrigatória
     )
 
+    def __init__(self, *args, userid, **kwargs):
+        super(PermissionsAccessLimpezaPredialForms, self).__init__(*args, **kwargs)
+        self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
+            id_random=userid
+        )
+        self.fields['Gerente'].required = True
+
     class Meta:
         model = PermissionsAccessLimpezaPredial
 

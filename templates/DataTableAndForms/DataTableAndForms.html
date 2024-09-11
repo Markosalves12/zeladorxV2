@@ -167,15 +167,35 @@
                           {% csrf_token %}
                             <div class="form-group">
                               {% for field in forms.visible_fields %}
-                                <div class="form-group">
-                                  <label for="{{ field.id_for_label }}" >
-                                    {{ field.label }}
-                                  </label>
-                                  {{ field }}
-                                </div>
+                                <!-- Identifique o campo 'Permissions' para aplicar a lógica de paginação -->
+                                {% if field.name == 'empresasecundaria' %}
+                                  <div class="form-group">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                                    <!-- Container com checkboxes paginados -->
+                                    <div id="checkbox-container">
+                                      {% for empresa in field %}
+                                        <div class="checkbox-item">
+                                          {{ empresa }}
+                                        </div>
+                                      {% endfor %}
+                                    </div>
+
+                                    <!-- Controles de paginação -->
+                                    <div id="pagination-controls">
+                                      <button type="button" id="prev-page" onclick="prevPage()" class="btn btn-info">Anterior</button>
+                                      <button type="button" id="next-page" onclick="nextPage()" class="btn btn-info">Proximo</button>
+                                    </div>
+                                  </div>
+                                {% else %}
+                                  <!-- Renderização normal para outros campos -->
+                                  <div class="form-group">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {{ field }}
+                                  </div>
+                                {% endif %}
                               {% endfor %}
                             </div>
-                        </div>
                         <div class="modal-footer justify-content-between">
                           <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
                           <button type="POST" class="btn btn-primary">{{ text_button_save }}</button>
@@ -204,6 +224,36 @@
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
+
+<script>
+  const itemsPerPage = 5;
+  let currentPage = 1;
+
+  function paginate() {
+    const items = document.querySelectorAll('.checkbox-item');
+    const totalItems = items.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    items.forEach((item, index) => {
+      item.style.display = (index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage) ? 'block' : 'none';
+    });
+
+    document.getElementById('prev-page').style.display = (currentPage === 1) ? 'none' : 'inline';
+    document.getElementById('next-page').style.display = (currentPage === totalPages) ? 'none' : 'inline';
+  }
+
+  function nextPage() {
+    currentPage++;
+    paginate();
+  }
+
+  function prevPage() {
+    currentPage--;
+    paginate();
+  }
+
+  window.onload = paginate;
+</script>
 
 <!-- jQuery -->
 <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>

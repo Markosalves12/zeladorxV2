@@ -3,7 +3,7 @@ from gerente.models import Gerente
 from empresasecundario.models import EmpresaSecundaria
 
 class GerenteForms(forms.ModelForm):
-    EmpresaSecundaria = forms.ModelMultipleChoiceField(
+    empresasecundaria = forms.ModelMultipleChoiceField(
         queryset=EmpresaSecundaria.objects.all(),
         widget=forms.CheckboxSelectMultiple(
             attrs={
@@ -16,12 +16,12 @@ class GerenteForms(forms.ModelForm):
 
     class Meta:
         model = Gerente
-        fields = ['username', 'email', 'funcao', 'EmpresaSecundaria']
+        fields = ['username', 'email', 'funcao', 'empresasecundaria']
         labels = {
             'username': 'Nome do gerente',
             'email': 'Email de contato',
             'funcao': 'Função principal',
-            'EmpresaSecundaria': 'EmpresaSecundaria'
+            'empresasecundaria': 'Empresa Secundaria'
         }
 
         widgets = {

@@ -2,40 +2,26 @@ from django.shortcuts import render, redirect
 from empresasecundario.models import EmpresaSecundaria
 from empresasecundario.forms import EmpresaSecundariaForms
 from utils.views import generic_view, edit_generic_view
+from empresasecundario.utils import define_empresa_primaria_ids
 
 # Create your views here.
 def empresas(request, userid):
     colunas = [
-        {
-            'nome': 'id',
-            'label': '#',
-            'largura': '10px'
-        },
-        {
-            'nome': 'nome',
-            'label': 'Nome'
-        },
-        {
-            'nome': 'razao_social',
-            'label': 'Razão social'
-        },
-        {
-            'nome': 'CNPJ',
-            'label': 'CNPJ'
-        },
-        {
-            'nome': 'setor',
-            'label': 'Setor'
-        },
-        {
-            'nome': 'acoes',
-            'label': 'Ações'
-        },
+        {'nome': 'id', 'label': '#','largura': '10px'},
+        {'nome': 'nome', 'label': 'Nome'},
+        {'nome': 'razao_social', 'label': 'Razão social'},
+        {'nome': 'CNPJ', 'label': 'CNPJ'},
+        {'nome': 'setor', 'label': 'Setor'},
+        {'nome': 'acoes', 'label': 'Ações'},
     ]
+
+    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
 
     return generic_view(
         request=request,
-        model=EmpresaSecundaria,
+        model=EmpresaSecundaria.objects.filter(
+            empresaprimaria__id_random__in=empresas_primarias_ids
+        ),
         form_class=EmpresaSecundariaForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -44,7 +30,8 @@ def empresas(request, userid):
         text_button_open_modal='Adicionar nova empresa',
         text_button_save='Salvar empresa',
         header_model='Nova empresa',
-        redirect_url='empresas'
+        redirect_url='empresas',
+        userid=userid
     )
 
 

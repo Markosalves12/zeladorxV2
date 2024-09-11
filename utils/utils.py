@@ -15,6 +15,7 @@ def generate_id_random(length=12):
     random_id = ''.join(random.choices(characters, k=length))
     return random_id
 
+
 def paginate(request, data_objects, per_page=10):
     paginator = Paginator(data_objects, per_page=per_page)
     page_number = request.GET.get('page')
@@ -66,7 +67,7 @@ def resize_image(image, max_width=620):
 
 
 class DataTableAndForms:
-    def __init__(self, request, model, modelforms, per_page, columns, edition_rout, history_rout=False):
+    def __init__(self, request, model, modelforms, per_page, columns, edition_rout, history_rout=False, userid=False):
         self.request = request
         self.model = model
         self.modelforms = modelforms
@@ -74,7 +75,7 @@ class DataTableAndForms:
         self.columns = columns
         self.edition_rout = edition_rout
         self.history_rout = history_rout
-
+        self.userid = userid
 
     def get_data_and_forms(self):
         if isinstance(self.model, ModelBase):
@@ -83,19 +84,26 @@ class DataTableAndForms:
             queryset = self.model
         else:
             raise ValueError("model deve ser uma instância de ModelBase ou QuerySet")
-        forms = self.modelforms()
+
+        if self.userid:
+            forms = self.modelforms(request=self.request, userid=self.userid)
+        else:
+            forms = self.modelforms()
+
         formatted_events = [self.format_event(dado) for dado in queryset]
         dados_paginados = paginate(
-        request=self.request,
-        data_objects=formatted_events,
-        per_page=self.per_page
+            request=self.request,
+            data_objects=formatted_events,
+            per_page=self.per_page
         )
         return forms, dados_paginados
 
     def format_event(self, dado):
         formatted_event = {coluna['nome']: getattr(dado, coluna['nome'], None) for coluna in self.columns}
         formatted_event['id_random'] = dado.id_random
-        formatted_event['editar_url'] = reverse(f'{self.edition_rout}', kwargs={'userid': self.request.session.get('userid', '') ,'id_random': dado.id_random})
+        formatted_event['editar_url'] = reverse(f'{self.edition_rout}',
+                                                kwargs={'userid': self.request.session.get('userid', ''),
+                                                        'id_random': dado.id_random})
         if self.history_rout:
             formatted_event['history_rout'] = reverse(f'{self.history_rout}', kwargs={'id_random': dado.id_random})
 
@@ -117,5 +125,3 @@ def formatar_atributos(queryset, atributo):
     valores_texto = ", ".join(str(valor) for valor in valores)
 
     return valores_texto
-
-

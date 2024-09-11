@@ -119,7 +119,7 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
         default=False
     )
 
-    EmpresaSecundaria = models.ManyToManyField(
+    empresasecundaria = models.ManyToManyField(
         to=EmpresaSecundaria,
         # on_delete=models.CASCADE,
         blank=False,

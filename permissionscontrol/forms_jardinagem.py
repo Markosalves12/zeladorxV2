@@ -1,6 +1,5 @@
 from django import forms
 from permissionscontrol.models import PermissionsAccessJardinagem, PermissionsJardinagem
-from django_select2.forms import Select2MultipleWidget
 
 class PermissionsAccessJardinagemForms(forms.ModelForm):
     Permissions = forms.ModelMultipleChoiceField(
@@ -13,6 +12,13 @@ class PermissionsAccessJardinagemForms(forms.ModelForm):
         label='Permissões concedidas',
         required=True  # Defina como True se a seleção de colaboradores for obrigatória
     )
+
+    def __init__(self, *args, userid, **kwargs):
+        super(PermissionsAccessJardinagemForms, self).__init__(*args, **kwargs)
+        self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
+            id_random=userid
+        )
+        self.fields['Gerente'].required = True
 
     class Meta:
         model = PermissionsAccessJardinagem

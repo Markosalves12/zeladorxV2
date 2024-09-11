@@ -26,7 +26,8 @@ def unidades(request, userid):
         text_button_open_modal='Adicionar nova unidade',
         text_button_save='Salvar unidade',
         header_model='Nova unidade',
-        redirect_url='unidades'
+        redirect_url='unidades',
+        userid=userid
     )
 
 def editar_unidade(request, userid, id_random):

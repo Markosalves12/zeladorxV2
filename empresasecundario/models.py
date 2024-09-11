@@ -53,8 +53,6 @@ class EmpresaSecundaria(models.Model):
     setor_options = [
         ('Jardinagem', 'Jardinagem'),
         ('Limpeza predial', 'Limpeza predial'),
-        # ('Controle de pragas', 'Controle de pragas'),
-        # ('Controle de instalações elétricas', 'Controle de instalações elétricas'),
     ]
 
     setor = models.CharField(
@@ -64,7 +62,7 @@ class EmpresaSecundaria(models.Model):
         max_length=40
     )
 
-    EmpresaPrimaria = models.ForeignKey(
+    empresaprimaria = models.ForeignKey(
         to=EmpresaPrimaria,
         blank=False,
         null=False,

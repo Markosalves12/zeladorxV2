@@ -3,12 +3,15 @@ from utils.utils import DataTableAndForms
 from django.urls import reverse
 from settings.utils import define_setting
 from permissionscontrol.utils import configurate_permissions
+from permissionscontrol.models import PermissionsAccessJardinagem, PermissionsAccessLimpezaPredial
+from empresasecundario.forms import EmpresaSecundariaForms
 
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
                  text_button_open_modal, text_button_save,  header_model,
-                 redirect_url, button_export_tittle=False, button_export_link=False,
+                 redirect_url, userid=False, button_export_tittle=False, button_export_link=False,
                  link_tipos=None, modal_button=True, configurate_gerente=False, history_rout=False,
                  permission_view=True, permission_edit=True, permission_crate=True):
+
     dt_and_forms = DataTableAndForms(
         request=request,
         model=model,
@@ -16,7 +19,8 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
         per_page=15,
         columns=columns,
         edition_rout=edition_rout,
-        history_rout=history_rout
+        history_rout=history_rout,
+        userid=userid
     )
 
     if request.method == 'POST':
@@ -74,13 +78,13 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
 
 def edit_generic_view(request, model_class, form_class, template_name, id_random, app_name, redirect_url_name,
                       redirect_close_button, link_tipos=None, permission_edit=True):
-    objeto = get_object_or_404(model_class, id_random=id_random)
-    forms = form_class(instance=objeto)
 
-    try:
-        print(forms['Permissions'])
-    except:
-        pass
+    objeto = get_object_or_404(model_class, id_random=id_random)
+
+    if isinstance(model_class, PermissionsAccessJardinagem) | isinstance(model_class, PermissionsAccessLimpezaPredial):
+        forms = form_class(instance=objeto, userid=request.session.get('userid', ''))
+    else:
+        forms = form_class(instance=objeto, request=request, userid=request.session.get('userid', ''))
 
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES, instance=objeto)
