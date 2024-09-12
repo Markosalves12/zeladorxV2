@@ -81,16 +81,15 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
 
     objeto = get_object_or_404(model_class, id_random=id_random)
 
-    if isinstance(model_class, PermissionsAccessJardinagem) | isinstance(model_class, PermissionsAccessLimpezaPredial):
-        forms = form_class(instance=objeto, userid=request.session.get('userid', ''))
-    else:
-        forms = form_class(instance=objeto, request=request, userid=request.session.get('userid', ''))
+    forms = form_class(instance=objeto, request=request, userid=request.session.get('userid', ''))
 
     if request.method == 'POST':
-        form = form_class(request.POST, request.FILES, instance=objeto)
+        form = form_class(request.POST, request.FILES, instance=objeto, request=request, userid=request.session.get('userid', '') )
+        print(form.errors)
+
         if form.is_valid():
             form.save()
-            return redirect(reverse(redirect_url_name, kwargs={'userid': request.session.get('userid', ''), 'id_random': id_random}))
+            return redirect(reverse(redirect_url_name, kwargs={'userid': request.session.get('userid', ''), 'id_random':id_random}))
 
     return render(
         request=request,

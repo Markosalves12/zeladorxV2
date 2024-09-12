@@ -8,7 +8,6 @@ class EmpresaSecundariaForms(forms.ModelForm):
         super(EmpresaSecundariaForms, self).__init__(*args, **kwargs)
         # Excluir serviços com status 'Desmobilizado' do queryset
         if userid:
-            gerente = Gerente.objects.get(id_random=userid)
             empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
 
             # Ajustar o queryset do campo 'empresaprimaria'

@@ -3,9 +3,18 @@ from servicos.models_limpeza_predial import (ServicoLimpezaPredialAgendado, Serv
                                              FatoServicoLimpezaPredial)
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from semana.models import DiasDaSemana
+from empresasecundario.utils import define_empresa_primaria_ids
 
 
 class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
+    def __init__(self, *args, request, userid=str, **kwargs):
+        super(ServicoLimpezaPredialAgendadoForms, self).__init__(*args, **kwargs)
+        if userid:
+            empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+            self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
+                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+            )
+
     ServicosEscalados = forms.ModelMultipleChoiceField(
         queryset=CatalogodeServicoLimpezaPredial.objects.all(),
         widget=forms.CheckboxSelectMultiple(
@@ -19,10 +28,11 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
 
     class Meta:
         model = ServicoLimpezaPredialAgendado
-        fields = ['area', 'ServicosEscalados', 'DataDeInicio', 'DataDeConclusao']
+        fields = ['area', 'DescricaoDoServico', 'ServicosEscalados', 'DataDeInicio', 'DataDeConclusao']
         labels = {
             'area': 'Área',
             'ServicosEscalados': 'Serviços Escalados',
+            'DescricaoDoServico': 'Descrição do serviço',
             'DataDeInicio': 'Data marcada para inicio',
             'DataDeConclusao': 'Data prevista para conclusao',
         }
@@ -49,10 +59,23 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
+            'DescricaoDoServico': forms.TextInput(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
         }
 
 
 class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
+    def __init__(self, *args, request, userid=str, **kwargs):
+        super(ServicoLimpezaPredialConfiguradoForms, self).__init__(*args, **kwargs)
+        if userid:
+            empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+            self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
+                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+            )
+
     ServicosEscalados = forms.ModelMultipleChoiceField(
         queryset=CatalogodeServicoLimpezaPredial.objects.all(),
         widget=forms.CheckboxSelectMultiple(

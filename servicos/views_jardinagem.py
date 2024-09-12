@@ -7,13 +7,14 @@ from utils.views import generic_view, edit_generic_view
 # from notifications.utils import enviar_notificacao
 from django.utils import timezone
 from permissionscontrol.utils import validate_permissions
+from empresasecundario.utils import define_empresa_primaria_ids
 
 # Create your views here.
 def agendar_servico_jardinagem(request, userid):
-    forms = ServicoJaridinagemAgendadoForms()
+    forms = ServicoJaridinagemAgendadoForms(request=request, userid=userid)
 
     if request.method == 'POST':
-        form = ServicoJaridinagemAgendadoForms(request.POST, request.FILES)
+        form = ServicoJaridinagemAgendadoForms(request.POST, request.FILES, request=request, userid=userid)
 
         if form.is_valid():
             #mensagem de sucesso
@@ -127,9 +128,13 @@ def servicos_agendados_jardinagem(request, userid):
         {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})},
     ]
 
+    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+
     return generic_view(
         request=request,
-        model=ServicoJardinagemAgendado,
+        model=ServicoJardinagemAgendado.objects.filter(
+            ServicosEscalados__EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+        ),
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -142,7 +147,8 @@ def servicos_agendados_jardinagem(request, userid):
         link_tipos=tipos,
         permission_crate=permission_crate,
         permission_view=permission_view,
-        permission_edit=permission_edit
+        permission_edit=permission_edit,
+        userid=userid
     )
 
 
@@ -163,7 +169,7 @@ def realizar_servico_jardinagem_agendado(request, id_random):
     objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     forms = FatoServicoJardinagemForms(
         instance=objeto,
-        id_random_servico=id_random,
+        id_random=id_random,
         initial={
             'Servico': objeto
         }

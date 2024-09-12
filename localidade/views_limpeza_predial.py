@@ -28,60 +28,19 @@ def localidades_limpeza_predial(request, userid):
     )
 
     colunas = [
-        {
-            'nome': 'id',
-            'label': '#',
-            'largura': '10px'
-        },
-        {
-            'nome': 'nome',
-            'label': 'Nome'
-        },
-        {
-            'nome': 'lat_med',
-            'label': 'Lat. média'
-        },
-        {
-            'nome': 'long_med',
-            'label': 'Long. média'
-        },
-        {
-            'nome': 'unidade',
-            'label': 'unidade'
-        },
-        {
-            'nome': 'acoes',
-            'label': 'Ações'
-        },
-        {
-            'nome': 'historico',
-            'label': 'Áreas associadas'
-        },
+        {'nome': 'id', 'label': '#', 'largura': '10px'},
+        {'nome': 'nome','label': 'Nome'},
+        {'nome': 'lat_med', 'label': 'Lat. média'},
+        {'nome': 'long_med','label': 'Long. média'},
+        {'nome': 'unidade','label': 'unidade'},
+        {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Áreas associadas'},
     ]
 
     tipos = [
-        {
-            'nome': 'Tipo de localidade',
-            'link': ''
-        },
-        {
-            'nome': 'Jardinagem',
-            'link': reverse(
-                'localidades_jardinagem',
-                kwargs={
-                    'userid': userid
-                }
-            )
-        },
-        {
-            'nome': 'Limpeza predial',
-            'link': reverse(
-                'localidades_limpeza_predial',
-                kwargs={
-                    'userid': userid
-                }
-            )
-        },
+        {'nome': 'Tipo de localidade', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('localidades_jardinagem', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('localidades_limpeza_predial', kwargs={'userid': userid})},
     ]
 
     return generic_view(
@@ -100,7 +59,8 @@ def localidades_limpeza_predial(request, userid):
         link_tipos=tipos,
         permission_view=permission_view,
         permission_edit=permission_edit,
-        permission_crate=permission_crate
+        permission_crate=permission_crate,
+        userid=userid
     )
 
 

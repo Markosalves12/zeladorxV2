@@ -2,6 +2,12 @@ from django import forms
 from permissionscontrol.models import PermissionsAccessLimpezaPredial, PermissionsLimpezaPredial
 
 class PermissionsAccessLimpezaPredialForms(forms.ModelForm):
+    def __init__(self, *args, request, userid=str, **kwargs):
+        super(PermissionsAccessLimpezaPredialForms, self).__init__(*args, **kwargs)
+        self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
+            id_random=userid
+        )
+
     Permissions = forms.ModelMultipleChoiceField(
         queryset=PermissionsLimpezaPredial.objects.all().order_by('Permissions'),
         widget=forms.CheckboxSelectMultiple(
@@ -12,13 +18,6 @@ class PermissionsAccessLimpezaPredialForms(forms.ModelForm):
         label='Permissões concedidas',
         required=True  # Defina como True se a seleção de colaboradores for obrigatória
     )
-
-    def __init__(self, *args, userid, **kwargs):
-        super(PermissionsAccessLimpezaPredialForms, self).__init__(*args, **kwargs)
-        self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
-            id_random=userid
-        )
-        self.fields['Gerente'].required = True
 
     class Meta:
         model = PermissionsAccessLimpezaPredial

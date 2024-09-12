@@ -2,8 +2,17 @@ from servicos.models_jardinagem import ServicoJardinagemAgendado, FatoServicoJar
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from gerente.models import Gerente
 from django import forms
+from empresasecundario.utils import define_empresa_primaria_ids
 
 class ServicoJaridinagemAgendadoForms(forms.ModelForm):
+    def __init__(self, *args, request, userid=str, **kwargs):
+        super(ServicoJaridinagemAgendadoForms, self).__init__(*args, **kwargs)
+        if userid:
+            empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+            self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
+                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+            )
+
     ServicosEscalados = forms.ModelMultipleChoiceField(
         queryset=CatalogodeServicoJardinagem.objects.all(),
         widget=forms.CheckboxSelectMultiple(
@@ -89,14 +98,8 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
 
 
 class FatoServicoJardinagemForms(forms.ModelForm):
-    def __init__(self, *args, id_random_servico=None, empresa=None, **kwargs):
+    def __init__(self, *args, request, userid=str, id_random=str, **kwargs):
         super(FatoServicoJardinagemForms, self).__init__(*args, **kwargs)
-        if id_random_servico is not None:
-            self.fields['Servico'].queryset = self.fields['Servico'].queryset.exclude(
-                status__in=['Cancelado', 'Concluido']
-            ).filter(
-                id_random=id_random_servico
-            )
 
     class Meta:
         model = FatoServicoJardinagem

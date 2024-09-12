@@ -3,6 +3,7 @@ from vegetacao.models import CatalogoVegetacao
 from vegetacao.forms import CatalogoVegetacaoForm
 from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions
+from empresasecundario.utils import define_empresa_primaria_ids
 
 # Create your views here.
 def vegetacao(request, userid):
@@ -34,9 +35,13 @@ def vegetacao(request, userid):
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 
+    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+
     return generic_view(
         request=request,
-        model=CatalogoVegetacao,
+        model=CatalogoVegetacao.objects.filter(
+            EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+        ),
         form_class=CatalogoVegetacaoForm,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,

@@ -70,7 +70,7 @@ def editar_permissoes_jardinagem(request, userid, id_random):
     )
 
     tipos = [
-        {'nome': 'Editar permissões','link': ''},
+        {'nome': 'Editar permissões', 'link': ''},
         {'nome': 'Jardinagem', 'link': reverse('editar_permissoes_jardinagem',
                                                kwargs={'userid': userid, 'id_random': id_random})},
         {'nome': 'Limpeza predial', 'link': reverse('editar_permissoes_limpeza_predial',
@@ -86,5 +86,5 @@ def editar_permissoes_jardinagem(request, userid, id_random):
         app_name=f'Editar permissoes jardinagem {gerente.username}',
         redirect_url_name='editar_permissoes_jardinagem',
         redirect_close_button='permissoes_jardinagem',
-        link_tipos=tipos
+        link_tipos=tipos,
     )

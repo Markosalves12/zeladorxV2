@@ -2,6 +2,7 @@ from django.shortcuts import render
 from unidade.models import Unidade
 from unidade.forms import UnidadeForms
 from utils.views import generic_view, edit_generic_view
+from empresasecundario.utils import define_empresa_primaria_ids
 
 # Create your views here.
 def unidades(request, userid):
@@ -14,9 +15,13 @@ def unidades(request, userid):
         {'nome': 'historico', 'label': 'Mapa'},
     ]
 
+    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+
     return generic_view(
         request=request,
-        model=Unidade,
+        model=Unidade.objects.filter(
+            empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+        ),
         form_class=UnidadeForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,

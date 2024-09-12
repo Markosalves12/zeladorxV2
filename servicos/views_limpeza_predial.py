@@ -3,12 +3,13 @@ from servicos.models_limpeza_predial import ServicoLimpezaPredialConfigurado, Se
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialConfiguradoForms, FatoServicoLimpezaPredialForms, ServicoLimpezaPredialAgendadoForms
 from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions
+from empresasecundario.utils import define_empresa_primaria_ids
 
 def agendar_servico_limpeza_predial(request, userid):
-    forms = ServicoLimpezaPredialAgendadoForms()
+    forms = ServicoLimpezaPredialAgendadoForms(request=request, userid=userid)
 
     if request.method == 'POST':
-        form = ServicoLimpezaPredialAgendadoForms(request.POST, request.FILES)
+        form = ServicoLimpezaPredialAgendadoForms(request.POST, request.FILES, request=request, userid=userid)
         print(form.errors)
         if form.is_valid():
             form.save()
@@ -70,9 +71,13 @@ def servicos_agendados_limpeza_predial(request, userid):
         {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})},
     ]
 
+    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+
     return generic_view(
         request=request,
-        model=ServicoLimpezaPredialAgendado,
+        model=ServicoLimpezaPredialAgendado.objects.filter(
+            ServicosEscalados__EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+        ),
         form_class=ServicoLimpezaPredialAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -85,7 +90,8 @@ def servicos_agendados_limpeza_predial(request, userid):
         link_tipos=tipos,
         permission_view=permission_view,
         permission_edit=permission_edit,
-        permission_crate=permission_crate
+        permission_crate=permission_crate,
+        userid=userid
     )
 
 def editar_servico_limpeza_predial_agendado(request, userid, id_random):
@@ -109,10 +115,10 @@ def editar_servico_limpeza_predial_agendado(request, userid, id_random):
     )
 
 def configurar_servico_limpeza_predial(request, userid):
-    forms = ServicoLimpezaPredialConfiguradoForms()
+    forms = ServicoLimpezaPredialConfiguradoForms(request=request, userid=userid)
 
     if request.method == 'POST':
-        form = ServicoLimpezaPredialConfiguradoForms(request.POST, request.FILES)
+        form = ServicoLimpezaPredialConfiguradoForms(request.POST, request.FILES, request=request, userid=userid)
         print(form.errors)
         if form.is_valid():
             form.save()
@@ -174,6 +180,7 @@ def servicos_configurados_limpeza_predial(request, userid):
         header_model='solicitar serviço',
         redirect_url='servicos_configurados_limpeza_predial',
         link_tipos=tipos,
+        userid=userid
     )
 
 

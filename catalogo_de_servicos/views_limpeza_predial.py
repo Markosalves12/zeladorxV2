@@ -3,6 +3,7 @@ from catalogo_de_servicos.forms_limpeza_predial import CatalogoServicoLimpezaPre
 from utils.views import generic_view, edit_generic_view
 from django.shortcuts import reverse
 from permissionscontrol.utils import validate_permissions
+from empresasecundario.utils import define_empresa_primaria_ids
 
 
 # Create your views here.
@@ -29,57 +30,26 @@ def catalogo_de_servicos_limpeza_predial(request, userid):
     )
 
     colunas = [
-        {
-            'nome': 'id',
-            'label': '#',
-            'largura': '10px'
-        },
-        {
-            'nome': 'nome',
-            'label': 'Nome'
-        },
-        {
-            'nome': 'EmpresaSecundaria',
-            'label': 'Empresa'
-        },
-        {
-            'nome': 'acoes',
-            'label': 'Ações'
-        },
-        {
-            'nome': 'historico',
-            'label': 'Histórico'
-        },
+        {'nome': 'id','label': '#','largura': '10px'},
+        {'nome': 'nome','label': 'Nome'},
+        {'nome': 'EmpresaSecundaria','label': 'Empresa' },
+        {'nome': 'acoes','label': 'Ações' },
+        {'nome': 'historico','label': 'Histórico'},
     ]
 
     tipos = [
-        {
-            'nome': 'Catálogo de serviços',
-            'link': ''
-        },
-        {
-            'nome': 'Jardinagem',
-            'link': reverse(
-                'catalogo_de_servicos_jardinagem',
-                kwargs={
-                    'userid': userid
-                }
-            )
-        },
-        {
-            'nome': 'Limpeza predial',
-            'link': reverse(
-                'catalogo_de_servicos_limpeza_predial',
-                kwargs={
-                    'userid': userid
-                }
-            )
-        },
+        {'nome': 'Catálogo de serviços', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('catalogo_de_servicos_jardinagem', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('catalogo_de_servicos_limpeza_predial', kwargs={'userid': userid})},
     ]
+
+    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
 
     return generic_view(
         request=request,
-        model=CatalogodeServicoLimpezaPredial,
+        model=CatalogodeServicoLimpezaPredial.objects.filter(
+            EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+        ),
         form_class=CatalogoServicoLimpezaPredialForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -93,10 +63,12 @@ def catalogo_de_servicos_limpeza_predial(request, userid):
         link_tipos=tipos,
         permission_view=permission_view,
         permission_edit=permission_edit,
-        permission_crate=permission_crate
+        permission_crate=permission_crate,
+        userid=userid
     )
 
 def editar_catalogo_de_servicos_limpeza_predial(request, userid, id_random):
+
     return edit_generic_view(
         request=request,
         model_class=CatalogodeServicoLimpezaPredial,

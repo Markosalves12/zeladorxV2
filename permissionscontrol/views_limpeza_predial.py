@@ -47,10 +47,10 @@ def editar_permissoes_limpeza_predial(request, userid, id_random):
     )
 
     tipos = [
-        {'nome': 'Editar permissões','link': '' },
-        {'nome': 'Jardinagem','link': reverse('editar_permissoes_jardinagem',kwargs={
+        {'nome': 'Editar permissões', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('editar_permissoes_jardinagem',kwargs={
             'userid': userid, 'id_random': permissions_instance.id_random})},
-        {'nome': 'Limpeza predial','link': reverse('editar_permissoes_limpeza_predial',
+        {'nome': 'Limpeza predial', 'link': reverse('editar_permissoes_limpeza_predial',
                                                    kwargs={'userid': userid, 'id_random': id_random})},
     ]
 

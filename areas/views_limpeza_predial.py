@@ -4,6 +4,7 @@ from areas.forms_limpeza_predial import AreasLimpezaPredialForms
 from utils.views import generic_view, edit_generic_view
 from localidade.models_limpeza_predial import LocalidadeLimpezaPredial
 from permissionscontrol.utils import validate_permissions
+from empresasecundario.utils import define_empresa_primaria_ids
 
 # Create your views here.
 def areas_limpeza_predial(request, userid):
@@ -42,9 +43,13 @@ def areas_limpeza_predial(request, userid):
         {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})}
     ]
 
+    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+
     return generic_view(
         request=request,
-        model=AreaLimpezaPredial,
+        model=AreaLimpezaPredial.objects.filter(
+            localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+        ),
         form_class=AreasLimpezaPredialForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -58,7 +63,8 @@ def areas_limpeza_predial(request, userid):
         link_tipos=tipos,
         permission_view=permission_view,
         permission_edit=permission_edit,
-        permission_crate=permission_crate
+        permission_crate=permission_crate,
+        userid=userid
     )
 
 

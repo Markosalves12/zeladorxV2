@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from terrenos.models import Terreno
 from terrenos.forms import TerrenoForms
-from utils.views import generic_view
+from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions
+from empresasecundario.utils import define_empresa_primaria_ids
 
 # Create your views here.
 def terrenos(request, userid):
@@ -34,9 +35,13 @@ def terrenos(request, userid):
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 
+    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+
     return generic_view(
         request=request,
-        model=Terreno,
+        model=Terreno.objects.filter(
+            EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+        ),
         form_class=TerrenoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -48,7 +53,8 @@ def terrenos(request, userid):
         redirect_url='terrenos',
         permission_view=permission_view,
         permission_edit=permission_edit,
-        permission_crate=permission_crate
+        permission_crate=permission_crate,
+        userid=userid
     )
 
 
@@ -60,23 +66,14 @@ def editar_terreno(request, userid, id_random):
         permission_to_access=['259: Pode editar terrenos']
     )
 
-    objeto = Terreno.objects.get(id_random=id_random)
-    forms = TerrenoForms(instance=objeto)
-
-    if request.method == 'POST':
-        form = TerrenoForms(request.POST, instance=objeto)
-        if form.is_valid():
-            form.save()
-            return redirect('editar_terreno', id_random)
-
-    return render(
+    return edit_generic_view(
         request=request,
+        model_class=Terreno,
+        form_class=TerrenoForms,
         template_name='DataTableAndForms/EditObject.html',
-        context={
-            'forms': forms,
-            'app_name': 'Editar terreno',
-            'id_random': id_random,
-            'text_button': 'Salvar',
-            'permission_edit': permission_edit
-        }
+        id_random=id_random,
+        app_name='Editar terreno',
+        redirect_close_button='terrenos',
+        redirect_url_name='editar_terreno',
+        permission_edit=permission_edit
     )
