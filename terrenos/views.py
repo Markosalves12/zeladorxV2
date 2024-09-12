@@ -3,7 +3,7 @@ from terrenos.models import Terreno
 from terrenos.forms import TerrenoForms
 from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions
-from empresasecundario.utils import define_empresa_primaria_ids
+from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def terrenos(request, userid):
@@ -35,12 +35,15 @@ def terrenos(request, userid):
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 
-    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
     return generic_view(
         request=request,
         model=Terreno.objects.filter(
-            EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+            EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            EmpresaSecundaria__id_random__in=empresas_secundarias_ids
         ),
         form_class=TerrenoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',

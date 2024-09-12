@@ -3,14 +3,13 @@ from servicos.models_limpeza_predial import ServicoLimpezaPredialConfigurado, Se
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialConfiguradoForms, FatoServicoLimpezaPredialForms, ServicoLimpezaPredialAgendadoForms
 from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions
-from empresasecundario.utils import define_empresa_primaria_ids
+from empresasecundario.utils import define_empresas
 
 def agendar_servico_limpeza_predial(request, userid):
     forms = ServicoLimpezaPredialAgendadoForms(request=request, userid=userid)
 
     if request.method == 'POST':
         form = ServicoLimpezaPredialAgendadoForms(request.POST, request.FILES, request=request, userid=userid)
-        print(form.errors)
         if form.is_valid():
             form.save()
             return redirect('agendar_servico_limpeza_predial')
@@ -71,12 +70,15 @@ def servicos_agendados_limpeza_predial(request, userid):
         {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})},
     ]
 
-    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
     return generic_view(
         request=request,
         model=ServicoLimpezaPredialAgendado.objects.filter(
-            ServicosEscalados__EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+            Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
         ),
         form_class=ServicoLimpezaPredialAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
@@ -146,7 +148,7 @@ def configurar_servico_limpeza_predial(request, userid):
 def servicos_configurados_limpeza_predial(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
-        {'nome': 'area', 'label': 'Área'},
+        {'nome': 'Areas', 'label': 'Área'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'tempomedioplanejado', 'label': 'Tempo médio planejado'},
         {'nome': 'horario_1', 'label': 'Horario 1'},
@@ -167,9 +169,16 @@ def servicos_configurados_limpeza_predial(request, userid):
         {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid})}
     ]
 
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
     return generic_view(
         request=request,
-        model=ServicoLimpezaPredialConfigurado,
+        model=ServicoLimpezaPredialConfigurado.objects.filter(
+            Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        ),
         form_class=ServicoLimpezaPredialConfiguradoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,

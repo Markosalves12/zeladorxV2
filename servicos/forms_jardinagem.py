@@ -2,15 +2,29 @@ from servicos.models_jardinagem import ServicoJardinagemAgendado, FatoServicoJar
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from gerente.models import Gerente
 from django import forms
-from empresasecundario.utils import define_empresa_primaria_ids
+from empresasecundario.utils import define_empresas
 
 class ServicoJaridinagemAgendadoForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, **kwargs):
         super(ServicoJaridinagemAgendadoForms, self).__init__(*args, **kwargs)
         if userid:
-            empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+            empresas = define_empresas(request=request, userid=userid)
+            empresas_primarias_ids = empresas['empresas_primarias_ids']
+            empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
             self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
-                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+            )
+
+            self.fields['ColaboradoresEscalados'].queryset = self.fields['ColaboradoresEscalados'].queryset.filter(
+                empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                empresasecundaria__id_random__in=empresas_secundarias_ids,
+            )
+
+            self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
+                localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
             )
 
     ServicosEscalados = forms.ModelMultipleChoiceField(

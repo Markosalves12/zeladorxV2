@@ -3,6 +3,7 @@ from localidade.models_limpeza_predial import LocalidadeLimpezaPredial
 from localidade.forms_limpeza_predial import LocalidadeLimpezaPredialForms
 from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions
+from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def localidades_limpeza_predial(request, userid):
@@ -43,9 +44,16 @@ def localidades_limpeza_predial(request, userid):
         {'nome': 'Limpeza predial', 'link': reverse('localidades_limpeza_predial', kwargs={'userid': userid})},
     ]
 
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
     return generic_view(
         request=request,
-        model=LocalidadeLimpezaPredial,
+        model=LocalidadeLimpezaPredial.objects.filter(
+            unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        ),
         form_class=LocalidadeLimpezaPredialForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -65,6 +73,13 @@ def localidades_limpeza_predial(request, userid):
 
 
 def editar_localidade_limpeza_predial(request, userid, id_random):
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['255: Pode editar localidades']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=LocalidadeLimpezaPredial,
@@ -74,4 +89,5 @@ def editar_localidade_limpeza_predial(request, userid, id_random):
         app_name='Editar localidade',
         redirect_url_name='editar_localidade_limpeza_predial',
         redirect_close_button='localidades_limpeza_predial',
+        permission_edit=permission_edit
     )

@@ -3,17 +3,28 @@ from servicos.models_limpeza_predial import (ServicoLimpezaPredialAgendado, Serv
                                              FatoServicoLimpezaPredial)
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from semana.models import DiasDaSemana
-from empresasecundario.utils import define_empresa_primaria_ids
+from empresasecundario.utils import define_empresas
 
 
 class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, **kwargs):
         super(ServicoLimpezaPredialAgendadoForms, self).__init__(*args, **kwargs)
         if userid:
-            empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+            empresas = define_empresas(request=request, userid=userid)
+            empresas_primarias_ids = empresas['empresas_primarias_ids']
+            empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
             self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
-                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
             )
+
+            self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
+                localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+            )
+
+
 
     ServicosEscalados = forms.ModelMultipleChoiceField(
         queryset=CatalogodeServicoLimpezaPredial.objects.all(),
@@ -28,9 +39,9 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
 
     class Meta:
         model = ServicoLimpezaPredialAgendado
-        fields = ['area', 'DescricaoDoServico', 'ServicosEscalados', 'DataDeInicio', 'DataDeConclusao']
+        fields = ['Areas', 'DescricaoDoServico', 'ServicosEscalados', 'DataDeInicio', 'DataDeConclusao']
         labels = {
-            'area': 'Área',
+            'Areas': 'Área',
             'ServicosEscalados': 'Serviços Escalados',
             'DescricaoDoServico': 'Descrição do serviço',
             'DataDeInicio': 'Data marcada para inicio',
@@ -54,7 +65,7 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
                     'placeholder': 'DD/MM/AAAA HH:MM',
                 }
             ),
-            'area': forms.Select(
+            'Areas': forms.Select(
                 attrs={
                     'class': 'form-control'
                 }
@@ -71,9 +82,18 @@ class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, **kwargs):
         super(ServicoLimpezaPredialConfiguradoForms, self).__init__(*args, **kwargs)
         if userid:
-            empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+            empresas = define_empresas(request=request, userid=userid)
+            empresas_primarias_ids = empresas['empresas_primarias_ids']
+            empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
             self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
-                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+            )
+
+            self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
+                localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
             )
 
     ServicosEscalados = forms.ModelMultipleChoiceField(
@@ -100,12 +120,12 @@ class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
 
     class Meta:
         model = ServicoLimpezaPredialConfigurado
-        fields = ['area', 'ServicosEscalados', 'tempomedioplanejado', 'diasaseremrealizado','horario_1',
+        fields = ['Areas', 'ServicosEscalados', 'tempomedioplanejado', 'diasaseremrealizado','horario_1',
                   'horario_2', 'horario_3', 'horario_4', 'horario_5',
                   'horario_6', 'horario_7', 'horario_8', 'horario_9']
 
         labels = {
-            'area': 'Área',
+            'Areas': 'Área',
             'ServicosEscalados': 'Serviços Escalados',
             'tempomedioplanejado': 'Tempo médio planejado',
             'diasaseremrealizado': 'Dias a serem realizados',
@@ -121,7 +141,7 @@ class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
         }
 
         widgets = {
-            'area': forms.Select(
+            'Areas': forms.Select(
                 attrs={
                     'class': 'form-control'
                 }
@@ -214,7 +234,7 @@ class FatoServicoLimpezaPredialForms(forms.ModelForm):
 
     class Meta:
         model = FatoServicoLimpezaPredial
-        fields = ['Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area','Gerente']
+        fields = ['Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area', 'Gerente']
 
         labels = {
             'Servico': 'Serviço',

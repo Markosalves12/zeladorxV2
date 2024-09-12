@@ -4,7 +4,7 @@ from areas.forms_limpeza_predial import AreasLimpezaPredialForms
 from utils.views import generic_view, edit_generic_view
 from localidade.models_limpeza_predial import LocalidadeLimpezaPredial
 from permissionscontrol.utils import validate_permissions
-from empresasecundario.utils import define_empresa_primaria_ids
+from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def areas_limpeza_predial(request, userid):
@@ -43,12 +43,15 @@ def areas_limpeza_predial(request, userid):
         {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})}
     ]
 
-    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
     return generic_view(
         request=request,
         model=AreaLimpezaPredial.objects.filter(
-            localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+            localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids
         ),
         form_class=AreasLimpezaPredialForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
@@ -91,49 +94,19 @@ def areas_associadas_localidades_limpeza_predial(request, id_random):
     )
 
     colunas = [
-        {
-            'nome': 'id',
-            'label': '#',
-            'largura': '10px'
-        },
-        {
-            'nome': 'nome',
-            'label': 'Nome'
-        },
-        {
-            'nome': 'dimensao',
-            'label': 'Dimensão'
-        },
-        {
-            'nome': 'servico',
-            'label': 'Serviço'},
-        {
-            'nome': 'localidade',
-            'label': 'Localidade'
-        },
-        {
-            'nome': 'acoes',
-            'label': 'Ações'
-        },
-        {
-            'nome': 'historico',
-            'label': 'Histórico'
-        },
+        {'nome': 'id', 'label': '#', 'largura': '10px'},
+        {'nome': 'nome', 'label': 'Nome'},
+        {'nome': 'dimensao', 'label': 'Dimensão'},
+        {'nome': 'servico', 'label': 'Serviço'},
+        {'nome': 'localidade', 'label': 'Localidade'},
+        {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Histórico'},
     ]
 
     tipos = [
-        {
-            'nome': 'Tipo de área',
-            'link': ''
-        },
-        {
-            'nome': 'Jardinagem',
-            'link': reverse('areas_jardins')
-        },
-        {
-            'nome': 'Limpeza predial',
-            'link': reverse('areas_limpeza_predial')
-        }
+        {'nome': 'Tipo de área', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('areas_jardins')},
+        {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial')}
     ]
 
     return generic_view(

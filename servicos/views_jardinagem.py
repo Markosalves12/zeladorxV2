@@ -7,7 +7,7 @@ from utils.views import generic_view, edit_generic_view
 # from notifications.utils import enviar_notificacao
 from django.utils import timezone
 from permissionscontrol.utils import validate_permissions
-from empresasecundario.utils import define_empresa_primaria_ids
+from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def agendar_servico_jardinagem(request, userid):
@@ -15,58 +15,9 @@ def agendar_servico_jardinagem(request, userid):
 
     if request.method == 'POST':
         form = ServicoJaridinagemAgendadoForms(request.POST, request.FILES, request=request, userid=userid)
-
         if form.is_valid():
-            #mensagem de sucesso
-            ColaboradoresEscalados = form.cleaned_data['ColaboradoresEscalados']
-            # descricao = form.cleaned_data['DescricaoDoServico']
-            # area = form.cleaned_data['Areas']
-            # data_inicio = form.cleaned_data['DataDeInicio']
-            # id_random = form.instance.id_random
-            #
-            # print(id_random)
-
-
-            for colaborador in ColaboradoresEscalados:
-                print(colaborador)
-
-                # email = Gerente.objects.get(
-                #     id_random=colaborador.id_random
-                # ).email
-                #
-                # username = Gerente.objects.get(
-                #     username=colaborador.username
-                # ).username
-                #
-                # servicos = list()
-                # servicos_escalados = form.cleaned_data['ServicosEscalados']
-                # for servico_cat in servicos_escalados:
-                #     servicos.append(
-                #         CatalogodeServicoJardinagem.objects.get(
-                #             id_random=servico_cat.id_random
-                #         ).nome
-                #     )
-                #
-                # enviar_notificacao(
-                #     destinatario=[email],
-                #     assunto="Novo serviço",
-                #     contexto={
-                #         'id_random': id_random,
-                #         'colaborador_nome': username,
-                #         'id_random_colaborador': colaborador.id_random,
-                #         'descricao': descricao,
-                #         'area': area,
-                #         'data_inicio': data_inicio,
-                #         'servicos': ', '.join(servicos)
-                #
-                #     },
-                #     template='notifications/new_service.html'
-                # )
-
             form.save()
             return redirect('agendar_servico_jardinagem', userid)
-
-        # print("formulario invalido")
 
     tipos = [
         {'nome': 'Agendar serviços', 'link': ''},
@@ -128,12 +79,15 @@ def servicos_agendados_jardinagem(request, userid):
         {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})},
     ]
 
-    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
     return generic_view(
         request=request,
         model=ServicoJardinagemAgendado.objects.filter(
-            ServicosEscalados__EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+            Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
         ),
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',

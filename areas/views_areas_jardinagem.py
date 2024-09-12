@@ -4,8 +4,7 @@ from areas.forms_jardinagem import AreasJardinsForms
 from utils.views import generic_view, edit_generic_view
 from localidade.models_Jardinagem import LocalidadeJardiangem
 from permissionscontrol.utils import validate_permissions
-from django.shortcuts import get_object_or_404, redirect
-from empresasecundario.utils import define_empresa_primaria_ids
+from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def areas_jardins(request, userid):
@@ -47,12 +46,15 @@ def areas_jardins(request, userid):
         {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})},
     ]
 
-    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
     return generic_view(
         request=request,
         model=AreasJardins.objects.filter(
-            localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids
+            localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            localidade__unidade__empresasecundaria__id_random__in = empresas_secundarias_ids,
         ),
         form_class=AreasJardinsForms,
         template_name='DataTableAndForms/DataTableAndForms.html',

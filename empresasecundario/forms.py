@@ -1,14 +1,15 @@
 from empresasecundario.models import EmpresaSecundaria
 from django import forms
 from gerente.models import Gerente
-from empresasecundario.utils import define_empresa_primaria_ids
+from empresasecundario.utils import define_empresas
 
 class EmpresaSecundariaForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, **kwargs):
         super(EmpresaSecundariaForms, self).__init__(*args, **kwargs)
         # Excluir serviços com status 'Desmobilizado' do queryset
         if userid:
-            empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+            empresas = define_empresas(request=request, userid=userid)
+            empresas_primarias_ids = empresas['empresas_primarias_ids']
 
             # Ajustar o queryset do campo 'empresaprimaria'
             self.fields['empresaprimaria'].queryset = self.fields['empresaprimaria'].queryset.filter(

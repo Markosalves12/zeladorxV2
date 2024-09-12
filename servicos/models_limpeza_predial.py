@@ -14,7 +14,7 @@ class ServicoLimpezaPredialConfigurado(models.Model):
         max_length=20
     )
 
-    area = models.ForeignKey(
+    Areas = models.ForeignKey(
         to=AreaLimpezaPredial,
         blank=False,
         null=False,
@@ -104,7 +104,7 @@ class ServicoLimpezaPredialAgendado(models.Model):
         null=False,
     )
 
-    area = models.ForeignKey(
+    Areas = models.ForeignKey(
         to=AreaLimpezaPredial,
         blank=False,
         null=False,

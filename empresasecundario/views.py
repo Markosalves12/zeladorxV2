@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from empresasecundario.models import EmpresaSecundaria
 from empresasecundario.forms import EmpresaSecundariaForms
 from utils.views import generic_view, edit_generic_view
-from empresasecundario.utils import define_empresa_primaria_ids
+from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def empresas(request, userid):
@@ -15,7 +15,8 @@ def empresas(request, userid):
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 
-    empresas_primarias_ids = define_empresa_primaria_ids(request=request, userid=userid)
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
 
     return generic_view(
         request=request,

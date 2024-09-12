@@ -4,6 +4,7 @@ from gerente.models import Gerente
 from gerente.forms import GerenteForms
 from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions
+from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def gerentes_limpeza_predial(request, userid):
@@ -29,57 +30,29 @@ def gerentes_limpeza_predial(request, userid):
     )
 
     colunas = [
-        {
-            'nome': 'id',
-            'label': '#',
-            'largura': '10px'
-        },
-        {
-            'nome': 'username',
-            'label': 'Nome'
-        },
-        {
-            'nome': 'email',
-            'label': 'E-mail'
-        },
-        {
-            'nome': 'email',
-            'label': 'E-mail'
-        },
-        {
-            'nome': 'EmpresaSecundaria',
-            'label': 'Empresa(s)'
-        },
+        {'nome': 'id', 'label': '#','largura': '10px'},
+        {'nome': 'username', 'label': 'Nome'},
+        {'nome': 'email', 'label': 'E-mail'},
+        {'nome': 'email', 'label': 'E-mail'},
+        {'nome': 'EmpresaSecundaria', 'label': 'Empresa(s)'},
     ]
 
     tipos = [
-        {
-            'nome': 'Gerentes',
-            'link': ''
-        },
-        {
-            'nome': 'Jardinagem',
-            'link': reverse(
-                'gerentes_jardinagem',
-                kwargs={
-                    'userid': userid
-                }
-            )
-        },
-        {
-            'nome': 'Limpeza predial',
-            'link': reverse(
-                'gerentes_limpeza_predial',
-                kwargs={
-                    'userid': userid
-                }
-            )
-        },
+        {'nome': 'Gerentes', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('gerentes_jardinagem', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('gerentes_limpeza_predial', kwargs={'userid': userid})},
     ]
+
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
     return generic_view(
         request=request,
-        model=Gerente,
+        model=Gerente.objects.filter(
+            empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            empresasecundaria__id_random__in=empresas_secundarias_ids
+        ),
         form_class=GerenteForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,

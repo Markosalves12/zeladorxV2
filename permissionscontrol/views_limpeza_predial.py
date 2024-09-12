@@ -3,6 +3,7 @@ from utils.views import generic_view, edit_generic_view
 from permissionscontrol.models import PermissionsAccessLimpezaPredial, PermissionsAccessJardinagem
 from permissionscontrol.forms_limpeza_predial import PermissionsAccessLimpezaPredialForms
 from gerente.models import Gerente
+from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def permissoes_limpeza_predial(request, userid):
@@ -19,9 +20,16 @@ def permissoes_limpeza_predial(request, userid):
         {'nome': 'Limpeza predial', 'link': reverse('permissoes_limpeza_predial', kwargs={'userid': userid})},
     ]
 
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
     return generic_view(
         request=request,
-        model=PermissionsAccessLimpezaPredial,
+        model=PermissionsAccessLimpezaPredial.objects.filter(
+            Gerente__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            Gerente__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        ),
         form_class=PermissionsAccessLimpezaPredialForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
