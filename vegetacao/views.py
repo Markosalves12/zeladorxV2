@@ -1,4 +1,3 @@
-from django.shortcuts import render, redirect
 from vegetacao.models import CatalogoVegetacao
 from vegetacao.forms import CatalogoVegetacaoForm
 from utils.views import generic_view, edit_generic_view
@@ -7,25 +6,29 @@ from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def vegetacao(request, userid):
+    # ('353: Pode excluir vegetações', '353: Pode excluir vegetações'),
+    # ('354: Pode desmobilizar vegetações', '354: Pode desmobilizar vegetações'),
+    # ('355: Pode reabilitar vegetações', '355: Pode reabilitar vegetações'),
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['264: Pode visualizar vegetações']
+        permission_to_access=['352: Pode visualizar vegetações']
     )
 
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['263: Pode editar vegetações']
+        permission_to_access=['351: Pode editar vegetações']
     )
 
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['262: Pode criar novas vegetações']
+        permission_to_access=['350: Pode criar novas vegetações']
     )
 
     colunas = [
@@ -65,7 +68,7 @@ def editar_vegetacao(request, userid, id_random):
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['263: Pode editar vegetações']
+        permission_to_access=['351: Pode editar vegetações']
     )
 
     return edit_generic_view(

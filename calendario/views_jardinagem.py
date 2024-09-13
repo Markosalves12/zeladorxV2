@@ -11,19 +11,35 @@ def calendario_jardinagem(request, userid):
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['280: Pode visualizar serviços agendados']
+        permission_to_access=['322: Pode visualizar serviços agendados']
     )
+
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['279: Pode editar serviços agendados']
+        permission_to_access=['321: Pode editar serviços agendados']
     )
+
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['278: Pode agendar novos serviços']
+        permission_to_access=['320: Pode agendar novos serviços']
+    )
+
+    permission_accompany = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['324: Pode acompanhar serviços agendados']
+    )
+
+    permission_cancel = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['328: Pode cancelar serviços agendados']
     )
 
     agendado = ServicoJardinagemAgendado.objects.all().annotate(
@@ -35,28 +51,9 @@ def calendario_jardinagem(request, userid):
     )
 
     tipos = [
-        {
-            'nome': 'Calendário de serviços',
-            'link': ''
-        },
-        {
-            'nome': 'Jardinagem',
-            'link': reverse(
-                'calendario_jardinagem',
-                kwargs={
-                    'userid': userid
-                }
-            )
-        },
-        {
-            'nome': 'Limpeza predial',
-            'link': reverse(
-                'calendario_limpeza_predial',
-                kwargs={
-                    'userid': userid
-                }
-            )
-        },
+        {'nome': 'Calendário de serviços', 'link': ''},
+        {'nome': 'Jardinagem', 'link': reverse('calendario_jardinagem', kwargs={'userid': userid})},
+        {'nome': 'Limpeza predial', 'link': reverse('calendario_limpeza_predial', kwargs={'userid': userid})},
     ]
 
     formatted_events = [
@@ -79,6 +76,8 @@ def calendario_jardinagem(request, userid):
             'url_agendamento': 'agendar_servico_jardinagem',
             'permission_view': permission_view,
             'permission_edit': permission_edit,
-            'permission_crate': permission_crate
+            'permission_crate': permission_crate,
+            'permission_accompany': permission_accompany,
+            'permission_cancel': permission_cancel
         }
     )

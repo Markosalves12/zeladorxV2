@@ -8,25 +8,28 @@ from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def catalogo_de_servicos_jardinagem(request, userid):
+    # ('263: Pode excluir serviços do catálogo', '263: Pode excluir serviços do catálogo'),
+    # ('264: Pode desmobilizar serviços do catálogo', '264: Pode desmobilizar serviços do catálogo'),
+    # ('265: Pode reabilitar serviços do catálogo', '265: Pode reabilitar serviços do catálogo'),
     permission_view = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['268: Pode visualizar serviços do catálogo']
+        permission_to_access=['262: Pode visualizar serviços do catálogo']
     )
 
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['267: Pode editar serviços do catálogo']
+        permission_to_access=['261: Pode editar serviços do catálogo']
     )
 
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['266: Pode criar novos serviços ao catálogo']
+        permission_to_access=['260: Pode criar novos serviços ao catálogo']
     )
 
     colunas = [
@@ -72,6 +75,34 @@ def catalogo_de_servicos_jardinagem(request, userid):
 
 
 def editar_catalogo_de_servicos_jardinagem(request, userid, id_random):
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['261: Pode editar serviços do catálogo']
+    )
+
+    permission_exclude = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['263: Pode excluir serviços do catálogo']
+    )
+
+    permission_desmobilize = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['264: Pode desmobilizar serviços do catálogo']
+    )
+
+    permission_rehabilitate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['265: Pode reabilitar serviços do catálogo']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=CatalogodeServicoJardinagem,
@@ -80,5 +111,9 @@ def editar_catalogo_de_servicos_jardinagem(request, userid, id_random):
         id_random=id_random,
         app_name='Editar serviço do catálogo de jardinagem',
         redirect_url_name='editar_catalogo_de_servicos_jardinagem',
-        redirect_close_button='catalogo_de_servicos_jardinagem'
+        redirect_close_button='catalogo_de_servicos_jardinagem',
+        permission_edit=permission_edit,
+        permission_exclude=permission_exclude,
+        permission_desmobilize=permission_desmobilize,
+        permission_rehabilitate=permission_rehabilitate
     )

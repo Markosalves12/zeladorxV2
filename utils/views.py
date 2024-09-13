@@ -10,7 +10,8 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                  text_button_open_modal, text_button_save,  header_model,
                  redirect_url, userid=False, button_export_tittle=False, button_export_link=False,
                  link_tipos=None, modal_button=True, configurate_gerente=False, history_rout=False,
-                 permission_view=True, permission_edit=True, permission_crate=True):
+                 permission_view=True, permission_edit=True, permission_crate=True,
+                 permission_accompany=False):
 
     dt_and_forms = DataTableAndForms(
         request=request,
@@ -71,13 +72,16 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
             'modal_button': modal_button,
             'permission_view': permission_view,
             'permission_edit': permission_edit,
-            'permission_crate': permission_crate
+            'permission_crate': permission_crate,
+            'permission_accompany': permission_accompany,
         }
     )
 
 
 def edit_generic_view(request, model_class, form_class, template_name, id_random, app_name, redirect_url_name,
-                      redirect_close_button, link_tipos=None, permission_edit=True):
+                      redirect_close_button, link_tipos=None, permission_edit=True, permission_exclude=True,
+                      permission_desmobilize=False, permission_rehabilitate=False
+                      ):
 
     objeto = get_object_or_404(model_class, id_random=id_random)
 
@@ -102,6 +106,9 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
             'redirect_url_name': redirect_url_name,
             'redirect_close_button': redirect_close_button,
             'permission_edit': permission_edit,
-            'link_tipos': link_tipos
+            'link_tipos': link_tipos,
+            'permission_exclude': permission_exclude,
+            'permission_desmobilize': permission_desmobilize,
+            'permission_rehabilitate': permission_rehabilitate
         }
     )

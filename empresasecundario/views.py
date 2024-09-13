@@ -7,7 +7,7 @@ from empresasecundario.utils import define_empresas
 # Create your views here.
 def empresas(request, userid):
     colunas = [
-        {'nome': 'id', 'label': '#','largura': '10px'},
+        {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
         {'nome': 'razao_social', 'label': 'Razão social'},
         {'nome': 'CNPJ', 'label': 'CNPJ'},

@@ -11,5 +11,5 @@ urlpatterns = [
     path('configurar_servico_limpeza_predial/<str:userid>', configurar_servico_limpeza_predial, name='configurar_servico_limpeza_predial'),
     path('editar_servico_limpezapredial_configurado/<str:userid>/<str:id_random>', editar_servico_limpezapredial_configurado, name='editar_servico_limpezapredial_configurado'),
     path('servicos_configurados_limpeza_predial/<str:userid>', servicos_configurados_limpeza_predial, name='servicos_configurados_limpeza_predial'),
-    path('realizar_servico_limpeza_predial_agendado/<str:id_random>', realizar_servico_limpeza_predial_agendado, name='realizar_servico_limpeza_predial_agendado'),
+    path('realizar_servico_limpeza_predial_agendado/<str:userid>/<str:id_random>', realizar_servico_limpeza_predial_agendado, name='realizar_servico_limpeza_predial_agendado'),
 ]

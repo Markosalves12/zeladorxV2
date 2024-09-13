@@ -34,25 +34,31 @@ def agendar_servico_limpeza_predial(request, userid):
     )
 
 def servicos_agendados_limpeza_predial(request, userid):
+    # ('323: Pode excluir serviços agendados', '323: Pode excluir serviços agendados'),
+    # ('324: Pode acompanhar serviços agendados', '324: Pode acompanhar serviços agendados'),
+    # ('325: Pode editar serviços em andamento', '325: Pode editar serviços em andamento'),
+    # ('326 Pode concluir serviços em andamento', '326: Pode concluir serviços em andamento'),
+    # ('327 Pode excluir serviços concluidos', '327: Pode excluir serviços concluidos'),
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
         permission_type='limpeza_predial',
-        permission_to_access=['280: Pode visualizar serviços agendados']
+        permission_to_access=['322: Pode visualizar serviços agendados']
     )
 
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
         permission_type='limpeza_predial',
-        permission_to_access=['279: Pode editar serviços agendados']
+        permission_to_access=['321: Pode editar serviços agendados']
     )
 
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
         permission_type='limpeza_predial',
-        permission_to_access=['278: Pode agendar novos serviços']
+        permission_to_access=['320: Pode agendar novos serviços']
     )
 
     colunas = [
@@ -101,7 +107,7 @@ def editar_servico_limpeza_predial_agendado(request, userid, id_random):
         request=request,
         userid=userid,
         permission_type='limpeza_predial',
-        permission_to_access=['279: Pode editar serviços agendados']
+        permission_to_access=['321: Pode editar serviços agendados']
     )
 
     return edit_generic_view(
@@ -146,6 +152,28 @@ def configurar_servico_limpeza_predial(request, userid):
     )
 
 def servicos_configurados_limpeza_predial(request, userid):
+    # ('373: Pode excluir serviços configurados', '373: Pode excluir serviços configurados'),
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['372: Pode visualizar serviços configurados']
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['371: Pode editar serviços configurados']
+    )
+
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['370: Pode configurar novos serviços']
+    )
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'Areas', 'label': 'Área'},
@@ -189,11 +217,21 @@ def servicos_configurados_limpeza_predial(request, userid):
         header_model='solicitar serviço',
         redirect_url='servicos_configurados_limpeza_predial',
         link_tipos=tipos,
-        userid=userid
+        userid=userid,
+        permission_edit=permission_edit,
+        permission_crate=permission_crate,
+        permission_view=permission_view
     )
 
 
 def editar_servico_limpezapredial_configurado(request, userid, id_random):
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['371: Pode editar serviços configurados']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=ServicoLimpezaPredialConfigurado,
@@ -202,18 +240,25 @@ def editar_servico_limpezapredial_configurado(request, userid, id_random):
         id_random=id_random,
         app_name='Editar serviço',
         redirect_url_name='editar_servico_limpezapredial_configurado',
-        redirect_close_button='servicos_configurados_limpeza_predial'
+        redirect_close_button='servicos_configurados_limpeza_predial',
+        permission_edit=permission_edit
     )
 
 
-def realizar_servico_limpeza_predial_agendado(request, id_random):
+def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
     objeto = ServicoLimpezaPredialConfigurado.objects.get(id_random=id_random)
     forms = FatoServicoLimpezaPredialForms(
         instance=objeto,
-        id_random_servico=id_random,
         initial={
             'Servico': objeto
         }
+    )
+
+    permission_accompany = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['324: Pode acompanhar serviços agendados']
     )
 
     if request.method == 'POST':
@@ -235,5 +280,6 @@ def realizar_servico_limpeza_predial_agendado(request, id_random):
             'id_random': id_random,
             'redirect_close_button': 'calendario',
             'text_button': 'Salvar',
+            'permission_accompany': permission_accompany
         }
     )

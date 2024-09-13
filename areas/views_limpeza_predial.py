@@ -11,19 +11,21 @@ def areas_limpeza_predial(request, userid):
     permission_view = validate_permissions(
         request=request,
         userid=userid,
-        permission_type="jardinagem",
+        permission_type="limpeza_predial",
         permission_to_access=['252: Pode visualizar áreas de limpeza predial']
     )
+
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
-        permission_type="jardinagem",
+        permission_type="limpeza_predial",
         permission_to_access=['251: Pode editar áreas de limpeza predial']
     )
+
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
-        permission_type="jardinagem",
+        permission_type="limpeza_predial",
         permission_to_access=['250: Pode criar novas áreas de limpeza predial']
     )
 
@@ -72,6 +74,34 @@ def areas_limpeza_predial(request, userid):
 
 
 def editar_area_limpeza_predial(request, userid, id_random):
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type="limpeza_predial",
+        permission_to_access=['251: Pode editar áreas de limpeza predial']
+    )
+
+    permission_exclude = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['253: Pode excluir áreas de limpeza predial']
+    )
+
+    permission_desmobilize = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['254: Pode desmobilizar áreas de limpeza predial']
+    )
+
+    permission_rehabilitate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['255: Pode reabilitar áreas de limpeza predial']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=AreaLimpezaPredial,
@@ -80,7 +110,11 @@ def editar_area_limpeza_predial(request, userid, id_random):
         id_random=id_random,
         app_name='Editar área limpeza predial',
         redirect_url_name='editar_area_limpeza_predial',
-        redirect_close_button='areas_limpeza_predial'
+        redirect_close_button='areas_limpeza_predial',
+        permission_edit=permission_edit,
+        permission_exclude=permission_exclude,
+        permission_desmobilize=permission_desmobilize,
+        permission_rehabilitate=permission_rehabilitate
     )
 
 

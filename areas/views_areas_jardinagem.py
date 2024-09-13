@@ -29,6 +29,7 @@ def areas_jardins(request, userid):
         permission_to_access=['250: Pode criar novas áreas de jardinagem']
     )
 
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
@@ -70,7 +71,7 @@ def areas_jardins(request, userid):
         permission_view=permission_view,
         permission_edit=permission_edit,
         permission_crate=permission_crate,
-        userid=userid
+        userid=userid,
     )
 
 
@@ -82,6 +83,27 @@ def editar_area_jardins(request, userid, id_random):
         permission_to_access=['251: Pode editar áreas de jardinagem']
     )
 
+    permission_exclude = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['253: Pode excluir áreas de jardinagem']
+    )
+
+    permission_desmobilize = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['254: Pode desmobilizar áreas de jardinagem']
+    )
+
+    permission_rehabilitate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['255: Pode reabilitar áreas de jardinagem']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=AreasJardins,
@@ -91,7 +113,10 @@ def editar_area_jardins(request, userid, id_random):
         app_name='Editar área Jardins',
         redirect_url_name='editar_area_jardins',
         redirect_close_button='areas_jardins',
-        permission_edit=permission_edit
+        permission_edit=permission_edit,
+        permission_exclude=permission_exclude,
+        permission_desmobilize=permission_desmobilize,
+        permission_rehabilitate=permission_rehabilitate
     )
 
 

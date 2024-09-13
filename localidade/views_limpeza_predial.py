@@ -11,21 +11,21 @@ def localidades_limpeza_predial(request, userid):
         request=request,
         userid=userid,
         permission_type='limpeza_predial',
-        permission_to_access=['256: Pode visualizar localidades',]
+        permission_to_access=['292: Pode visualizar localidades']
     )
 
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
         permission_type='limpeza_predial',
-        permission_to_access=['255: Pode editar localidades']
+        permission_to_access=['291: Pode editar localidades']
     )
 
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
         permission_type='limpeza_predial',
-        permission_to_access=['254: Pode criar novas localidades',]
+        permission_to_access=['290: Pode criar novas localidades']
     )
 
     colunas = [
@@ -77,7 +77,28 @@ def editar_localidade_limpeza_predial(request, userid, id_random):
         request=request,
         userid=userid,
         permission_type='limpeza_predial',
-        permission_to_access=['255: Pode editar localidades']
+        permission_to_access=['291: Pode editar localidades']
+    )
+
+    permission_exclude = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['293: Pode excluir localidades']
+    )
+
+    permission_desmobilize = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['294: Pode desmobilizar localidades']
+    )
+
+    permission_rehabilitate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['295: Pode reabilitar localidades']
     )
 
     return edit_generic_view(

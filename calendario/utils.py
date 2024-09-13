@@ -44,7 +44,8 @@ def format_event(servico, userid=None, id_random=None, url_agendamento=str, url_
         "url_acompanhemento": reverse(
             f'{url_acompanahemnto}',
             kwargs={
-                'id_random': id_random
+                'id_random': id_random,
+                'userid': userid
             }
         ),
         'status_agendamento': servico.status_agendamento,

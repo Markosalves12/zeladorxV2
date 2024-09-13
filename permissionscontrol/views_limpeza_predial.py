@@ -4,14 +4,24 @@ from permissionscontrol.models import PermissionsAccessLimpezaPredial, Permissio
 from permissionscontrol.forms_limpeza_predial import PermissionsAccessLimpezaPredialForms
 from gerente.models import Gerente
 from empresasecundario.utils import define_empresas
+from permissionscontrol.utils import validate_permissions
 
 # Create your views here.
 def permissoes_limpeza_predial(request, userid):
+    # ('300: Pode editar permissões de limpeza predial', '300: Pode editar permissões de limpeza predial'),
+    # ('301: Pode visualizar permissões de limpeza predial', '301: Pode visualizar permissões de limpeza predial'),
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['301: Pode visualizar permissões de limpeza predial']
+    )
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
-        {'nome': 'Gerente','label': 'Nome'},
-        { 'nome': 'Permissions','label': 'Permissões' },
-        {'nome': 'acoes','label': 'Ações'},
+        {'nome': 'Gerente', 'label': 'Nome'},
+        {'nome': 'Permissions', 'label': 'Permissões'},
+        {'nome': 'acoes', 'label': 'Ações'},
     ]
 
     tipos = [
@@ -40,7 +50,8 @@ def permissoes_limpeza_predial(request, userid):
         header_model='Novo gestor',
         redirect_url='permissoes_limpeza_predial',
         link_tipos=tipos,
-        userid=userid
+        userid=userid,
+        permission_view=permission_view
     )
 
 
@@ -52,6 +63,13 @@ def editar_permissoes_limpeza_predial(request, userid, id_random):
     ).first()
     gerente = Gerente.objects.get(
         id_random=userid
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['300: Pode editar permissões de limpeza predial']
     )
 
     tipos = [
@@ -71,5 +89,6 @@ def editar_permissoes_limpeza_predial(request, userid, id_random):
         app_name=f'Editar permissoes limpeza predia {gerente.username}',
         redirect_url_name='editar_permissoes_limpeza_predial',
         redirect_close_button='permissoes_limpeza_predial',
-        link_tipos=tipos
+        link_tipos=tipos,
+        permission_edit=permission_edit
     )

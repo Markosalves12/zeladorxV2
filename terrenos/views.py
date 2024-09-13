@@ -7,25 +7,29 @@ from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def terrenos(request, userid):
+    # ('333: Pode excluir terrenos', '333: Pode excluir terrenos'),
+    # ('334: Pode desmobilizar terrenos', '334: Pode desmobilizar terrenos'),
+    # ('335: Pode reabilitar terrenos', '335: Pode reabilitar terrenos'),
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['260: Pode visualizar terrenos']
+        permission_to_access=['332: Pode visualizar terrenos']
     )
 
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['259: Pode editar terrenos']
+        permission_to_access=['331: Pode editar terrenos']
     )
 
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['258: Pode criar novos terrenos']
+        permission_to_access=['330: Pode criar novos terrenos']
     )
 
     colunas = [
@@ -66,7 +70,7 @@ def editar_terreno(request, userid, id_random):
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['259: Pode editar terrenos']
+        permission_to_access=['331: Pode editar terrenos']
     )
 
     return edit_generic_view(

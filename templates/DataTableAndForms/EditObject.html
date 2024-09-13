@@ -49,7 +49,7 @@
                 </div>
               </div>
               <!-- /.card-header -->
-              {% if permission_edit %}
+              {% if permission_edit or permission_accompany %}
                 <div class="card-body">
                   <form action="{% url redirect_url_name userid id_random %}" method="POST" enctype="multipart/form-data">
                     <div class="card-body">
@@ -88,10 +88,24 @@
                           </div>
                       </div>
                       <div class="modal-footer justify-content-between">
+                        <!-- Botão Fechar à esquerda -->
                         <a href="{{ redirect_close_button }}">
                           <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
                         </a>
-                        <button type="POST" class="btn btn-primary">{{ text_button }}</button>
+
+                        <!-- Botões agrupados à direita -->
+                        <div class="ml-auto">
+                          <button type="POST" class="btn btn-primary">{{ text_button }}</button>
+                          {% if permission_exclude %}
+                            <button class="btn btn-danger">Excluir</button>
+                          {% endif %}
+                          {% if permission_desmobilize %}
+                            <button class="btn btn-warning">Desmobilizar</button>
+                          {% endif %}
+                          {% if permission_rehabilitate %}
+                            <button class="btn btn-success">Desmobilizar</button>
+                          {% endif %}
+                        </div>
                       </div>
                     </div>
                   </form>

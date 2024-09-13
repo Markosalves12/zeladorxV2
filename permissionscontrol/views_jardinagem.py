@@ -8,26 +8,14 @@ from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def permissoes_jardinagem(request, userid):
-    # permission_view = validate_permissions(
-    #     request=request,
-    #     userid=userid,
-    #     permission_type='jardinagem',
-    #     permission_to_access=['256: Pode visualizar localidades',]
-    # )
-    #
-    # permission_edit = validate_permissions(
-    #     request=request,
-    #     userid=userid,
-    #     permission_type='jardinagem',
-    #     permission_to_access=['255: Pode editar localidades']
-    # )
-    #
-    # permission_crate = validate_permissions(
-    #     request=request,
-    #     userid=userid,
-    #     permission_type='jardinagem',
-    #     permission_to_access=['254: Pode criar novas localidades',]
-    # )
+    # ('300: Pode editar permissões de jardinagem', '300: Pode editar permissões de jardinagem'),
+    # ('301: Pode visualizar permissões de jardinagem', '301: Pode visualizar permissões de jardinagem'),
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['301: Pode visualizar permissões de jardinagem']
+    )
 
     colunas = [
         {'nome': 'id','label': '#','largura': '10px'},
@@ -62,9 +50,7 @@ def permissoes_jardinagem(request, userid):
         header_model='Novo gestor',
         redirect_url='permissoes_jardinagem',
         link_tipos=tipos,
-        # permission_view=permission_view,
-        # permission_edit=permission_edit,
-        # permission_crate=permission_crate
+        permission_view=permission_view,
         userid=userid
     )
 
@@ -75,6 +61,13 @@ def editar_permissoes_jardinagem(request, userid, id_random):
     ).first()
     gerente = Gerente.objects.get(
         id_random=userid
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['300: Pode editar permissões de jardinagem']
     )
 
     tipos = [
@@ -95,4 +88,5 @@ def editar_permissoes_jardinagem(request, userid, id_random):
         redirect_url_name='editar_permissoes_jardinagem',
         redirect_close_button='permissoes_jardinagem',
         link_tipos=tipos,
+        permission_edit=permission_edit
     )

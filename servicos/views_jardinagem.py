@@ -40,25 +40,31 @@ def agendar_servico_jardinagem(request, userid):
     )
 
 def servicos_agendados_jardinagem(request, userid):
+    # ('323: Pode excluir serviços agendados', '323: Pode excluir serviços agendados'),
+    # ('324: Pode acompanhar serviços agendados', '324: Pode acompanhar serviços agendados'),
+    # ('325: Pode editar serviços em andamento', '325: Pode editar serviços em andamento'),
+    # ('326 Pode concluir serviços em andamento', '326: Pode concluir serviços em andamento'),
+    # ('327 Pode excluir serviços concluidos', '327: Pode excluir serviços concluidos'),
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['280: Pode visualizar serviços agendados']
+        permission_to_access=['322: Pode visualizar serviços agendados']
     )
 
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['279: Pode editar serviços agendados']
+        permission_to_access=['321: Pode editar serviços agendados']
     )
 
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['278: Pode agendar novos serviços']
+        permission_to_access=['320: Pode agendar novos serviços']
     )
 
     colunas = [
@@ -107,6 +113,13 @@ def servicos_agendados_jardinagem(request, userid):
 
 
 def editar_servico_jardinagem_agendado(request, userid, id_random):
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['321: Pode editar serviços agendados']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=ServicoJardinagemAgendado,
@@ -115,22 +128,32 @@ def editar_servico_jardinagem_agendado(request, userid, id_random):
         id_random=id_random,
         app_name='Editar serviço',
         redirect_url_name='editar_servico_jardinagem_agendado',
-        redirect_close_button='servicos_agendados_jardinagem'
+        redirect_close_button='servicos_agendados_jardinagem',
+        permission_edit=permission_edit
     )
 
 
-def realizar_servico_jardinagem_agendado(request, id_random):
+def realizar_servico_jardinagem_agendado(request, userid, id_random):
     objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     forms = FatoServicoJardinagemForms(
         instance=objeto,
         id_random=id_random,
         initial={
             'Servico': objeto
-        }
+        },
+        request=request,
+        userid=userid
+    )
+
+    permission_accompany = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['324: Pode acompanhar serviços agendados']
     )
 
     if request.method == 'POST':
-        form = ServicoJaridinagemAgendadoForms(request.POST)
+        form = ServicoJaridinagemAgendadoForms(request.POST, request.FILES, instance=objeto, request=request, userid=userid)
         if form.is_valid():
             form.save()
             objeto.status = 'Em andamento'
@@ -148,6 +171,7 @@ def realizar_servico_jardinagem_agendado(request, id_random):
             'id_random': id_random,
             'redirect_close_button': 'calendario',
             'text_button': 'Salvar',
+            'permission_accompany': permission_accompany
         }
     )
 
