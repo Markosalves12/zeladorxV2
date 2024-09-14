@@ -107,9 +107,16 @@ def editar_unidade(request, userid, id_random):
         permission_rehabilitate=permission_rehabilitate
     )
 
-def visualizar_unidade(request, id_random):
+def visualizar_unidade(request, userid,id_random):
     objeto = Unidade.objects.get(
         id_random=id_random
+    )
+
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='especials',
+        permission_to_access=['342: Pode visualizar unidades']
     )
 
     return render(
@@ -118,5 +125,6 @@ def visualizar_unidade(request, id_random):
         context={
             'app_name': f'Unidade {objeto.nome}',
             'objeto': objeto,
+            'permission_view': permission_view
         }
     )

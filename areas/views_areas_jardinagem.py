@@ -29,7 +29,6 @@ def areas_jardins(request, userid):
         permission_to_access=['250: Pode criar novas áreas de jardinagem']
     )
 
-
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},

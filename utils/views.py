@@ -4,13 +4,12 @@ from django.urls import reverse
 from settings.utils import define_setting
 from permissionscontrol.utils import configurate_permissions
 from permissionscontrol.models import PermissionsAccessJardinagem, PermissionsAccessLimpezaPredial
-from empresasecundario.forms import EmpresaSecundariaForms
 
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
                  text_button_open_modal, text_button_save,  header_model,
                  redirect_url, userid=False, button_export_tittle=False, button_export_link=False,
                  link_tipos=None, modal_button=True, configurate_gerente=False, history_rout=False,
-                 permission_view=True, permission_edit=True, permission_crate=True,
+                 permission_view=True, permission_edit=False, permission_crate=False,
                  permission_accompany=False):
 
     dt_and_forms = DataTableAndForms(
@@ -79,7 +78,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
 
 
 def edit_generic_view(request, model_class, form_class, template_name, id_random, app_name, redirect_url_name,
-                      redirect_close_button, link_tipos=None, permission_edit=True, permission_exclude=True,
+                      redirect_close_button, link_tipos=None, permission_edit=False, permission_exclude=False,
                       permission_desmobilize=False, permission_rehabilitate=False
                       ):
 

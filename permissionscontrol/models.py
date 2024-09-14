@@ -255,6 +255,9 @@ class PermissionsEspecials(models.Model):
     )
 
     permissions_CRUD = [
+        ('300: Pode editar permissões especiais', '300: Pode editar permissões especiais'),
+        ('301: Pode visualizar permissões especiais', '301: Pode visualizar permissões especiais'),
+
         ('340: Pode criar novas unidades', '340: Pode criar novas unidades'),
         ('341: Pode editar unidades', '341: Pode editar unidades'),
         ('342: Pode visualizar unidades', '342: Pode visualizar unidades'),
