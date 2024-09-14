@@ -71,6 +71,27 @@ def editar_vegetacao(request, userid, id_random):
         permission_to_access=['351: Pode editar vegetações']
     )
 
+    permission_exclude = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['353: Pode excluir vegetações']
+    )
+
+    permission_desmobilize = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['354: Pode desmobilizar vegetações']
+    )
+
+    permission_rehabilitate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['355: Pode reabilitar vegetações']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=CatalogoVegetacao,
@@ -80,5 +101,8 @@ def editar_vegetacao(request, userid, id_random):
         app_name='Editar vegetação',
         redirect_close_button='vegetacao',
         redirect_url_name='editar_vegetacao',
-        permission_edit=permission_edit
+        permission_edit=permission_edit,
+        permission_exclude=permission_exclude,
+        permission_desmobilize=permission_desmobilize,
+        permission_rehabilitate=permission_rehabilitate
     )

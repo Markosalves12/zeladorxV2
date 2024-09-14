@@ -110,5 +110,8 @@ def editar_localidade_limpeza_predial(request, userid, id_random):
         app_name='Editar localidade',
         redirect_url_name='editar_localidade_limpeza_predial',
         redirect_close_button='localidades_limpeza_predial',
-        permission_edit=permission_edit
+        permission_edit=permission_edit,
+        permission_exclude=permission_exclude,
+        permission_desmobilize=permission_desmobilize,
+        permission_rehabilitate=permission_rehabilitate
     )

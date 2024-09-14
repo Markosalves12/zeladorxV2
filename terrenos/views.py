@@ -7,10 +7,6 @@ from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def terrenos(request, userid):
-    # ('333: Pode excluir terrenos', '333: Pode excluir terrenos'),
-    # ('334: Pode desmobilizar terrenos', '334: Pode desmobilizar terrenos'),
-    # ('335: Pode reabilitar terrenos', '335: Pode reabilitar terrenos'),
-
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -73,6 +69,27 @@ def editar_terreno(request, userid, id_random):
         permission_to_access=['331: Pode editar terrenos']
     )
 
+    permission_exclude = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['333: Pode excluir terrenos']
+    )
+
+    permission_desmobilize = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['334: Pode desmobilizar terrenos']
+    )
+
+    permission_rehabilitate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['335: Pode reabilitar terrenos']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=Terreno,
@@ -82,5 +99,8 @@ def editar_terreno(request, userid, id_random):
         app_name='Editar terreno',
         redirect_close_button='terrenos',
         redirect_url_name='editar_terreno',
-        permission_edit=permission_edit
+        permission_edit=permission_edit,
+        permission_exclude=permission_exclude,
+        permission_desmobilize=permission_desmobilize,
+        permission_rehabilitate=permission_rehabilitate
     )

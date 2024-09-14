@@ -245,3 +245,54 @@ class PermissionsAccessLimpezaPredial(models.Model):
         blank=False,
         related_name='RPermissionsAccessLimpezaPredial'
     )
+
+class PermissionsEspecials(models.Model):
+    # conluna principal usada como parametro de urls
+    id_random = models.CharField(
+        unique=True,
+        default=generate_id_random,
+        max_length=20
+    )
+
+    permissions_CRUD = [
+        ('340: Pode criar novas unidades', '340: Pode criar novas unidades'),
+        ('341: Pode editar unidades', '341: Pode editar unidades'),
+        ('342: Pode visualizar unidades', '342: Pode visualizar unidades'),
+        ('343: Pode excluir unidades', '343: Pode excluir unidades'),
+        ('344: Pode desmobilizar unidades', '344: Pode desmobilizar unidades'),
+        ('345: Pode reabilitar unidades', '345: Pode reabilitar unidades'),
+    ]
+
+    Permissions = models.CharField(
+        choices=permissions_CRUD,
+        null=False,
+        blank=False,
+        unique=True,
+        max_length=75
+    )
+
+    def __str__(self):
+        return self.Permissions
+
+
+class PermissionsAccessEspecials(models.Model):
+    # conluna principal usada como parametro de urls
+    id_random = models.CharField(
+        unique=True,
+        default=generate_id_random,
+        max_length=20
+    )
+
+    Gerente = models.ForeignKey(
+        to=Gerente,
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+    )
+
+    Permissions = models.ManyToManyField(
+        to=PermissionsEspecials,
+        null=False,
+        blank=False,
+        related_name='RPermissionsAccessEspecials'
+    )

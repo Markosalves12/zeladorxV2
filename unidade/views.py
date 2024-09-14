@@ -23,7 +23,7 @@ def unidades(request, userid):
         request=request,
         model=Unidade.objects.filter(
             empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-            empresasecundaria_id_random__in=empresas_secundarias_ids
+            empresasecundaria__id_random__in=empresas_secundarias_ids
         ),
         form_class=UnidadeForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
