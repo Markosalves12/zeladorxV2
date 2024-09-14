@@ -3,9 +3,31 @@ from unidade.models import Unidade
 from unidade.forms import UnidadeForms
 from utils.views import generic_view, edit_generic_view
 from empresasecundario.utils import define_empresas
+from permissionscontrol.utils import validate_permissions
 
 # Create your views here.
 def unidades(request, userid):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='especials',
+        permission_to_access=['342: Pode visualizar unidades']
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='especials',
+        permission_to_access=['341: Pode editar unidades']
+    )
+
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='especials',
+        permission_to_access=['340: Pode criar novas unidades']
+    )
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
@@ -35,10 +57,41 @@ def unidades(request, userid):
         text_button_save='Salvar unidade',
         header_model='Nova unidade',
         redirect_url='unidades',
-        userid=userid
+        permission_view=permission_view,
+        permission_edit=permission_edit,
+        permission_crate=permission_crate,
+        userid=userid,
     )
 
 def editar_unidade(request, userid, id_random):
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='especials',
+        permission_to_access=['341: Pode editar unidades']
+    )
+
+    permission_exclude = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['343: Pode excluir unidades']
+    )
+
+    permission_desmobilize = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['344: Pode desmobilizar unidades']
+    )
+
+    permission_rehabilitate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['345: Pode reabilitar unidades']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=Unidade,
@@ -47,7 +100,11 @@ def editar_unidade(request, userid, id_random):
         id_random=id_random,
         app_name='Editar unidade',
         redirect_close_button='unidades',
-        redirect_url_name='editar_unidade'
+        redirect_url_name='editar_unidade',
+        permission_edit=permission_edit,
+        permission_exclude=permission_exclude,
+        permission_desmobilize=permission_desmobilize,
+        permission_rehabilitate=permission_rehabilitate
     )
 
 def visualizar_unidade(request, id_random):

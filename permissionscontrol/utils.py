@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect
 from permissionscontrol.models import (PermissionsAccessJardinagem, PermissionsJardinagem,
-                                       PermissionsAccessLimpezaPredial, PermissionsLimpezaPredial)
+                                       PermissionsAccessLimpezaPredial, PermissionsLimpezaPredial,
+                                       PermissionsEspecials, PermissionsAccessEspecials)
 
 def configurate_permissions(request, model_class, email):
     objeto = get_object_or_404(model_class, email=email)
@@ -23,8 +24,14 @@ def validate_permissions(request, userid, permission_type, permission_to_access)
             permissions_instance = PermissionsAccessJardinagem.objects.get(
                 Gerente__id_random=userid
             )
+
         elif permission_type == "limpeza_predial":
             permissions_instance = PermissionsAccessLimpezaPredial.objects.get(
+                Gerente__id_random=userid
+            )
+
+        elif permission_type == "especials":
+            permissions_instance = PermissionsAccessEspecials.objects.get(
                 Gerente__id_random=userid
             )
 
@@ -47,6 +54,10 @@ def validate_permissions(request, userid, permission_type, permission_to_access)
             return True
         else:
             return False
+
+    elif isinstance(permissions_instance, PermissionsAccessEspecials):
+        if len(permissions_instance.Permissions.filter(Permissions__in=permission_to_access)) > 0:
+            return True
 
     else:
         return True
