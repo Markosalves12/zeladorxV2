@@ -9,13 +9,18 @@ from permissionscontrol.utils import validate_permissions
 
 # Create your views here.
 def permissoes_limpeza_predial(request, userid):
-    # ('300: Pode editar permissões de limpeza predial', '300: Pode editar permissões de limpeza predial'),
-    # ('301: Pode visualizar permissões de limpeza predial', '301: Pode visualizar permissões de limpeza predial'),
     permission_view = validate_permissions(
         request=request,
         userid=userid,
         permission_type='limpeza_predial',
         permission_to_access=['301: Pode visualizar permissões de limpeza predial']
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['300: Pode editar permissões de limpeza predial']
     )
 
     colunas = [
@@ -53,7 +58,8 @@ def permissoes_limpeza_predial(request, userid):
         redirect_url='permissoes_limpeza_predial',
         link_tipos=tipos,
         userid=userid,
-        permission_view=permission_view
+        permission_view=permission_view,
+        permission_edit=permission_edit
     )
 
 

@@ -90,6 +90,12 @@
                                                     {{ gerentes }}</br>
                                                 {% endfor %}
                                             </td>
+                                        {% elif coluna.nome == 'empresasecundaria' %}
+                                            <td>
+                                                {% for empresa in dado.empresasecundaria.all %}
+                                                    {{ empresa }}</br>
+                                                {% endfor %}
+                                            </td>
                                         {% elif coluna.nome == 'ServicosEscalados' %}
                                             <td>
                                                 {% for servico in dado.ServicosEscalados.all %}

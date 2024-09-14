@@ -12,29 +12,28 @@ def gerentes_jardinagem(request, userid):
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['272: Pode visualizar colaboradores']
+        permission_to_access=['282: Pode visualizar colaboradores']
     )
 
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['271: Pode editar colaboradores']
+        permission_to_access=['281: Pode editar colaboradores']
     )
 
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['270: Pode criar novos colaboradores']
+        permission_to_access=['280: Pode criar novos colaboradores']
     )
 
     colunas = [
         {'nome': 'id','label': '#', 'largura': '10px'},
         {'nome': 'username', 'label': 'Nome'},
         {'nome': 'email', 'label': 'E-mail'},
-        {'nome': 'email', 'label': 'E-mail'},
-        {'nome': 'EmpresaSecundaria', 'label': 'Empresa(s)'},
+        {'nome': 'empresasecundaria', 'label': 'Empresa(s)'},
     ]
 
     tipos = [
@@ -51,7 +50,8 @@ def gerentes_jardinagem(request, userid):
         request=request,
         model=Gerente.objects.filter(
             empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-            empresasecundaria__id_random__in=empresas_secundarias_ids
+            empresasecundaria__id_random__in=empresas_secundarias_ids,
+            empresasecundaria__setor='Jardinagem'
         ),
         form_class=GerenteForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
@@ -71,6 +71,34 @@ def gerentes_jardinagem(request, userid):
 
 
 def editar_gerente_jardinagem(request, userid, id_random):
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['281: Pode editar colaboradores']
+    )
+
+    permission_exclude = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['283: Pode excluir colaboradores']
+    )
+
+    permission_desmobilize = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['284: Pode desmobilizar colaboradores']
+    )
+
+    permission_rehabilitate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['285: Pode reabilitar colaboradores']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=Gerente,
@@ -80,4 +108,8 @@ def editar_gerente_jardinagem(request, userid, id_random):
         app_name='Editar gerente',
         redirect_url_name='editar_gerente_jardinagem',
         redirect_close_button='gerentes_jardinagem',
+        permission_edit=permission_edit,
+        permission_exclude=permission_exclude,
+        permission_desmobilize=permission_desmobilize,
+        permission_rehabilitate=permission_rehabilitate
     )

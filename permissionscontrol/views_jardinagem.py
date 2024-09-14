@@ -9,8 +9,6 @@ from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def permissoes_jardinagem(request, userid):
-    # ('300: Pode editar permissões de jardinagem', '300: Pode editar permissões de jardinagem'),
-    # ('301: Pode visualizar permissões de jardinagem', '301: Pode visualizar permissões de jardinagem'),
     permission_view = validate_permissions(
         request=request,
         userid=userid,

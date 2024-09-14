@@ -24,7 +24,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
     )
 
     if request.method == 'POST':
-        form = form_class(request.POST, request.FILES)
+        form = form_class(request.POST, request.FILES, request=request, userid=userid)
         if form.is_valid():
             if configurate_gerente:
                 email = form.cleaned_data['email']
