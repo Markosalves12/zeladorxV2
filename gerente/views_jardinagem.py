@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import reverse
 from gerente.models import Gerente
-from gerente.forms import GerenteForms
+from gerente.forms_jardinagem import GerenteJardinagemForms
 from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
@@ -53,7 +53,7 @@ def gerentes_jardinagem(request, userid):
             empresasecundaria__id_random__in=empresas_secundarias_ids,
             empresasecundaria__setor='Jardinagem'
         ),
-        form_class=GerenteForms,
+        form_class=GerenteJardinagemForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_gerente_jardinagem',
@@ -64,6 +64,7 @@ def gerentes_jardinagem(request, userid):
         redirect_url='gerentes_jardinagem',
         link_tipos=tipos,
         configurate_gerente=True,
+        userid=userid,
         permission_view=permission_view,
         permission_edit=permission_edit,
         permission_crate=permission_crate
@@ -102,7 +103,7 @@ def editar_gerente_jardinagem(request, userid, id_random):
     return edit_generic_view(
         request=request,
         model_class=Gerente,
-        form_class=GerenteForms,
+        form_class=GerenteJardinagemForms,
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar gerente',
