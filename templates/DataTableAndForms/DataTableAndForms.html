@@ -84,10 +84,17 @@
                                                     <button type="button" class="btn btn-block btn-secondary btn-sm">{{ coluna.label }}</button>
                                                 </a>
                                             </td>
+
                                         {% elif coluna.nome == 'gerente' %}
                                             <td>
                                                 {% for gerentes in dado.gerente.all %}
                                                     {{ gerentes }}</br>
+                                                {% endfor %}
+                                            </td>
+                                        {% elif coluna.nome == 'setor' %}
+                                            <td>
+                                                {% for setor in dado.setor.all %}
+                                                    {{ setor }}</br>
                                                 {% endfor %}
                                             </td>
                                         {% elif coluna.nome == 'empresasecundaria' %}

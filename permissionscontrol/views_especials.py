@@ -102,7 +102,7 @@ def editar_permissoes_especials(request, userid, id_random):
         id_random=id_random,
         app_name=f'Editar permissoes especiais {gerente.username}',
         redirect_url_name='editar_permissoes_especials',
-        redirect_close_button='permissions_especials',
+        redirect_close_button=reverse('permissions_especials', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_edit=permission_edit,
     )

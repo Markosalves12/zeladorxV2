@@ -1,6 +1,6 @@
 from django.shortcuts import reverse
 from empresasecundario.models import EmpresaSecundaria
-from empresasecundario.forms_limpeza_predial import EmpresaSecundariaLimpezaPredialForms
+from empresasecundario.forms import EmpresaSecundariaForms
 from utils.views import generic_view, edit_generic_view
 from empresasecundario.utils import define_empresas
 from permissionscontrol.utils import validate_permissions
@@ -10,21 +10,21 @@ def empresas_limpeza_predial(request, userid):
     permission_view = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['272: Pode visualizar empresas']
     )
 
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['271: Pode editar empresas']
     )
 
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['270: Pode criar novas empresas']
     )
 
@@ -50,9 +50,9 @@ def empresas_limpeza_predial(request, userid):
         request=request,
         model=EmpresaSecundaria.objects.filter(
             empresaprimaria__id_random__in=empresas_primarias_ids,
-            setor='Limpeza predial'
+            setor__setor__in=['Limpeza predial']
         ),
-        form_class=EmpresaSecundariaLimpezaPredialForms,
+        form_class=EmpresaSecundariaForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_empresa_limpeza_predial',
@@ -73,40 +73,40 @@ def editar_empresa_limpeza_predial(request, userid, id_random):
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['271: Pode editar empresas']
     )
 
     permission_exclude = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['273: Pode excluir empresas']
     )
 
     permission_desmobilize = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['274: Pode desmobilizar empresas']
     )
 
     permission_rehabilitate = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['275: Pode reabilitar empresas']
     )
 
     return edit_generic_view(
         request=request,
         model_class=EmpresaSecundaria,
-        form_class=EmpresaSecundariaLimpezaPredialForms,
+        form_class=EmpresaSecundariaForms,
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar empresa',
         redirect_url_name='editar_empresa_limpeza_predial',
-        redirect_close_button='empresas_limpeza_predial',
+        redirect_close_button=reverse('empresas_limpeza_predial', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
         permission_rehabilitate=permission_rehabilitate,

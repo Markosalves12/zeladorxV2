@@ -17,7 +17,7 @@ class Unidade(models.Model):
         unique=True
     )
 
-    linkmapa = models.CharField(
+    linkmapajardinagem = models.CharField(
         blank=True,
         null=True,
         max_length=300
@@ -32,7 +32,6 @@ class Unidade(models.Model):
         to=EmpresaSecundaria,
         blank=False,
         null=False,
-        # on_delete=models.CASCADE,
         related_name='REmpresaSecundariaUnidade'
     )
 

@@ -88,7 +88,8 @@ class ServicoLimpezaPredialConfigurado(models.Model):
     )
 
     def __str__(self):
-        return f'{self.area} | {self.ServicosEscalados}'
+        servicos_escalados_nomes= ", ".join(servico.nome for servico in self.ServicosEscalados.all())
+        return f'{self.Areas} | {servicos_escalados_nomes}'
 
 
 class ServicoLimpezaPredialAgendado(models.Model):
@@ -195,7 +196,8 @@ class ServicoLimpezaPredialAgendado(models.Model):
     # )
 
     def __str__(self):
-        return f'{self.area} | {self.ServicosEscalados} | {self.DataDeInicio}'
+        servicos_escalados_nomes = ", ".join(servico.nome for servico in self.ServicosEscalados.all())
+        return f'{self.Areas} | {servicos_escalados_nomes} | {self.DataDeInicio}'
 
 
 

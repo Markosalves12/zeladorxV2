@@ -3,8 +3,8 @@ from unidade.models import Unidade
 
 # Register your models here.
 class UnidadeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nome', 'linkmapa', 'foto', 'status',)
-    list_display_links = ('id', 'nome', 'linkmapa', 'foto', 'status',)
+    list_display = ('id', 'nome', 'linkmapajardinagem', 'foto', 'status',)
+    list_display_links = ('id', 'nome', 'linkmapajardinagem', 'foto', 'status',)
     search_fields = ('nome',  'status', )
     list_filter = ('nome',  'status', )
 

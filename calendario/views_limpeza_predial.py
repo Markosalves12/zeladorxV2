@@ -59,9 +59,9 @@ def calendario_limpeza_predial(request, userid):
     formatted_events = [
         format_event(
             servico,
-            userid=userid,
-            url_agendamento='agendar_servico_limpeza_predial',
-            url_acompanahemnto='realizar_servico_limpeza_predial_agendado'
+            # userid=userid,
+            # url_agendamento='agendar_servico_limpeza_predial',
+            # url_acompanahemnto='realizar_servico_limpeza_predial_agendado'
         )
         for servico in agendado
     ]
@@ -73,7 +73,8 @@ def calendario_limpeza_predial(request, userid):
             'formatted_events': formatted_events,
             'app_name': 'Calendário Limpeza Predial',
             'link_tipos': tipos,
-            "url_agendamento": "agendar_servico_limpeza_predial",
+            'url_agendamento': 'agendar_servico_limpeza_predial',
+            'url_acompanhamento': 'realizar_servico_limpeza_predial_agendado',
             'permission_view': permission_view,
             'permission_edit': permission_edit,
             'permission_crate': permission_crate,

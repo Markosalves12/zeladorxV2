@@ -1,3 +1,4 @@
+from django.shortcuts import reverse
 from vegetacao.models import CatalogoVegetacao
 from vegetacao.forms import CatalogoVegetacaoForm
 from utils.views import generic_view, edit_generic_view
@@ -6,10 +7,6 @@ from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def vegetacao(request, userid):
-    # ('353: Pode excluir vegetações', '353: Pode excluir vegetações'),
-    # ('354: Pode desmobilizar vegetações', '354: Pode desmobilizar vegetações'),
-    # ('355: Pode reabilitar vegetações', '355: Pode reabilitar vegetações'),
-
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -59,7 +56,8 @@ def vegetacao(request, userid):
         redirect_url='vegetacao',
         permission_view=permission_view,
         permission_edit=permission_edit,
-        permission_crate=permission_crate
+        permission_crate=permission_crate,
+        userid=userid
     )
 
 
@@ -99,7 +97,7 @@ def editar_vegetacao(request, userid, id_random):
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar vegetação',
-        redirect_close_button='vegetacao',
+        redirect_close_button=reverse('vegetacao', kwargs={'userid': userid}),
         redirect_url_name='editar_vegetacao',
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,

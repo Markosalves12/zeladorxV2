@@ -240,7 +240,7 @@ class FatoServicoLimpezaPredialForms(forms.ModelForm):
             'Servico': 'Serviço',
             'data_hora_chegada_na_area': 'Chegada na área',
             'data_hora_retorno_area': 'Retorno na área',
-            'Colaborador': 'Colaborador'
+            'Gerente': 'Colaborador'
         }
 
         widgets = {
@@ -259,7 +259,7 @@ class FatoServicoLimpezaPredialForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
-            'Colaborador': forms.Select(
+            'Gerente': forms.Select(
                 attrs={
                     'class': 'form-control'
                 }

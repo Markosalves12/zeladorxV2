@@ -2,6 +2,7 @@ from django.db import models
 from empresaprimaria.models import EmpresaPrimaria
 from utils.utils import resize_image
 from utils.utils import generate_id_random
+from zeladorx.models import TypeZeladoria
 
 # Create your models here.
 class EmpresaSecundaria(models.Model):
@@ -50,15 +51,10 @@ class EmpresaSecundaria(models.Model):
         default='Mobilizado'
     )
 
-    setor_options = [
-        ('Jardinagem', 'Jardinagem'),
-        ('Limpeza predial', 'Limpeza predial'),
-    ]
-
-    setor = models.CharField(
+    setor = models.ManyToManyField(
         blank=False,
         null=False,
-        choices=setor_options,
+        to=TypeZeladoria,
         max_length=40
     )
 

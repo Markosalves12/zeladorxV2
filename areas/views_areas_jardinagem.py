@@ -111,7 +111,7 @@ def editar_area_jardins(request, userid, id_random):
         id_random=id_random,
         app_name='Editar área Jardins',
         redirect_url_name='editar_area_jardins',
-        redirect_close_button='areas_jardins',
+        redirect_close_button=reverse('areas_jardins', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
         permission_desmobilize=permission_desmobilize,
@@ -119,7 +119,7 @@ def editar_area_jardins(request, userid, id_random):
     )
 
 
-def areas_associadas_localidades_jardinagem(request, id_random):
+def areas_associadas_localidades_jardinagem(request, userid, id_random):
     localidade = LocalidadeJardiangem.objects.get(
         id_random=id_random
     )

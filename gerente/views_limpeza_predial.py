@@ -51,7 +51,7 @@ def gerentes_limpeza_predial(request, userid):
         model=Gerente.objects.filter(
             empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             empresasecundaria__id_random__in=empresas_secundarias_ids,
-            empresasecundaria__setor='Limpeza predial'
+            empresasecundaria__setor__setor='Limpeza predial'
         ),
         form_class=GerenteLimpezaPredialForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
@@ -107,7 +107,7 @@ def editar_gerente_limpeza_predial(request, userid, id_random):
         id_random=id_random,
         app_name='Editar gerente',
         redirect_url_name='editar_gerente_limpeza_predial',
-        redirect_close_button='gerentes_limpeza_predial',
+        redirect_close_button=reverse('gerentes_limpeza_predial', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
         permission_desmobilize=permission_desmobilize,

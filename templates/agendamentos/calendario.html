@@ -171,7 +171,7 @@
         var modalTitle = modal.find('.modal-title');
         var modalBody = modal.find('.modal-body');
         var editUrl = "{% url 'editar_servico_jardinagem_agendado' userid '__id__' %}".replace('__id__', info.event.id);
-        var acompUrl = "{% url 'realizar_servico_jardinagem_agendado' userid  '__id__' %}".replace('__id__', info.event.id);
+        var acompUrl = "{% url url_acompanhamento userid  '__id__' %}".replace('__id__', info.event.id);
         var cancelUrl = "{% url 'cancelar_servico_jardinagem' '__id__' %}".replace('__id__', info.event.id);
         var concluirUrl = "{% url 'concluir_servico_jardinagem' '__id__' %}".replace('__id__', info.event.id);
         var status = info.event.extendedProps.status;

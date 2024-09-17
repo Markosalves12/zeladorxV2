@@ -12,7 +12,7 @@ def agendar_servico_limpeza_predial(request, userid):
         form = ServicoLimpezaPredialAgendadoForms(request.POST, request.FILES, request=request, userid=userid)
         if form.is_valid():
             form.save()
-            return redirect('agendar_servico_limpeza_predial')
+            return redirect('agendar_servico_limpeza_predial', userid)
 
     tipos = [
         {'nome': 'Agendar serviços', 'link': ''},
@@ -118,7 +118,7 @@ def editar_servico_limpeza_predial_agendado(request, userid, id_random):
         id_random=id_random,
         app_name='Editar serviço',
         redirect_url_name='editar_servico_limpeza_predial_agendado',
-        redirect_close_button='servicos_agendados_limpeza_predial',
+        redirect_close_button=reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid}),
         permission_edit=permission_edit
     )
 
@@ -240,13 +240,13 @@ def editar_servico_limpezapredial_configurado(request, userid, id_random):
         id_random=id_random,
         app_name='Editar serviço',
         redirect_url_name='editar_servico_limpezapredial_configurado',
-        redirect_close_button='servicos_configurados_limpeza_predial',
+        redirect_close_button=reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid}),
         permission_edit=permission_edit
     )
 
 
 def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
-    objeto = ServicoLimpezaPredialConfigurado.objects.get(id_random=id_random)
+    objeto = ServicoLimpezaPredialAgendado.objects.get(id_random=id_random)
     forms = FatoServicoLimpezaPredialForms(
         instance=objeto,
         initial={

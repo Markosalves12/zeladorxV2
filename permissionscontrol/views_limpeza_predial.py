@@ -106,7 +106,7 @@ def editar_permissoes_limpeza_predial(request, userid, id_random):
         id_random=id_random,
         app_name=f'Editar permissoes limpeza predia {gerente.username}',
         redirect_url_name='editar_permissoes_limpeza_predial',
-        redirect_close_button='permissoes_limpeza_predial',
+        redirect_close_button=reverse('permissoes_limpeza_predial', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_edit=permission_edit
     )

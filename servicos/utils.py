@@ -7,11 +7,11 @@ def colect_dados_fato_servico_jardinagem():
     # Adicione os dados do relatório ao arquivo Excel
     dados = FatoServicoJardinagem.objects.annotate(
         tipodeempresa=ExpressionWrapper(
-            F('Servico__ColaboradoresEscalados__EmpresaSecundaria__setor'),
+            F('Servico__ColaboradoresEscalados__empresasecundaria__setor'),
             output_field=CharField()
         ),
         empresaprestadora=ExpressionWrapper(
-            F('Servico__ColaboradoresEscalados__EmpresaSecundaria__nome'),
+            F('Servico__ColaboradoresEscalados__empresasecundaria__nome'),
             output_field=CharField()
         ),
         id_agendamento=ExpressionWrapper(

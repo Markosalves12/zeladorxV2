@@ -41,8 +41,11 @@
                 <div class="card">
                   <div class="card-header">
                     <div>
-                      {% if  %}
-                      <iframe src={{ objeto.linkmapa }} style="width: 100%; height: 85vh; border: none;"></iframe>
+                      {% if permission_view %}
+                        <iframe src={{ objeto.linkmapajardinagem }} style="width: 100%; height: 85vh; border: none;"></iframe>
+                      {% else %}
+                        {% include 'partials/_access_rejected.html' %}
+                      {% endif %}
                     </div>
                   </div>
                 </div>

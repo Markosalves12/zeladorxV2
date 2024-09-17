@@ -5,7 +5,7 @@ from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpeza
 from utils.utils import paginate
 
 # Create your views here.
-def historico_de_servicos_areas_limpeza_predial(request, id_random):
+def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
     objeto = AreaLimpezaPredial.objects.get(
         id_random=id_random
     )
@@ -29,7 +29,7 @@ def historico_de_servicos_areas_limpeza_predial(request, id_random):
         }
     )
 
-def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, id_random):
+def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, id_random):
     objeto = CatalogodeServicoLimpezaPredial.objects.get(
         id_random=id_random
     )

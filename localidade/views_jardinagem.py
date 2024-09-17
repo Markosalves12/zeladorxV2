@@ -109,7 +109,7 @@ def editar_localidade_jardinagem(request, userid, id_random):
         id_random=id_random,
         app_name='Editar localidade',
         redirect_url_name='editar_localidade_jardinagem',
-        redirect_close_button='localidades_jardinagem',
+        redirect_close_button=reverse('localidades_jardinagem', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
         permission_desmobilize=permission_desmobilize,

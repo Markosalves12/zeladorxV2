@@ -59,9 +59,9 @@ def calendario_jardinagem(request, userid):
     formatted_events = [
         format_event(
             servico,
-            userid=userid,
-            url_agendamento='agendar_servico_jardinagem',
-            url_acompanahemnto='realizar_servico_jardinagem_agendado'
+            # userid=userid,
+            # url_agendamento='agendar_servico_jardinagem',
+            # url_acompanahemnto='realizar_servico_jardinagem_agendado'
         )
         for servico in agendado
     ]
@@ -74,6 +74,7 @@ def calendario_jardinagem(request, userid):
             'app_name': 'Calendário Jardinagem',
             'link_tipos': tipos,
             'url_agendamento': 'agendar_servico_jardinagem',
+            'url_acompanhamento': 'realizar_servico_jardinagem_agendado',
             'permission_view': permission_view,
             'permission_edit': permission_edit,
             'permission_crate': permission_crate,

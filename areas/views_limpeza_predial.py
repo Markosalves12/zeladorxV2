@@ -110,7 +110,7 @@ def editar_area_limpeza_predial(request, userid, id_random):
         id_random=id_random,
         app_name='Editar área limpeza predial',
         redirect_url_name='editar_area_limpeza_predial',
-        redirect_close_button='areas_limpeza_predial',
+        redirect_close_button=reverse('areas_limpeza_predial', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
         permission_desmobilize=permission_desmobilize,
@@ -118,7 +118,7 @@ def editar_area_limpeza_predial(request, userid, id_random):
     )
 
 
-def areas_associadas_localidades_limpeza_predial(request, id_random):
+def areas_associadas_localidades_limpeza_predial(request, userid, id_random):
     localidade = LocalidadeLimpezaPredial.objects.get(
         id_random=id_random
     )

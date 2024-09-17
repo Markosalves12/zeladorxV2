@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from empresasecundario.models import EmpresaSecundaria
-from empresasecundario.forms_jardinagem import EmpresaSecundariaForms
+from empresasecundario.forms import EmpresaSecundariaForms
 from utils.views import generic_view, edit_generic_view
 from empresasecundario.utils import define_empresas
 

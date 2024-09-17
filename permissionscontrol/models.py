@@ -26,12 +26,14 @@ class PermissionsJardinagem(models.Model):
         ('264: Pode desmobilizar serviços do catálogo', '264: Pode desmobilizar serviços do catálogo'),
         ('265: Pode reabilitar serviços do catálogo', '265: Pode reabilitar serviços do catálogo'),
         # rever as empresas, se os setores serao unificados no cadastro, ou se vai ser separado
-        ('270: Pode criar novas empresas', '270: Pode criar novas empresas'),
-        ('271: Pode editar empresas', '271: Pode editar empresas'),
-        ('272: Pode visualizar empresas', '272: Pode visualizar empresas'),
-        ('273: Pode excluir empresas', '273: Pode excluir empresas'),
-        ('274: Pode desmobilizar empresas', '274: Pode desmobilizar empresas'),
-        ('275: Pode reabilitar empresas', '275: Pode reabilitar empresas'),
+
+        # ('270: Pode criar novas empresas', '270: Pode criar novas empresas'),
+        # ('271: Pode editar empresas', '271: Pode editar empresas'),
+        # ('272: Pode visualizar empresas', '272: Pode visualizar empresas'),
+        # ('273: Pode excluir empresas', '273: Pode excluir empresas'),
+        # ('274: Pode desmobilizar empresas', '274: Pode desmobilizar empresas'),
+        # ('275: Pode reabilitar empresas', '275: Pode reabilitar empresas'),
+
         # rever as empresas, se os setores serao unificados no cadastro, ou se vai ser separado
         ('280: Pode criar novos colaboradores', '280: Pode criar novos colaboradores'),
         ('281: Pode editar colaboradores', '281: Pode editar colaboradores'),
@@ -144,13 +146,15 @@ class PermissionsLimpezaPredial(models.Model):
         ('263: Pode excluir serviços do catálogo', '263: Pode excluir serviços do catálogo'),
         ('264: Pode desmobilizar serviços do catálogo', '264: Pode desmobilizar serviços do catálogo'),
         ('265: Pode reabilitar serviços do catálogo', '265: Pode reabilitar serviços do catálogo'),
+
         # rever as empresas, se os setores serao unificados no cadastro, ou se vai ser separado
-        ('270: Pode criar novas empresas', '270: Pode criar novas empresas'),
-        ('271: Pode editar empresas', '271: Pode editar empresas'),
-        ('272: Pode visualizar empresas', '272: Pode visualizar empresas'),
-        ('273: Pode excluir empresas', '273: Pode excluir empresas'),
-        ('274: Pode desmobilizar empresas', '274: Pode desmobilizar empresas'),
-        ('275: Pode reabilitar empresas', '275: Pode reabilitar empresas'),
+        # ('270: Pode criar novas empresas', '270: Pode criar novas empresas'),
+        # ('271: Pode editar empresas', '271: Pode editar empresas'),
+        # ('272: Pode visualizar empresas', '272: Pode visualizar empresas'),
+        # ('273: Pode excluir empresas', '273: Pode excluir empresas'),
+        # ('274: Pode desmobilizar empresas', '274: Pode desmobilizar empresas'),
+        # ('275: Pode reabilitar empresas', '275: Pode reabilitar empresas'),
+
         # rever as empresas, se os setores serao unificados no cadastro, ou se vai ser separado
         ('280: Pode criar novos colaboradores', '280: Pode criar novos colaboradores'),
         ('281: Pode editar colaboradores', '281: Pode editar colaboradores'),
@@ -255,6 +259,13 @@ class PermissionsEspecials(models.Model):
     )
 
     permissions_CRUD = [
+        ('270: Pode criar novas empresas', '270: Pode criar novas empresas'),
+        ('271: Pode editar empresas', '271: Pode editar empresas'),
+        ('272: Pode visualizar empresas', '272: Pode visualizar empresas'),
+        ('273: Pode excluir empresas', '273: Pode excluir empresas'),
+        ('274: Pode desmobilizar empresas', '274: Pode desmobilizar empresas'),
+        ('275: Pode reabilitar empresas', '275: Pode reabilitar empresas'),
+
         ('300: Pode editar permissões especiais', '300: Pode editar permissões especiais'),
         ('301: Pode visualizar permissões especiais', '301: Pode visualizar permissões especiais'),
 

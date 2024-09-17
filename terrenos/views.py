@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import reverse
 from terrenos.models import Terreno
 from terrenos.forms import TerrenoForms
 from utils.views import generic_view, edit_generic_view
@@ -98,7 +98,7 @@ def editar_terreno(request, userid, id_random):
         id_random=id_random,
         app_name='Editar terreno',
         redirect_close_button='terrenos',
-        redirect_url_name='editar_terreno',
+        redirect_url_name=reverse('editar_terreno', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
         permission_desmobilize=permission_desmobilize,

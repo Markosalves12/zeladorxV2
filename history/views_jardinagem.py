@@ -5,7 +5,7 @@ from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from utils.utils import paginate
 
 # Create your views here.
-def historico_de_servicos_areas_jardinagem(request, id_random):
+def historico_de_servicos_areas_jardinagem(request, userid, id_random):
     objeto = AreasJardins.objects.get(
         id_random=id_random
     )
@@ -37,7 +37,7 @@ def historico_de_servicos_areas_jardinagem(request, id_random):
         }
     )
 
-def historico_de_servicos_catologo_de_servicos_jardinagem(request, id_random):
+def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_random):
     objeto = CatalogodeServicoJardinagem.objects.get(
         id_random=id_random
     )

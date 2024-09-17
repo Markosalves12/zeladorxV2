@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from unidade.models import Unidade
 from unidade.forms import UnidadeForms
 from utils.views import generic_view, edit_generic_view
@@ -99,7 +99,7 @@ def editar_unidade(request, userid, id_random):
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar unidade',
-        redirect_close_button='unidades',
+        redirect_close_button=reverse('unidades', kwargs={'userid': userid}),
         redirect_url_name='editar_unidade',
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
@@ -107,7 +107,7 @@ def editar_unidade(request, userid, id_random):
         permission_rehabilitate=permission_rehabilitate
     )
 
-def visualizar_unidade(request, userid,id_random):
+def visualizar_unidade(request, userid, id_random):
     objeto = Unidade.objects.get(
         id_random=id_random
     )
@@ -119,12 +119,19 @@ def visualizar_unidade(request, userid,id_random):
         permission_to_access=['342: Pode visualizar unidades']
     )
 
+    tipos = [
+        {'nome': 'Tipo de mapa', 'link': ''},
+        {'nome': 'Jardinagem', 'link': ''},
+        {'nome': 'Limpeza predial', 'link': ''},
+    ]
+
     return render(
         request=request,
         template_name="VisualizationMaps/VisualizationMaps.html",
         context={
             'app_name': f'Unidade {objeto.nome}',
             'objeto': objeto,
+            'link_tipos': tipos,
             'permission_view': permission_view
         }
     )

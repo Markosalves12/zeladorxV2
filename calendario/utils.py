@@ -1,5 +1,5 @@
 from django.shortcuts import reverse
-def format_event(servico, userid=None, id_random=None, url_agendamento=str, url_acompanahemnto=str):
+def format_event(servico):
     # Define a cor com base no status_agendamento
     if servico.status == "Em andamento":
         background_color = "#000080"
@@ -35,19 +35,19 @@ def format_event(servico, userid=None, id_random=None, url_agendamento=str, url_
         "allDay": "false",
         "backgroundColor": background_color,
         "borderColor": border_color,
-        "url": reverse(
-            f'{url_agendamento}',
-            kwargs={
-                'userid': userid
-            }
-        ),
-        "url_acompanhemento": reverse(
-            f'{url_acompanahemnto}',
-            kwargs={
-                'id_random': id_random,
-                'userid': userid
-            }
-        ),
+        # "url": reverse(
+        #     f'{url_agendamento}',
+        #     kwargs={
+        #         'userid': userid
+        #     }
+        # ),
+        # "url_acompanhemento": reverse(
+        #     f'{url_acompanahemnto}',
+        #     kwargs={
+        #         'id_random': id_random,
+        #         'userid': userid
+        #     }
+        # ),
         'status_agendamento': servico.status_agendamento,
         'status': servico.status,
         'dataconclusao': servico.DataDeConclusao,

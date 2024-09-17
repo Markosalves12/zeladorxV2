@@ -8,9 +8,6 @@ from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def catalogo_de_servicos_limpeza_predial(request, userid):
-    # ('263: Pode excluir serviços do catálogo', '263: Pode excluir serviços do catálogo'),
-    # ('264: Pode desmobilizar serviços do catálogo', '264: Pode desmobilizar serviços do catálogo'),
-    # ('265: Pode reabilitar serviços do catálogo', '265: Pode reabilitar serviços do catálogo'),
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -110,7 +107,7 @@ def editar_catalogo_de_servicos_limpeza_predial(request, userid, id_random):
         id_random=id_random,
         app_name='Editar serviço do catálogo de limpeza predial',
         redirect_url_name='editar_catalogo_de_servicos_limpeza_predial',
-        redirect_close_button='catalogo_de_servicos_limpeza_predial',
+        redirect_close_button=reverse('catalogo_de_servicos_limpeza_predial', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
         permission_desmobilize=permission_desmobilize,

@@ -13,7 +13,7 @@ class GerenteJardinagemForms(forms.ModelForm):
 
             self.fields['empresasecundaria'].queryset = self.fields['empresasecundaria'].queryset.filter(
                 empresaprimaria__id_random__in=empresas_primarias_ids,
-                setor='Jardinagem'
+                setor__setor='Jardinagem'
             )
 
     empresasecundaria = forms.ModelMultipleChoiceField(

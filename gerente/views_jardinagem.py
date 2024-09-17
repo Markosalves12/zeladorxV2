@@ -30,7 +30,7 @@ def gerentes_jardinagem(request, userid):
     )
 
     colunas = [
-        {'nome': 'id','label': '#', 'largura': '10px'},
+        {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'username', 'label': 'Nome'},
         {'nome': 'email', 'label': 'E-mail'},
         {'nome': 'empresasecundaria', 'label': 'Empresa(s)'},
@@ -51,7 +51,7 @@ def gerentes_jardinagem(request, userid):
         model=Gerente.objects.filter(
             empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             empresasecundaria__id_random__in=empresas_secundarias_ids,
-            empresasecundaria__setor='Jardinagem'
+            empresasecundaria__setor__setor='Jardinagem'
         ),
         form_class=GerenteJardinagemForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
@@ -108,7 +108,7 @@ def editar_gerente_jardinagem(request, userid, id_random):
         id_random=id_random,
         app_name='Editar gerente',
         redirect_url_name='editar_gerente_jardinagem',
-        redirect_close_button='gerentes_jardinagem',
+        redirect_close_button=reverse('gerentes_jardinagem', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
         permission_desmobilize=permission_desmobilize,
