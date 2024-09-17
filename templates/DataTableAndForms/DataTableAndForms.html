@@ -155,11 +155,13 @@
                       {% endif %}
                   {% endif %}
                   {% if button_export_tittle != False %}
+                    {% if  permission_view %}
                       <a href={{ button_export_link }}>
                         <button type="button" class="btn btn-primary">
                             {{ button_export_tittle }}
                         </button>
                       </a>
+                    {% endif %}
                   {% endif %}
               </div>
                 {% if permission_view %}

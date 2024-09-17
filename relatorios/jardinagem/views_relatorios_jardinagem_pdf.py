@@ -2,9 +2,16 @@ from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from utils.views import generic_view
 from django.urls import reverse
-
+from permissionscontrol.utils import validate_permissions
 
 def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['311: Pode extrair relatórios PDF de jardinagem']
+    )
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
@@ -17,14 +24,14 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
     tipos = [
         {'nome': 'Relatório de serviços', 'link': ''},
         {
-            'nome': 'Jardinagem',
+            'nome': 'Serviços concluidos, Jardinagem PDF',
             'link': reverse(
                 'relatorios_de_servicos_limpeza_predial_pdf_concluidos',
                 kwargs={'userid': userid}
             )
         },
         {
-            'nome': 'Limpeza predial',
+            'nome': 'Serviços concluidos, Limpeza predial PDF',
             'link': reverse(
                 'relatorios_de_servicos_jardinagem_pdf_concluidos',
                 kwargs={'userid': userid}
@@ -48,11 +55,19 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
         button_export_link=reverse('exportar_relatorio_de_serivos_Jardinagem_pdf', kwargs={'userid': userid}),
         link_tipos=tipos,
         modal_button=False,
-        userid=userid
+        userid=userid,
+        permission_view=permission_view
     )
 
 
 def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['311: Pode extrair relatórios PDF de jardinagem']
+    )
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
@@ -65,14 +80,14 @@ def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
     tipos = [
         {'nome': 'Relatório de serviços', 'link': ''},
         {
-            'nome': 'Jardinagem',
+            'nome': 'Serviços agendados, Jardinagem PDF',
             'link': reverse(
                 'relatorios_de_servicos_jardinagem_pdf_agendados',
                 kwargs={'userid': userid}
             )
         },
         {
-            'nome': 'Limpeza predial',
+            'nome': 'Serviços agendados, Limpeza predial PDF',
             'link': reverse(
                 'relatorios_de_servicos_limpeza_predial_pdf_agendados',
                 kwargs={'userid': userid}
@@ -96,5 +111,6 @@ def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
         button_export_link=reverse('exportar_relatorio_de_serivos_Jardinagem_pdf', kwargs={'userid': userid}),
         link_tipos=tipos,
         modal_button=False,
-        userid=userid
+        userid=userid,
+        permission_view=permission_view
     )

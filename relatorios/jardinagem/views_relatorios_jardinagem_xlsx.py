@@ -1,11 +1,18 @@
 from servicos.utils import colect_dados_fato_servico_jardinagem
-from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from django.urls import reverse
 from utils.views import generic_view
+from permissionscontrol.utils import validate_permissions
 
 # Create your views here.
 def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['310: Pode extrair relatórios XLSX de jardinagem']
+    )
+
     dados = colect_dados_fato_servico_jardinagem()
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
@@ -21,14 +28,14 @@ def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
     tipos = [
         {'nome': 'Relatório de serviços', 'link': ''},
         {
-            'nome': 'Jardinagem',
+            'nome': 'Serviços concluidos, Jardinagem XLSX',
             'link': reverse(
                 'relatorios_de_servicos_jardinagem_xlsx_concluidos',
                 kwargs={'userid': userid}
             )
         },
         {
-            'nome': 'Limpeza predial',
+            'nome': 'Serviços concluidos, Limpeza predial XLSX',
             'link': reverse(
                 'relatorios_de_servicos_limpeza_predial_xlsx_concluidos',
                 kwargs={'userid': userid}
@@ -52,12 +59,20 @@ def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
         button_export_link=reverse('exportar_relatorio_de_serivos_Jardinagem_excel', kwargs={'userid': userid}),
         link_tipos=tipos,
         modal_button=False,
-        userid=userid
+        userid=userid,
+        permission_view=permission_view
     )
 
 
 
 def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['310: Pode extrair relatórios XLSX de jardinagem']
+    )
+
     dados = colect_dados_fato_servico_jardinagem()
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
@@ -73,14 +88,15 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
     tipos = [
         {'nome': 'Relatório de serviços', 'link': ''},
         {
-            'nome': 'Jardinagem',
+            'nome': 'Serviços agendados, Jardinagem XLSX',
             'link': reverse(
                 'relatorios_de_servicos_jardinagem_xlsx_agendados',
                 kwargs={'userid': userid}
             )
         },
         {
-            'nome': 'Limpeza predial', 'link': reverse(
+            'nome': 'Serviços agendados, Limpeza predial XLSX',
+            'link': reverse(
                 'relatorios_de_servicos_limpeza_predial_xlsx_agendados',
                 kwargs={'userid': userid}
             )
@@ -103,5 +119,6 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
         button_export_link=reverse('exportar_relatorio_de_serivos_Jardinagem_excel', kwargs={'userid': userid}),
         modal_button=False,
         link_tipos=tipos,
-        userid=userid
+        userid=userid,
+        permission_view=permission_view
     )
