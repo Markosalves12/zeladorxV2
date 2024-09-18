@@ -4,6 +4,7 @@ from servicos.forms_limpeza_predial import ServicoLimpezaPredialConfiguradoForms
 from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
+from django.utils import timezone
 
 def agendar_servico_limpeza_predial(request, userid):
     forms = ServicoLimpezaPredialAgendadoForms(request=request, userid=userid)
@@ -130,7 +131,7 @@ def configurar_servico_limpeza_predial(request, userid):
         print(form.errors)
         if form.is_valid():
             form.save()
-            return redirect('configurar_servico_limpeza_predial')
+            return redirect('configurar_servico_limpeza_predial', userid)
 
     tipos = [
         {'nome': 'Configurar serviços', 'link': ''},
@@ -283,3 +284,19 @@ def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
             'permission_accompany': permission_accompany
         }
     )
+
+def cancelar_servico_limpeza_predial(request, userid, id_random):
+    objeto = ServicoLimpezaPredialAgendado.objects.get(id_random=id_random)
+    objeto.status = 'Cancelado'
+    objeto.save()
+
+    return redirect('calendario_limpeza_predial', userid)
+
+
+def concluir_servico_limpeza_predial(request, userid, id_random):
+    objeto = ServicoLimpezaPredialAgendado.objects.get(id_random=id_random)
+    objeto.status = 'Concluido'
+    objeto.DataDeConclusao = timezone.now()
+    objeto.save()
+
+    return redirect('calendario_limpeza_predial', userid)

@@ -39,7 +39,7 @@ def validate_permissions(request, userid, permission_type, permission_to_access)
     except:
         permissions_instance = []
 
-    print(type(permissions_instance))
+    # print(type(permissions_instance))
 
     if isinstance(permissions_instance, PermissionsAccessJardinagem):
         # O objeto encontrado é um queryset (o que não é esperado aqui)

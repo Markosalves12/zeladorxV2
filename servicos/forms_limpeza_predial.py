@@ -39,7 +39,7 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
 
     class Meta:
         model = ServicoLimpezaPredialAgendado
-        fields = ['Areas', 'DescricaoDoServico', 'ServicosEscalados', 'DataDeInicio', 'DataDeConclusao']
+        fields = ['Areas', 'TipoServico', 'DescricaoDoServico', 'ServicosEscalados', 'DataDeInicio', 'DataDeConclusao',]
         labels = {
             'Areas': 'Área',
             'ServicosEscalados': 'Serviços Escalados',
@@ -63,6 +63,11 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
                     'type': 'datetime-local',
                     'class': 'form-control',
                     'placeholder': 'DD/MM/AAAA HH:MM',
+                }
+            ),
+            'TipoServico': forms.Select(
+                attrs={
+                    'class': 'form-control',
                 }
             ),
             'Areas': forms.Select(
@@ -127,6 +132,7 @@ class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
         labels = {
             'Areas': 'Área',
             'ServicosEscalados': 'Serviços Escalados',
+            'TipoServico': 'Tipo de agendamento',
             'tempomedioplanejado': 'Tempo médio planejado',
             'diasaseremrealizado': 'Dias a serem realizados',
             'horario_1': 'Horario 1',
@@ -234,13 +240,14 @@ class FatoServicoLimpezaPredialForms(forms.ModelForm):
 
     class Meta:
         model = FatoServicoLimpezaPredial
-        fields = ['Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area', 'Gerente']
+        fields = ['Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area', 'Gerente', 'foto_entrega', ]
 
         labels = {
             'Servico': 'Serviço',
             'data_hora_chegada_na_area': 'Chegada na área',
             'data_hora_retorno_area': 'Retorno na área',
-            'Gerente': 'Colaborador'
+            'Gerente': 'Colaborador',
+            'foto_entrega': 'Foto da área na entrega',
         }
 
         widgets = {
@@ -260,6 +267,11 @@ class FatoServicoLimpezaPredialForms(forms.ModelForm):
                 }
             ),
             'Gerente': forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+            'foto_entrega': forms.FileInput(
                 attrs={
                     'class': 'form-control'
                 }

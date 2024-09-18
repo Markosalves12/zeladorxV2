@@ -2,7 +2,8 @@ from django.urls import path
 from servicos.views_limpeza_predial import (agendar_servico_limpeza_predial, servicos_agendados_limpeza_predial,
                                             editar_servico_limpeza_predial_agendado,
                                             configurar_servico_limpeza_predial, editar_servico_limpezapredial_configurado,
-                                            servicos_configurados_limpeza_predial, realizar_servico_limpeza_predial_agendado)
+                                            servicos_configurados_limpeza_predial, realizar_servico_limpeza_predial_agendado,
+                                            cancelar_servico_limpeza_predial, concluir_servico_limpeza_predial)
 
 urlpatterns = [
     path('agendar_servico_limpeza_predial/<str:userid>', agendar_servico_limpeza_predial, name='agendar_servico_limpeza_predial'),
@@ -12,4 +13,8 @@ urlpatterns = [
     path('editar_servico_limpezapredial_configurado/<str:userid>/<str:id_random>', editar_servico_limpezapredial_configurado, name='editar_servico_limpezapredial_configurado'),
     path('servicos_configurados_limpeza_predial/<str:userid>', servicos_configurados_limpeza_predial, name='servicos_configurados_limpeza_predial'),
     path('realizar_servico_limpeza_predial_agendado/<str:userid>/<str:id_random>', realizar_servico_limpeza_predial_agendado, name='realizar_servico_limpeza_predial_agendado'),
+    path('cancelar_servico_limpeza_predial/<str:userid>/<str:id_random>', cancelar_servico_limpeza_predial,
+         name='cancelar_servico_limpeza_predial'),
+    path('concluir_servico_limpeza_predial/<str:userid>/<str:id_random>', concluir_servico_limpeza_predial,
+         name='concluir_servico_limpeza_predial'),
 ]

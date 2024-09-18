@@ -2,10 +2,10 @@ from django.contrib import admin
 
 # Register your models here.
 class ServicoJardinagemAgendadoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'DataDeInicio', 'DescricaoDoServico', 'Areas', 'status', 'foto_solicitacao', 'foto_entrega', 'DataDeConclusao',)
-    list_display_links = ('id', 'DataDeInicio', 'DescricaoDoServico', 'Areas', 'status', 'foto_solicitacao', 'foto_entrega', 'DataDeConclusao',)
-    search_fields = ('DataDeInicio', 'status', 'DataDeConclusao', )
-    list_filter = ('status', )
+    list_display = ('id', 'DataDeInicio', 'DescricaoDoServico', 'Areas', 'status', 'foto_solicitacao', 'foto_entrega', 'DataDeConclusao', 'TipoServico', )
+    list_display_links = ('id', 'DataDeInicio', 'DescricaoDoServico', 'Areas', 'status', 'foto_solicitacao', 'foto_entrega', 'DataDeConclusao', 'TipoServico', )
+    search_fields = ('DataDeInicio', 'status', 'DataDeConclusao', 'TipoServico', )
+    list_filter = ('status', 'TipoServico', )
 
     list_per_page = 20
 

@@ -145,8 +145,8 @@ class FatoServicoJardinagem(models.Model):
 
     EquipamentoUsado = models.ForeignKey(
         to=EquipamentoDisponiveisJardinagem,
-        blank=False,
-        null=False,
+        blank=True,
+        null=True,
         on_delete=models.CASCADE,
         related_name="REquipamentoUsadoFatoServico"
     )

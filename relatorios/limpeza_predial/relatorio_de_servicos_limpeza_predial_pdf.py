@@ -171,7 +171,7 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid):
         p,
         page_number,
         width,
-        is_last_page=True
+        # is_last_page=True
     )
 
     # Close the PDF object cleanly, and we're done.

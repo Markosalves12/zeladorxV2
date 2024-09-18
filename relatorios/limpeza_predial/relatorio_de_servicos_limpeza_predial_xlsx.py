@@ -1,6 +1,6 @@
 import openpyxl
 from servicos.headers_report_jardinagem import headers_report_services
-from servicos.utils import colect_dados_fato_servico_jardinagem
+from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
 from django.http import HttpResponse
 
 

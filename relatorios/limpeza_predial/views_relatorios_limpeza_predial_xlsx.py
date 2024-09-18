@@ -1,4 +1,4 @@
-from servicos.utils import colect_dados_fato_servico_jardinagem
+from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
 from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 from django.urls import reverse

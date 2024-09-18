@@ -25,7 +25,14 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
             'app_name': f'Histórico de serviços {objeto.nome}',
             'objeto': objeto,
             'foto_objeto': objeto.foto.url if objeto.foto else None,
-            'dados_paginados': dados_paginados
+            'dados_paginados': dados_paginados,
+            'export_pdf': reverse(
+                viewname='exportar_relatorio_de_serivos_limpeza_predial_pdf',
+                kwargs={
+                    'userid': userid,
+                    # 'id_random': id_random,
+                }
+            )
         }
     )
 
@@ -53,10 +60,10 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
             'foto_objeto': None,
             'dados_paginados': dados_paginados,
             'export_pdf': reverse(
-                viewname='exportar_relatorio_de_serivos_na_area_pdf',
+                viewname='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
                 kwargs={
-                    'id_random': id_random,
-                    'categoria_servico_zeladoria': 'limpeza_predial'
+                    'userid': userid,
+                    # 'id_random': id_random,
                 }
             )
         }

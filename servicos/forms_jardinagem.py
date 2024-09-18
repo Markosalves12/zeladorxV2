@@ -58,6 +58,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
             'DataDeInicio': 'Data marcada para inicio',
             'DataDeConclusao': 'Data prevista para conclusao',
             'ServicosEscalados': 'Serviços Escalados',
+            'TipoServico': 'Tipo de agendamento',
             'ColaboradoresEscalados': 'Colaboradores escalados',
             'DescricaoDoServico': 'Descrição do serviço',
             'Areas': 'Area para ser atendida',
@@ -81,6 +82,11 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
                     'type': 'datetime-local',
                     'class': 'form-control',
                     'placeholder': 'DD/MM/AAAA HH:MM',
+                }
+            ),
+            'TipoServico': forms.Select(
+                attrs={
+                    'class': 'form-control',
                 }
             ),
             'Areas': forms.Select(
@@ -134,9 +140,11 @@ class FatoServicoJardinagemForms(forms.ModelForm):
                 }
             ),
             'data_hora_chegada_na_area': forms.DateInput(
-                format='%d/%m/%Y',
+                format='%d/%m/%Y %H:%M',
                 attrs={
-                    'class': 'form-control'
+                    'type': 'datetime-local',
+                    'class': 'form-control',
+                    'placeholder': 'DD/MM/AAAA HH:MM',
                 }
             ),
             'EquipamentoUsado': forms.Select(
@@ -145,9 +153,11 @@ class FatoServicoJardinagemForms(forms.ModelForm):
                 }
             ),
             'data_hora_retorno_area': forms.DateInput(
-                format='%d/%m/%Y',
+                format='%d/%m/%Y %H:%M',
                 attrs={
-                    'class': 'form-control'
+                    'type': 'datetime-local',
+                    'class': 'form-control',
+                    'placeholder': 'DD/MM/AAAA HH:MM',
                 }
             ),
             'Gerente': forms.Select(

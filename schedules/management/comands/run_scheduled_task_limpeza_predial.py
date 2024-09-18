@@ -1,7 +1,5 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from django.utils.timezone import make_aware
-import time
-import schedule
 from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado, ServicoLimpezaPredialConfigurado
 
 

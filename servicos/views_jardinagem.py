@@ -153,12 +153,13 @@ def realizar_servico_jardinagem_agendado(request, userid, id_random):
     )
 
     if request.method == 'POST':
-        form = ServicoJaridinagemAgendadoForms(request.POST, request.FILES, instance=objeto, request=request, userid=userid)
+        form = FatoServicoJardinagemForms(request.POST, request.FILES, request=request, userid=userid)
+        print(form.errors)
         if form.is_valid():
             form.save()
             objeto.status = 'Em andamento'
             objeto.save()
-            return redirect('calendario_jardinagem')
+            return redirect('calendario_jardinagem', userid)
 
 
     return render(
@@ -176,18 +177,18 @@ def realizar_servico_jardinagem_agendado(request, userid, id_random):
     )
 
 
-def cancelar_servico_jardinagem(request, id_random):
+def cancelar_servico_jardinagem(request, userid, id_random):
     objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     objeto.status = 'Cancelado'
     objeto.save()
 
-    return redirect('calendario_jardinagem')
+    return redirect('calendario_jardinagem', userid)
 
 
-def concluir_servico_jardinagem(request, id_random):
+def concluir_servico_jardinagem(request, userid, id_random):
     objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     objeto.status = 'Concluido'
     objeto.DataDeConclusao = timezone.now()
     objeto.save()
 
-    return redirect('calendario_jardinagem')
+    return redirect('calendario_jardinagem', userid)

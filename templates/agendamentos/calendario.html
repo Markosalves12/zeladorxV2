@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title> {{ application }} | Calendario</title>
-
+  <link rel="shortcut icon" href="{% static 'dist/img/favicon-16x16.png' %}" />
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -170,10 +170,10 @@
         var modal = $('#modal-default');
         var modalTitle = modal.find('.modal-title');
         var modalBody = modal.find('.modal-body');
-        var editUrl = "{% url 'editar_servico_jardinagem_agendado' userid '__id__' %}".replace('__id__', info.event.id);
+        var editUrl = "{% url url_edicao userid '__id__' %}".replace('__id__', info.event.id);
         var acompUrl = "{% url url_acompanhamento userid  '__id__' %}".replace('__id__', info.event.id);
-        var cancelUrl = "{% url 'cancelar_servico_jardinagem' '__id__' %}".replace('__id__', info.event.id);
-        var concluirUrl = "{% url 'concluir_servico_jardinagem' '__id__' %}".replace('__id__', info.event.id);
+        var cancelUrl = "{% url url_cancelamento userid '__id__' %}".replace('__id__', info.event.id);
+        var concluirUrl = "{% url url_conclusao userid '__id__' %}".replace('__id__', info.event.id);
         var status = info.event.extendedProps.status;
 
         var formattedStart = moment(info.event.start).format('dddd DD/MM/YYYY HH:mm');

@@ -1,4 +1,4 @@
-from servicos.utils import colect_dados_fato_servico_jardinagem
+from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from django.urls import reverse
 from utils.views import generic_view
@@ -49,7 +49,7 @@ def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
-        edition_rout='editar_servico_agendado',
+        edition_rout='editar_servico_jardinagem_agendado',
         app_name='relatório de serviços jardinagem xlsx - Concluidos',
         text_button_open_modal='Adicionar nova manutenção',
         text_button_save='Salvar manutenção',

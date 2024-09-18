@@ -150,50 +150,19 @@ class ServicoLimpezaPredialAgendado(models.Model):
         default='Agendado'
     )
 
-    # horario_1 = models.TimeField(
-    #     null=False,
-    #     blank=False,
-    # )
-    #
-    # horario_2 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_3 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_4 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_5 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_6 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_7 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_8 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
-    #
-    # horario_9 = models.TimeField(
-    #     null=True,
-    #     blank=True,
-    # )
+    tipo_servico_options = [
+        ('Regular', 'Regular'),
+        ('Extra', 'Extra'),
+        ('Automático', 'Automático'),
+    ]
+
+    TipoServico = models.CharField(
+        choices=tipo_servico_options,
+        null=True,
+        blank=True,
+        default='Regular',
+        max_length=30
+    )
 
     def __str__(self):
         servicos_escalados_nomes = ", ".join(servico.nome for servico in self.ServicosEscalados.all())
@@ -232,4 +201,9 @@ class FatoServicoLimpezaPredial(models.Model):
         null=True,
         on_delete=models.CASCADE,
         related_name='RColaboradorFatoServicoLimpezaPredial'
+    )
+
+    foto_entrega = models.ImageField(
+        upload_to="media/%Y/%m/%d/",
+        blank=True,
     )

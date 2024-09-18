@@ -29,11 +29,12 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
             'foto_objeto': objeto.foto.url if objeto.foto else None,
             'dados_paginados': dados_paginados,
             'export_pdf': reverse(
-                viewname='exportar_relatorio_de_serivos_na_area_pdf',
+                viewname='exportar_relatorio_de_serivos_Jardinagem_pdf',
                 kwargs={
-                    'id_random': id_random,
-                    'categoria_servico_zeladoria': 'jardinagem'
-                })
+                    'userid': userid,
+                    # 'id_random': id_random,
+                }
+            )
         }
     )
 
@@ -60,6 +61,12 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
             'objeto': objeto,
             'foto_objeto': None,
             'dados_paginados': dados_paginados,
-            'export_pdf': reverse('exportar_relatorio_de_serivos_na_area_pdf', kwargs={'id_random': id_random})
+            'export_pdf': reverse(
+                'exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
+                kwargs={
+                    'userid': userid,
+                    # 'id_random': id_random
+                }
+            )
         }
     )
