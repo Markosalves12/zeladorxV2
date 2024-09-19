@@ -1,14 +1,34 @@
 from datetime import datetime
 from django.utils.timezone import make_aware
-from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado, ServicoLimpezaPredialConfigurado
+from servicos.models_limpeza_predial import (ServicoLimpezaPredialAgendado, ServicoLimpezaPredialConfigurado,
+                                             FatoServicoLimpezaPredial)
+from areas.models_limpeza_predial import AreaLimpezaPredial
+from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 
 
-def agendar_servicos_limpeza_predial_configurados():
+def agendar_servicos_limpeza_predial_configurados(request):
     objects = ServicoLimpezaPredialConfigurado.objects.all()
 
+    # Mapeamento para dias em português
+    dias_semana_portugues = {
+        'Monday': 'Segunda-Feira',
+        'Tuesday': 'Terça-Feira',
+        'Wednesday': 'Quarta-Feira',
+        'Thursday': 'Quinta-Feira',
+        'Friday': 'Sexta-Feira',
+        'Saturday': 'Sábado',
+        'Sunday': 'Domingo',
+    }
+
     for obj in objects:
-        area = obj.area
-        ServicosEscalados = obj.ServicosEscalados.all()
+        # Obter a área correspondente
+        area = AreaLimpezaPredial.objects.get(id_random=obj.Areas.id_random)
+
+        # Obter todos os serviços escalados do Catalogo
+        ServicosEscalados = CatalogodeServicoLimpezaPredial.objects.filter(
+            id_random__in=[servico.id_random for servico in obj.ServicosEscalados.all()]
+        )
+
         diasaseremrealizado = obj.diasaseremrealizado.all()
         tempomedioplanejado = obj.tempomedioplanejado
         horarios = [
@@ -17,23 +37,12 @@ def agendar_servicos_limpeza_predial_configurados():
         ]
 
         # Obtém o dia da semana atual
-        dia_atual_semana = datetime.now().strftime('%A')  # Retorna o dia em inglês (ex.: 'Monday')
-
-        # Mapeamento para dias em português (ajuste conforme necessário)
-        dias_semana_portugues = {
-            'Monday': 'Segunda-Feira',
-            'Tuesday': 'Terça-Feira',
-            'Wednesday': 'Quarta-Feira',
-            'Thursday': 'Quinta-Feira',
-            'Friday': 'Sexta-Feira',
-            'Saturday': 'Sábado',
-            'Sunday': 'Domingo',
-        }
+        dia_atual_semana = datetime.now().strftime('%A')
 
         # Validação se o dia atual está na lista de dias para realizar o serviço
-        if dias_semana_portugues[dia_atual_semana] in [dia.nome for dia in diasaseremrealizado]:
+        if dias_semana_portugues.get(dia_atual_semana) in [dia.diasdasemana for dia in diasaseremrealizado]:
             for horario in horarios:
-                if horario is not None:
+                if horario:
                     # Combina a data atual com o horário especificado
                     data_atual = datetime.now().date()
                     data_inicio = make_aware(datetime.combine(data_atual, horario))
@@ -41,14 +50,29 @@ def agendar_servicos_limpeza_predial_configurados():
                     # Calcula a data de conclusão
                     data_conclusao = data_inicio + tempomedioplanejado
 
-                    # Cria um novo agendamento
+                    # Criação do novo objeto agendado
                     new_service_scheduled = ServicoLimpezaPredialAgendado(
-                        DescricaoDoServico=", ".join(servicoescalado.nome for servicoescalado in ServicosEscalados)[
-                                           :199],
-                        area=area,
-                        ServicosEscalados=ServicosEscalados,
+                        DescricaoDoServico=", ".join(
+                            servicoescalado.nome
+                            for servicoescalado in ServicosEscalados
+                        )[:199],
+                        Areas=area,
                         DataDeInicio=data_inicio,
                         DataDeConclusao=data_conclusao,
+                        TipoServico='Automático'
                     )
 
+                    # Salva o objeto de agendamento
                     new_service_scheduled.save()
+
+                    # Adiciona todos os serviços escalados ao campo ManyToMany
+                    new_service_scheduled.ServicosEscalados.set(ServicosEscalados)
+
+                    # # Criar o objeto relacionado FatoServicoLimpezaPredial com a chave estrangeira
+                    # fato_servico = FatoServicoLimpezaPredial(
+                    #     Servico=new_service_scheduled,
+                    #     foto_entrega='dist/img/not found.png'  # Definindo a imagem padrão ou outra lógica para o campo
+                    # )
+                    #
+                    # # Salva o objeto fato do serviço
+                    # fato_servico.save()

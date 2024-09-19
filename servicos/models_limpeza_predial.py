@@ -206,4 +206,7 @@ class FatoServicoLimpezaPredial(models.Model):
     foto_entrega = models.ImageField(
         upload_to="media/%Y/%m/%d/",
         blank=True,
+        null=True,
+        max_length=2000,
+        # default='dist/img/not found.png'
     )

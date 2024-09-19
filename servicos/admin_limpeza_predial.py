@@ -25,8 +25,8 @@ class ServicoLimpezaPredialAgendadoAdmin(admin.ModelAdmin):
 
 
 class FatoServicoLimpezaPredialAdmin(admin.ModelAdmin):
-    list_display = ('Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area', 'Gerente', )
-    list_display_links = ('Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area', 'Gerente', )
+    list_display = ('Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area', 'Gerente', 'foto_entrega', )
+    list_display_links = ('Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area', 'Gerente', 'foto_entrega',)
     search_fields = ('Servico', )
     list_filter = ('Servico', )
 

@@ -42,6 +42,7 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
         fields = ['Areas', 'TipoServico', 'DescricaoDoServico', 'ServicosEscalados', 'DataDeInicio', 'DataDeConclusao',]
         labels = {
             'Areas': 'Área',
+            'TipoServico': 'Tipo de agendamento',
             'ServicosEscalados': 'Serviços Escalados',
             'DescricaoDoServico': 'Descrição do serviço',
             'DataDeInicio': 'Data marcada para inicio',
