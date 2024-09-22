@@ -88,6 +88,11 @@ class PermissionsJardinagem(models.Model):
         # configurar essa permissão nos agendamentos
         ('360: Recebe serviços de jardinagem', '360: Recebe serviços de jardinagem'),
         ('361: Pode acompanhar serviços agendados para si próprio', '361: Pode acompanhar serviços agendados para si próprio'),
+
+        ('370: Pode configurar novos serviços', '370: Pode configurar novos serviços'),
+        ('371: Pode editar serviços configurados', '371: Pode editar serviços configurados'),
+        ('372: Pode visualizar serviços configurados', '372: Pode visualizar serviços configurados'),
+        ('373: Pode excluir serviços configurados', '373: Pode excluir serviços configurados'),
     ]
 
     Permissions = models.CharField(

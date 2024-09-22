@@ -1,9 +1,10 @@
 from django.shortcuts import render, reverse
 from unidade.models import Unidade
 from unidade.forms import UnidadeForms
-from utils.views import generic_view, edit_generic_view
+from utils.views import generic_view, edit_generic_view, gerneric_alter_status
 from empresasecundario.utils import define_empresas
 from permissionscontrol.utils import validate_permissions
+
 
 # Create your views here.
 def unidades(request, userid):
@@ -63,6 +64,7 @@ def unidades(request, userid):
         userid=userid,
     )
 
+
 def editar_unidade(request, userid, id_random):
     permission_edit = validate_permissions(
         request=request,
@@ -104,8 +106,25 @@ def editar_unidade(request, userid, id_random):
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
         permission_desmobilize=permission_desmobilize,
-        permission_rehabilitate=permission_rehabilitate
+        permission_rehabilitate=permission_rehabilitate,
+        url_desmobilize=reverse(
+            'alterar_status_unidade',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+                'new_status': 'Desmobilizado',
+            }
+        ),
+        url_rehabilitate=reverse(
+            'alterar_status_unidade',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+                'new_status': 'Mobilizado',
+            }
+        ),
     )
+
 
 def visualizar_unidade(request, userid, id_random):
     objeto = Unidade.objects.get(
@@ -134,4 +153,20 @@ def visualizar_unidade(request, userid, id_random):
             'link_tipos': tipos,
             'permission_view': permission_view
         }
+    )
+
+
+def alterar_status_unidade(request, userid, id_random, new_status):
+    return gerneric_alter_status(
+        request=request,
+        model_class=Unidade,
+        redirect_url_name=reverse(
+            'editar_unidade',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random
+            }
+        ),
+        id_random=id_random,
+        new_status=new_status
     )

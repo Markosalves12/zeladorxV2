@@ -1,6 +1,5 @@
 from django.db import models
 from empresasecundario.models import EmpresaSecundaria
-from catalogo_de_equipamantos.models_jardinagem import CatalogoDeEquipamentosJardinagem
 from utils.utils import generate_id_random
 
 # Create your models here.
@@ -11,12 +10,10 @@ class EquipamentoDisponiveisJardinagem(models.Model):
         max_length=20
     )
 
-    Nome = models.ForeignKey(
-        to=CatalogoDeEquipamentosJardinagem,
+    Nome = models.CharField(
+        max_length=60,
         blank=False,
         null=False,
-        on_delete=models.CASCADE,
-        related_name='RNomeCatalogoEquipamentosJardinagem'
     )
 
     DataDeAquisicao = models.DateField(
@@ -71,9 +68,6 @@ class EquipamentoDisponiveisJardinagem(models.Model):
         choices=status_options,
         default='Mobilizado'
     )
-
-    class Meta:
-        unique_together = ('Nome', 'EmpresaSecundaria')
 
     def __str__(self):
         return f'{self.Nome} -- {self.matricula}'

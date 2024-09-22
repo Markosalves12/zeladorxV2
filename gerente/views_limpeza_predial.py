@@ -2,7 +2,7 @@
 from django.shortcuts import reverse
 from gerente.models import Gerente
 from gerente.forms_limpeza_predial import GerenteLimpezaPredialForms
-from utils.views import generic_view, edit_generic_view
+from utils.views import generic_view, edit_generic_view, gerneric_alter_status
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 
@@ -111,5 +111,31 @@ def editar_gerente_limpeza_predial(request, userid, id_random):
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
         permission_desmobilize=permission_desmobilize,
-        permission_rehabilitate=permission_rehabilitate
+        permission_rehabilitate=permission_rehabilitate,
+        url_desmobilize=reverse(
+            'alterar_status_gerente_limpeza_predial',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+                'new_status': 'Desmobilizado',
+            }
+        ),
+        url_rehabilitate=reverse(
+            'alterar_status_gerente_limpeza_predial',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+                'new_status': 'Mobilizado',
+            }
+        ),
+    )
+
+
+def alterar_status_gerente_limpeza_predial(request, userid, id_random, new_status):
+    return gerneric_alter_status(
+        request=request,
+        model_class=Gerente,
+        redirect_url_name=reverse('editar_gerente_limpeza_predial', kwargs={'userid': userid, 'id_random': id_random}),
+        id_random=id_random,
+        new_status=new_status
     )

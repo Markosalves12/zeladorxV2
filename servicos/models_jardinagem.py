@@ -4,8 +4,95 @@ from gerente.models import Gerente
 from areas.models_jardinagem import AreasJardins
 from equipamentos.models_jardinagem import EquipamentoDisponiveisJardinagem
 from utils.utils import generate_id_random, resize_image
+from semana.models import DiasDaSemana
+from datetime import timedelta
+
 
 # Create your models here.
+class ServicoJardinagemConfigurado(models.Model):
+    id_random = models.CharField(
+        unique=True,
+        default=generate_id_random,
+        max_length=20
+    )
+
+    Areas = models.ForeignKey(
+        to=AreasJardins,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name='RareaJardinagemconfigurado',
+    )
+
+    ServicosEscalados = models.ManyToManyField(
+        to=CatalogodeServicoJardinagem,
+        blank=False,
+        null=False,
+        related_name='RServicosEscaladosJardinagemServicoConfigurado'
+    )
+
+    diasaseremrealizado = models.ManyToManyField(
+        to=DiasDaSemana,
+        null=False,
+        blank=False,
+        related_name='Rdiasdasemanaconfiguracoesjardinagem'
+    )
+
+    tempomedioplanejado = models.DurationField(
+        null=False,
+        blank=False,
+        default=timedelta(minutes=30)
+    )
+
+    horario_1 = models.TimeField(
+        null=False,
+        blank=False,
+    )
+
+    horario_2 = models.TimeField(
+        null=True,
+        blank=True,
+    )
+
+    horario_3 = models.TimeField(
+        null=True,
+        blank=True,
+    )
+
+    horario_4 = models.TimeField(
+        null=True,
+        blank=True,
+    )
+
+    horario_5 = models.TimeField(
+        null=True,
+        blank=True,
+    )
+
+    horario_6 = models.TimeField(
+        null=True,
+        blank=True,
+    )
+
+    horario_7 = models.TimeField(
+        null=True,
+        blank=True,
+    )
+
+    horario_8 = models.TimeField(
+        null=True,
+        blank=True,
+    )
+
+    horario_9 = models.TimeField(
+        null=True,
+        blank=True,
+    )
+
+    def __str__(self):
+        servicos_escalados_nomes= ", ".join(servico.nome for servico in self.ServicosEscalados.all())
+        return f'{self.Areas} | {servicos_escalados_nomes}'
+
 class ServicoJardinagemAgendado(models.Model):
     id_random = models.CharField(
         unique=True,
@@ -92,6 +179,7 @@ class ServicoJardinagemAgendado(models.Model):
     tipo_servico_options = [
         ('Regular', 'Regular'),
         ('Extra', 'Extra'),
+        ('Automático', 'Automático'),
     ]
 
     TipoServico = models.CharField(

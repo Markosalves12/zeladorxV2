@@ -1,6 +1,17 @@
 from django.contrib import admin
 
 # Register your models here.
+class ServicoJardinagemConfiguradoAdmin(admin.ModelAdmin):
+    list_display = (
+    'Areas', 'tempomedioplanejado', 'horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5', 'horario_6',
+    'horario_7', 'horario_8', 'horario_9',)
+    list_display_links = (
+    'Areas', 'tempomedioplanejado', 'horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5', 'horario_6',
+    'horario_7', 'horario_8', 'horario_9',)
+
+    list_per_page = 20
+
+
 class ServicoJardinagemAgendadoAdmin(admin.ModelAdmin):
     list_display = ('id', 'DataDeInicio', 'DescricaoDoServico', 'Areas', 'status', 'foto_solicitacao', 'foto_entrega', 'DataDeConclusao', 'TipoServico', )
     list_display_links = ('id', 'DataDeInicio', 'DescricaoDoServico', 'Areas', 'status', 'foto_solicitacao', 'foto_entrega', 'DataDeConclusao', 'TipoServico', )
@@ -8,6 +19,7 @@ class ServicoJardinagemAgendadoAdmin(admin.ModelAdmin):
     list_filter = ('status', 'TipoServico', )
 
     list_per_page = 20
+
 
 class FatoServicoJardinagemAdmin(admin.ModelAdmin):
     list_display = ('id', 'Servico', 'data_hora_chegada_na_area', 'EquipamentoUsado', 'data_hora_retorno_area', 'Gerente',)

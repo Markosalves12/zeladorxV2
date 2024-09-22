@@ -33,7 +33,7 @@ class ServicoLimpezaPredialConfigurado(models.Model):
         to=DiasDaSemana,
         null=False,
         blank=False,
-        related_name='Rdiasdasemana'
+        related_name='Rdiasdasemanaconfiguracoeslimpezapreidal'
     )
 
     tempomedioplanejado = models.DurationField(

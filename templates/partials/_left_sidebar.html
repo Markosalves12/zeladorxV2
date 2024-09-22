@@ -43,28 +43,10 @@
               <p>Serviços Excel</p>
             </a>
           </li>
-<!--          <li class="nav-item">-->
-<!--            <a href="../index2.html" class="nav-link">-->
-<!--              <i class="far fa-circle nav-icon"></i>-->
-<!--              <p>Manutenção de equipamentos</p>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--          <li class="nav-item">-->
-<!--            <a href="../index3.html" class="nav-link">-->
-<!--              <i class="far fa-circle nav-icon"></i>-->
-<!--              <p>Manutenção de ferramentas</p>-->
-<!--            </a>-->
-<!--          </li>-->
           <li class="nav-item">
             <a href="{% url 'relatorios_de_servicos_jardinagem_pdf_concluidos' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Relatório PDF</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="UI/timeline.html" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Timeline</p>
             </a>
           </li>
         </ul>
@@ -82,27 +64,15 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'dashboard_produtividade' %}" class="nav-link">
+            <a href="{% url 'dashboard_produtividade_jardinagem' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
-              <p>Produtividade</p>
+              <p>Gerencial jardinagem</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="../index2.html" class="nav-link">
+            <a href="{% url 'dashboard_produtividade_limpeza_predial' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
-              <p>Gerencial</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="../index3.html" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Colaborador</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="UI/timeline.html" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Timeline</p>
+              <p>Gerencial limpeza predial</p>
             </a>
           </li>
         </ul>
@@ -169,7 +139,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="" class="nav-link">
+            <a href="{% url 'servicos_configurados_jardinagem' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
               <p>Jardinagem</p>
             </a>
@@ -219,6 +189,12 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'configurar_servico_jardinagem' userid %}" class="nav-link">
+              <i class="far fa-circle nav-icon"></i>
+              <p>Jardinagem</p>
+            </a>
+          </li>
           <li class="nav-item">
             <a href="{% url 'configurar_servico_limpeza_predial' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
@@ -316,12 +292,6 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="{% url 'catalogo_de_equipamentos_jardinagem' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Catálogo</p>
-            </a>
-          </li>
           <li class="nav-item">
             <a href="{% url 'equipamentos_disponiveis_jardinagem' userid %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>

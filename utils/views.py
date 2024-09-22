@@ -78,8 +78,9 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
 
 
 def edit_generic_view(request, model_class, form_class, template_name, id_random, app_name, redirect_url_name,
+                      url_desmobilize, url_rehabilitate,
                       redirect_close_button, link_tipos=None, permission_edit=False, permission_exclude=False,
-                      permission_desmobilize=False, permission_rehabilitate=False
+                      permission_desmobilize=False, permission_rehabilitate=False,
                       ):
 
     objeto = get_object_or_404(model_class, id_random=id_random)
@@ -93,6 +94,9 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
         if form.is_valid():
             form.save()
             return redirect(reverse(redirect_url_name, kwargs={'userid': request.session.get('userid', ''), 'id_random':id_random}))
+
+    print(url_desmobilize)
+    print(url_rehabilitate)
 
     return render(
         request=request,
@@ -108,6 +112,18 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
             'link_tipos': link_tipos,
             'permission_exclude': permission_exclude,
             'permission_desmobilize': permission_desmobilize,
-            'permission_rehabilitate': permission_rehabilitate
+            'permission_rehabilitate': permission_rehabilitate,
+            'url_desmobilize': url_desmobilize,
+            'url_rehabilitate': url_rehabilitate,
+            'objeto': objeto
         }
     )
+
+
+def gerneric_alter_status(request, model_class, redirect_url_name, id_random, new_status):
+    objeto = get_object_or_404(model_class, id_random=id_random)
+    print(objeto)
+    objeto.status = new_status
+    objeto.save()
+
+    return redirect(redirect_url_name)

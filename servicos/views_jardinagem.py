@@ -1,10 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms, FatoServicoJardinagemForms
-# from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from utils.views import generic_view, edit_generic_view
-# from gerente.models import Gerente
-# from notifications.utils import enviar_notificacao
 from django.utils import timezone
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
@@ -40,12 +37,6 @@ def agendar_servico_jardinagem(request, userid):
     )
 
 def servicos_agendados_jardinagem(request, userid):
-    # ('323: Pode excluir serviços agendados', '323: Pode excluir serviços agendados'),
-    # ('324: Pode acompanhar serviços agendados', '324: Pode acompanhar serviços agendados'),
-    # ('325: Pode editar serviços em andamento', '325: Pode editar serviços em andamento'),
-    # ('326 Pode concluir serviços em andamento', '326: Pode concluir serviços em andamento'),
-    # ('327 Pode excluir serviços concluidos', '327: Pode excluir serviços concluidos'),
-
     permission_view = validate_permissions(
         request=request,
         userid=userid,

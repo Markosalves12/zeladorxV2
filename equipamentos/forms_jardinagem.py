@@ -7,8 +7,16 @@ class EquipamentoDisponivelJardinagemForm(forms.ModelForm):
         model = EquipamentoDisponiveisJardinagem
         fields = ['Nome', 'DataDeAquisicao', 'DataDeDesmobilizacao', 'matricula', 'EmpresaSecundaria']
 
+        labels = {
+            'Nome': 'Equipamento',
+            'DataDeAquisicao': 'Data de aquisição',
+            'DataDeDesmobilizacao': 'Data de desmobilização',
+            'matricula': 'identificação',
+            'EmpresaSecundaria': 'Empresa prestadora',
+        }
+
         widgets = {
-            'Nome': forms.Select(
+            'Nome': forms.TextInput(
                 attrs={
                     'class': 'form-control'
                 }

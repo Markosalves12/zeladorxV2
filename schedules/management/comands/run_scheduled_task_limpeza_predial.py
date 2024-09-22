@@ -1,12 +1,11 @@
 from datetime import datetime
 from django.utils.timezone import make_aware
-from servicos.models_limpeza_predial import (ServicoLimpezaPredialAgendado, ServicoLimpezaPredialConfigurado,
-                                             FatoServicoLimpezaPredial)
+from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado, ServicoLimpezaPredialConfigurado
 from areas.models_limpeza_predial import AreaLimpezaPredial
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 
 
-def agendar_servicos_limpeza_predial_configurados(request):
+def agendar_servicos_limpeza_predial_configurados():
     objects = ServicoLimpezaPredialConfigurado.objects.all()
 
     # Mapeamento para dias em português
@@ -67,12 +66,3 @@ def agendar_servicos_limpeza_predial_configurados(request):
 
                     # Adiciona todos os serviços escalados ao campo ManyToMany
                     new_service_scheduled.ServicosEscalados.set(ServicosEscalados)
-
-                    # # Criar o objeto relacionado FatoServicoLimpezaPredial com a chave estrangeira
-                    # fato_servico = FatoServicoLimpezaPredial(
-                    #     Servico=new_service_scheduled,
-                    #     foto_entrega='dist/img/not found.png'  # Definindo a imagem padrão ou outra lógica para o campo
-                    # )
-                    #
-                    # # Salva o objeto fato do serviço
-                    # fato_servico.save()

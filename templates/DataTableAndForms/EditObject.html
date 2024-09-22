@@ -97,13 +97,21 @@
                         <div class="ml-auto">
                           <button type="POST" class="btn btn-primary">{{ text_button }}</button>
                           {% if permission_exclude %}
-                            <button class="btn btn-danger">Excluir</button>
+                            <button type="button" class="btn btn-danger">Excluir</button>
                           {% endif %}
                           {% if permission_desmobilize %}
-                            <button class="btn btn-warning">Desmobilizar</button>
+                            {% if objeto.status == "Mobilizado" %}
+                              <a href="{{ url_desmobilize }}">
+                                <button type="button" class="btn btn-warning">Desmobilizar</button>
+                              </a>
+                            {% endif %}
                           {% endif %}
                           {% if permission_rehabilitate %}
-                            <button class="btn btn-success">Desmobilizar</button>
+                            {% if objeto.status == "Desmobilizado" %}
+                              <a href="{{ url_rehabilitate }}">
+                                <button type="button" class="btn btn-success">Reabilitar</button>
+                              </a>
+                            {% endif %}
                           {% endif %}
                         </div>
                       </div>

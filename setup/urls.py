@@ -41,13 +41,18 @@ urlpatterns = [
     path('', include('vegetacao.urls')),
     path('', include('gerente.urls_jardinagem')),
     path('', include('gerente.urls_limpeza_predial')),
+
     path('', include('servicos.urls_jardinagem')),
     path('', include('servicos.urls_limpeza_predial')),
+    path('', include('servicos.urls_configuracoes_limpeza_predial')),
+    path('', include('servicos.urls_configuracoes_jardinagem')),
+
     path('', include('relatorios.urls_jardinagem')),
     path('', include('relatorios.urls_limpeza_predial')),
-    path('', include('dashboards.urls')),
-    path('', include('catalogo_de_equipamantos.urls_jardinagem')),
-    path('', include('catalogo_de_equipamantos.urls_limpeza_predial')),
+
+    path('', include('dashboards.urls_jardinagem')),
+    path('', include('dashboards.urls_limpeza_predial')),
+
     path('', include('equipamentos.urls_jardinagem')),
     path('', include('equipamentos.urls_limpeza_predial')),
     path('', include('processos.urls')),

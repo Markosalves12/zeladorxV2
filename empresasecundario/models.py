@@ -73,4 +73,5 @@ class EmpresaSecundaria(models.Model):
         super(EmpresaSecundaria, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.nome} | {self.setor}'
+        setores = ", ".join(setor.setor for setor in self.setor.all())
+        return f'{self.nome} | {setores}'

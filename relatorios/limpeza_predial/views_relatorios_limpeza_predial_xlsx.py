@@ -1,4 +1,4 @@
-from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
+from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
 from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 from django.urls import reverse
@@ -14,7 +14,7 @@ def relatorios_de_servicos_limpeza_predial_xlsx_concluidos(request, userid):
         permission_to_access=['310: Pode extrair relatórios XLSX de limpeza predial']
     )
 
-    dados = colect_dados_fato_servico_jardinagem()
+    dados = colect_dados_fato_servico_limpeza_predial()
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'tipodeempresa', 'label': 'Tipo de empresa'},
@@ -74,7 +74,7 @@ def relatorios_de_servicos_limpeza_predial_xlsx_agendados(request, userid):
         permission_to_access=['310: Pode extrair relatórios XLSX de limpeza predial']
     )
 
-    dados = colect_dados_fato_servico_jardinagem()
+    dados = colect_dados_fato_servico_limpeza_predial()
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'tipodeempresa', 'label': 'Tipo de empresa'},

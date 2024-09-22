@@ -51,7 +51,7 @@ def colect_dados_fato_servico_jardinagem():
             output_field=CharField()
         ),
         equipamento_catalogo=ExpressionWrapper(
-            F('EquipamentoUsado__Nome__nome'),
+            F('EquipamentoUsado__Nome'),
             output_field=CharField()
         ),
         equipamento_empresa=ExpressionWrapper(
@@ -131,6 +131,8 @@ def colect_dados_fato_servico_jardinagem():
             F('data_hora_retorno_area'),
             output_field=DateTimeField()
         ),
+    ).filter(
+        Servico__status__in=['Em andamento', 'Concluido']
     )
 
     return dados
