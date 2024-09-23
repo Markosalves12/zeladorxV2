@@ -122,7 +122,6 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
 
 def gerneric_alter_status(request, model_class, redirect_url_name, id_random, new_status):
     objeto = get_object_or_404(model_class, id_random=id_random)
-    print(objeto)
     objeto.status = new_status
     objeto.save()
 

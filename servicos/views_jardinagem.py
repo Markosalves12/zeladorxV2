@@ -120,7 +120,21 @@ def editar_servico_jardinagem_agendado(request, userid, id_random):
         app_name='Editar serviço',
         redirect_url_name='editar_servico_jardinagem_agendado',
         redirect_close_button=reverse('servicos_agendados_jardinagem', kwargs={'userid': userid}),
-        permission_edit=permission_edit
+        permission_edit=permission_edit,
+        url_rehabilitate=reverse(
+            'cancelar_servico_jardinagem',
+            kwargs={
+                'userid':userid,
+                'id_random': id_random
+            }
+        ),
+        url_desmobilize=reverse(
+            'cancelar_servico_jardinagem',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random
+            }
+        ),
     )
 
 

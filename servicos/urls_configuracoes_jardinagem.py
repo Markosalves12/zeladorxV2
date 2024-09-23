@@ -1,7 +1,8 @@
 from django.urls import path
 from servicos.views_configuracoes_jardinagem import (configurar_servico_jardinagem,
                                                      servicos_configurados_jardinagem,
-                                                     editar_servico_jardinagem_configurado)
+                                                     editar_servico_jardinagem_configurado,
+                                                     alterar_status_servico_jardinagem_configurado)
 
 urlpatterns = [
     path(
@@ -18,5 +19,9 @@ urlpatterns = [
         'servicos_configurados_jardinagem/<str:userid>',
          servicos_configurados_jardinagem,
          name='servicos_configurados_jardinagem'
+    ),
+    path('alterar_status_servico_jardinagem_configurado/<str:userid>/<str:id_random>/<str:new_status>',
+         alterar_status_servico_jardinagem_configurado,
+         name='alterar_status_servico_jardinagem_configurado'
     ),
 ]

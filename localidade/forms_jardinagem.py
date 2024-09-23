@@ -14,6 +14,7 @@ class LocalidadeJardinagemForms(forms.ModelForm):
             self.fields['unidade'].queryset = self.fields['unidade'].queryset.filter(
                 empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 empresasecundaria__id_random__in=empresas_secundarias_ids,
+                status__in=['Mobilizado']
             )
 
     class Meta:

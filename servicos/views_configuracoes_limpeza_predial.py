@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from servicos.models_limpeza_predial import ServicoLimpezaPredialConfigurado
 from servicos.forms_configuracoes_limpeza_predial import ServicoLimpezaPredialConfiguradoForms
-from utils.views import generic_view, edit_generic_view
+from utils.views import generic_view, edit_generic_view, gerneric_alter_status
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 
@@ -123,5 +123,40 @@ def editar_servico_limpezapredial_configurado(request, userid, id_random):
         app_name='Editar serviço',
         redirect_url_name='editar_servico_limpezapredial_configurado',
         redirect_close_button=reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid}),
-        permission_edit=permission_edit
+        permission_edit=permission_edit,
+        permission_exclude=True,
+        permission_desmobilize=True,
+        permission_rehabilitate=True,
+        url_desmobilize=reverse(
+            'alterar_status_servico_limpezapredial_configurado',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+                'new_status': 'Desmobilizado',
+            }
+        ),
+        url_rehabilitate=reverse(
+            'alterar_status_servico_limpezapredial_configurado',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+                'new_status': 'Mobilizado',
+            }
+        ),
+    )
+
+
+def alterar_status_servico_limpezapredial_configurado(request, userid, id_random, new_status):
+    return gerneric_alter_status(
+        request=request,
+        model_class=ServicoLimpezaPredialConfigurado,
+        redirect_url_name=reverse(
+            'editar_servico_limpezapredial_configurado',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random
+            }
+        ),
+        id_random=id_random,
+        new_status=new_status
     )

@@ -87,6 +87,19 @@ class ServicoLimpezaPredialConfigurado(models.Model):
         blank=True,
     )
 
+    status_options = [
+        ('Mobilizado', 'Mobilizado'),
+        ('Desmobilizado', 'Desmobilizado'),
+    ]
+
+    status = models.CharField(
+        max_length=60,
+        blank=False,
+        null=False,
+        choices=status_options,
+        default='Mobilizado'
+    )
+
     def __str__(self):
         servicos_escalados_nomes= ", ".join(servico.nome for servico in self.ServicosEscalados.all())
         return f'{self.Areas} | {servicos_escalados_nomes}'

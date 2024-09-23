@@ -9,5 +9,6 @@ urlpatterns = [
          name='areas_associadas_localidades_jardinagem'),
     path('alterar_status_areas_jardinagem/<str:userid>/<str:id_random>/<str:new_status>',
          alterar_status_areas_jardinagem,
-         name='alterar_status_areas_jardinagem'),
+         name='alterar_status_areas_jardinagem'
+    ),
 ]

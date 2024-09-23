@@ -14,12 +14,14 @@ class AreasLimpezaPredialForms(forms.ModelForm):
 
             self.fields['localidade'].queryset = self.fields['localidade'].queryset.filter(
                 unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-                unidade__empresasecundaria__id_random__in=empresas_secundarias_ids
+                unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+                status__in=['Mobilizado']
             )
 
             self.fields['servico'].queryset = self.fields['servico'].queryset.filter(
                 EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+                status__in=['Mobilizado']
             )
 
     class Meta:

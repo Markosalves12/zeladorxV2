@@ -14,7 +14,8 @@ class EmpresaSecundariaForms(forms.ModelForm):
 
             # Ajustar o queryset do campo 'empresaprimaria'
             self.fields['empresaprimaria'].queryset = self.fields['empresaprimaria'].queryset.filter(
-                id_random__in=empresas_primarias_ids
+                id_random__in=empresas_primarias_ids,
+                status__in=['Mobilizado']
             )
 
     setor = forms.ModelMultipleChoiceField(
