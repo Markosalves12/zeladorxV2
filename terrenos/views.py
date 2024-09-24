@@ -124,6 +124,7 @@ def editar_terreno(request, userid, id_random):
 
 
 def alterar_status_terreno(request, userid, id_random, new_status):
+    objeto = Terreno.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,
         model_class=Terreno,
@@ -135,5 +136,6 @@ def alterar_status_terreno(request, userid, id_random, new_status):
             }
         ),
         id_random=id_random,
-        new_status=new_status
+        new_status=new_status,
+        message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
     )

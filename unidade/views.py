@@ -33,7 +33,7 @@ def unidades(request, userid):
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
         {'nome': 'linkmapa', 'label': 'Mapa'},
-        {'nome': 'EmpresaSecundaria', 'label': 'Empresa'},
+        {'nome': 'empresasecundaria', 'label': 'Empresa'},
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Mapa'},
     ]
@@ -157,6 +157,7 @@ def visualizar_unidade(request, userid, id_random):
 
 
 def alterar_status_unidade(request, userid, id_random, new_status):
+    objeto = Unidade.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,
         model_class=Unidade,
@@ -168,5 +169,6 @@ def alterar_status_unidade(request, userid, id_random, new_status):
             }
         ),
         id_random=id_random,
-        new_status=new_status
+        new_status=new_status,
+        message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
     )

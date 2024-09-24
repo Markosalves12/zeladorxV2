@@ -32,6 +32,7 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+        {% include 'partials/_messages.html' %}
         <div class="row">
           <div class="col-md-12">
             <div class="card">
@@ -149,7 +150,6 @@
 <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{% static 'dist/js/demo.js' %}"></script>
-
 <script>
   const itemsPerPage = 15;
   let currentPage = 1;

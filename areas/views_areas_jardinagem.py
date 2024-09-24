@@ -54,7 +54,7 @@ def areas_jardins(request, userid):
         request=request,
         model=AreasJardins.objects.filter(
             localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-            localidade__unidade__empresasecundaria__id_random__in = empresas_secundarias_ids,
+            localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
         ),
         form_class=AreasJardinsForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
@@ -179,10 +179,12 @@ def areas_associadas_localidades_jardinagem(request, userid, id_random):
 
 
 def alterar_status_areas_jardinagem(request, userid, id_random, new_status):
+    objeto = AreasJardins.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,
         model_class=AreasJardins,
         redirect_url_name=reverse('editar_area_jardins', kwargs={'userid': userid, 'id_random': id_random}),
         id_random=id_random,
-        new_status=new_status
+        new_status=new_status,
+        message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
     )

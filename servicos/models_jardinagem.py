@@ -79,16 +79,6 @@ class ServicoJardinagemConfigurado(models.Model):
         blank=True,
     )
 
-    horario_8 = models.TimeField(
-        null=True,
-        blank=True,
-    )
-
-    horario_9 = models.TimeField(
-        null=True,
-        blank=True,
-    )
-
     status_options = [
         ('Mobilizado', 'Mobilizado'),
         ('Desmobilizado', 'Desmobilizado'),

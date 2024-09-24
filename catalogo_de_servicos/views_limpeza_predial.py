@@ -131,10 +131,12 @@ def editar_catalogo_de_servicos_limpeza_predial(request, userid, id_random):
     )
 
 def alterar_status_catalogo_de_servicos_limpeza_predial(request, userid, id_random, new_status):
+    objeto = CatalogodeServicoLimpezaPredial.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,
         model_class=CatalogodeServicoLimpezaPredial,
         redirect_url_name=reverse('editar_catalogo_de_servicos_limpeza_predial', kwargs={'userid': userid, 'id_random': id_random}),
         id_random=id_random,
-        new_status=new_status
+        new_status=new_status,
+        message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
     )

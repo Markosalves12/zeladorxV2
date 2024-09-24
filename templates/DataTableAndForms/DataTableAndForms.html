@@ -33,6 +33,10 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+        {% include 'partials/_messages.html' %}
+
+
+
         <div class="row">
           <div class="col-md-12">
             <div class="card">
@@ -91,6 +95,12 @@
                                                     {{ gerentes }}</br>
                                                 {% endfor %}
                                             </td>
+                                        {% elif coluna.nome == 'diasaseremrealizado' %}
+                                            <td>
+                                                {% for dias_semana in dado.diasaseremrealizado.all %}
+                                                    {{ dias_semana }}</br>
+                                                {% endfor %}
+                                            </td>
                                         {% elif coluna.nome == 'setor' %}
                                             <td>
                                                 {% for setor in dado.setor.all %}
@@ -102,6 +112,10 @@
                                                 {% for empresa in dado.empresasecundaria.all %}
                                                     {{ empresa }}</br>
                                                 {% endfor %}
+                                            </td>
+                                        {% elif coluna.nome == 'EmpresaSecundaria' %}
+                                            <td>
+                                                {{ dado.nome }}</br>
                                             </td>
                                         {% elif coluna.nome == 'ServicosEscalados' %}
                                             <td>

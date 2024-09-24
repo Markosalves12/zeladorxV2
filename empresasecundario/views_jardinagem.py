@@ -131,10 +131,12 @@ def editar_empresa_jardinagem(request, userid, id_random):
 
 
 def alterar_status_empresa_jardinagem(request, userid, id_random, new_status):
+    objeto = EmpresaSecundaria.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,
         model_class=EmpresaSecundaria,
         redirect_url_name=reverse('editar_empresa_jardinagem', kwargs={'userid': userid, 'id_random': id_random}),
         id_random=id_random,
-        new_status=new_status
+        new_status=new_status,
+        message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
     )

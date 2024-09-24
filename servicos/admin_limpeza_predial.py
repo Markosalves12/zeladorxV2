@@ -5,10 +5,10 @@ from django.contrib import admin
 class ServicoLimpezaPredialConfiguradoAdmin(admin.ModelAdmin):
     list_display = (
     'Areas', 'tempomedioplanejado', 'horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5', 'horario_6',
-    'horario_7', 'horario_8', 'horario_9',)
+    'horario_7',)
     list_display_links = (
     'Areas', 'tempomedioplanejado', 'horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5', 'horario_6',
-    'horario_7', 'horario_8', 'horario_9',)
+    'horario_7',)
     # search_fields = ('ServicosEscalados', )
     # list_filter = ('ServicosEscalados', )
 

@@ -133,6 +133,7 @@ def editar_localidade_limpeza_predial(request, userid, id_random):
     )
 
 def alterar_status_localidade_limpeza_predial(request, userid, id_random, new_status):
+    objeto = LocalidadeLimpezaPredial.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,
         model_class=LocalidadeLimpezaPredial,
@@ -144,5 +145,6 @@ def alterar_status_localidade_limpeza_predial(request, userid, id_random, new_st
             }
         ),
         id_random=id_random,
-        new_status=new_status
+        new_status=new_status,
+        message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
     )

@@ -5,6 +5,7 @@ from utils.views import generic_view, edit_generic_view
 from django.utils import timezone
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
+from django.contrib import messages
 
 # Create your views here.
 def agendar_servico_jardinagem(request, userid):
@@ -14,7 +15,19 @@ def agendar_servico_jardinagem(request, userid):
         form = ServicoJaridinagemAgendadoForms(request.POST, request.FILES, request=request, userid=userid)
         if form.is_valid():
             form.save()
+            messages.info(
+                request=request,
+                message=f'Serviço(s) '
+                        f'{", ".join([str(servico) for servico in form.cleaned_data["ServicosEscalados"].all()])} '
+                        f'em {form.cleaned_data["Areas"]} agendado.'
+            )
+
             return redirect('agendar_servico_jardinagem', userid)
+
+        messages.error(
+            request=request,
+            message=f'Algo de errado'
+        )
 
     tipos = [
         {'nome': 'Agendar serviços', 'link': ''},
@@ -164,7 +177,16 @@ def realizar_servico_jardinagem_agendado(request, userid, id_random):
             form.save()
             objeto.status = 'Em andamento'
             objeto.save()
+            messages.success(
+                request=request,
+                message=f'serviço {objeto} realizado'
+            )
             return redirect('calendario_jardinagem', userid)
+
+        messages.error(
+            request=request,
+            message=f'Algo de errado'
+        )
 
 
     return render(
@@ -187,6 +209,11 @@ def cancelar_servico_jardinagem(request, userid, id_random):
     objeto.status = 'Cancelado'
     objeto.save()
 
+    messages.error(
+        request=request,
+        message=f'serviço {objeto} cancelado'
+    )
+
     return redirect('calendario_jardinagem', userid)
 
 
@@ -195,5 +222,10 @@ def concluir_servico_jardinagem(request, userid, id_random):
     objeto.status = 'Concluido'
     objeto.DataDeConclusao = timezone.now()
     objeto.save()
+
+    messages.success(
+        request=request,
+        message=f'serviço {objeto} concluido com sucesso'
+    )
 
     return redirect('calendario_jardinagem', userid)

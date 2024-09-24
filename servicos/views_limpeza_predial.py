@@ -6,6 +6,7 @@ from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from django.utils import timezone
+from django.contrib import messages
 
 def agendar_servico_limpeza_predial(request, userid):
     forms = ServicoLimpezaPredialAgendadoForms(request=request, userid=userid)
@@ -14,7 +15,19 @@ def agendar_servico_limpeza_predial(request, userid):
         form = ServicoLimpezaPredialAgendadoForms(request.POST, request.FILES, request=request, userid=userid)
         if form.is_valid():
             form.save()
+            messages.info(
+                request=request,
+                message=f'Serviço(s) '
+                        f'{", ".join([str(servico) for servico in form.cleaned_data["ServicosEscalados"].all()])} '
+                        f'em {form.cleaned_data["Areas"]} agendado.'
+            )
+
             return redirect('agendar_servico_limpeza_predial', userid)
+
+        messages.error(
+            request=request,
+            message=f'Algo de errado'
+        )
 
     tipos = [
         {'nome': 'Agendar serviços', 'link': ''},
@@ -154,8 +167,16 @@ def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
             form.save()
             objeto.status = 'Em andamento'
             objeto.save()
+            messages.success(
+                request=request,
+                message=f'serviço {objeto} realizado'
+            )
             return redirect('calendario')
 
+        messages.error(
+            request=request,
+            message=f'Algo de errado'
+        )
 
     return render(
         request=request,
@@ -176,6 +197,11 @@ def cancelar_servico_limpeza_predial(request, userid, id_random):
     objeto.status = 'Cancelado'
     objeto.save()
 
+    messages.error(
+        request=request,
+        message=f'serviço {objeto} cancelado'
+    )
+
     return redirect('calendario_limpeza_predial', userid)
 
 
@@ -184,5 +210,10 @@ def concluir_servico_limpeza_predial(request, userid, id_random):
     objeto.status = 'Concluido'
     objeto.DataDeConclusao = timezone.now()
     objeto.save()
+
+    messages.success(
+        request=request,
+        message=f'serviço {objeto} concluido com sucesso'
+    )
 
     return redirect('calendario_limpeza_predial', userid)

@@ -9,7 +9,6 @@ def configurate_permissions(request, model_class, email):
     permissoes_predefinidas = PermissionsJardinagem.objects.filter(
         id__in=[1, 2, 3]  # IDs das permissões que deseja atribuir automaticamente
     )
-
     permissions = PermissionsAccessJardinagem(
         Gerente=objeto,
     )

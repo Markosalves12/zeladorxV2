@@ -35,7 +35,7 @@ def agendar_servicos_jardinagem_configurados():
         tempomedioplanejado = obj.tempomedioplanejado
         horarios = [
             obj.horario_1, obj.horario_2, obj.horario_3, obj.horario_4,
-            obj.horario_5, obj.horario_6, obj.horario_7, obj.horario_8, obj.horario_9
+            obj.horario_5, obj.horario_6, obj.horario_7,
         ]
 
         # Obtém o dia da semana atual

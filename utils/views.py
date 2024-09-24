@@ -3,7 +3,7 @@ from utils.utils import DataTableAndForms
 from django.urls import reverse
 from settings.utils import define_setting
 from permissionscontrol.utils import configurate_permissions
-from permissionscontrol.models import PermissionsAccessJardinagem, PermissionsAccessLimpezaPredial
+from django.contrib import messages
 
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
                  text_button_open_modal, text_button_save,  header_model,
@@ -37,17 +37,34 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                     email=email
                 )
 
+
                 configurate_permissions(
                     request=request,
                     model_class=model,
                     email=email
                 )
 
+                messages.info(
+                    request=request,
+                    message=f'{model}, alterações salvas'
+                )
+
                 return redirect(redirect_url, request.session.get('userid', ''))
 
             else:
                 form.save()
+
+                messages.info(
+                    request=request,
+                    message=f'alterações salvas'
+                )
+
                 return redirect(redirect_url, request.session.get('userid', ''))
+
+        messages.error(
+            request=request,
+            message=f'Algo de errado'
+        )
 
     forms, dados_paginados = dt_and_forms.get_data_and_forms()
 
@@ -93,10 +110,18 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
 
         if form.is_valid():
             form.save()
+            messages.info(
+                request=request,
+                message=f'{objeto}, alterações salvas'
+            )
+
             return redirect(reverse(redirect_url_name, kwargs={'userid': request.session.get('userid', ''), 'id_random':id_random}))
 
-    print(url_desmobilize)
-    print(url_rehabilitate)
+        messages.error(
+            request=request,
+            message=f'Algo de errado'
+        )
+
 
     return render(
         request=request,
@@ -120,9 +145,21 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
     )
 
 
-def gerneric_alter_status(request, model_class, redirect_url_name, id_random, new_status):
+def gerneric_alter_status(request, model_class, redirect_url_name, id_random, new_status, message):
     objeto = get_object_or_404(model_class, id_random=id_random)
     objeto.status = new_status
     objeto.save()
+
+    if new_status == 'Mobilizado':
+        messages.success(
+            request=request,
+            message=message
+        )
+
+    elif new_status == 'Desmobilizado':
+        messages.warning(
+            request=request,
+            message=message
+        )
 
     return redirect(redirect_url_name)

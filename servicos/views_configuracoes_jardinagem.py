@@ -4,6 +4,7 @@ from servicos.forms_configuracoes_jardinagem import ServicoJardinagemConfigurado
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
+from django.contrib import messages
 
 def configurar_servico_jardinagem(request, userid):
     forms = ServicoJardinagemConfiguradoForms(request=request, userid=userid)
@@ -13,7 +14,19 @@ def configurar_servico_jardinagem(request, userid):
         print(form.errors)
         if form.is_valid():
             form.save()
+            messages.info(
+                request=request,
+                message=f'Serviço(s) '
+                        f'{", ".join([str(servico) for servico in form.cleaned_data["ServicosEscalados"].all()])} '
+                        f'em {form.cleaned_data["Areas"]}, configurado.'
+            )
+
             return redirect('configurar_servico_jardinagem', userid)
+
+        messages.error(
+            request=request,
+            message=f'Algo de errado'
+        )
 
     tipos = [
         {'nome': 'Configurar serviços', 'link': ''},
@@ -61,6 +74,7 @@ def servicos_configurados_jardinagem(request, userid):
         {'nome': 'Areas', 'label': 'Área'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'tempomedioplanejado', 'label': 'Tempo médio planejado'},
+        {'nome': 'diasaseremrealizado', 'label': 'Dias a serem realizados'},
         {'nome': 'horario_1', 'label': 'Horario 1'},
         {'nome': 'horario_2', 'label': 'Horario 2'},
         {'nome': 'horario_3', 'label': 'Horario 3'},
@@ -68,8 +82,6 @@ def servicos_configurados_jardinagem(request, userid):
         {'nome': 'horario_5', 'label': 'Horario 5'},
         {'nome': 'horario_6', 'label': 'Horario 6'},
         {'nome': 'horario_7', 'label': 'Horario 7'},
-        {'nome': 'horario_8', 'label': 'Horario 8'},
-        {'nome': 'horario_9', 'label': 'Horario 9'},
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 
@@ -147,6 +159,7 @@ def editar_servico_jardinagem_configurado(request, userid, id_random):
 
 
 def alterar_status_servico_jardinagem_configurado(request, userid, id_random, new_status):
+    objeto = ServicoJardinagemConfigurado.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,
         model_class=ServicoJardinagemConfigurado,
@@ -158,5 +171,6 @@ def alterar_status_servico_jardinagem_configurado(request, userid, id_random, ne
             }
         ),
         id_random=id_random,
-        new_status=new_status
+        new_status=new_status,
+        message=f'{objeto} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto} desmobilizado com sucesso'
     )

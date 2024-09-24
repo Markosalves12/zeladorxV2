@@ -51,7 +51,8 @@ class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
         model = ServicoLimpezaPredialConfigurado
         fields = ['Areas', 'ServicosEscalados', 'tempomedioplanejado', 'diasaseremrealizado','horario_1',
                   'horario_2', 'horario_3', 'horario_4', 'horario_5',
-                  'horario_6', 'horario_7', 'horario_8', 'horario_9']
+                  'horario_6', 'horario_7'
+        ]
 
         labels = {
             'Areas': 'Área',
@@ -66,8 +67,6 @@ class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
             'horario_5': 'Horario 5',
             'horario_6': 'Horario 6',
             'horario_7': 'Horario 7',
-            'horario_8': 'Horario 8',
-            'horario_9': 'Horario 9',
         }
 
         widgets = {
