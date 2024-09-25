@@ -162,7 +162,8 @@ def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
     )
 
     if request.method == 'POST':
-        form = FatoServicoLimpezaPredialForms(request.POST)
+        form = FatoServicoLimpezaPredialForms(request.POST, request.FILES)
+        print(form.errors)
         if form.is_valid():
             form.save()
             objeto.status = 'Em andamento'
@@ -171,7 +172,7 @@ def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
                 request=request,
                 message=f'serviço {objeto} realizado'
             )
-            return redirect('calendario')
+            return redirect('calendario_limpeza_predial', userid)
 
         messages.error(
             request=request,
@@ -184,9 +185,9 @@ def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
         context={
             'forms': forms,
             'app_name': 'Realizar serviço',
-            'redirect_url_name': 'realizar_servico_jardinagem_agendado',
+            'redirect_url_name': 'realizar_servico_limpeza_predial_agendado',
             'id_random': id_random,
-            'redirect_close_button': 'calendario',
+            'redirect_close_button': reverse('calendario_limpeza_predial', kwargs={'userid': userid}),
             'text_button': 'Salvar',
             'permission_accompany': permission_accompany
         }

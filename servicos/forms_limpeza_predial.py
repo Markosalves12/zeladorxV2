@@ -105,12 +105,12 @@ class FatoServicoLimpezaPredialForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
-            'data_hora_chegada_na_area': forms.TimeInput(
+            'data_hora_chegada_na_area': forms.DateTimeInput(
                 attrs={
                     'class': 'form-control'
                 }
             ),
-            'data_hora_retorno_area': forms.TimeInput(
+            'data_hora_retorno_area': forms.DateTimeInput(
                 attrs={
                     'class': 'form-control'
                 }

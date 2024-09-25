@@ -139,7 +139,7 @@ class FatoServicoJardinagemForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
-            'data_hora_chegada_na_area': forms.DateInput(
+            'data_hora_chegada_na_area': forms.DateTimeInput(
                 format='%d/%m/%Y %H:%M',
                 attrs={
                     'type': 'datetime-local',
@@ -152,7 +152,7 @@ class FatoServicoJardinagemForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
-            'data_hora_retorno_area': forms.DateInput(
+            'data_hora_retorno_area': forms.DateTimeInput(
                 format='%d/%m/%Y %H:%M',
                 attrs={
                     'type': 'datetime-local',

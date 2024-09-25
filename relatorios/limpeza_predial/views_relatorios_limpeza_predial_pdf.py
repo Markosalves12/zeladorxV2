@@ -9,7 +9,7 @@ def relatorios_de_servicos_limpeza_predial_pdf_concluidos(request, userid):
     permission_view = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['311: Pode extrair relatórios PDF de limpeza predial']
     )
 
@@ -27,14 +27,14 @@ def relatorios_de_servicos_limpeza_predial_pdf_concluidos(request, userid):
         {
             'nome': 'Serviços concluidos, Jardinagem PDF',
             'link': reverse(
-                'relatorios_de_servicos_limpeza_predial_pdf_concluidos',
+                'relatorios_de_servicos_jardinagem_pdf_concluidos',
                 kwargs={'userid': userid}
             )
         },
         {
             'nome': 'Serviços concluidos, Limpeza predial PDF',
             'link': reverse(
-                'relatorios_de_servicos_jardinagem_pdf_concluidos',
+                'relatorios_de_servicos_limpeza_predial_pdf_concluidos',
                 kwargs={'userid': userid}
             )
         }
@@ -43,7 +43,7 @@ def relatorios_de_servicos_limpeza_predial_pdf_concluidos(request, userid):
     return generic_view(
         request=request,
         model=ServicoLimpezaPredialAgendado.objects.filter(
-            status=['Concluido']
+            status__in=['Concluido']
         ),
         form_class=ServicoLimpezaPredialAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
@@ -73,7 +73,7 @@ def relatorios_de_servicos_limpeza_predial_pdf_agendados(request, userid):
     permission_view = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['311: Pode extrair relatórios PDF de limpeza predial']
     )
 
@@ -107,7 +107,7 @@ def relatorios_de_servicos_limpeza_predial_pdf_agendados(request, userid):
     return generic_view(
         request=request,
         model=ServicoLimpezaPredialAgendado.objects.filter(
-            status=['Agendado', 'Em andamento']
+            status__in=['Agendado', 'Em andamento']
         ),
         form_class=ServicoLimpezaPredialAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',

@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, redirect
 from permissionscontrol.models import (PermissionsAccessJardinagem, PermissionsJardinagem,
                                        PermissionsAccessLimpezaPredial, PermissionsLimpezaPredial,
                                        PermissionsEspecials, PermissionsAccessEspecials)
+from gerente.models import Gerente
 
 def configurate_permissions(request, model_class, email):
     objeto = get_object_or_404(model_class, email=email)
@@ -17,6 +18,9 @@ def configurate_permissions(request, model_class, email):
     permissions.save()
 
 def validate_permissions(request, userid, permission_type, permission_to_access):
+    if Gerente.objects.get(id_random=userid).superuser == True:
+        return True
+
     try:
         # Buscar as permissões associadas ao gerente com o id fornecido
         if permission_type == "jardinagem":

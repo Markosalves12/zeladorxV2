@@ -35,19 +35,6 @@ def format_event(servico):
         "allDay": "false",
         "backgroundColor": background_color,
         "borderColor": border_color,
-        # "url": reverse(
-        #     f'{url_agendamento}',
-        #     kwargs={
-        #         'userid': userid
-        #     }
-        # ),
-        # "url_acompanhemento": reverse(
-        #     f'{url_acompanahemnto}',
-        #     kwargs={
-        #         'id_random': id_random,
-        #         'userid': userid
-        #     }
-        # ),
         'status_agendamento': servico.status_agendamento,
         'status': servico.status,
         'dataconclusao': servico.DataDeConclusao,

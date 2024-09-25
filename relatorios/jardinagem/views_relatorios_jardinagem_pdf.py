@@ -26,14 +26,14 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
         {
             'nome': 'Serviços concluidos, Jardinagem PDF',
             'link': reverse(
-                'relatorios_de_servicos_limpeza_predial_pdf_concluidos',
+                'relatorios_de_servicos_jardinagem_pdf_concluidos',
                 kwargs={'userid': userid}
             )
         },
         {
             'nome': 'Serviços concluidos, Limpeza predial PDF',
             'link': reverse(
-                'relatorios_de_servicos_jardinagem_pdf_concluidos',
+                'relatorios_de_servicos_limpeza_predial_pdf_concluidos',
                 kwargs={'userid': userid}
             )
         }

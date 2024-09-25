@@ -10,19 +10,16 @@ from notifications.utils import enviar_notificacao
 
 # Create your models here.
 class GerenteManager(BaseUserManager):
-    def create_user(self, email, username, funcao, password=None, status='Mobilizado'):
+    def create_user(self, email, username, password=None, status='Mobilizado'):
         if not email:
             raise ValueError('O campo email deve ser preenchido')
         if not username:
             raise ValueError('O campo nome deve ser preenchido')
-        if not funcao:
-            raise ValueError('O campo função deve ser preenchido')
 
         email = self.normalize_email(email)
         user = self.model(
             email=email,
             username=username,
-            funcao=funcao,
             status=status,
             id_random=generate_id_random()
         )
@@ -54,7 +51,6 @@ class GerenteManager(BaseUserManager):
         user = self.create_user(
             email=email,
             username=username,
-            funcao=funcao,
             password=password,
             # gestor=gestor,
             status='Mobilizado'
@@ -83,12 +79,6 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
         blank=False,
         null=False,
         unique=True
-    )
-
-    funcao = models.CharField(
-        max_length=100,
-        blank=False,
-        null=False
     )
 
     password = models.CharField(
@@ -127,6 +117,12 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
         related_name='REmpresaSecundariagerente'
     )
 
+    superuser = models.BooleanField(
+        blank=False,
+        null=False,
+        default=False
+    )
+
     groups = models.ManyToManyField(
         Group,
         related_name='gerente_set',  # Renomeia o acessor reverso
@@ -154,9 +150,6 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
 
         if self.username:
             self.username = self.username.strip().capitalize()
-
-        if self.funcao:
-            self.funcao = self.funcao.strip().capitalize()
 
         super(Gerente, self).save(*args, **kwargs)
 

@@ -3,8 +3,8 @@ from gerente.models import Gerente
 
 # Register your models here.
 class GerentesAdmin(admin.ModelAdmin):
-    list_display = ('id', 'username', 'email', 'funcao', 'password', 'status', )
-    list_display_links = ('id', 'username', 'email', 'funcao', 'password', 'status',)
+    list_display = ('id', 'username', 'email', 'password', 'status', 'superuser', )
+    list_display_links = ('id', 'username', 'email', 'password', 'status', 'superuser', )
     search_fields = ('Nome', 'email', )
     list_filter = ('email', )
 

@@ -30,12 +30,12 @@ class GerenteJardinagemForms(forms.ModelForm):
 
     class Meta:
         model = Gerente
-        fields = ['username', 'email', 'funcao', 'empresasecundaria']
+        fields = ['username', 'email', 'empresasecundaria', 'superuser', ]
         labels = {
             'username': 'Nome do gerente',
             'email': 'Email de contato',
-            'funcao': 'Função principal',
-            'empresasecundaria': 'Empresa Secundaria'
+            'empresasecundaria': 'Empresa Secundaria',
+            'superuser': 'É super usuário'
         }
 
         widgets = {
@@ -49,7 +49,7 @@ class GerenteJardinagemForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
-            'funcao': forms.TextInput(
+            'superuser': forms.Select(
                 attrs={
                     'class': 'form-control'
                 }
