@@ -3,7 +3,7 @@ from django.db.models import (ExpressionWrapper, F, CharField,
                               IntegerField, DurationField, DateField, DateTimeField
                               )
 
-def colect_dados_fato_servico_jardinagem():
+def colect_dados_fato_servico_jardinagem(request, status=list):
     # Adicione os dados do relatório ao arquivo Excel
     dados = FatoServicoJardinagem.objects.annotate(
         tipodeempresa=ExpressionWrapper(
@@ -132,7 +132,7 @@ def colect_dados_fato_servico_jardinagem():
             output_field=DateTimeField()
         ),
     ).filter(
-        Servico__status__in=['Em andamento', 'Concluido']
+        Servico__status__in=status
     )
 
     return dados

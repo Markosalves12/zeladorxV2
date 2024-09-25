@@ -10,9 +10,9 @@ from utils.utils import formatar_atributos
 from relatorios.utils import draw_image, draw_footer
 
 
-def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid):
+def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid, status):
     dados = ServicoJardinagemAgendado.objects.filter(
-        # status="Concluido"
+        status__in=status.split(',')
     )
 
     # cria um buffer para inserir os dados no pdf
@@ -132,7 +132,7 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid):
                 y -= 7
                 p.drawString(x, y, "Na solicitção")
                 y -= 7
-                image_path = os.path.join(settings.MEDIA_ROOT, 'static/assets/image not found (1).png')
+                image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
 
             height1 = draw_image(image_path, x, y, p)
 
@@ -149,7 +149,7 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid):
                 y -= 7
                 p.drawString(x, y, "Na entrega")
                 y -= 7
-                image_path = os.path.join(settings.MEDIA_ROOT, 'static/assets/image not found (1).png')
+                image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
 
             draw_image(image_path, x, y, p)
 
@@ -158,7 +158,7 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid):
 
 
         # Draw the footer on the current page
-        draw_footer(p, page_number, width)
+        draw_footer(p, width)
 
         # Show the current page and prepare for the next record
         p.showPage()
@@ -169,9 +169,8 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid):
 
     draw_footer(
         p,
-        page_number,
         width,
-        # is_last_page=True
+        is_last_page=True
     )
 
     # Close the PDF object cleanly, and we're done.

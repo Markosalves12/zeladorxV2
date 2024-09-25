@@ -41,7 +41,9 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
 
     return generic_view(
         request=request,
-        model=ServicoJardinagemAgendado,
+        model=ServicoJardinagemAgendado.objects.filter(
+            status__in=['Concluido']
+        ),
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -52,7 +54,13 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
         header_model='Nova manutenção',
         redirect_url='unidades',
         button_export_tittle='Exportar PDF',
-        button_export_link=reverse('exportar_relatorio_de_serivos_Jardinagem_pdf', kwargs={'userid': userid}),
+        button_export_link=reverse(
+            'exportar_relatorio_de_serivos_Jardinagem_pdf',
+            kwargs={
+                'userid': userid,
+                'status': ','.join(['Concluido'])
+            }
+        ),
         link_tipos=tipos,
         modal_button=False,
         userid=userid,
@@ -97,7 +105,9 @@ def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
 
     return generic_view(
         request=request,
-        model=ServicoJardinagemAgendado,
+        model=ServicoJardinagemAgendado.objects.filter(
+            status=['Agendado', 'Em andamento']
+        ),
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -108,7 +118,13 @@ def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
         header_model='Nova manutenção',
         redirect_url='unidades',
         button_export_tittle='Exportar PDF',
-        button_export_link=reverse('exportar_relatorio_de_serivos_Jardinagem_pdf', kwargs={'userid': userid}),
+        button_export_link=reverse(
+            'exportar_relatorio_de_serivos_Jardinagem_pdf',
+            kwargs={
+                'userid': userid,
+                'status': ','.join(['Agendado', 'Em andamento'])
+            }
+        ),
         link_tipos=tipos,
         modal_button=False,
         userid=userid,

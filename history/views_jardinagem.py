@@ -32,7 +32,6 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
                 viewname='exportar_relatorio_de_serivos_Jardinagem_pdf',
                 kwargs={
                     'userid': userid,
-                    # 'id_random': id_random,
                 }
             )
         }

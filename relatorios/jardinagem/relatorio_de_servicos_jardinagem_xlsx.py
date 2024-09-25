@@ -4,7 +4,7 @@ from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
 from django.http import HttpResponse
 
 
-def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid):
+def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid, status):
     wb = openpyxl.Workbook()
     ws = wb.active
 
@@ -15,8 +15,14 @@ def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid):
         cell = ws.cell(row=1, column=col_num)
         cell.value = header_title
 
+    print(status.split(','))
+    print(type(status.split(',')))
+
     # Adicione os dados do relatório ao arquivo Excel
-    dados = colect_dados_fato_servico_jardinagem()
+    dados = colect_dados_fato_servico_jardinagem(
+        request=request,
+        status=status.split(',')
+    )
 
     for row_num, row in enumerate(dados, start=2):
         row_data = [

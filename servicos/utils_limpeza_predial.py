@@ -3,7 +3,7 @@ from django.db.models import (ExpressionWrapper, F, CharField,
                               IntegerField, DurationField, DateField, DateTimeField
                               )
 
-def colect_dados_fato_servico_limpeza_predial():
+def colect_dados_fato_servico_limpeza_predial(request, status=list):
     dados = FatoServicoLimpezaPredial.objects.annotate(
         tipodeempresa=ExpressionWrapper(
             F('Servico__ServicosEscalados__EmpresaSecundaria__setor'),
@@ -48,7 +48,7 @@ def colect_dados_fato_servico_limpeza_predial():
         ),
 
     ).filter(
-        Servico__status__in=['Em andamento', 'Concluido']
+        Servico__status__in=status
     )
 
     return dados

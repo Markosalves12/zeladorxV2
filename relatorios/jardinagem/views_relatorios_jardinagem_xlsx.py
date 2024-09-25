@@ -13,7 +13,11 @@ def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
         permission_to_access=['310: Pode extrair relatórios XLSX de jardinagem']
     )
 
-    dados = colect_dados_fato_servico_jardinagem()
+    dados = colect_dados_fato_servico_jardinagem(
+        request=request,
+        status=['Concluido']
+    )
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'tipodeempresa', 'label': 'Tipo de empresa'},
@@ -56,7 +60,13 @@ def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
         header_model='Nova manutenção',
         redirect_url='unidades',
         button_export_tittle='Exportar Excel',
-        button_export_link=reverse('exportar_relatorio_de_serivos_Jardinagem_excel', kwargs={'userid': userid}),
+        button_export_link=reverse(
+            'exportar_relatorio_de_serivos_Jardinagem_excel',
+            kwargs={
+                'userid': userid,
+                'status': ','.join(['Concluido'])
+            }
+        ),
         link_tipos=tipos,
         modal_button=False,
         userid=userid,
@@ -73,7 +83,11 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
         permission_to_access=['310: Pode extrair relatórios XLSX de jardinagem']
     )
 
-    dados = colect_dados_fato_servico_jardinagem()
+    dados = colect_dados_fato_servico_jardinagem(
+        request=request,
+        status=['Agendado', 'Em andamento']
+    )
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'tipodeempresa', 'label': 'Tipo de empresa'},
@@ -116,7 +130,13 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
         header_model='Nova manutenção',
         redirect_url='unidades',
         button_export_tittle='Exportar Excel',
-        button_export_link=reverse('exportar_relatorio_de_serivos_Jardinagem_excel', kwargs={'userid': userid}),
+        button_export_link=reverse(
+            'exportar_relatorio_de_serivos_Jardinagem_excel',
+            kwargs={
+                'userid': userid,
+                'status': ','.join(['Agendado', 'Em andamento'])
+            }
+        ),
         modal_button=False,
         link_tipos=tipos,
         userid=userid,
