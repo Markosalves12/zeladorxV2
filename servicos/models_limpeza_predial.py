@@ -102,6 +102,12 @@ class ServicoLimpezaPredialAgendado(models.Model):
         max_length=20
     )
 
+    id_configuracao = models.CharField(
+        blank=True,
+        null=True,
+        max_length=20,
+    )
+
     DescricaoDoServico = models.TextField(
         max_length = 200,
         blank=False,

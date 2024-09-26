@@ -12,6 +12,7 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
 
     objetos = ServicoJardinagemAgendado.objects.filter(
         Areas__id_random=id_random,
+        status__in=['Concluido']
     )
 
     dados_paginados = paginate(
@@ -29,11 +30,19 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
             'foto_objeto': objeto.foto.url if objeto.foto else None,
             'dados_paginados': dados_paginados,
             'export_pdf': reverse(
-                viewname='exportar_relatorio_de_serivos_Jardinagem_pdf',
+                viewname='exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
                 kwargs={
                     'userid': userid,
+                    'id_random': id_random,
                 }
-            )
+            ),
+            'export_excel': reverse(
+                viewname='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random,
+                }
+            ),
         }
     )
 
@@ -44,6 +53,7 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
 
     objetos = ServicoJardinagemAgendado.objects.filter(
         ServicosEscalados__id_random=id_random,
+        status__in=['Concluido']
     )
 
     dados_paginados = paginate(
@@ -64,8 +74,15 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
                 'exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
                 kwargs={
                     'userid': userid,
-                    # 'id_random': id_random
+                    'id_random': id_random
                 }
-            )
+            ),
+            'export_excel': reverse(
+                viewname='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random,
+                }
+            ),
         }
     )

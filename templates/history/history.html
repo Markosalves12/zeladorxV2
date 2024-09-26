@@ -67,17 +67,28 @@
               <!-- /.timeline-label -->
               <!-- timeline item -->
               <div>
-                <i class="fas fa-envelope bg-blue"></i>
+                <i class="fas fa-message bg-blue"></i>
                 <div class="timeline-item">
                   <span class="time"><i class="fas fa-clock"></i> 12:05</span>
-                  <h3 class="timeline-header"><a href="#">Support Team</a> Descrição</h3>
+                  <h3 class="timeline-header"><a href="#"></a> Descrição </h3>
 
                   <div class="timeline-body">
                     {{ dado.DescricaoDoServico }}
+
+                    Serviços escalados:
+                    {% for servico in  dado.ServicosEscalados.all %}
+                      {{ servico }}</br>
+                    {% endfor %}
+
+                    Colaborador escalados:
+                    {% for colaborador in  dado.ColaboradoresEscalados.all %}
+                      {{ colaborador }}</br>
+                    {% endfor %}
+
                   </div>
                   <div class="timeline-footer">
-                    <a class="btn btn-primary btn-sm">Read more</a>
-                    <a class="btn btn-danger btn-sm">Delete</a>
+                    <a class="btn btn-primary btn-sm">Detalhamento da execução</a>
+                    <a class="btn btn-danger btn-sm">Deletar</a>
                   </div>
                 </div>
               </div>
@@ -112,8 +123,8 @@
               <div>
                 <i class="fa fa-camera bg-purple"></i>
                 <div class="timeline-item">
-                  <span class="time"><i class="fas fa-clock"></i> 2 days ago</span>
-                  <h3 class="timeline-header"><a href="#">Mina Lee</a> Fotos</h3>
+<!--                  <span class="time"><i class="fas fa-clock"></i> 2 days ago</span>-->
+                  <h3 class="timeline-header"><a href="#"></a> Fotos</h3>
                   <div class="timeline-body">
                     {% if dado.foto_solicitacao %}
                       <img src="{{ dado.foto_solicitacao.url }}" alt="Imagem do Objeto" class="img-fluid">
@@ -136,33 +147,35 @@
               </div>
               <!-- END timeline item -->
               <!-- timeline item -->
-              <div>
-                <i class="fas fa-video bg-maroon"></i>
+<!--              <div>-->
+<!--                <i class="fas fa-video bg-maroon"></i>-->
 
-                <div class="timeline-item">
-                  <span class="time"><i class="fas fa-clock"></i> 5 days ago</span>
+<!--                <div class="timeline-item">-->
+<!--                  <span class="time"><i class="fas fa-clock"></i> 5 days ago</span>-->
 
-                  <h3 class="timeline-header"><a href="#">Mr. Doe</a> shared a video</h3>
+<!--                  <h3 class="timeline-header"><a href="#">Mr. Doe</a> shared a video</h3>-->
 
-                  <div class="timeline-body">
-                    <div class="embed-responsive embed-responsive-16by9">
-                      <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/tMWkeBIohBs" allowfullscreen></iframe>
-                    </div>
-                  </div>
-                  <div class="timeline-footer">
-                    <a href="#" class="btn btn-sm bg-maroon">See comments</a>
-                  </div>
-                </div>
-              </div>
+<!--                  <div class="timeline-body">-->
+<!--                    <div class="embed-responsive embed-responsive-16by9">-->
+<!--                      <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/tMWkeBIohBs" allowfullscreen></iframe>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="timeline-footer">-->
+<!--                    <a href="#" class="btn btn-sm bg-maroon">See comments</a>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
               <!-- END timeline item -->
               <div>
                 <i class="fas fa-clock bg-gray"></i>
               </div>
             </div>
               <div class="card-body d-flex justify-content-end">
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
-                  Exportar Excel
-                </button>
+                <a href="{{ export_excel }}">
+                  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
+                    Exportar Excel
+                  </button>
+                </a>
                 <a href="{{ export_pdf }}">
                   <button type="button" class="btn btn-primary">
                     Exportar PDF
@@ -196,7 +209,7 @@
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{% static 'dist/js/demo.js' %}"></script>
+<!--&lt;!&ndash; AdminLTE for demo purposes &ndash;&gt;-->
+<!--<script src="{% static 'dist/js/demo.js' %}"></script>-->
 </body>
 </html>

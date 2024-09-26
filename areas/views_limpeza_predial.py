@@ -143,6 +143,27 @@ def areas_associadas_localidades_limpeza_predial(request, userid, id_random):
         localidade__id_random=id_random
     )
 
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type="limpeza_predial",
+        permission_to_access=['252: Pode visualizar áreas de limpeza predial']
+    )
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type="limpeza_predial",
+        permission_to_access=['251: Pode editar áreas de limpeza predial']
+    )
+
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type="limpeza_predial",
+        permission_to_access=['250: Pode criar novas áreas de limpeza predial']
+    )
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
@@ -155,8 +176,24 @@ def areas_associadas_localidades_limpeza_predial(request, userid, id_random):
 
     tipos = [
         {'nome': 'Tipo de área', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('areas_jardins')},
-        {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial')}
+        {
+            'nome': 'Jardinagem',
+            'link': reverse(
+                'areas_jardins',
+                kwargs={
+                    'userid': userid,
+                }
+            )
+        },
+        {
+            'nome': 'Limpeza predial',
+            'link': reverse(
+                'areas_limpeza_predial',
+                kwargs={
+                    'userid': userid,
+                }
+            )
+        },
     ]
 
     return generic_view(
@@ -172,7 +209,11 @@ def areas_associadas_localidades_limpeza_predial(request, userid, id_random):
         text_button_save='Salvar área',
         header_model='Nova área',
         redirect_url='areas_limpeza_predial',
-        link_tipos=tipos
+        link_tipos=tipos,
+        permission_view=permission_view,
+        permission_edit=permission_edit,
+        permission_crate=permission_crate,
+        userid=userid
     )
 
 

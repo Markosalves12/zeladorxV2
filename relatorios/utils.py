@@ -54,7 +54,7 @@ def draw_header(c, header_image_path, width, height):
     # escrever o titulo do relatório
     c.drawString((width - c.stringWidth(f"Relatório de Serviços",
                                         "Helvetica-Bold", fontSize=12)) / 2,
-                 image_bottom + 20, f"Relatório de Serviços")
+                 image_bottom + 50, f"Relatório de Serviços")
 
     c.drawString((width - c.stringWidth(f"",
                                         "Helvetica-Bold", fontSize=12)) / 2,

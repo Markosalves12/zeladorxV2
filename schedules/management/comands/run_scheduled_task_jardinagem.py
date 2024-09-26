@@ -7,7 +7,9 @@ from gerente.models import Gerente
 
 
 def agendar_servicos_jardinagem_configurados():
-    objects = ServicoJardinagemConfigurado.objects.all()
+    objects = ServicoJardinagemConfigurado.objects.filter(
+        status__in=['Mobilizado']
+    )
 
     # Mapeamento para dias em português
     dias_semana_portugues = {
@@ -31,6 +33,7 @@ def agendar_servicos_jardinagem_configurados():
         ColaboradoresEscalados = Gerente.objects.get(
             id_random='MuUe1D3pvT3v'
         ),
+        idconfigurate = obj.id_random
         diasaseremrealizado = obj.diasaseremrealizado.all()
         tempomedioplanejado = obj.tempomedioplanejado
         horarios = [
@@ -54,6 +57,7 @@ def agendar_servicos_jardinagem_configurados():
 
                     # Criação do novo objeto agendado
                     new_service_scheduled = ServicoJardinagemAgendado(
+                        id_configuracao=idconfigurate,
                         DescricaoDoServico=", ".join(
                             servicoescalado.nome
                             for servicoescalado in ServicosEscalados
@@ -62,6 +66,7 @@ def agendar_servicos_jardinagem_configurados():
                         DataDeInicio=data_inicio,
                         DataDeConclusao=data_conclusao,
                         TipoServico='Automático',
+
                     )
 
                     # Salva o objeto de agendamento

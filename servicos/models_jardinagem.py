@@ -104,6 +104,12 @@ class ServicoJardinagemAgendado(models.Model):
         max_length=20
     )
 
+    id_configuracao = models.CharField(
+        blank=True,
+        null=True,
+        max_length=20,
+    )
+
     DataDeInicio = models.DateTimeField(
         blank=False,
         null=False,

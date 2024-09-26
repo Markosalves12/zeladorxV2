@@ -14,6 +14,10 @@ from relatorios.jardinagem.relatorio_de_servicos_na_area_jardinagem_pdf import (
     exportar_relatorio_de_serivos_na_area_jardinagem_pdf
 )
 
+from relatorios.jardinagem.relatorio_de_servicos_na_area_jardinagem_xlsx import (
+    exportar_relatorio_de_serivos_na_area_Jardinagem_excel
+)
+
 
 urlpatterns = [
     path(
@@ -50,5 +54,10 @@ urlpatterns = [
         'exportar_relatorio_de_serivos_na_area_jardinagem_pdf/<str:userid>/<str:id_random>',
         exportar_relatorio_de_serivos_na_area_jardinagem_pdf,
         name='exportar_relatorio_de_serivos_na_area_jardinagem_pdf'
+    ),
+    path(
+        'exportar_relatorio_de_serivos_na_area_Jardinagem_excel/<str:userid>/<str:id_random>',
+        exportar_relatorio_de_serivos_na_area_Jardinagem_excel,
+        name='exportar_relatorio_de_serivos_na_area_Jardinagem_excel'
     ),
 ]

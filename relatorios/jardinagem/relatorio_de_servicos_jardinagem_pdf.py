@@ -7,7 +7,7 @@ from io import BytesIO
 import os
 from django.conf import settings
 from utils.utils import formatar_atributos
-from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
+from relatorios.utils import draw_image, draw_footer, save_plotly_fig_as_image, draw_header, add_figures_to_pdf
 from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_reports
 
 

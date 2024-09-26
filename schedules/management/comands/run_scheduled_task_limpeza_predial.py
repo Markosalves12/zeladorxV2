@@ -6,7 +6,9 @@ from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpeza
 
 
 def agendar_servicos_limpeza_predial_configurados():
-    objects = ServicoLimpezaPredialConfigurado.objects.all()
+    objects = ServicoLimpezaPredialConfigurado.objects.filter(
+        status__in=['Mobilizado']
+    )
 
     # Mapeamento para dias em português
     dias_semana_portugues = {
@@ -27,7 +29,7 @@ def agendar_servicos_limpeza_predial_configurados():
         ServicosEscalados = CatalogodeServicoLimpezaPredial.objects.filter(
             id_random__in=[servico.id_random for servico in obj.ServicosEscalados.all()]
         )
-
+        idconfigurate = obj.id_random
         diasaseremrealizado = obj.diasaseremrealizado.all()
         tempomedioplanejado = obj.tempomedioplanejado
         horarios = [
@@ -51,6 +53,7 @@ def agendar_servicos_limpeza_predial_configurados():
 
                     # Criação do novo objeto agendado
                     new_service_scheduled = ServicoLimpezaPredialAgendado(
+                        id_configuracao=idconfigurate,
                         DescricaoDoServico=", ".join(
                             servicoescalado.nome
                             for servicoescalado in ServicosEscalados

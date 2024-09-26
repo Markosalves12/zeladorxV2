@@ -9,11 +9,12 @@ from django.conf import settings
 from utils.utils import formatar_atributos
 from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
 from dashboards.data_visualization_limpeza_predial import data_visualization_limpeza_predial_reports
-
+from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
 
 def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid, status):
-    dados = ServicoJardinagemAgendado.objects.filter(
-        status__in=status.split(',')
+    dados = colect_dados_fato_servico_limpeza_predial(
+        request=request,
+        status=status.split(',')
     )
 
     # cria um buffer para inserir os dados no pdf
@@ -42,45 +43,28 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid, status):
     for dado in dados:
         # Add the data_inicio
         p.setFont('Helvetica-Bold', 10)
-        p.drawString(x, y, f"Descrição: {dado.DescricaoDoServico}")
+        p.drawString(x, y, f"Descrição: {dado.descricao_do_servico}")
         y -= 20
 
         p.setFont("Helvetica", 10)
-        p.drawString(x, y, f"Data de Início: {dado.DataDeInicio.strftime('%d/%m/%Y')}",)
+        p.drawString(x, y, f"Data de Início: {dado.data_de_inicio.strftime('%d/%m/%Y')}",)
 
         y -= 20
 
-        p.drawString(x, y, f"Data de conclusão: {dado.DataDeConclusao.strftime('%d/%m/%Y')}")
+        p.drawString(x, y, f"Data de conclusão: {dado.data_de_conclusao.strftime('%d/%m/%Y')}")
         y -= 20
 
-        p.drawString(x, y, f"área atendida: {dado.Areas}")
+        p.drawString(x, y, f"área atendida: {dado.area_atendida}")
         y -= 20
 
-        p.drawString(x, y, f"Tamanho da área atendida: {dado.Areas.dimensao} M²")
+        p.drawString(x, y, f"Tamanho da área atendida: {dado.area_atendida_dimensao} M²")
         y -= 20
 
-        # Add the servicos_escalados
-        p.drawString(x, y, "Serviços Escalados:")
+        p.drawString(x, y, f"Serviços Escalados: {dado.servicos_solicitados}")
         y -= 20
 
-        servicos = formatar_atributos(
-            queryset=dado.ServicosEscalados.all(),
-            atributo='nome'
-        )
-        p.drawString(x + 20, y, f"- {servicos}")  # Ajuste conforme o campo do modelo Servicos
+        p.drawString(x, y, f"Colaboradores Escalados: {dado.colaborador_envolvido}")
         y -= 20
-
-        # Add the colaboradores_escalados
-        p.drawString(x, y, "Colaboradores Escalados:")
-        y -= 20
-
-        colaborador = formatar_atributos(
-            queryset=dado.ColaboradoresEscalados.all(),
-            atributo='username'
-        )
-        p.drawString(x + 20, y, f"- {colaborador}")  # Ajuste conforme o campo do modelo Colaboradores
-        y -= 20
-
 
         def add_images_to_canvas(p, dado, x, y):
             def calculate_new_dimensions(img_width, img_height):
@@ -88,29 +72,12 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid, status):
                 new_height = img_height / 2.4
                 return new_width, new_height
 
-            # Draw the first image (foto_inicio)
-            if dado.foto_solicitacao:
-                y -= 7
-                p.drawString(x, y, "Na solicitção")
-                y -= 7
-                image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_solicitacao.name)
-            else:
-                y -= 7
-                p.drawString(x, y, "Na solicitção")
-                y -= 7
-                image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
-
-            height1 = draw_image(image_path, x, y, p)
-
-            # Update y position for the next image
-            y -= height1 + 10  # 10 is the space between images
-
             # Draw the second image (foto)
-            if dado.foto_entrega:
+            if dado.foto_conclusao:
                 y -= 7
                 p.drawString(x, y, "Na entrega")
                 y -= 7
-                image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_entrega.name)
+                image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_conclusao)
             else:
                 y -= 7
                 p.drawString(x, y, "Na entrega")

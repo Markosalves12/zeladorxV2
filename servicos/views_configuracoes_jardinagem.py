@@ -5,6 +5,8 @@ from utils.views import generic_view, edit_generic_view, gerneric_alter_status
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
+from servicos.models_jardinagem import ServicoJardinagemAgendado
+from utils.utils import paginate
 
 def configurar_servico_jardinagem(request, userid):
     forms = ServicoJardinagemConfiguradoForms(request=request, userid=userid)
@@ -83,6 +85,7 @@ def servicos_configurados_jardinagem(request, userid):
         {'nome': 'horario_6', 'label': 'Horario 6'},
         {'nome': 'horario_7', 'label': 'Horario 7'},
         {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Histórico'},
     ]
 
     tipos = [
@@ -105,6 +108,7 @@ def servicos_configurados_jardinagem(request, userid):
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_servico_jardinagem_configurado',
+        history_rout='historico_de_servicos_configurados_jardinagem',
         app_name='serviços configurados jardinagem',
         text_button_open_modal='configurar novo serviço',
         text_button_save='configurar serviço',
@@ -173,4 +177,46 @@ def alterar_status_servico_jardinagem_configurado(request, userid, id_random, ne
         id_random=id_random,
         new_status=new_status,
         message=f'{objeto} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto} desmobilizado com sucesso'
+    )
+
+
+def historico_de_servicos_configurados_jardinagem(request, userid, id_random):
+    objeto = ServicoJardinagemConfigurado.objects.get(
+        id_random=id_random
+    )
+
+    objetos = ServicoJardinagemAgendado.objects.filter(
+        id_configuracao=id_random,
+        status__in=['Concluido']
+    )
+
+    dados_paginados = paginate(
+        request=request,
+        data_objects=objetos,
+        per_page=1
+    )
+
+    return render(
+        request=request,
+        template_name="history/history.html",
+        context={
+            'app_name': f'Histórico de serviços {objeto}',
+            'objeto': objeto,
+            'foto_objeto': None,
+            'dados_paginados': dados_paginados,
+            'export_pdf': reverse(
+                'exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random
+                }
+            ),
+            'export_excel': reverse(
+                viewname='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random,
+                }
+            ),
+        }
     )

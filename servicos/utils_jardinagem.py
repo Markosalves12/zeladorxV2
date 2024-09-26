@@ -114,7 +114,6 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
             F('id'),
             output_field=IntegerField()
         ),
-
         tempo_na_area = ExpressionWrapper(
                 F('data_hora_retorno_area')-F('data_hora_chegada_na_area'),
                 output_field=DurationField()
@@ -130,6 +129,10 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
         data_hora_retorno=ExpressionWrapper(
             F('data_hora_retorno_area'),
             output_field=DateTimeField()
+        ),
+        id_random_area=ExpressionWrapper(
+            F('Servico__Areas__id_random'),
+            output_field=CharField()
         ),
     ).filter(
         Servico__status__in=status

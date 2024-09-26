@@ -4,7 +4,7 @@ from django.contrib import admin
 class ServicoJardinagemConfiguradoAdmin(admin.ModelAdmin):
     list_display = (
     'Areas', 'tempomedioplanejado', 'horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5', 'horario_6',
-    'horario_7',)
+    'horario_7', )
     list_display_links = (
     'Areas', 'tempomedioplanejado', 'horario_1', 'horario_2', 'horario_3', 'horario_4', 'horario_5', 'horario_6',
     'horario_7',)
@@ -13,8 +13,10 @@ class ServicoJardinagemConfiguradoAdmin(admin.ModelAdmin):
 
 
 class ServicoJardinagemAgendadoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'DataDeInicio', 'DescricaoDoServico', 'Areas', 'status', 'foto_solicitacao', 'foto_entrega', 'DataDeConclusao', 'TipoServico', )
-    list_display_links = ('id', 'DataDeInicio', 'DescricaoDoServico', 'Areas', 'status', 'foto_solicitacao', 'foto_entrega', 'DataDeConclusao', 'TipoServico', )
+    list_display = ('id', 'DataDeInicio', 'DescricaoDoServico', 'Areas', 'status', 'foto_solicitacao',
+                    'foto_entrega', 'DataDeConclusao', 'TipoServico', 'id_configuracao', )
+    list_display_links = ('id', 'DataDeInicio', 'DescricaoDoServico', 'Areas', 'status', 'foto_solicitacao',
+                          'foto_entrega', 'DataDeConclusao', 'TipoServico', 'id_configuracao', )
     search_fields = ('DataDeInicio', 'status', 'DataDeConclusao', 'TipoServico', )
     list_filter = ('status', 'TipoServico', )
 

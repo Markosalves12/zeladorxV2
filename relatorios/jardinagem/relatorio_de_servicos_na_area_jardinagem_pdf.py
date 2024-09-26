@@ -10,7 +10,8 @@ from io import BytesIO
 import os
 from django.conf import settings
 from utils.utils import formatar_atributos
-from relatorios.utils import draw_image, draw_footer
+from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
+from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_reports
 
 
 def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_random):
@@ -20,7 +21,7 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
 
     dados = ServicoJardinagemAgendado.objects.filter(
         Areas__id_random=id_random,
-        # status="Concluido"
+        status__in=['Concluido']
     )
 
     # cria um buffer para inserir os dados no pdf
@@ -39,47 +40,12 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
     header_image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/logo alt.png')
 
     # função que cria o cabeçalho propriamente falado
-    def draw_header(c):
-        # se o endereço da imagem existir
-        if os.path.exists(header_image_path):
-            # abri a imagem enviada como parametro
-            header_image = ImageReader(header_image_path)
-            # captura as dimensões da imagem
-            header_img_width, header_img_height = header_image.getSize()
-            # centraliza a imagem no topo
-            x_centered = (width - header_img_width / 3) / 2
-            c.drawImage(header_image, x_centered, height - header_img_height / 3 - 20, width=header_img_width / 3, height=header_img_height / 3, mask='auto')
-            image_bottom = height - header_img_height / 2 - 20 - header_img_height / 2 - 20
-        else:
-            image_bottom = height  # Adjust if image is not found
-
-        # Adiciona o titulo do relatório abaixo da imagem
-
-        # configura da fonte e tamanho do titulo
-        # c.setFont("Helvetica-Bold", 16)
-        c.setFont("Helvetica-Bold", 14)
-        # escrever o titulo do relatório
-        c.drawString((width - c.stringWidth(f"Relatório de Serviços - {object.nome}",
-                                            "Helvetica-Bold", fontSize=12)) / 2,
-                     image_bottom + 20, f"Relatório de Serviços - {object.nome}")
-
-        c.drawString((width - c.stringWidth(f"",
-                                            "Helvetica-Bold", fontSize=12)) / 2,
-                     image_bottom + 0,
-                     f"")
-
-        c.drawString((width - c.stringWidth(f"",
-                                            "Helvetica-Bold", fontSize=12)) / 2,
-                     image_bottom - 20,
-                     f"")
-
-        c.setFont("Helvetica", 12)  # Set font back to normal for the rest of the content
+    draw_header(c=p, header_image_path=header_image_path, width=width, height=height)
 
     # draw_footer
-
     # Draw the header for the first page
-    draw_header(p)
-    y = height - 150  # Adjust starting position for content after the header
+
+    y = height - 100  # Adjust starting position for content after the header
     page_number = 1
     p.setFont("Helvetica", 10)
 
@@ -126,7 +92,7 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
 
         # Add the servicos_escalados
         p.drawString(x, y, "Serviços Escalados:")
-        y -= 20
+        y -= 10
 
         servicos = formatar_atributos(
             queryset=dado.ServicosEscalados.all(),
@@ -137,7 +103,7 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
 
         # Add the colaboradores_escalados
         p.drawString(x, y, "Colaboradores Escalados:")
-        y -= 20
+        y -= 10
 
         colaborador = formatar_atributos(
             queryset=dado.ColaboradoresEscalados.all(),
@@ -193,6 +159,17 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
 
         p.setFont("Helvetica", 10)  # Reset font size to 12 for new page content
         y = height - 70
+
+    fig_terreno = data_visualization_jardinagem_reports()
+
+    start_y = height - 100  # Posição inicial para o conteúdo após o cabeçalho
+
+    p.setFont('Helvetica-Bold', 12)
+    p.drawString(50, start_y, f"Volume de servicos próximos")
+    start_y -= 20
+
+    start_y, end_page = add_figures_to_pdf(p, fig_terreno, start_y, start_y + 1, header_image_path=header_image_path,
+                                           width=width, height=height)
 
     draw_footer(
         p,
