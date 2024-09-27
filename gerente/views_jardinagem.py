@@ -1,10 +1,12 @@
 # Create your views here.
-from django.shortcuts import reverse
+from django.shortcuts import reverse, render
 from gerente.models import Gerente
 from gerente.forms_jardinagem import GerenteJardinagemForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
+from servicos.models_jardinagem import ServicoJardinagemAgendado, FatoServicoJardinagem
+from utils.utils import paginate
 
 # Create your views here.
 def gerentes_jardinagem(request, userid):
@@ -35,6 +37,7 @@ def gerentes_jardinagem(request, userid):
         {'nome': 'email', 'label': 'E-mail'},
         {'nome': 'empresasecundaria', 'label': 'Empresa(s)'},
         {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Histórico'},
     ]
 
     tipos = [
@@ -58,6 +61,7 @@ def gerentes_jardinagem(request, userid):
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_gerente_jardinagem',
+        history_rout='historico_de_servicos_gerente_jardinagem',
         app_name='gerentes jardinagem',
         text_button_open_modal='Adicionar novo gerente',
         text_button_save='Salvar gerente',
@@ -141,4 +145,52 @@ def alterar_status_gerente_jardinagem(request, userid, id_random, new_status):
         id_random=id_random,
         new_status=new_status,
         message=f'{objeto.username} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.username} desmobilizado com sucesso'
+    )
+
+
+def historico_de_servicos_gerente_jardinagem(request, userid, id_random):
+    objeto = Gerente.objects.get(
+        id_random=id_random
+    )
+
+    servicos = FatoServicoJardinagem.objects.filter(
+        Gerente__id_random=userid
+    )
+
+    # Coletando os ids diretamente da queryset
+    servicos_ids = servicos.values_list('Servico__id_random', flat=True)
+
+    objetos = ServicoJardinagemAgendado.objects.filter(
+         id_random__in=servicos_ids
+    )
+
+    dados_paginados = paginate(
+        request=request,
+        data_objects=objetos,
+        per_page=1
+    )
+
+    return render(
+        request=request,
+        template_name="history/history.html",
+        context={
+            'app_name': f'Histórico de serviços {objeto}',
+            'objeto': objeto,
+            'foto_objeto': None,
+            'dados_paginados': dados_paginados,
+            'export_pdf': reverse(
+                'exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random
+                }
+            ),
+            'export_excel': reverse(
+                viewname='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random,
+                }
+            ),
+        }
     )

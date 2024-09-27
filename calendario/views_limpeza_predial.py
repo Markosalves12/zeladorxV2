@@ -1,12 +1,17 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, redirect
 from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado
 from django.db.models.functions import Now, TruncDate, ExtractDay
 from django.db.models import F, Q, ExpressionWrapper, IntegerField, DurationField
 from calendario.utils import format_event
 from permissionscontrol.utils import validate_permissions
+from django.contrib import messages
 
 
 def calendario_limpeza_predial(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,

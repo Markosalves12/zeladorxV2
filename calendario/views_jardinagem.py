@@ -1,12 +1,17 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, redirect
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from django.db.models.functions import Now, TruncDate, ExtractDay
 from django.db.models import F, Q, ExpressionWrapper, IntegerField, DurationField
 from calendario.utils import format_event
 from permissionscontrol.utils import validate_permissions
+from django.contrib import messages
 
 # Create your views here.
 def calendario_jardinagem(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -59,9 +64,6 @@ def calendario_jardinagem(request, userid):
     formatted_events = [
         format_event(
             servico,
-            # userid=userid,
-            # url_agendamento='agendar_servico_jardinagem',
-            # url_acompanahemnto='realizar_servico_jardinagem_agendado'
         )
         for servico in agendado
     ]

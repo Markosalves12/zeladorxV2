@@ -1,5 +1,6 @@
 from django.urls import path
-from gerente.views_jardinagem import gerentes_jardinagem, editar_gerente_jardinagem, alterar_status_gerente_jardinagem
+from gerente.views_jardinagem import (gerentes_jardinagem, editar_gerente_jardinagem, alterar_status_gerente_jardinagem,
+                                      historico_de_servicos_gerente_jardinagem)
 
 
 urlpatterns = [
@@ -14,5 +15,10 @@ urlpatterns = [
         'alterar_status_gerente_jardinagem/<str:userid>/<str:id_random>/<str:new_status>',
          alterar_status_gerente_jardinagem,
          name='alterar_status_gerente_jardinagem'
+    ),
+    path(
+        'historico_de_servicos_gerente_jardinagem/<str:userid>/<str:id_random>',
+        historico_de_servicos_gerente_jardinagem,
+        name='historico_de_servicos_gerente_jardinagem'
     ),
 ]

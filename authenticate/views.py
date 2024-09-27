@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from authenticate.forms import LoginForms
-from django.contrib import auth
-from django.contrib.auth.models import User
-# from gestor.models import Gestor
 from gerente.models import Gerente
 from django.contrib.auth.hashers import check_password
+from django.contrib import messages
+from django.contrib import auth
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Create your views here.
 def login(request):
@@ -16,20 +19,20 @@ def login(request):
             senha = forms['senha'].value()
 
             try:
-                print(email)
-                print("gerente")
                 gerente = Gerente.objects.get(
                     email=email
                 )
-                print(gerente)
-                print(email)
+
+                usuario = auth.authenticate(
+                    request,
+                    username=str(os.getenv('DEFAULT_USER')),
+                    password=str(os.getenv('DEFAULT_PASSWORD')),
+                )
+                auth.login(request, usuario)
 
                 if check_password(senha, gerente.password) and gerente.status == "Mobilizado":
-                    print("acesado")
-                    # request.session['login_nome'] = gerente.username
+                    request.session['login_nome'] = gerente.username
                     request.session['userid'] = gerente.id_random
-                    # request.session['empresa'] = f'{gerente.EmpresaSecundaria.nome}'
-                    # request.session['id_random_empresa'] = f'{gerente.EmpresaSecundaria.id_random}'
 
                     return redirect('calendario_jardinagem', gerente.id_random)
 
@@ -46,18 +49,7 @@ def login(request):
 
 
 def logout(request):
-    # nome = get_random_string(10)
-    # type = get_random_string(10)
-    # id = get_random_string(10)
-    #
-    # request.session['login_nome'] = nome
-    # request.session['login_type'] = type
-    # request.session['login_id'] = id
-    #
-    return redirect('login')
+    auth.logout(request)
+    messages.success(request, "Logout efetuado com sucesso")
 
-def access_rejected(request, userid):
-    return render(
-        request=request,
-        template_name='authenticate/permission_rejected.html'
-    )
+    return redirect('login')

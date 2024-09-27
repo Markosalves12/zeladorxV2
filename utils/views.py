@@ -12,6 +12,10 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                  permission_view=True, permission_edit=False, permission_crate=False,
                  permission_accompany=False):
 
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     dt_and_forms = DataTableAndForms(
         request=request,
         model=model,
@@ -99,6 +103,9 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
                       redirect_close_button, link_tipos=None, permission_edit=False, permission_exclude=False,
                       permission_desmobilize=False, permission_rehabilitate=False,
                       ):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
 
     objeto = get_object_or_404(model_class, id_random=id_random)
 
@@ -146,6 +153,10 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
 
 
 def gerneric_alter_status(request, model_class, redirect_url_name, id_random, new_status, message):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     objeto = get_object_or_404(model_class, id_random=id_random)
     objeto.status = new_status
     objeto.save()

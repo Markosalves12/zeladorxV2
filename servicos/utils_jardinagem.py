@@ -122,6 +122,10 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
             F('Gerente__username'),
             output_field=CharField()
         ),
+        colaborador_envolvido_id_random=ExpressionWrapper(
+            F('Gerente__id_random'),
+            output_field=CharField()
+        ),
         data_hora_chegada=ExpressionWrapper(
             F('data_hora_chegada_na_area'),
             output_field=DateTimeField()
