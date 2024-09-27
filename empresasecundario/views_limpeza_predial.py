@@ -34,6 +34,7 @@ def empresas_limpeza_predial(request, userid):
         {'nome': 'razao_social', 'label': 'Razão social'},
         {'nome': 'CNPJ', 'label': 'CNPJ'},
         {'nome': 'setor', 'label': 'Setor'},
+        {'nome': 'status', 'label': 'status'},
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 

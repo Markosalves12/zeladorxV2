@@ -2,7 +2,6 @@ from django.db import models
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from gerente.models import Gerente
 from areas.models_jardinagem import AreasJardins
-from equipamentos.models_jardinagem import EquipamentoDisponiveisJardinagem
 from utils.utils import generate_id_random, resize_image
 from semana.models import DiasDaSemana
 from datetime import timedelta
@@ -240,13 +239,13 @@ class FatoServicoJardinagem(models.Model):
         null=False
     )
 
-    EquipamentoUsado = models.ForeignKey(
-        to=EquipamentoDisponiveisJardinagem,
-        blank=True,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name="REquipamentoUsadoFatoServico"
-    )
+    # EquipamentoUsado = models.ForeignKey(
+    #     to=EquipamentoDisponiveisJardinagem,
+    #     blank=True,
+    #     null=True,
+    #     on_delete=models.CASCADE,
+    #     related_name="REquipamentoUsadoFatoServico"
+    # )
 
     data_hora_retorno_area = models.DateTimeField(
         blank=False,

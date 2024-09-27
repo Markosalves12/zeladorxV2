@@ -49,9 +49,9 @@ class GerenteJardinagemForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
-            'superuser': forms.Select(
+            'superuser': forms.CheckboxInput(
                 attrs={
-                    'class': 'form-control'
+                    'class': 'checkbox'
                 }
             ),
         }

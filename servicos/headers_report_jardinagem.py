@@ -14,35 +14,6 @@ headers_report_services = [
     'Depois',
     'Status do Serviço',
 
-    # cabeçalhos referentes a tabela de equipamentos
-    'Marca do Equipamento',
-    'Equipamento catálogo',
-    'Equipamento Empresa',
-    'Tipo equipamento',
-    'Equipamento id',
-    'vida util equipamento (meses)',
-    'Data de aquisição equipamento',
-    'Data de desmobilização equipamento',
-    'Matrícula do Equipamento',
-
-    # cabeçalhos referentes a tabela de ferramentas
-    'Marca da Ferramenta',
-    'Ferramenta catálogo',
-    'Ferramenta empresa',
-    'Tipo ferramenta',
-    'Ferramenta id',
-    'vida util ferramenta (meses)',
-    'Data de aquisição ferramenta',
-    'Data de desmobilização ferramenta',
-    'Matrícula da Ferramenta',
-
-    # cabeçalhos referentes a tabela de materiais
-    'Material Aplicado',
-    'Material Categoria',
-    'Forma de consumo',
-    'Quantidade',
-    'Origem do material',
-
     # cabeçalhos referentes a tabela de jardins
     'Área atendida',
     'Periodicidade',

@@ -36,6 +36,7 @@ def areas_jardins(request, userid):
         {'nome': 'vegetacao', 'label': 'vegetação'},
         {'nome': 'servico', 'label': 'Serviços'},
         {'nome': 'localidade', 'label': 'Localidade'},
+        {'nome': 'status', 'label': 'status'},
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Histórico'},
     ]

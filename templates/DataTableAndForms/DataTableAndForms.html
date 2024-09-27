@@ -147,6 +147,20 @@
                                                     {{ permission }},
                                                 {% endfor %}
                                             </td>
+                                        {% elif coluna.nome == 'status' %}
+                                            {% if dado|get_item:coluna.nome == "Desmobilizado" and coluna.nome == "status" %}
+                                                <td>
+                                                    <span class="badge bg-warning">
+                                                        {{ dado|get_item:coluna.nome }}
+                                                    </span>
+                                                </td>
+                                            {% else %}
+                                                <td>
+                                                    <span class="badge bg-success">
+                                                        {{ dado|get_item:coluna.nome }}
+                                                    </span>
+                                                </td>
+                                            {% endif %}
                                         {% else %}
                                             <td>{{ dado|get_item:coluna.nome }}</td>
                                         {% endif %}

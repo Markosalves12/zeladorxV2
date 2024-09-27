@@ -4,7 +4,8 @@ from servicos.models_limpeza_predial import (ServicoLimpezaPredialAgendado, Serv
                                              FatoServicoLimpezaPredial)
 from servicos.models_jardinagem import ServicoJardinagemAgendado, FatoServicoJardinagem, ServicoJardinagemConfigurado
 
-from servicos.admin_jardinagem import ServicoJardinagemAgendadoAdmin, FatoServicoJardinagemAdmin, ServicoJardinagemConfiguradoAdmin
+from servicos.admin_jardinagem import (ServicoJardinagemAgendadoAdmin, FatoServicoJardinagemAdmin,
+                                       ServicoJardinagemConfiguradoAdmin)
 from servicos.admin_limpeza_predial import (ServicoLimpezaPredialAgendadoAdmin, ServicoLimpezaPredialConfiguradoAdmin,
                                             FatoServicoLimpezaPredialAdmin)
 

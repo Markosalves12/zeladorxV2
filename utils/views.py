@@ -50,7 +50,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
 
                 messages.info(
                     request=request,
-                    message=f'{model}, alterações salvas'
+                    message=f'alterações salvas'
                 )
 
                 return redirect(redirect_url, request.session.get('userid', ''))

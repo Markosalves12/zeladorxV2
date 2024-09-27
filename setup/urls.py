@@ -34,7 +34,7 @@ urlpatterns = [
     path('', include('areas.urls_limpeza_predial')),
     path('', include('empresasecundario.urls_jardinagem')),
     path('', include('empresasecundario.urls_limpeza_predial')),
-    path('', include('catalogo_de_materiais.urls')),
+
     path('', include('catalogo_de_servicos.urls_jardinagem')),
     path('', include('catalogo_de_servicos.urls_limpeza_predial')),
     path('', include('terrenos.urls')),
@@ -53,8 +53,6 @@ urlpatterns = [
     path('', include('dashboards.urls_jardinagem')),
     path('', include('dashboards.urls_limpeza_predial')),
 
-    path('', include('equipamentos.urls_jardinagem')),
-    path('', include('equipamentos.urls_limpeza_predial')),
     path('', include('processos.urls')),
     path('', include('settings.urls')),
     path('', include('permissionscontrol.urls_jardinagem')),

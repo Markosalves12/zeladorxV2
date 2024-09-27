@@ -34,19 +34,10 @@ def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid, status):
 
             row.data_de_conclusao, row.antes, row.depois, row.status_servico,
 
-            # row.equipamento_marca,
-            row.equipamento_catalogo, row.equipamento_empresa, row.tipo_equipamento, row.equipamento_id,
-            # row.vida_util_equipamento,
-            row.data_aquisicao_equipamento, row.data_desmobilizacao_equipamento, row.matricula_equipamento,
-
-            # row.ferramenta_marca, row.ferramenta_catalogo, row.ferramenta_empresa, row.tipo_ferramenta, row.ferramenta_id, row.vida_util_ferramenta, row.data_aquisicao_ferramenta, row.data_desmobilizacao_ferramenta, row.matricula_ferramenta,
-
-            # row.material_aplicado, row.material_categoria, row.forma_consumo, row.qtd, row.tipo_material,
-
             row.area_atendida, row.periodicidade_de_retorno,
 
             row.area_total, row.tipo_vegetacao, row.tipo_terreno, row.localidade,
-            # row.tiponegocio,
+
             row.unidade,
 
             row.id_servico, row.tempo_na_area, row.colaborador_envolvido,

@@ -34,6 +34,7 @@ def localidades_limpeza_predial(request, userid):
         {'nome': 'lat_med', 'label': 'Lat. média'},
         {'nome': 'long_med','label': 'Long. média'},
         {'nome': 'unidade','label': 'unidade'},
+        {'nome': 'status', 'label': 'status'},
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Áreas associadas'},
     ]

@@ -50,34 +50,6 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
             F('Servico__foto_entrega'),
             output_field=CharField()
         ),
-        equipamento_catalogo=ExpressionWrapper(
-            F('EquipamentoUsado__Nome'),
-            output_field=CharField()
-        ),
-        equipamento_empresa=ExpressionWrapper(
-            F('EquipamentoUsado__EmpresaSecundaria__nome'),
-            output_field=CharField()
-        ),
-        tipo_equipamento=ExpressionWrapper(
-            F('EquipamentoUsado__tipoequipamento'),
-            output_field=CharField()
-        ),
-        equipamento_id=ExpressionWrapper(
-            F('EquipamentoUsado__id'),
-            output_field=CharField()
-        ),
-        data_aquisicao_equipamento=ExpressionWrapper(
-            F('EquipamentoUsado__DataDeAquisicao'),
-            output_field=DateField()
-        ),
-        data_desmobilizacao_equipamento=ExpressionWrapper(
-            F('EquipamentoUsado__DataDeDesmobilizacao'),
-            output_field=DateField()
-        ),
-        matricula_equipamento=ExpressionWrapper(
-            F('EquipamentoUsado__matricula'),
-            output_field=CharField()
-        ),
         status_servico=ExpressionWrapper(
             F('Servico__status'),
             output_field=CharField()

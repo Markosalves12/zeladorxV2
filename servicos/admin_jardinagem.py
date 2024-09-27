@@ -24,9 +24,9 @@ class ServicoJardinagemAgendadoAdmin(admin.ModelAdmin):
 
 
 class FatoServicoJardinagemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'Servico', 'data_hora_chegada_na_area', 'EquipamentoUsado', 'data_hora_retorno_area', 'Gerente',)
-    list_display_links = ('id', 'Servico', 'data_hora_chegada_na_area', 'EquipamentoUsado', 'data_hora_retorno_area', 'Gerente',)
-    search_fields = ('Servico', 'data_hora_chegada_na_area', 'EquipamentoUsado', 'data_hora_retorno_area', 'Colaborador',)
+    list_display = ('id', 'Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area', 'Gerente',)
+    list_display_links = ('id', 'Servico', 'data_hora_chegada_na_area',  'data_hora_retorno_area', 'Gerente',)
+    search_fields = ('Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area', 'Colaborador',)
     list_filter = ('Gerente', )
 
     list_per_page = 20

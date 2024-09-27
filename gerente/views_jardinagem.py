@@ -36,6 +36,7 @@ def gerentes_jardinagem(request, userid):
         {'nome': 'username', 'label': 'Nome'},
         {'nome': 'email', 'label': 'E-mail'},
         {'nome': 'empresasecundaria', 'label': 'Empresa(s)'},
+        {'nome': 'status', 'label': 'status'},
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Histórico'},
     ]

@@ -2,9 +2,6 @@
 <div class="sidebar">
   <!-- Sidebar user panel (optional) -->
   <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-    <div class="image">
-      <img src="{% static 'dist/img/user test.jpeg' %}" class="img-circle elevation-2" alt="User Image">
-    </div>
     <div class="info">
       <a href="#" class="d-block">{{ nome }}</a>
     </div>
@@ -282,25 +279,6 @@
           </li>
         </ul>
       </li>
-      <!--Equipamentos-->
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="nav-icon fas fa-ellipsis-h"></i>
-          <p>
-            Equipamentos
-            <i class="right fas fa-angle-left"></i>
-          </p>
-        </a>
-        <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="{% url 'equipamentos_disponiveis_jardinagem' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Equipamentos</p>
-            </a>
-          </li>
-        </ul>
-      </li>
-
       <!--Authenticate-->
       <li class="nav-item">
         <a href="#" class="nav-link">

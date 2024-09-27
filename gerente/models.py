@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
 from empresasecundario.models import EmpresaSecundaria
 from notifications.utils import enviar_notificacao
+from utils.utils import resize_image
 
 # Create your models here.
 class GerenteManager(BaseUserManager):
@@ -141,8 +142,7 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['username', 'funcao', 'username']
 
     def __str__(self):
-        return self.username
-
+        return f'{self.username}'
 
     def save(self, *args, **kwargs):
         if self.email:

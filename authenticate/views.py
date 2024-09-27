@@ -9,30 +9,35 @@ import os
 
 load_dotenv()
 
+
 # Create your views here.
 def login(request):
     forms = LoginForms()
     if request.method == "POST":
         forms = LoginForms(request.POST)
+        print(forms.errors)
+        print(-1)
         if forms.is_valid():
-            email = forms['email'].value()
-            senha = forms['senha'].value()
+            print(0)
+            email = forms.cleaned_data['email'].strip().lower()
+            senha = forms.cleaned_data['senha']
 
             try:
                 gerente = Gerente.objects.get(
                     email=email
                 )
-
+                print(1)
                 usuario = auth.authenticate(
                     request,
                     username=str(os.getenv('DEFAULT_USER')),
                     password=str(os.getenv('DEFAULT_PASSWORD')),
                 )
-                auth.login(request, usuario)
-
+                print(2)
                 if check_password(senha, gerente.password) and gerente.status == "Mobilizado":
                     request.session['login_nome'] = gerente.username
                     request.session['userid'] = gerente.id_random
+                    print(3)
+                    auth.login(request, usuario)
 
                     return redirect('calendario_jardinagem', gerente.id_random)
 
@@ -43,7 +48,7 @@ def login(request):
         request=request,
         template_name='authenticate/login.html',
         context={
-           'forms': forms
+            'forms': forms
         }
     )
 

@@ -123,12 +123,11 @@ class FatoServicoJardinagemForms(forms.ModelForm):
 
     class Meta:
         model = FatoServicoJardinagem
-        fields = ['Servico', 'data_hora_chegada_na_area', 'EquipamentoUsado', 'data_hora_retorno_area', 'Gerente']
+        fields = ['Servico', 'data_hora_chegada_na_area', 'data_hora_retorno_area', 'Gerente']
 
         labels = {
             'Servico': 'Serviço agendado',
             'data_hora_chegada_na_area': 'Chegada na área',
-            'EquipamentoUsado': 'Equipamento usado',
             'data_hora_retorno_area': 'Retorno da área',
             'Colaborador': 'Colaborador',
         }
@@ -145,11 +144,6 @@ class FatoServicoJardinagemForms(forms.ModelForm):
                     'type': 'datetime-local',
                     'class': 'form-control',
                     'placeholder': 'DD/MM/AAAA HH:MM',
-                }
-            ),
-            'EquipamentoUsado': forms.Select(
-                attrs={
-                    'class': 'form-control'
                 }
             ),
             'data_hora_retorno_area': forms.DateTimeInput(

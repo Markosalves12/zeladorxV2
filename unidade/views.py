@@ -34,6 +34,7 @@ def unidades(request, userid):
         {'nome': 'nome', 'label': 'Nome'},
         {'nome': 'linkmapa', 'label': 'Mapa'},
         {'nome': 'empresasecundaria', 'label': 'Empresa'},
+        {'nome': 'status', 'label': 'status'},
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Mapa'},
     ]

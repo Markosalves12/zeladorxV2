@@ -27,4 +27,3 @@ class LoginForms(forms.Form):
             }
         )
     )
-    # Nota depois de editar a pagina de login os estilos foram buscados da cadastro

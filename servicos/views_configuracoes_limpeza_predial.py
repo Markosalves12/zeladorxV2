@@ -84,6 +84,7 @@ def servicos_configurados_limpeza_predial(request, userid):
         {'nome': 'horario_5', 'label': 'Horario 5'},
         {'nome': 'horario_6', 'label': 'Horario 6'},
         {'nome': 'horario_7', 'label': 'Horario 7'},
+        {'nome': 'status', 'label': 'status'},
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Histórico'},
     ]

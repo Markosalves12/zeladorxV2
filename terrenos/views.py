@@ -35,6 +35,7 @@ def terrenos(request, userid):
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
         {'nome': 'EmpresaSecundaria', 'label': 'Empresa'},
+        {'nome': 'status', 'label': 'status'},
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Áreas associadas'},
     ]
