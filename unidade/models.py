@@ -23,6 +23,12 @@ class Unidade(models.Model):
         max_length=300
     )
 
+    linkmapalimnpezapredial = models.CharField(
+        blank=True,
+        null=True,
+        max_length=300
+    )
+
     foto = models.ImageField(
         upload_to="media/%Y/%m/%d/",
         blank=True,
@@ -38,8 +44,6 @@ class Unidade(models.Model):
     status_options = [
         ('Mobilizado', 'Mobilizado'),
         ('Desmobilizado', 'Desmobilizado'),
-        ('Desmobilizaçao permanente', 'Desmobilizaçao permanente'),
-        ('Deletado', 'Deletado'),
     ]
 
     status = models.CharField(

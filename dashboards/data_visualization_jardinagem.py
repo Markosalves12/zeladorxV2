@@ -1,17 +1,15 @@
 from servicos.models_jardinagem import ServicoJardinagemAgendado
-from django.db.models.functions import Now, TruncDate, ExtractDay
-from django.db.models import F, Q, ExpressionWrapper, IntegerField, DurationField
+from django.db.models.functions import Now
+from django.db.models import F, Q, ExpressionWrapper, IntegerField
 from django.utils import timezone
 from datetime import timedelta
 from dashboards.data_visualization import calculate_areas_and_counts, generate_chart, generate_grouped_chart
+from dashboards.utils_jardinagem import colect_dados_jardinagem
 
-def data_visualization_jarfinagem_indicadores():
-    agendado = ServicoJardinagemAgendado.objects.all().annotate(
-        data_atual=Now(),
-        status_agendamento=ExpressionWrapper(
-            F('DataDeInicio') - F('data_atual'),
-            output_field=IntegerField()
-        ) / (3600 * 24 * 1000000)
+def data_visualization_jardinagem_indicadores(request, userid):
+    agendado = colect_dados_jardinagem(
+        request=request,
+        userid=userid
     )
 
     em_andamento = agendado.filter(status='Em andamento').count()
@@ -44,13 +42,10 @@ def data_visualization_jarfinagem_indicadores():
             total_de_areas_atrasadas, total_de_areas_proximas, total_de_areas_em_andamento)
 
 
-def data_visualization_jardinagem_graphs():
-    agendado = ServicoJardinagemAgendado.objects.all().annotate(
-        data_atual=Now(),
-        status_agendamento=ExpressionWrapper(
-            F('DataDeInicio') - F('data_atual'),
-            output_field=IntegerField()
-        ) / (3600 * 24 * 1000000)
+def data_visualization_jardinagem_graphs(request, userid):
+    agendado = colect_dados_jardinagem(
+        request=request,
+        userid=userid
     )
 
     one_day = timezone.now().date() + timedelta(days=1)
@@ -197,7 +192,7 @@ def data_visualization_jardinagem_graphs():
             status='Agendado',
             field_name='ColaboradoresEscalados__username',
             title='Área Total por colaborador (Atrasados)',
-            label_type='Área',
+            label_type='Colaborador',
             color='#dc3444'
         ).to_html(full_html=True),
 
@@ -209,7 +204,7 @@ def data_visualization_jardinagem_graphs():
             status='Agendado',
             field_name='ColaboradoresEscalados__username',
             title='Área Total por colaborador (Próximos)',
-            label_type='Área',
+            label_type='Colaborador',
             color='#f6be04'
         ).to_html(full_html=False),
 
@@ -220,7 +215,7 @@ def data_visualization_jardinagem_graphs():
             status='Agendado',
             field_name='ColaboradoresEscalados__username',
             title='Área Total por colaborador (agendados)',
-            label_type='Área',
+            label_type='Colaborador',
             color='#14a0b6'
         ).to_html(full_html=False),
 
@@ -229,7 +224,7 @@ def data_visualization_jardinagem_graphs():
             status='Em andamento',
             field_name='ColaboradoresEscalados__username',
             title='Área Total por colaborador (em andamento)',
-            label_type='Área',
+            label_type='Colaborador',
             color='#2aa042'
         ).to_html(full_html=False),
 
@@ -245,13 +240,10 @@ def data_visualization_jardinagem_graphs():
 
     return fig_charts
 
-def data_visualization_jardinagem_reports():
-    agendado = ServicoJardinagemAgendado.objects.all().annotate(
-        data_atual=Now(),
-        status_agendamento=ExpressionWrapper(
-            F('DataDeInicio') - F('data_atual'),
-            output_field=IntegerField()
-        ) / (3600 * 24 * 1000000)
+def data_visualization_jardinagem_reports(request, userid):
+    agendado = colect_dados_jardinagem(
+        request=request,
+        userid=userid
     )
 
     one_day = timezone.now().date() + timedelta(days=1)

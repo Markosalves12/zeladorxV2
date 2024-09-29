@@ -15,10 +15,8 @@ def login(request):
     forms = LoginForms()
     if request.method == "POST":
         forms = LoginForms(request.POST)
-        print(forms.errors)
-        print(-1)
         if forms.is_valid():
-            print(0)
+
             email = forms.cleaned_data['email'].strip().lower()
             senha = forms.cleaned_data['senha']
 
@@ -26,17 +24,17 @@ def login(request):
                 gerente = Gerente.objects.get(
                     email=email
                 )
-                print(1)
+
                 usuario = auth.authenticate(
                     request,
                     username=str(os.getenv('DEFAULT_USER')),
                     password=str(os.getenv('DEFAULT_PASSWORD')),
                 )
-                print(2)
+
                 if check_password(senha, gerente.password) and gerente.status == "Mobilizado":
                     request.session['login_nome'] = gerente.username
                     request.session['userid'] = gerente.id_random
-                    print(3)
+
                     auth.login(request, usuario)
 
                     return redirect('calendario_jardinagem', gerente.id_random)

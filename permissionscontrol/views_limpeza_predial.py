@@ -7,6 +7,7 @@ from gerente.models import Gerente
 from empresasecundario.utils import define_empresas
 from permissionscontrol.utils import validate_permissions
 
+
 # Create your views here.
 def permissoes_limpeza_predial(request, userid):
     permission_view = validate_permissions(
@@ -92,10 +93,13 @@ def editar_permissoes_limpeza_predial(request, userid, id_random):
     tipos = [
         {'nome': 'Editar permissões', 'link': ''},
         {'nome': 'Jardinagem', 'link': reverse('editar_permissoes_jardinagem',
-                                               kwargs={'userid': userid, 'id_random': permissions_instance_jardinagem.id_random})},
+                                               kwargs={'userid': userid,
+                                                       'id_random': permissions_instance_jardinagem.id_random})},
         {'nome': 'Limpeza predial', 'link': reverse('editar_permissoes_limpeza_predial',
-                                                     kwargs={'userid': userid, 'id_random': permissions_instance_limpeza_predial.id_random})},
-        {'nome': 'Especiais', 'link': reverse('editar_permissoes_especials', kwargs={'userid': userid, 'id_random': permissions_instance_especials.id_random})},
+                                                    kwargs={'userid': userid,
+                                                            'id_random': permissions_instance_limpeza_predial.id_random})},
+        {'nome': 'Especiais', 'link': reverse('editar_permissoes_especials', kwargs={'userid': userid,
+                                                                                     'id_random': permissions_instance_especials.id_random})},
     ]
 
     return edit_generic_view(
@@ -108,5 +112,7 @@ def editar_permissoes_limpeza_predial(request, userid, id_random):
         redirect_url_name='editar_permissoes_limpeza_predial',
         redirect_close_button=reverse('permissoes_limpeza_predial', kwargs={'userid': userid}),
         link_tipos=tipos,
-        permission_edit=permission_edit
+        permission_edit=permission_edit,
+        url_desmobilize=None,
+        url_rehabilitate=None,
     )

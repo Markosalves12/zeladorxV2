@@ -175,7 +175,7 @@ class ServicoLimpezaPredialAgendado(models.Model):
 
     def __str__(self):
         servicos_escalados_nomes = ", ".join(servico.nome for servico in self.ServicosEscalados.all())
-        return f'{self.Areas} | {servicos_escalados_nomes} | {self.DataDeInicio}'
+        return f'{self.Areas} | {servicos_escalados_nomes} | {self.DataDeInicio.strftime("%d/%m/%Y %H:%M")}'
 
 
 
@@ -217,5 +217,4 @@ class FatoServicoLimpezaPredial(models.Model):
         blank=True,
         null=True,
         max_length=2000,
-        # default='dist/img/not found.png'
     )

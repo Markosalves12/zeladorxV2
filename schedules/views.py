@@ -7,8 +7,8 @@ import threading
 
 # Create your views here.
 def iniciar_schedule():
-    schedule.every().day.at('21:12').do(agendar_servicos_limpeza_predial_configurados)
-    schedule.every().day.at('21:12').do(agendar_servicos_jardinagem_configurados)
+    schedule.every().day.at('00:10').do(agendar_servicos_limpeza_predial_configurados)
+    schedule.every().day.at('00:10').do(agendar_servicos_jardinagem_configurados)
 
     while True:
         schedule.run_pending()

@@ -147,10 +147,16 @@
                                                     {{ permission }},
                                                 {% endfor %}
                                             </td>
-                                        {% elif coluna.nome == 'status' %}
+                                        {% elif coluna.nome == 'status' or coluna.nome == 'status_servico' %}
                                             {% if dado|get_item:coluna.nome == "Desmobilizado" and coluna.nome == "status" %}
                                                 <td>
                                                     <span class="badge bg-warning">
+                                                        {{ dado|get_item:coluna.nome }}
+                                                    </span>
+                                                </td>
+                                            {% elif dado|get_item:coluna.nome == "Concluido" and coluna.nome == "status" %}
+                                                <td>
+                                                    <span class="badge bg-success">
                                                         {{ dado|get_item:coluna.nome }}
                                                     </span>
                                                 </td>

@@ -31,8 +31,17 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
+                    'type': 'areas'
                 }
-            )
+            ),
+            'export_excel': reverse(
+                viewname='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random,
+                    'type': 'areas',
+                }
+            ),
         }
     )
 
@@ -64,7 +73,16 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
+                    'type': 'catalogo_de_servicos',
                 }
-            )
+            ),
+            'export_excel': reverse(
+                viewname='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random,
+                    'type': 'catalogo_de_servicos',
+                }
+            ),
         }
     )

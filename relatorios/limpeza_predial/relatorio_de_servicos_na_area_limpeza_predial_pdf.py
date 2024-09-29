@@ -1,7 +1,4 @@
-from servicos.models_jardinagem import ServicoJardinagemAgendado
-from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado
-from areas.models_jardinagem import AreasJardins
-from areas.models_limpeza_predial import AreaLimpezaPredial
+from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -9,19 +6,40 @@ from reportlab.lib.utils import ImageReader
 from io import BytesIO
 import os
 from django.conf import settings
-from utils.utils import formatar_atributos
-from relatorios.utils import draw_image, draw_footer
+from utils.utils import formatar_atributos, generate_id_random
+from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
+from dashboards.data_visualization_limpeza_predial import data_visualization_limpeza_predial_reports
+from areas.models_limpeza_predial import AreaLimpezaPredial
 
 
-def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, id_random):
-    object = AreasJardins.objects.get(
-        id_random=id_random
-    )
+def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, id_random, type):
+    if type == 'catalogo_de_servicos':
+        dados = colect_dados_fato_servico_limpeza_predial(
+            request=request,
+            status=['Concluido']
+        ).filter(
+            id_random_servico=id_random
+        )
 
-    dados = ServicoJardinagemAgendado.objects.filter(
-        Areas__id_random=id_random,
-        # status="Concluido"
-    )
+    if type == 'configuracao':
+        dados = colect_dados_fato_servico_limpeza_predial(
+            request=request,
+            status=['Concluido']
+        ).filter(
+            id_random_configuracao=id_random
+        )
+
+    elif type == 'areas':
+        object = AreaLimpezaPredial.objects.get(
+            id_random=id_random
+        )
+
+        dados = colect_dados_fato_servico_limpeza_predial(
+            request=request,
+            status=['Concluido']
+        ).filter(
+            id_random_area=id_random
+        )
 
     # cria um buffer para inserir os dados no pdf
     buffer = BytesIO()
@@ -39,139 +57,69 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, i
     header_image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/logo alt.png')
 
     # função que cria o cabeçalho propriamente falado
-    def draw_header(c):
-        # se o endereço da imagem existir
-        if os.path.exists(header_image_path):
-            # abri a imagem enviada como parametro
-            header_image = ImageReader(header_image_path)
-            # captura as dimensões da imagem
-            header_img_width, header_img_height = header_image.getSize()
-            # centraliza a imagem no topo
-            x_centered = (width - header_img_width / 3) / 2
-            c.drawImage(header_image, x_centered, height - header_img_height / 3 - 20, width=header_img_width / 3, height=header_img_height / 3, mask='auto')
-            image_bottom = height - header_img_height / 2 - 20 - header_img_height / 2 - 20
-        else:
-            image_bottom = height  # Adjust if image is not found
-
-        # Adiciona o titulo do relatório abaixo da imagem
-
-        # configura da fonte e tamanho do titulo
-        # c.setFont("Helvetica-Bold", 16)
-        c.setFont("Helvetica-Bold", 14)
-        # escrever o titulo do relatório
-        c.drawString((width - c.stringWidth(f"Relatório de Serviços - {object.nome}",
-                                            "Helvetica-Bold", fontSize=12)) / 2,
-                     image_bottom + 20, f"Relatório de Serviços - {object.nome}")
-
-        c.drawString((width - c.stringWidth(f"",
-                                            "Helvetica-Bold", fontSize=12)) / 2,
-                     image_bottom + 0,
-                     f"")
-
-        c.drawString((width - c.stringWidth(f"",
-                                            "Helvetica-Bold", fontSize=12)) / 2,
-                     image_bottom - 20,
-                     f"")
-
-        c.setFont("Helvetica", 12)  # Set font back to normal for the rest of the content
-
-    # draw_footer
 
     # Draw the header for the first page
-    draw_header(p)
-    y = height - 150  # Adjust starting position for content after the header
+    draw_header(c=p, header_image_path=header_image_path, width=width, height=height)
+    y = height - 120  # Adjust starting position for content after the header
     page_number = 1
     p.setFont("Helvetica", 10)
 
-    # calculate_new_dimensions
-    # draw_image
-    # Draw the first image
-    # 'static/dist/img/logo alt.png')
-    if object.foto:
-        y -= 7
-        p.drawString(x, y, "Área")
-        y -= 7
-        image_path = os.path.join(settings.MEDIA_ROOT, object.foto.name)
-    else:
-        y -= 7
-        p.drawString(x, y, "Área")
-        y -= 7
-        image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
+    if type == 'areas':
+        if object.foto:
+            y -= 7
+            p.drawString(x, y, "Área")
+            y -= 7
+            image_path = os.path.join(settings.MEDIA_ROOT, object.foto.name)
+        else:
+            y -= 7
+            p.drawString(x, y, "Área")
+            y -= 7
+            image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
 
-    height1 = draw_image(image_path, x, y, p)
+        height1 = draw_image(image_path, x, y, p)
 
-    # Update y position for the next image
-    y -= height1 + 10  # 10 is the space between images
-    y -= 20
+        # Update y position for the next image
+        y -= height1 + 10  # 10 is the space between images
+        y -= 20
 
     for dado in dados:
         # Add the data_inicio
         p.setFont('Helvetica-Bold', 10)
-        p.drawString(x, y, f"Descrição: {dado.DescricaoDoServico}")
+        p.drawString(x, y, f"Descrição: {dado.descricao_do_servico}")
         y -= 20
 
         p.setFont("Helvetica", 10)
-        p.drawString(x, y, f"Data de Início: {dado.DataDeInicio.strftime('%d/%m/%Y')}",)
+        p.drawString(x, y, f'Data de Início: {dado.data_de_inicio.strftime("%d/%m/%Y %H:%M")}', )
 
         y -= 20
 
-        p.drawString(x, y, f"Data de conclusão: {dado.DataDeConclusao.strftime('%d/%m/%Y')}")
+        p.drawString(x, y, f'Data de conclusão: {dado.data_de_conclusao.strftime("%d/%m/%Y %H:%M")}')
         y -= 20
 
-        p.drawString(x, y, f"área atendida: {dado.Areas}")
+        p.drawString(x, y, f"área atendida: {dado.area_atendida}")
         y -= 20
 
-        p.drawString(x, y, f"Tamanho da área atendida: {dado.Areas.dimensao} M²")
+        p.drawString(x, y, f"Tamanho da área atendida: {dado.area_total} M²")
         y -= 20
 
-        # Add the servicos_escalados
-        p.drawString(x, y, "Serviços Escalados:")
+        p.drawString(x, y, f"Serviços Escalados: {dado.servicos_solicitados}")
         y -= 20
 
-        servicos = formatar_atributos(
-            queryset=dado.ServicosEscalados.all(),
-            atributo='nome'
-        )
-        p.drawString(x + 20, y, f"- {servicos}")  # Ajuste conforme o campo do modelo Servicos
-        y -= 20
-
-        # Add the colaboradores_escalados
-        p.drawString(x, y, "Colaboradores Escalados:")
-        y -= 20
-
-        colaborador = formatar_atributos(
-            queryset=dado.ColaboradoresEscalados.all(),
-            atributo='username'
-        )
-        p.drawString(x + 20, y, f"- {colaborador}")  # Ajuste conforme o campo do modelo Colaboradores
+        p.drawString(x, y, f"Colaboradores Escalados: {dado.colaborador_envolvido}")
         y -= 20
 
         def add_images_to_canvas(p, dado, x, y):
-            #calculate_new_dimensions
-            #draw_image
-            # Draw the first image (foto_inicio)
-            if dado.foto_solicitacao:
-                y -= 7
-                p.drawString(x, y, "Na solicitação")
-                y -= 7
-                image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_solicitacao.name)
-            else:
-                y -= 7
-                p.drawString(x, y, "Na solicitação")
-                y -= 7
-                image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
-
-            height1 = draw_image(image_path, x, y, p)
-
-            # Update y position for the next image
-            y -= height1 + 10  # 10 is the space between images
+            def calculate_new_dimensions(img_width, img_height):
+                new_width = img_width / 2.4
+                new_height = img_height / 2.4
+                return new_width, new_height
 
             # Draw the second image (foto)
-            if dado.foto_entrega:
+            if dado.foto_conclusao:
                 y -= 7
                 p.drawString(x, y, "Na entrega")
                 y -= 7
-                image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_entrega.name)
+                image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_conclusao)
             else:
                 y -= 7
                 p.drawString(x, y, "Na entrega")
@@ -180,9 +128,7 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, i
 
             draw_image(image_path, x, y, p)
 
-
         add_images_to_canvas(p, dado, x, y)
-
 
         # Draw the footer on the current page
         draw_footer(p, width)
@@ -193,6 +139,18 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, i
 
         p.setFont("Helvetica", 10)  # Reset font size to 12 for new page content
         y = height - 70
+
+    fig_terreno = data_visualization_limpeza_predial_reports(request, userid)
+
+    start_y = height - 100  # Posição inicial para o conteúdo após o cabeçalho
+
+    p.setFont('Helvetica-Bold', 12)
+    p.drawString(50, start_y, f"Volume de servicos próximos")
+    start_y -= 20
+
+    start_y, end_page = add_figures_to_pdf(
+        p, fig_terreno, start_y, start_y + 1, header_image_path=header_image_path, width=width, height=height
+    )
 
     draw_footer(
         p,
@@ -209,6 +167,7 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, i
 
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="relatorio de servicos.pdf"'
+    response[
+        'Content-Disposition'] = f'attachment; filename="relatorio de servicos Cocluido {generate_id_random()}.pdf"'
 
     return response

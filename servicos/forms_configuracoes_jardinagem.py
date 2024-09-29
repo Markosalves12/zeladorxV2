@@ -22,7 +22,9 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
             self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
                 localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-                status__in=['Mobilizado']
+                status__in=['Mobilizado'],
+                localidade__status__in=['Mobilizado'],
+                localidade__unidade__status__in=['Mobilizado']
             )
 
     ServicosEscalados = forms.ModelMultipleChoiceField(

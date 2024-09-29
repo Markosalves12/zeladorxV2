@@ -37,8 +37,6 @@ class LocalidadeLimpezaPredial(models.Model):
     status_options = [
         ('Mobilizado', 'Mobilizado'),
         ('Desmobilizado', 'Desmobilizado'),
-        ('Desmobilizaçao permanente', 'Desmobilizaçao permanente'),
-        ('Deletado', 'Deletado'),
     ]
 
     status = models.CharField(

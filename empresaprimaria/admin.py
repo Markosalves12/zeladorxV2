@@ -3,10 +3,10 @@ from empresaprimaria.models import EmpresaPrimaria
 
 # Register your models here.
 class EmpresaPrimariaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nome', 'razao_social', 'CNPJ', 'username', 'password', 'status', )
-    list_display_links = ('id', 'nome', 'razao_social', 'CNPJ', 'username', 'password', 'status', )
-    search_fields = ('username', 'nome', 'CNPJ', )
-    list_filter = ('username', 'nome', 'CNPJ', )
+    list_display = ('id', 'nome',  'CNPJ',  'status', )
+    list_display_links = ('id', 'nome', 'CNPJ', 'status', )
+    search_fields = ('nome', 'CNPJ', )
+    list_filter = ('nome', 'CNPJ', )
 
     list_per_page = 20
 

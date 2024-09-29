@@ -22,8 +22,15 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
             self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
                 localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+                status__in=['Mobilizado'],
+                localidade__status__in=['Mobilizado'],
+                localidade__unidade__status__in=['Mobilizado']
             )
 
+        choices_filtrados = [option for option in self.fields['TipoServico'].choices if option[0] != 'Automático']
+
+        # Definindo as novas opções filtradas
+        self.fields['TipoServico'].choices = choices_filtrados
 
 
     ServicosEscalados = forms.ModelMultipleChoiceField(
@@ -39,7 +46,8 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
 
     class Meta:
         model = ServicoLimpezaPredialAgendado
-        fields = ['Areas', 'TipoServico', 'DescricaoDoServico', 'ServicosEscalados', 'DataDeInicio', 'DataDeConclusao',]
+        fields = ['Areas', 'TipoServico', 'DescricaoDoServico', 'TipoServico', 'ServicosEscalados', 'DataDeInicio',
+                  'DataDeConclusao',]
         labels = {
             'Areas': 'Área',
             'TipoServico': 'Tipo de agendamento',
@@ -84,7 +92,7 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
         }
 
 class FatoServicoLimpezaPredialForms(forms.ModelForm):
-    # def __init__(self, *args, id_random_servico=None, empresa=None, **kwargs):
+    # def __init__(self, *args, id_random_servico=None, **kwargs):
     #     super(FatoServicoLimpezaPredial, self).__init__()
 
     class Meta:
@@ -106,18 +114,26 @@ class FatoServicoLimpezaPredialForms(forms.ModelForm):
                 }
             ),
             'data_hora_chegada_na_area': forms.DateTimeInput(
+                format='%d/%m/%Y %H:%M',
                 attrs={
-                    'class': 'form-control'
+                    'type': 'datetime-local',
+                    'class': 'form-control',
+                    'placeholder': 'DD/MM/AAAA HH:MM',
                 }
             ),
             'data_hora_retorno_area': forms.DateTimeInput(
+                format='%d/%m/%Y %H:%M',
                 attrs={
-                    'class': 'form-control'
+                    'type': 'datetime-local',
+                    'class': 'form-control',
+                    'placeholder': 'DD/MM/AAAA HH:MM',
                 }
             ),
             'Gerente': forms.Select(
                 attrs={
-                    'class': 'form-control'
+                    'type': 'datetime-local',
+                    'class': 'form-control',
+                    'placeholder': 'DD/MM/AAAA HH:MM',
                 }
             ),
             'foto_entrega': forms.FileInput(

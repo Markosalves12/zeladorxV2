@@ -53,7 +53,7 @@ def unidades(request, userid):
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_unidade',
-        history_rout='visualizar_unidade',
+        history_rout='visualizar_unidade_jardinagem',
         app_name='Unidades',
         text_button_open_modal='Adicionar nova unidade',
         text_button_save='Salvar unidade',
@@ -124,36 +124,6 @@ def editar_unidade(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
-    )
-
-
-def visualizar_unidade(request, userid, id_random):
-    objeto = Unidade.objects.get(
-        id_random=id_random
-    )
-
-    permission_view = validate_permissions(
-        request=request,
-        userid=userid,
-        permission_type='especials',
-        permission_to_access=['342: Pode visualizar unidades']
-    )
-
-    tipos = [
-        {'nome': 'Tipo de mapa', 'link': ''},
-        {'nome': 'Jardinagem', 'link': ''},
-        {'nome': 'Limpeza predial', 'link': ''},
-    ]
-
-    return render(
-        request=request,
-        template_name="VisualizationMaps/VisualizationMaps.html",
-        context={
-            'app_name': f'Unidade {objeto.nome}',
-            'objeto': objeto,
-            'link_tipos': tipos,
-            'permission_view': permission_view
-        }
     )
 
 

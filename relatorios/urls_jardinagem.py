@@ -51,12 +51,14 @@ urlpatterns = [
         name='relatorios_de_servicos_jardinagem_pdf_agendados'
     ),
     path(
-        'exportar_relatorio_de_serivos_na_area_jardinagem_pdf/<str:userid>/<str:id_random>',
+        'exportar_relatorio_de_serivos_na_area_jardinagem_pdf/<str:userid>/<str:id_random>/'
+        '<str:type>',
         exportar_relatorio_de_serivos_na_area_jardinagem_pdf,
         name='exportar_relatorio_de_serivos_na_area_jardinagem_pdf'
     ),
     path(
-        'exportar_relatorio_de_serivos_na_area_Jardinagem_excel/<str:userid>/<str:id_random>',
+        'exportar_relatorio_de_serivos_na_area_Jardinagem_excel/<str:userid>/<str:id_random>/'
+        '<str:type>',
         exportar_relatorio_de_serivos_na_area_Jardinagem_excel,
         name='exportar_relatorio_de_serivos_na_area_Jardinagem_excel'
     ),

@@ -1,17 +1,15 @@
 from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado
-from django.db.models.functions import Now, TruncDate, ExtractDay
-from django.db.models import F, Q, ExpressionWrapper, IntegerField, DurationField
+from django.db.models.functions import Now
+from django.db.models import F, Q, ExpressionWrapper, IntegerField
 from django.utils import timezone
 from datetime import timedelta
 from dashboards.data_visualization import calculate_areas_and_counts, generate_chart, generate_grouped_chart
+from dashboards.utils_limpeza_predial import colect_dados_jardinagem
 
-def data_visualization_limpeza_predial_indicadores():
-    agendado = ServicoLimpezaPredialAgendado.objects.all().annotate(
-        data_atual=Now(),
-        status_agendamento=ExpressionWrapper(
-            F('DataDeInicio') - F('data_atual'),
-            output_field=IntegerField()
-        ) / (3600 * 24 * 1000000)
+def data_visualization_limpeza_predial_indicadores(request, userid):
+    agendado = colect_dados_jardinagem(
+        request=request,
+        userid=userid
     )
 
     em_andamento = agendado.filter(status='Em andamento').count()
@@ -44,13 +42,10 @@ def data_visualization_limpeza_predial_indicadores():
             total_de_areas_atrasadas, total_de_areas_proximas, total_de_areas_em_andamento)
 
 
-def data_visualization_limpeza_predial_graphs():
-    agendado = ServicoLimpezaPredialAgendado.objects.all().annotate(
-        data_atual=Now(),
-        status_agendamento=ExpressionWrapper(
-            F('DataDeInicio') - F('data_atual'),
-            output_field=IntegerField()
-        ) / (3600 * 24 * 1000000)
+def data_visualization_limpeza_predial_graphs(request, userid):
+    agendado = colect_dados_jardinagem(
+        request=request,
+        userid=userid
     )
 
     one_day = timezone.now().date() + timedelta(days=1)
@@ -158,13 +153,10 @@ def data_visualization_limpeza_predial_graphs():
     return fig_charts
 
 
-def data_visualization_limpeza_predial_reports():
-    agendado = ServicoLimpezaPredialAgendado.objects.all().annotate(
-        data_atual=Now(),
-        status_agendamento=ExpressionWrapper(
-            F('DataDeInicio') - F('data_atual'),
-            output_field=IntegerField()
-        ) / (3600 * 24 * 1000000)
+def data_visualization_limpeza_predial_reports(request, userid):
+    agendado = colect_dados_jardinagem(
+        request=request,
+        userid=userid
     )
 
     one_day = timezone.now().date() + timedelta(days=1)

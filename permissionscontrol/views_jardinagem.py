@@ -7,6 +7,7 @@ from gerente.models import Gerente
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 
+
 # Create your views here.
 def permissoes_jardinagem(request, userid):
     permission_view = validate_permissions(
@@ -22,7 +23,6 @@ def permissoes_jardinagem(request, userid):
         permission_type='jardinagem',
         permission_to_access=['300: Pode editar permissões de jardinagem']
     )
-
 
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
@@ -90,11 +90,31 @@ def editar_permissoes_jardinagem(request, userid, id_random):
 
     tipos = [
         {'nome': 'Editar permissões', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('editar_permissoes_jardinagem',
-                                               kwargs={'userid': userid, 'id_random': permissions_instance_jardinagem.id_random})},
-        {'nome': 'Limpeza predial', 'link': reverse('editar_permissoes_limpeza_predial',
-                                                     kwargs={'userid': userid, 'id_random': permissions_instance_limpeza_predial.id_random})},
-        {'nome': 'Especiais', 'link': reverse('editar_permissoes_especials', kwargs={'userid': userid, 'id_random': permissions_instance_especials.id_random})},
+        {
+            'nome': 'Jardinagem',
+            'link': reverse(
+                'editar_permissoes_jardinagem',
+                kwargs={'userid': userid, 'id_random': permissions_instance_jardinagem.id_random})},
+        {
+            'nome': 'Limpeza predial',
+            'link': reverse(
+                'editar_permissoes_limpeza_predial',
+                kwargs={
+                    'userid': userid,
+                    'id_random': permissions_instance_limpeza_predial.id_random
+                }
+            )
+        },
+        {
+            'nome': 'Especiais',
+            'link': reverse(
+                'editar_permissoes_especials',
+                kwargs={
+                    'userid': userid,
+                    'id_random': permissions_instance_especials.id_random
+                }
+            )
+        },
     ]
 
     return edit_generic_view(
@@ -107,5 +127,7 @@ def editar_permissoes_jardinagem(request, userid, id_random):
         redirect_url_name='editar_permissoes_jardinagem',
         redirect_close_button=reverse('permissoes_jardinagem', kwargs={'userid': userid}),
         link_tipos=tipos,
-        permission_edit=permission_edit
+        permission_edit=permission_edit,
+        url_desmobilize=None,
+        url_rehabilitate=None,
     )

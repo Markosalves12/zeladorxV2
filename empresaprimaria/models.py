@@ -1,6 +1,7 @@
 from django.db import models
 from utils.utils import generate_id_random
 from utils.utils import resize_image
+from zeladorx.models import TypeZeladoria
 
 # Create your models here.
 class EmpresaPrimaria(models.Model):
@@ -16,12 +17,6 @@ class EmpresaPrimaria(models.Model):
         max_length=120,
     )
 
-    razao_social = models.CharField(
-        blank=False,
-        null=False,
-        max_length=120,
-    )
-
     CNPJ = models.CharField(
         blank=False,
         null=False,
@@ -29,23 +24,9 @@ class EmpresaPrimaria(models.Model):
         unique=True
     )
 
-    username = models.CharField(
-        blank=False,
-        null=False,
-        max_length=40
-    )
-
-    password = models.CharField(
-        blank=False,
-        null=False,
-        max_length=120
-    )
-
     status_options = [
         ('Mobilizado', 'Mobilizado'),
         ('Desmobilizado', 'Desmobilizado'),
-        ('Desmobilizaçao permanente', 'Desmobilizaçao permanente'),
-        ('Deletado', 'Deletado'),
     ]
 
     status = models.CharField(
@@ -54,6 +35,13 @@ class EmpresaPrimaria(models.Model):
         null=False,
         choices=status_options,
         default='Mobilizado'
+    )
+
+    setor = models.ManyToManyField(
+        blank=False,
+        null=False,
+        to=TypeZeladoria,
+        max_length=40
     )
 
     logo = models.ImageField(
@@ -65,7 +53,7 @@ class EmpresaPrimaria(models.Model):
 
     def save(self, *args, **kwargs):
         if self.logo:
-            self.logo = resize_image(self.logo, 40)
+            self.logo = resize_image(self.logo, 80)
 
         super(EmpresaPrimaria, self).save(*args, **kwargs)
 

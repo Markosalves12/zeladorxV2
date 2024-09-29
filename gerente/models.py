@@ -91,7 +91,6 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
     status_options = [
         ('Mobilizado', 'Mobilizado'),
         ('Desmobilizado', 'Desmobilizado'),
-        ('Desmobilizacao Permanente', 'Desmobilizacao Permanente')
     ]
 
     status = models.CharField(

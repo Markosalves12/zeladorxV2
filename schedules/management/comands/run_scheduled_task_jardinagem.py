@@ -8,7 +8,10 @@ from gerente.models import Gerente
 
 def agendar_servicos_jardinagem_configurados():
     objects = ServicoJardinagemConfigurado.objects.filter(
-        status__in=['Mobilizado']
+        status__in=['Mobilizado'],
+        Areas__status__in=['Mobilizado'],
+        Areas__localidade__status__in=['Mobilizado'],
+        Areas__localidade__unidade__status__in=['Mobilizado']
     )
 
     # Mapeamento para dias em português

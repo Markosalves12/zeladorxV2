@@ -9,6 +9,7 @@ from django.conf import settings
 from utils.utils import formatar_atributos
 from relatorios.utils import draw_image, draw_footer, save_plotly_fig_as_image, draw_header, add_figures_to_pdf
 from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_reports
+from utils.utils import generate_id_random
 
 
 def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status):
@@ -36,7 +37,7 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status):
     # Draw the header for the first page
     draw_header(c=p, header_image_path=header_image_path, width=width, height=height)
 
-    y = height - 150  # Adjust starting position for content after the header
+    y = height - 120  # Adjust starting position for content after the header
     page_number = 1
     p.setFont("Helvetica", 10)
 
@@ -47,11 +48,11 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status):
         y -= 20
 
         p.setFont("Helvetica", 10)
-        p.drawString(x, y, f"Data de Início: {dado.DataDeInicio.strftime('%d/%m/%Y')}",)
+        p.drawString(x, y, f'Data de Início: {dado.DataDeInicio.strftime("%d/%m/%Y %H:%M")}',)
 
         y -= 20
 
-        p.drawString(x, y, f"Data de conclusão: {dado.DataDeConclusao.strftime('%d/%m/%Y')}")
+        p.drawString(x, y, f'Data de conclusão: {dado.DataDeConclusao.strftime("%d/%m/%Y %H:%M")}')
         y -= 20
 
         p.drawString(x, y, f"área atendida: {dado.Areas}")
@@ -62,7 +63,7 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status):
 
         # Add the servicos_escalados
         p.drawString(x, y, "Serviços Escalados:")
-        y -= 20
+        y -= 10
 
         servicos = formatar_atributos(
             queryset=dado.ServicosEscalados.all(),
@@ -73,7 +74,7 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status):
 
         # Add the colaboradores_escalados
         p.drawString(x, y, "Colaboradores Escalados:")
-        y -= 20
+        y -= 10
 
         colaborador = formatar_atributos(
             queryset=dado.ColaboradoresEscalados.all(),
@@ -134,7 +135,7 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status):
         p.setFont("Helvetica", 10)  # Reset font size to 12 for new page content
         y = height - 70
 
-    fig_terreno = data_visualization_jardinagem_reports()
+    fig_terreno = data_visualization_jardinagem_reports(request, userid)
 
     start_y = height - 100  # Posição inicial para o conteúdo após o cabeçalho
 
@@ -159,7 +160,7 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status):
 
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="relatorio de servicos.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="relatorio de servicos {generate_id_random()}.pdf"'
 
     return response
 

@@ -2,6 +2,7 @@ from empresasecundario.models import EmpresaSecundaria
 from django import forms
 from empresasecundario.utils import define_empresas
 from zeladorx.models import TypeZeladoria
+from empresaprimaria.models import EmpresaPrimaria
 from permissionscontrol.utils import validate_permissions
 
 class EmpresaSecundariaForms(forms.ModelForm):
@@ -11,11 +12,17 @@ class EmpresaSecundariaForms(forms.ModelForm):
         if userid:
             empresas = define_empresas(request=request, userid=userid)
             empresas_primarias_ids = empresas['empresas_primarias_ids']
+            empresa = EmpresaPrimaria.objects.get(id_random=empresas_primarias_ids[0])
+            setores = empresa.setor.all()  # Acessando o campo de chave estrangeira diretamente
 
             # Ajustar o queryset do campo 'empresaprimaria'
             self.fields['empresaprimaria'].queryset = self.fields['empresaprimaria'].queryset.filter(
                 id_random__in=empresas_primarias_ids,
                 status__in=['Mobilizado']
+            )
+
+            self.fields['setor'].queryset = self.fields['setor'].queryset.filter(
+                id__in=setores
             )
 
     setor = forms.ModelMultipleChoiceField(

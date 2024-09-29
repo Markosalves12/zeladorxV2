@@ -25,7 +25,15 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
             self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
                 localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+                status__in=['Mobilizado'],
+                localidade__status__in=['Mobilizado'],
+                localidade__unidade__status__in=['Mobilizado']
             )
+
+        choices_filtrados = [option for option in self.fields['TipoServico'].choices if option[0] != 'Automático']
+
+        # Definindo as novas opções filtradas
+        self.fields['TipoServico'].choices = choices_filtrados
 
     ServicosEscalados = forms.ModelMultipleChoiceField(
         queryset=CatalogodeServicoJardinagem.objects.all(),
@@ -52,7 +60,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
     class Meta:
         model = ServicoJardinagemAgendado
         fields = ['DataDeInicio', 'DataDeConclusao', 'ServicosEscalados', 'ColaboradoresEscalados',
-                  'DescricaoDoServico', 'Areas', 'foto_solicitacao', 'foto_entrega', 'ServicoCompunsivo']
+                  'DescricaoDoServico', 'Areas', 'TipoServico', 'foto_solicitacao', 'foto_entrega', 'ServicoCompunsivo']
 
         labels = {
             'DataDeInicio': 'Data marcada para inicio',
@@ -120,6 +128,13 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
 class FatoServicoJardinagemForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, id_random=str, **kwargs):
         super(FatoServicoJardinagemForms, self).__init__(*args, **kwargs)
+        self.fields['Servico'].queryset = self.fields['Servico'].queryset.filter(
+            id_random=id_random
+        )
+
+        self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
+            status__in=['Mobilizado']
+        )
 
     class Meta:
         model = FatoServicoJardinagem

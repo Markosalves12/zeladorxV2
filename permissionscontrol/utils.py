@@ -1,21 +1,29 @@
 from django.shortcuts import get_object_or_404, redirect
-from permissionscontrol.models import (PermissionsAccessJardinagem, PermissionsJardinagem,
-                                       PermissionsAccessLimpezaPredial, PermissionsLimpezaPredial,
-                                       PermissionsEspecials, PermissionsAccessEspecials)
+from permissionscontrol.models import (PermissionsAccessJardinagem,
+                                       PermissionsAccessLimpezaPredial,
+                                       PermissionsAccessEspecials)
 from gerente.models import Gerente
 
 def configurate_permissions(request, model_class, email):
     objeto = get_object_or_404(model_class, email=email)
-
-    permissoes_predefinidas = PermissionsJardinagem.objects.filter(
-        id__in=[1, 2, 3]  # IDs das permissões que deseja atribuir automaticamente
-    )
+    # Jardinagem
     permissions = PermissionsAccessJardinagem(
         Gerente=objeto,
     )
     permissions.save()
-    permissions.Permissions.set(permissoes_predefinidas)
+
+    # limpeza predial
+    permissions = PermissionsAccessLimpezaPredial(
+        Gerente=objeto,
+    )
     permissions.save()
+    # especials
+
+    permissions = PermissionsAccessEspecials(
+        Gerente=objeto,
+    )
+    permissions.save()
+
 
 def validate_permissions(request, userid, permission_type, permission_to_access):
     if Gerente.objects.get(id_random=userid).superuser == True:

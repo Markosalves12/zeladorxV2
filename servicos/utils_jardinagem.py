@@ -1,17 +1,17 @@
-from servicos.models_jardinagem import FatoServicoJardinagem
+from servicos.models_jardinagem import FatoServicoJardinagem, ServicoJardinagemAgendado
 from django.db.models import (ExpressionWrapper, F, CharField,
-                              IntegerField, DurationField, DateField, DateTimeField
+                              IntegerField, DurationField, DateTimeField
                               )
 
 def colect_dados_fato_servico_jardinagem(request, status=list):
     # Adicione os dados do relatório ao arquivo Excel
     dados = FatoServicoJardinagem.objects.annotate(
         tipodeempresa=ExpressionWrapper(
-            F('Servico__ColaboradoresEscalados__empresasecundaria__setor'),
+            F('Servico__ColaboradoresEscalados__empresasecundaria__setor__setor'),
             output_field=CharField()
         ),
         empresaprestadora=ExpressionWrapper(
-            F('Servico__ColaboradoresEscalados__empresasecundaria__nome'),
+            F('Servico__ServicosEscalados__EmpresaSecundaria__nome'),
             output_field=CharField()
         ),
         id_agendamento=ExpressionWrapper(
@@ -36,11 +36,11 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
         ),
         data_de_inicio=ExpressionWrapper(
             F('Servico__DataDeInicio'),
-            output_field=CharField()
+            output_field=DateTimeField()
         ),
         data_de_conclusao=ExpressionWrapper(
             F('Servico__DataDeConclusao'),
-            output_field=CharField()
+            output_field=DateTimeField()
         ),
         antes=ExpressionWrapper(
             F('Servico__foto_solicitacao'),
@@ -110,8 +110,112 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
             F('Servico__Areas__id_random'),
             output_field=CharField()
         ),
+        id_random_servico=ExpressionWrapper(
+            F('Servico__ServicosEscalados__id_random'),
+            output_field=CharField()
+        ),
+        id_random_configuracao=ExpressionWrapper(
+            F('Servico__id_configuracao'),
+            output_field=CharField()
+        ),
     ).filter(
-        Servico__status__in=status
+        status_servico__in=status,
+        tipodeempresa='Jardinagem'
+    )
+
+    return dados
+
+
+def colect_dados_agendamentos_jardinagem(request, status=list):
+    # Adicione os dados do relatório ao arquivo Excel
+    dados = ServicoJardinagemAgendado.objects.annotate(
+        tipodeempresa=ExpressionWrapper(
+            F('ColaboradoresEscalados__empresasecundaria__setor__setor'),
+            output_field=CharField()
+        ),
+        empresaprestadora=ExpressionWrapper(
+            F('ServicosEscalados__EmpresaSecundaria__nome'),
+            output_field=CharField()
+        ),
+        id_agendamento=ExpressionWrapper(
+            F('id'),
+            output_field=CharField()
+        ),
+        tipo_agendamento=ExpressionWrapper(
+            F('TipoServico'),
+            output_field=CharField()
+        ),
+        descricao_do_servico=ExpressionWrapper(
+            F('DescricaoDoServico'),
+            output_field=CharField()
+        ),
+        colaboradores_chamados = ExpressionWrapper(
+            F('ColaboradoresEscalados__username'),
+            output_field=CharField()
+        ),
+        servicos_solicitados=ExpressionWrapper(
+            F('ServicosEscalados__nome'),
+            output_field=CharField()
+        ),
+        data_de_inicio=ExpressionWrapper(
+            F('DataDeInicio'),
+            output_field=DateTimeField()
+        ),
+        data_de_conclusao=ExpressionWrapper(
+            F('DataDeConclusao'),
+            output_field=DateTimeField()
+        ),
+        antes=ExpressionWrapper(
+            F('foto_solicitacao'),
+            output_field=CharField()
+        ),
+        depois=ExpressionWrapper(
+            F('foto_entrega'),
+            output_field=CharField()
+        ),
+        status_servico=ExpressionWrapper(
+            F('status'),
+            output_field=CharField()
+        ),
+        area_atendida=ExpressionWrapper(
+            F('Areas__nome'),
+            output_field=CharField()
+        ),
+        periodicidade_de_retorno=ExpressionWrapper(
+            F('Areas__periodicidade'),
+            output_field=CharField()
+        ),
+        area_total=ExpressionWrapper(
+            F('Areas__dimensao'),
+            output_field=CharField()
+        ),
+        tipo_vegetacao=ExpressionWrapper(
+            F('Areas__vegetacao__nome'),
+            output_field=CharField()
+        ),
+        tipo_terreno=ExpressionWrapper(
+            F('Areas__Terreno__nome'),
+            output_field=CharField()
+        ),
+        localidade=ExpressionWrapper(
+            F('Areas__localidade__nome'),
+            output_field=CharField()
+        ),
+        unidade=ExpressionWrapper(
+            F('Areas__localidade__unidade__nome'),
+            output_field=CharField()
+        ),
+        id_random_area=ExpressionWrapper(
+            F('Areas__id_random'),
+            output_field=CharField()
+        ),
+        id_random_servico=ExpressionWrapper(
+            F('Servico__ServicosEscalados__id_random'),
+            output_field=CharField()
+        ),
+    ).filter(
+        status_servico__in=status,
+        tipodeempresa='Jardinagem'
     )
 
     return dados

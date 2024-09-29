@@ -106,7 +106,7 @@ def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
     return generic_view(
         request=request,
         model=ServicoJardinagemAgendado.objects.filter(
-            status=['Agendado', 'Em andamento']
+            status__in=['Agendado', 'Em andamento']
         ),
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',

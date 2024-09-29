@@ -216,7 +216,7 @@ class ServicoJardinagemAgendado(models.Model):
 
     def __str__(self):
         colaboradores_nomes = ", ".join(colaborador.username for colaborador in self.ColaboradoresEscalados.all())
-        return f"{self.DescricaoDoServico} -- {self.DataDeInicio} -- {colaboradores_nomes} "
+        return f'{self.DescricaoDoServico} -- {self.DataDeInicio.strftime("%d/%m/%Y %H:%M")} -- {colaboradores_nomes} '
 
 
 class FatoServicoJardinagem(models.Model):
@@ -238,14 +238,6 @@ class FatoServicoJardinagem(models.Model):
         blank=False,
         null=False
     )
-
-    # EquipamentoUsado = models.ForeignKey(
-    #     to=EquipamentoDisponiveisJardinagem,
-    #     blank=True,
-    #     null=True,
-    #     on_delete=models.CASCADE,
-    #     related_name="REquipamentoUsadoFatoServico"
-    # )
 
     data_hora_retorno_area = models.DateTimeField(
         blank=False,

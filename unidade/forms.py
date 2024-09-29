@@ -32,10 +32,11 @@ class UnidadeForms(forms.ModelForm):
 
     class Meta:
         model = Unidade
-        fields = ['nome', 'linkmapajardinagem', 'foto', 'empresasecundaria', ]
+        fields = ['nome', 'linkmapajardinagem', 'linkmapalimnpezapredial', 'foto', 'empresasecundaria', ]
         labels = {
             'nome': 'Nome',
             'linkmapajardinagem': 'Link do mapa jardinagem da unidade',
+            'linkmapalimnpezapredial': 'Link do mapa limpeza predial da unidade',
             'foto': 'Fotos da unidade',
             'EmpresaSecundaria': 'Empresa operadora',
         }
@@ -47,6 +48,11 @@ class UnidadeForms(forms.ModelForm):
                 }
             ),
             'linkmapajardinagem': forms.TextInput(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+            'linkmapalimnpezapredial': forms.TextInput(
                 attrs={
                     'class': 'form-control'
                 }

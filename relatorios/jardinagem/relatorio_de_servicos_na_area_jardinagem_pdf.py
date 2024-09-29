@@ -12,17 +12,31 @@ from django.conf import settings
 from utils.utils import formatar_atributos
 from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
 from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_reports
+from utils.utils import generate_id_random
 
 
-def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_random):
-    object = AreasJardins.objects.get(
-        id_random=id_random
-    )
+def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_random, type):
+    if type == 'catalogo_de_servicos':
+        dados = ServicoJardinagemAgendado.objects.filter(
+            ServicosEscalados__id_random=id_random,
+            status__in=['Concluido']
+        )
 
-    dados = ServicoJardinagemAgendado.objects.filter(
-        Areas__id_random=id_random,
-        status__in=['Concluido']
-    )
+    elif type == 'configuracao':
+        dados = ServicoJardinagemAgendado.objects.filter(
+            id_configuracao=id_random,
+            status__in=['Concluido']
+        )
+
+    elif type == 'areas':
+        object = AreasJardins.objects.get(
+            id_random=id_random
+        )
+
+        dados = ServicoJardinagemAgendado.objects.filter(
+            Areas__id_random=id_random,
+            status__in=['Concluido']
+        )
 
     # cria um buffer para inserir os dados no pdf
     buffer = BytesIO()
@@ -52,23 +66,24 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
     # calculate_new_dimensions
     # draw_image
     # Draw the first image
-    # 'static/dist/img/logo alt.png')
-    if object.foto:
-        y -= 7
-        p.drawString(x, y, "Área")
-        y -= 7
-        image_path = os.path.join(settings.MEDIA_ROOT, object.foto.name)
-    else:
-        y -= 7
-        p.drawString(x, y, "Área")
-        y -= 7
-        image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
 
-    height1 = draw_image(image_path, x, y, p)
+    if type == 'areas':
+        if object.foto:
+            y -= 7
+            p.drawString(x, y, "Área")
+            y -= 7
+            image_path = os.path.join(settings.MEDIA_ROOT, object.foto.name)
+        else:
+            y -= 7
+            p.drawString(x, y, "Área")
+            y -= 7
+            image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
 
-    # Update y position for the next image
-    y -= height1 + 10  # 10 is the space between images
-    y -= 20
+        height1 = draw_image(image_path, x, y, p)
+
+        # Update y position for the next image
+        y -= height1 + 10  # 10 is the space between images
+        y -= 20
 
     for dado in dados:
         # Add the data_inicio
@@ -77,11 +92,11 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
         y -= 20
 
         p.setFont("Helvetica", 10)
-        p.drawString(x, y, f"Data de Início: {dado.DataDeInicio.strftime('%d/%m/%Y')}",)
+        p.drawString(x, y, f'Data de Início: {dado.DataDeInicio.strftime("%d/%m/%Y %H:%M")}',)
 
         y -= 20
 
-        p.drawString(x, y, f"Data de conclusão: {dado.DataDeConclusao.strftime('%d/%m/%Y')}")
+        p.drawString(x, y, f'Data de conclusão: {dado.DataDeConclusao.strftime("%d/%m/%Y %H:%M")}')
         y -= 20
 
         p.drawString(x, y, f"área atendida: {dado.Areas}")
@@ -160,7 +175,7 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
         p.setFont("Helvetica", 10)  # Reset font size to 12 for new page content
         y = height - 70
 
-    fig_terreno = data_visualization_jardinagem_reports()
+    fig_terreno = data_visualization_jardinagem_reports(request, userid)
 
     start_y = height - 100  # Posição inicial para o conteúdo após o cabeçalho
 
@@ -186,6 +201,6 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
 
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="relatorio de servicos.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="relatorio de servicos {generate_id_random()}.pdf"'
 
     return response

@@ -7,7 +7,10 @@ from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpeza
 
 def agendar_servicos_limpeza_predial_configurados():
     objects = ServicoLimpezaPredialConfigurado.objects.filter(
-        status__in=['Mobilizado']
+        status__in=['Mobilizado'],
+        Areas__status__in=['Mobilizado'],
+        Areas__localidade__status__in=['Mobilizado'],
+        Areas__localidade__unidade__status__in=['Mobilizado']
     )
 
     # Mapeamento para dias em português

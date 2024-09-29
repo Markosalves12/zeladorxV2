@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse
-from dashboards.data_visualization_jardinagem import (data_visualization_jarfinagem_indicadores,
+from dashboards.data_visualization_jardinagem import (data_visualization_jardinagem_indicadores,
                                                       data_visualization_jardinagem_graphs)
 from unidade.models import Unidade
 
@@ -7,9 +7,9 @@ from unidade.models import Unidade
 def dashboard_produtividade_jardinagem(request, userid):
     (em_andamento, atrasados, proximos, agendamentos,
      total_de_areas_agendadas, total_de_areas_atrasadas,
-     total_de_areas_proximas, total_de_areas_em_andamento) = data_visualization_jarfinagem_indicadores()
+     total_de_areas_proximas, total_de_areas_em_andamento) = data_visualization_jardinagem_indicadores(request, userid)
 
-    fig_terreno = data_visualization_jardinagem_graphs()
+    fig_terreno = data_visualization_jardinagem_graphs(request, userid)
 
     tipos = [
         {'nome': 'Dashboards', 'link': ''},

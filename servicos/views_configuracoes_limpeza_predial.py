@@ -209,7 +209,8 @@ def historico_de_servicos_configurados_limpeza_predial(request, userid, id_rando
                 'exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
                 kwargs={
                     'userid': userid,
-                    'id_random': id_random
+                    'id_random': id_random,
+                    'type': 'configuracao'
                 }
             ),
             'export_excel': reverse(
@@ -217,6 +218,7 @@ def historico_de_servicos_configurados_limpeza_predial(request, userid, id_rando
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
+                    'type': 'configuracao'
                 }
             ),
         }

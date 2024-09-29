@@ -17,7 +17,6 @@ def relatorios_de_servicos_limpeza_predial_pdf_concluidos(request, userid):
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
-        {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'status', 'label': 'Status'},
     ]
@@ -81,7 +80,6 @@ def relatorios_de_servicos_limpeza_predial_pdf_agendados(request, userid):
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
-        {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'status', 'label': 'Status'},
     ]

@@ -179,7 +179,7 @@ def realizar_servico_jardinagem_agendado(request, userid, id_random):
             objeto.save()
             messages.success(
                 request=request,
-                message=f'serviço {objeto} realizado'
+                message=f'serviço, {objeto}, realizado'
             )
             return redirect('calendario_jardinagem', userid)
 

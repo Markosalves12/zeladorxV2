@@ -6,9 +6,9 @@ from dashboards.data_visualization_limpeza_predial import (data_visualization_li
 def dashboard_produtividade_limpeza_predial(request, userid):
     (em_andamento, atrasados, proximos, agendamentos,
      total_de_areas_agendadas, total_de_areas_atrasadas,
-     total_de_areas_proximas, total_de_areas_em_andamento) = data_visualization_limpeza_predial_indicadores()
+     total_de_areas_proximas, total_de_areas_em_andamento) = data_visualization_limpeza_predial_indicadores(request, userid)
 
-    fig_terreno = data_visualization_limpeza_predial_graphs()
+    fig_terreno = data_visualization_limpeza_predial_graphs(request, userid)
 
     tipos = [
         {'nome': 'Dashboards', 'link': ''},
