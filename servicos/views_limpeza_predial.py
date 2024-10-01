@@ -7,6 +7,9 @@ from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from django.utils import timezone
 from django.contrib import messages
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Case, When, Value, CharField
 
 def agendar_servico_limpeza_predial(request, userid):
     forms = ServicoLimpezaPredialAgendadoForms(request=request, userid=userid)
@@ -75,7 +78,7 @@ def servicos_agendados_limpeza_predial(request, userid):
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
-        {'nome': 'status', 'label': 'Status'},
+        {'nome': 'novo_status', 'label': 'Status'},
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 
@@ -89,17 +92,35 @@ def servicos_agendados_limpeza_predial(request, userid):
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
+    one_day = timezone.now().date() + timedelta(days=1)
+    seven_days = timezone.now().date() + timedelta(days=7)
+
     return generic_view(
         request=request,
         model=ServicoLimpezaPredialAgendado.objects.filter(
             Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        ).annotate(
+            novo_status=Case(
+                When(status='Em andamento', then=Value('Em andamento')),
+                When(DataDeInicio__gte=one_day, DataDeInicio__lt=seven_days, then=Value('Próximo')),
+                When(status='Agendado', DataDeInicio__gte=seven_days, then=Value('Agendado')),
+                When(DataDeInicio__lt=timezone.now(), then=Value('Atrasado')),
+                default=Value('Desconhecido'),
+                output_field=CharField()
+            )
         ),
         form_class=ServicoLimpezaPredialAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_servico_limpeza_predial_agendado',
         app_name='serviços agendados limpeza predial',
+        form_search=ServicoLimpezaPredialAgendadoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'Areas': 'Areas__id',
+            'TipoServico': 'TipoServico',
+        },
         text_button_open_modal='agendar novo serviço',
         text_button_save='agendar serviço',
         header_model='solicitar serviço',
@@ -148,7 +169,6 @@ def editar_servico_limpeza_predial_agendado(request, userid, id_random):
 def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
     objeto = ServicoLimpezaPredialAgendado.objects.get(id_random=id_random)
     forms = FatoServicoLimpezaPredialForms(
-        instance=objeto,
         initial={
             'Servico': objeto
         }

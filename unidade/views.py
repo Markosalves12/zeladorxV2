@@ -55,6 +55,12 @@ def unidades(request, userid):
         edition_rout='editar_unidade',
         history_rout='visualizar_unidade_jardinagem',
         app_name='Unidades',
+        form_search=UnidadeForms(request=request, userid=userid),
+        sform_search=True,
+        filtro_mapeamento={
+            'nome': 'nome',
+            'EmpresaSecundaria': 'EmpresaSecundaria__id'
+        },
         text_button_open_modal='Adicionar nova unidade',
         text_button_save='Salvar unidade',
         header_model='Nova unidade',

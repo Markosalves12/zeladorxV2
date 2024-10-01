@@ -56,6 +56,12 @@ def terrenos(request, userid):
         edition_rout='editar_terreno',
         history_rout='areas_associadas_terrenos',
         app_name='Terrenos',
+        form_search=TerrenoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'nome': 'nome',
+            'EmpresaSecundaria': 'EmpresaSecundaria__id'
+        },
         text_button_open_modal='Adicionar novo terreno',
         text_button_save='Salvar terreno',
         header_model='Novo terreno',

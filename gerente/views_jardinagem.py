@@ -64,6 +64,12 @@ def gerentes_jardinagem(request, userid):
         edition_rout='editar_gerente_jardinagem',
         history_rout='historico_de_servicos_gerente_jardinagem',
         app_name='gerentes jardinagem',
+        form_search=GerenteJardinagemForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'email': 'email',
+            'username': 'username',
+        },
         text_button_open_modal='Adicionar novo gerente',
         text_button_save='Salvar gerente',
         header_model='Novo gerente',

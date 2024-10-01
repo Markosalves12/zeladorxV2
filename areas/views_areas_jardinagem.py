@@ -63,6 +63,14 @@ def areas_jardins(request, userid):
         edition_rout='editar_area_jardins',
         history_rout='historico_de_servicos_areas_jardinagem',
         app_name='Áreas Jardinagem',
+        form_search=AreasJardinsForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'Terreno': 'Terreno__id',
+            'vegetacao': 'vegetacao__id',
+            'servico': 'servico__id',
+            'localidade': 'localidade__id'
+        },
         text_button_open_modal='Adicionar nova área',
         text_button_save='Salvar área',
         header_model='Nova área',

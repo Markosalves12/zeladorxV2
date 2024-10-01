@@ -3,7 +3,7 @@ from django.db.models import F, ExpressionWrapper, IntegerField
 from django.db.models.functions import Now
 from empresasecundario.utils import define_empresas
 
-def colect_dados_jardinagem(request, userid):
+def colect_dados_limpeza_predial(request, userid):
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']

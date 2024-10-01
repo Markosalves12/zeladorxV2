@@ -58,6 +58,12 @@ def empresas_limpeza_predial(request, userid):
         columns=colunas,
         edition_rout='editar_empresa_limpeza_predial',
         app_name='Empresas limpeza predial',
+        form_search=EmpresaSecundariaForms(request=request, userid=userid, type='search'),
+        sform_search=False,
+        filtro_mapeamento={
+            'servico': 'servico__id',
+            'localidade': 'localidade__id'
+        },
         text_button_open_modal='Adicionar nova empresa',
         text_button_save='Salvar empresa',
         header_model='Nova empresa',

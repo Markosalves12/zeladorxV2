@@ -60,6 +60,11 @@ def catalogo_de_servicos_jardinagem(request, userid):
         edition_rout='editar_catalogo_de_servicos_jardinagem',
         history_rout='historico_de_servicos_catologo_de_servicos_jardinagem',
         app_name='catálogo de serviços Jardinagem',
+        form_search=CatalogoServicoJardinagemForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'EmpresaSecundaria': 'EmpresaSecundaria__id',
+        },
         text_button_open_modal='Adicionar novo serviço',
         text_button_save='Salvar serviço',
         header_model='Novo serviço',

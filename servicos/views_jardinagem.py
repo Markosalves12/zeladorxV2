@@ -6,6 +6,9 @@ from django.utils import timezone
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Case, When, Value, CharField
 
 # Create your views here.
 def agendar_servico_jardinagem(request, userid):
@@ -79,7 +82,7 @@ def servicos_agendados_jardinagem(request, userid):
         {'nome': 'ColaboradoresConfirmados', 'label': 'Colaboradores confirmados'},
         {'nome': 'ColaboradoresNegados', 'label': 'Colaboradores negados'},
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
-        {'nome': 'status', 'label': 'Status'},
+        {'nome': 'novo_status', 'label': 'Status'},
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 
@@ -93,17 +96,35 @@ def servicos_agendados_jardinagem(request, userid):
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
+    one_day = timezone.now().date() + timedelta(days=1)
+    seven_days = timezone.now().date() + timedelta(days=7)
+
     return generic_view(
         request=request,
         model=ServicoJardinagemAgendado.objects.filter(
             Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        ).annotate(
+            novo_status=Case(
+                When(status='Em andamento', then=Value('Em andamento')),
+                When(DataDeInicio__gte=one_day, DataDeInicio__lt=seven_days, then=Value('Próximo')),
+                When(status='Agendado', DataDeInicio__gte=seven_days, then=Value('Agendado')),
+                When(DataDeInicio__lt=timezone.now(), then=Value('Atrasado')),
+                default=Value('Desconhecido'),
+                output_field=CharField()
+            )
         ),
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_servico_jardinagem_agendado',
         app_name='serviços agendados jardinagem',
+        form_search=ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'Areas': 'Areas__id',
+            'TipoServico': 'TipoServico',
+        },
         text_button_open_modal='agendar novo serviço',
         text_button_save='agendar serviço',
         header_model='solicitar serviço',
@@ -154,11 +175,10 @@ def editar_servico_jardinagem_agendado(request, userid, id_random):
 def realizar_servico_jardinagem_agendado(request, userid, id_random):
     objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     forms = FatoServicoJardinagemForms(
-        instance=objeto,
-        id_random=id_random,
         initial={
             'Servico': objeto
         },
+        id_random=id_random,
         request=request,
         userid=userid
     )
@@ -171,7 +191,8 @@ def realizar_servico_jardinagem_agendado(request, userid, id_random):
     )
 
     if request.method == 'POST':
-        form = FatoServicoJardinagemForms(request.POST, request.FILES, request=request, userid=userid)
+        form = FatoServicoJardinagemForms(request.POST, request.FILES, id_random=id_random,
+                                          request=request, userid=userid)
         print(form.errors)
         if form.is_valid():
             form.save()

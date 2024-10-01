@@ -4,7 +4,7 @@ from empresasecundario.models import EmpresaSecundaria
 from empresasecundario.utils import define_empresas
 
 class GerenteJardinagemForms(forms.ModelForm):
-    def __init__(self, *args, request, userid=str, **kwargs):
+    def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
         super(GerenteJardinagemForms, self).__init__(*args, **kwargs)
         if userid:
             empresas = define_empresas(request=request, userid=userid)
@@ -16,6 +16,10 @@ class GerenteJardinagemForms(forms.ModelForm):
                 setor__setor='Jardinagem',
                 status__in=['Mobilizado']
             )
+
+        if type == 'search':
+            for field_name, field in self.fields.items():
+                field.required = False
 
     empresasecundaria = forms.ModelMultipleChoiceField(
         queryset=EmpresaSecundaria.objects.all(),

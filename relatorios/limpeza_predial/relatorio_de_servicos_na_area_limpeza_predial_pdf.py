@@ -140,12 +140,12 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, i
         p.setFont("Helvetica", 10)  # Reset font size to 12 for new page content
         y = height - 70
 
-    fig_terreno = data_visualization_limpeza_predial_reports(request, userid)
+    fig_terreno = data_visualization_limpeza_predial_reports(request, userid).define_figs_concluidos()
 
     start_y = height - 100  # Posição inicial para o conteúdo após o cabeçalho
 
     p.setFont('Helvetica-Bold', 12)
-    p.drawString(50, start_y, f"Volume de servicos próximos")
+    p.drawString(50, start_y, f"Volume de servicos concluidos")
     start_y -= 20
 
     start_y, end_page = add_figures_to_pdf(

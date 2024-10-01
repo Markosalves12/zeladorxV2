@@ -64,6 +64,12 @@ def gerentes_limpeza_predial(request, userid):
         edition_rout='editar_gerente_limpeza_predial',
         history_rout='historico_de_servicos_gerente_limpeza_predial',
         app_name='gerentes limpeza predial',
+        form_search=GerenteLimpezaPredialForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'email': 'email',
+            'username': 'username',
+        },
         text_button_open_modal='Adicionar novo gerente',
         text_button_save='Salvar gerente',
         header_model='Novo gerente',

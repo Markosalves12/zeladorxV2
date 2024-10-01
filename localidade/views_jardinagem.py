@@ -61,6 +61,12 @@ def localidades_jardinagem(request, userid):
         edition_rout='editar_localidade_jardinagem',
         history_rout='areas_associadas_localidades_jardinagem',
         app_name='localidades jardinagem',
+        form_search=LocalidadeJardinagemForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'unidade': 'unidade__id',
+            'nome': 'nome',
+        },
         text_button_open_modal='Adicionar nova localidade',
         text_button_save='Salvar localidade',
         header_model='Nova localidade',

@@ -5,7 +5,7 @@ from utils.views import generic_view, edit_generic_view, gerneric_alter_status
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
-from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado
+from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
 from utils.utils import paginate
 
 def configurar_servico_limpeza_predial(request, userid):
@@ -111,6 +111,11 @@ def servicos_configurados_limpeza_predial(request, userid):
         edition_rout='editar_servico_limpezapredial_configurado',
         history_rout='historico_de_servicos_configurados_limpeza_predial',
         app_name='serviços configurados limpeza predial',
+        form_search=ServicoLimpezaPredialConfiguradoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'Areas': 'Areas__id',
+        },
         text_button_open_modal='configurar novo serviço',
         text_button_save='configurar serviço',
         header_model='solicitar serviço',
@@ -186,9 +191,11 @@ def historico_de_servicos_configurados_limpeza_predial(request, userid, id_rando
         id_random=id_random
     )
 
-    objetos = ServicoLimpezaPredialAgendado.objects.filter(
-        id_configuracao=id_random,
-        status__in=['Concluido']
+    objetos = colect_dados_fato_servico_limpeza_predial(
+        request=request,
+        status=['Concluido']
+    ).filter(
+        id_random_configuracao=id_random
     )
 
     dados_paginados = paginate(
@@ -204,6 +211,8 @@ def historico_de_servicos_configurados_limpeza_predial(request, userid, id_rando
             'app_name': f'Histórico de serviços {objeto}',
             'objeto': objeto,
             'foto_objeto': None,
+            'Foto': False,
+            'type': 'fato_limpeza_predial',
             'dados_paginados': dados_paginados,
             'export_pdf': reverse(
                 'exportar_relatorio_de_serivos_na_area_jardinagem_pdf',

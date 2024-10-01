@@ -111,6 +111,11 @@ def servicos_configurados_jardinagem(request, userid):
         edition_rout='editar_servico_jardinagem_configurado',
         history_rout='historico_de_servicos_configurados_jardinagem',
         app_name='serviços configurados jardinagem',
+        form_search=ServicoJardinagemConfiguradoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'Areas': 'Areas__id',
+        },
         text_button_open_modal='configurar novo serviço',
         text_button_save='configurar serviço',
         header_model='solicitar serviço',
@@ -204,6 +209,8 @@ def historico_de_servicos_configurados_jardinagem(request, userid, id_random):
             'app_name': f'Histórico de serviços {objeto}',
             'objeto': objeto,
             'foto_objeto': None,
+            'Foto': False,
+            'type': 'jardinagem_agendado',
             'dados_paginados': dados_paginados,
             'export_pdf': reverse(
                 'exportar_relatorio_de_serivos_na_area_jardinagem_pdf',

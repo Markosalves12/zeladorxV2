@@ -58,6 +58,10 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
             F('Servico__Areas__nome'),
             output_field=CharField()
         ),
+        area_atendid_id=ExpressionWrapper(
+            F('Servico__Areas__id'),
+            output_field=CharField()
+        ),
         periodicidade_de_retorno=ExpressionWrapper(
             F('Servico__Areas__periodicidade'),
             output_field=CharField()
@@ -116,6 +120,10 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
         ),
         id_random_configuracao=ExpressionWrapper(
             F('Servico__id_configuracao'),
+            output_field=CharField()
+        ),
+        tipo_de_servico=ExpressionWrapper(
+            F('Servico__TipoServico'),
             output_field=CharField()
         ),
     ).filter(

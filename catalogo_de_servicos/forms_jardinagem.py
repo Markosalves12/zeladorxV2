@@ -3,7 +3,7 @@ from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from empresasecundario.utils import define_empresas
 
 class CatalogoServicoJardinagemForms(forms.ModelForm):
-    def __init__(self, *args, request, userid, **kwargs):
+    def __init__(self, *args, request, userid, type = 'creat/edit', **kwargs):
         super(CatalogoServicoJardinagemForms, self).__init__(*args, **kwargs)
         if userid:
             empresas = define_empresas(request=request, userid=userid)
@@ -15,6 +15,10 @@ class CatalogoServicoJardinagemForms(forms.ModelForm):
                 id_random__in=empresas_secundarias_ids,
                 status__in=['Mobilizado']
             )
+
+        if type == 'search':
+            for field_name, field in self.fields.items():
+                field.required = False
 
     class Meta:
         model = CatalogodeServicoJardinagem

@@ -53,6 +53,11 @@ def permissoes_jardinagem(request, userid):
         columns=colunas,
         edition_rout='editar_permissoes_jardinagem',
         app_name='Permissões jardinagem',
+        form_search=PermissionsAccessJardinagemForms(request=request, userid=userid),
+        sform_search=True,
+        filtro_mapeamento={
+            'Gerente': 'Gerente__id',
+        },
         text_button_open_modal='Adicionar novo gestor',
         text_button_save='Salvar permissões',
         header_model='Novo gestor',

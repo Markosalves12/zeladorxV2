@@ -3,6 +3,10 @@ from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from utils.views import generic_view
 from django.urls import reverse
 from permissionscontrol.utils import validate_permissions
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Case, When, Value, CharField
+
 
 def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
     permission_view = validate_permissions(
@@ -15,6 +19,7 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
+        {'nome': 'Areas', 'label': 'Área atendida'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
@@ -49,6 +54,12 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
         columns=colunas,
         edition_rout='editar_servico_jardinagem_agendado',
         app_name='relatório de serviços jardinagem pdf - Concluidos',
+        form_search=ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'Areas': 'Areas__id',
+            'TipoServico': 'TipoServico',
+        },
         text_button_open_modal='Adicionar nova manutenção',
         text_button_save='Salvar manutenção',
         header_model='Nova manutenção',
@@ -79,10 +90,11 @@ def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
+        {'nome': 'Areas', 'label': 'Área atendida'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
-        {'nome': 'status', 'label': 'Status'},
+        {'nome': 'novo_status', 'label': 'Status'},
     ]
 
     tipos = [
@@ -103,16 +115,34 @@ def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
         }
     ]
 
+    one_day = timezone.now().date() + timedelta(days=1)
+    seven_days = timezone.now().date() + timedelta(days=7)
+
     return generic_view(
         request=request,
         model=ServicoJardinagemAgendado.objects.filter(
             status__in=['Agendado', 'Em andamento']
+        ).annotate(
+            novo_status=Case(
+                When(status='Em andamento', then=Value('Em andamento')),
+                When(DataDeInicio__gte=one_day, DataDeInicio__lt=seven_days, then=Value('Próximo')),
+                When(status='Agendado', DataDeInicio__gte=seven_days, then=Value('Agendado')),
+                When(DataDeInicio__lt=timezone.now(), then=Value('Atrasado')),
+                default=Value('Desconhecido'),
+                output_field=CharField()
+            )
         ),
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_servico_jardinagem_agendado',
         app_name='relatório de serviços jardibagem pdf - Planejados',
+        form_search=ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'Areas': 'Areas__id',
+            'TipoServico': 'TipoServico',
+        },
         text_button_open_modal='Adicionar nova manutenção',
         text_button_save='Salvar manutenção',
         header_model='Nova manutenção',

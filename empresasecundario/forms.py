@@ -6,7 +6,7 @@ from empresaprimaria.models import EmpresaPrimaria
 from permissionscontrol.utils import validate_permissions
 
 class EmpresaSecundariaForms(forms.ModelForm):
-    def __init__(self, *args, request, userid=str, **kwargs):
+    def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
         super(EmpresaSecundariaForms, self).__init__(*args, **kwargs)
         # Excluir serviços com status 'Desmobilizado' do queryset
         if userid:
@@ -24,6 +24,10 @@ class EmpresaSecundariaForms(forms.ModelForm):
             self.fields['setor'].queryset = self.fields['setor'].queryset.filter(
                 id__in=setores
             )
+
+        if type == 'search':
+            for field_name, field in self.fields.items():
+                field.required = False
 
     setor = forms.ModelMultipleChoiceField(
         queryset=TypeZeladoria.objects.all(),

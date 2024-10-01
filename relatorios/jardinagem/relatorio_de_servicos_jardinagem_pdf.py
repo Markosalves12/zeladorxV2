@@ -135,15 +135,24 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status):
         p.setFont("Helvetica", 10)  # Reset font size to 12 for new page content
         y = height - 70
 
-    fig_terreno = data_visualization_jardinagem_reports(request, userid)
-
     start_y = height - 100  # Posição inicial para o conteúdo após o cabeçalho
-
     p.setFont('Helvetica-Bold', 12)
-    p.drawString(50, start_y, f"Volume de servicos próximos")
-    start_y -= 20
 
-    start_y, end_page = add_figures_to_pdf(p, fig_terreno, start_y, start_y + 1, header_image_path=header_image_path, width=width, height=height)
+    if 'Concluido' in status.split(','):
+        figs_concluidos = data_visualization_jardinagem_reports(request, userid).define_figs_concluidos()
+        p.drawString(50, start_y, f"Volume de servicos prestados")
+        start_y -= 20
+        start_y, end_page = add_figures_to_pdf(p, figs_concluidos, start_y, start_y + 1,
+                                               header_image_path=header_image_path, width=width, height=height)
+
+    else:
+        figs_agendados = data_visualization_jardinagem_reports(request, userid).define_figs_agendados()
+        figs_em_andamento = data_visualization_jardinagem_reports(request, userid).define_figs_agendados()
+        figs_em_proximo = data_visualization_jardinagem_reports(request, userid).define_figs_proximos()
+        p.drawString(50, start_y, f"Volume de servicos prestados")
+        start_y -= 20
+        start_y, end_page = add_figures_to_pdf(p, {**figs_agendados, **figs_em_proximo, **figs_em_andamento}, start_y, start_y + 1,
+                                               header_image_path=header_image_path, width=width, height=height)
 
     draw_footer(
         p,

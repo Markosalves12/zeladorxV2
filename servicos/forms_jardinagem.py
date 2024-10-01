@@ -5,7 +5,7 @@ from django import forms
 from empresasecundario.utils import define_empresas
 
 class ServicoJaridinagemAgendadoForms(forms.ModelForm):
-    def __init__(self, *args, request, userid=str, **kwargs):
+    def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
         super(ServicoJaridinagemAgendadoForms, self).__init__(*args, **kwargs)
         if userid:
             empresas = define_empresas(request=request, userid=userid)
@@ -15,23 +15,43 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
             self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
                 EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+                EmpresaSecundaria__status__in=['Mobilizado'],
+                status__in=['Mobilizado']
             )
 
             self.fields['ColaboradoresEscalados'].queryset = self.fields['ColaboradoresEscalados'].queryset.filter(
                 empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 empresasecundaria__id_random__in=empresas_secundarias_ids,
+                empresasecundaria__status__in=['Mobilizado'],
+                status__in=['Mobilizado']
             )
 
             self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
                 localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+                localidade__unidade__empresasecundaria__status__in=['Mobilizado'],
                 status__in=['Mobilizado'],
                 localidade__status__in=['Mobilizado'],
                 localidade__unidade__status__in=['Mobilizado']
             )
 
-        choices_filtrados = [option for option in self.fields['TipoServico'].choices if option[0] != 'Automático']
+        if type == 'search':
+            for field_name, field in self.fields.items():
+                field.required = False
 
+            self.fields['ServicosEscalados'].widget = forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            )
+
+            self.fields['ColaboradoresEscalados'].widget = forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            )
+
+        choices_filtrados = [option for option in self.fields['TipoServico'].choices if option[0] != 'Automático']
         # Definindo as novas opções filtradas
         self.fields['TipoServico'].choices = choices_filtrados
 
