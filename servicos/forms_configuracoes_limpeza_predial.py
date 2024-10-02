@@ -35,13 +35,15 @@ class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
 
             self.fields['diasaseremrealizado'] = forms.ModelMultipleChoiceField(
                 queryset=DiasDaSemana.objects.all(),
-                widget=forms.Select(
+                widget=forms.SelectMultiple(
                     attrs={
-                        'class': 'form-control'  # Modifique a classe se necessário
+                        'class': 'form-control',  # Modifique a classe se necessário
+                        'style': 'max-height: 40px; overflow-y: auto;'
                     }
                 ),
-                label='Colaboradores escalados',
-                required=False
+                label='Dias a serem realizados',
+                required=False,
+                initial=None
             )
 
     ServicosEscalados = forms.ModelMultipleChoiceField(

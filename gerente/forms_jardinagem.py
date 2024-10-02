@@ -21,6 +21,19 @@ class GerenteJardinagemForms(forms.ModelForm):
             for field_name, field in self.fields.items():
                 field.required = False
 
+            self.fields['empresasecundaria'] = forms.ModelMultipleChoiceField(
+                queryset=EmpresaSecundaria.objects.all(),
+                widget=forms.SelectMultiple(
+                    attrs={
+                        'class': 'form-control',  # Modifique a classe se necessário
+                        'style': 'max-height: 40px; overflow-y: auto;'
+                    }
+                ),
+                label='Empresas que atende',
+                required=False,
+                initial=None
+            )
+
     empresasecundaria = forms.ModelMultipleChoiceField(
         queryset=EmpresaSecundaria.objects.all(),
         widget=forms.CheckboxSelectMultiple(

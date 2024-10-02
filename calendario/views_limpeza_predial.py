@@ -60,6 +60,8 @@ def calendario_limpeza_predial(request, userid):
     filtro_mapeamento = {
         'Areas': 'Areas__id',
         'TipoServico': 'TipoServico',
+        'ServicosEscalados': 'ServicosEscalados__id',
+        'ColaboradoresEscalados': 'ColaboradoresEscalados__id',
         'DataDeInicio': 'DataDeInicio',
         'DataDeConclusao': 'DataDeConclusao'
     }

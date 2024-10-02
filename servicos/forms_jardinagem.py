@@ -43,24 +43,28 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
             # Alterando o widget dos campos de seleção múltipla para SelectMultiple
             self.fields['ServicosEscalados'] = forms.ModelMultipleChoiceField(
                 queryset=CatalogodeServicoJardinagem.objects.all(),
-                widget=forms.Select(
+                widget=forms.SelectMultiple(
                     attrs={
-                        'class': 'form-control'  # Modifique a classe se necessário
+                        'class': 'form-control',  # Modifique a classe se necessário
+                        'style': 'max-height: 40px; overflow-y: auto;'
                     }
                 ),
                 label='Serviços escalados',
                 required=False,
+                initial=None
             )
 
             self.fields['ColaboradoresEscalados'] = forms.ModelMultipleChoiceField(
                 queryset=Gerente.objects.all(),
-                widget=forms.Select(
+                widget=forms.SelectMultiple(
                     attrs={
-                        'class': 'form-control'  # Modifique a classe se necessário
+                        'class': 'form-control',  # Modifique a classe se necessário
+                        'style': 'max-height: 40px; overflow-y: auto;'
                     }
                 ),
                 label='Colaboradores escalados',
-                required=False
+                required=False,
+                initial=None
             )
 
             all_choices = self.fields['TipoServico'].choices

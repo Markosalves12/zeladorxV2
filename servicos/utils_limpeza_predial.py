@@ -29,6 +29,10 @@ def colect_dados_fato_servico_limpeza_predial(request, status=list):
             F('Servico__ServicosEscalados__nome'),
             output_field=CharField()
         ),
+        servicos_solicitados_id=ExpressionWrapper(
+            F('Servico__ServicosEscalados__id'),
+            output_field=CharField()
+        ),
         data_de_inicio=ExpressionWrapper(
             F('Servico__DataDeInicio'),
             output_field=DateTimeField()

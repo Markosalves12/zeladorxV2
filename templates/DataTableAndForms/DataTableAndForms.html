@@ -295,6 +295,17 @@
 <!-- ./wrapper -->
 
 <script>
+    document.getElementById('toggle-button').onclick = function() {
+        var container = document.getElementById('checkbox-container');
+        if (container.style.display === 'none') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    };
+</script>
+
+<script>
   const itemsPerPage = 5;
   let currentPage = 1;
 

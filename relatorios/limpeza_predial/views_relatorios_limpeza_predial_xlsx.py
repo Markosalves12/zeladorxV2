@@ -70,7 +70,7 @@ def relatorios_de_servicos_limpeza_predial_xlsx_concluidos(request, userid):
         filtro_mapeamento={
             'Areas': 'area_atendid_id',
             'TipoServico': 'tipo_de_servico',
-            'ServicosEscalados': 'ServicosEscalados',
+            'ServicosEscalados': 'servicos_solicitados_id',
             'DataDeInicio': 'data_de_inicio',
             'DataDeConclusao': 'data_de_conclusao'
         },
@@ -163,7 +163,7 @@ def relatorios_de_servicos_limpeza_predial_xlsx_agendados(request, userid):
         filtro_mapeamento={
             'Areas': 'Areas__id',
             'TipoServico': 'TipoServico',
-            'ServicosEscalados': 'ServicosEscalados',
+            'ServicosEscalados': 'ServicosEscalados_id',
             'DataDeInicio': 'DataDeInicio',
             'DataDeConclusao': 'DataDeConclusao'
         },

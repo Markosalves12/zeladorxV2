@@ -15,8 +15,8 @@ def dashboard_produtividade_jardinagem(request, userid):
     filtro_mapeamento = {
         'Areas': 'Areas__id',
         'TipoServico': 'TipoServico',
-        'ServicosEscalados': 'ServicosEscalados',
-        'ColaboradoresEscalados': 'ColaboradoresEscalados',
+        'ServicosEscalados': 'ServicosEscalados__id',
+        'ColaboradoresEscalados': 'ColaboradoresEscalados__id',
         'DataDeInicio': 'DataDeInicio',
         'DataDeConclusao': 'DataDeConclusao'
     }

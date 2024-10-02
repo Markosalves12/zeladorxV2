@@ -70,6 +70,7 @@ def gerentes_limpeza_predial(request, userid):
         filtro_mapeamento={
             'email': 'email',
             'username': 'username',
+            'empresasecundaria': 'empresasecundaria__id'
         },
         text_button_open_modal='Adicionar novo gerente',
         text_button_save='Salvar gerente',

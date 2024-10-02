@@ -120,7 +120,7 @@ def servicos_agendados_limpeza_predial(request, userid):
         filtro_mapeamento={
             'Areas': 'Areas__id',
             'TipoServico': 'TipoServico',
-            'ColaboradoresEscalados': 'ColaboradoresEscalados',
+            'ServicosEscalados': 'ServicosEscalados__id',
             'DataDeInicio': 'DataDeInicio',
             'DataDeConclusao': 'DataDeConclusao'
         },

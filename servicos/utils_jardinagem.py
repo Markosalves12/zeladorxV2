@@ -30,8 +30,16 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
             F('Servico__ColaboradoresEscalados__username'),
             output_field=CharField()
         ),
+        colaboradores_chamados_id=ExpressionWrapper(
+            F('Servico__ColaboradoresEscalados__id'),
+            output_field=CharField()
+        ),
         servicos_solicitados=ExpressionWrapper(
             F('Servico__ServicosEscalados__nome'),
+            output_field=CharField()
+        ),
+        servicos_solicitados_id=ExpressionWrapper(
+            F('Servico__ServicosEscalados__id'),
             output_field=CharField()
         ),
         data_de_inicio=ExpressionWrapper(
