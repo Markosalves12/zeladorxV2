@@ -15,7 +15,8 @@ from dashboards.data_visualization_jardinagem import data_visualization_jardinag
 from utils.utils import generate_id_random
 
 
-def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_random, type):
+def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, status, DataDeInicio, DataDeConclusao, Areas,
+                                                   TipoServico, ServicosEscalados, ColaboradoresEscalados, type):
     if type == 'catalogo_de_servicos':
         dados = ServicoJardinagemAgendado.objects.filter(
             ServicosEscalados__id_random=id_random,

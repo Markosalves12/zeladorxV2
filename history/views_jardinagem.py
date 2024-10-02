@@ -25,9 +25,40 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
         'DataDeConclusao': 'DataDeConclusao'
     }
 
+    get_data = {
+        'DataDeInicio': 'None',
+        'DataDeConclusao': 'None',
+        'ServicosEscalados': 'None',
+        'ColaboradoresEscalados': 'None',
+        'Areas': 'None',
+        'TipoServico': 'None',
+    }
+
     if request.method == 'GET':
         get_data = request.GET.dict()
         objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
+        get_multiple_data = request.GET
+
+        get_data = {
+            'DataDeInicio': ', '.join(get_multiple_data.getlist(
+                'DataDeInicio')) if 'DataDeInicio' in get_multiple_data and get_multiple_data.getlist(
+                'DataDeInicio') and get_multiple_data.getlist('DataDeInicio')[0] != '' else 'None',
+            'DataDeConclusao': ', '.join(get_multiple_data.getlist(
+                'DataDeConclusao')) if 'DataDeConclusao' in get_multiple_data and get_multiple_data.getlist(
+                'DataDeConclusao') and get_multiple_data.getlist('DataDeConclusao')[0] != '' else 'None',
+            'ServicosEscalados': ', '.join(get_multiple_data.getlist(
+                'ServicosEscalados')) if 'ServicosEscalados' in get_multiple_data and get_multiple_data.getlist(
+                'ServicosEscalados') else 'None',
+            'ColaboradoresEscalados': ', '.join(get_multiple_data.getlist(
+                'ColaboradoresEscalados')) if 'ColaboradoresEscalados' in get_multiple_data and get_multiple_data.getlist(
+                'ColaboradoresEscalados') else 'None',
+            'Areas': ', '.join(
+                get_multiple_data.getlist('Areas')) if 'Areas' in get_multiple_data and get_multiple_data.getlist(
+                'Areas') and get_multiple_data.getlist('Areas')[0] != '' else 'None',
+            'TipoServico': ', '.join(get_multiple_data.getlist(
+                'TipoServico')) if 'TipoServico' in get_multiple_data and get_multiple_data.getlist(
+                'TipoServico') and get_multiple_data.getlist('TipoServico')[0] != '' else 'None',
+        }
 
     dados_paginados = paginate(
         request=request,
@@ -53,6 +84,7 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
+                    **get_data,
                     'type': 'areas'
                 }
             ),
@@ -61,6 +93,7 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
+                    **get_data,
                     'type': 'areas',
                 }
             ),

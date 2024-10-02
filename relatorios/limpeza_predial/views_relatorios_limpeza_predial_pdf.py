@@ -67,13 +67,7 @@ def relatorios_de_servicos_limpeza_predial_pdf_concluidos(request, userid):
         header_model='Nova manutenção',
         redirect_url='unidades',
         button_export_tittle='Exportar PDF',
-        button_export_link=reverse(
-            'exportar_relatorio_de_serivos_limpeza_predial_pdf',
-            kwargs={
-                'userid': userid,
-                'status': ','.join(['Concluido'])
-            }
-        ),
+        button_export_link='exportar_relatorio_de_serivos_limpeza_predial_pdf',
         link_tipos=tipos,
         modal_button=False,
         userid=userid,

@@ -20,6 +20,10 @@ def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
 
     dados = colect_dados_fato_servico_jardinagem(
         request=request,
+        DataDeInicio='None',
+        DataDeConclusao='None',
+        ServicosEscalados=['None'],
+        ColaboradoresEscalados=['None'],
         status=['Concluido']
     )
 
@@ -78,13 +82,8 @@ def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
         header_model='Nova manutenção',
         redirect_url='unidades',
         button_export_tittle='Exportar Excel',
-        button_export_link=reverse(
-            'exportar_relatorio_de_serivos_Jardinagem_excel',
-            kwargs={
-                'userid': userid,
-                'status': ','.join(['Concluido'])
-            }
-        ),
+        status=['Concluido'],
+        button_export_link='exportar_relatorio_de_serivos_Jardinagem_excel',
         link_tipos=tipos,
         modal_button=False,
         userid=userid,
@@ -104,11 +103,9 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
-        {'nome': 'area_atendida', 'label': 'Área atendida'},
+        {'nome': 'Areas', 'label': 'Área atendida'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
-        {'nome': 'ColaboradoresConfirmados', 'label': 'Colaboradores confirmados'},
-        {'nome': 'ColaboradoresNegados', 'label': 'Colaboradores negados'},
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'novo_status', 'label': 'Status'},
         {'nome': 'acoes', 'label': 'Ações'},
@@ -159,7 +156,7 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_servico_jardinagem_agendado',
-        app_name='relatório de serviços jardinagem pdf - Planejados',
+        app_name='relatório de serviços jardinagem xlsx - Planejados',
         form_search=ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
         sform_search=True,
         filtro_mapeamento={
@@ -168,20 +165,15 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
             'ServicosEscalados': 'ServicosEscalados__id',
             'ColaboradoresEscalados': 'ColaboradoresEscalados__id',
             'DataDeInicio': 'DataDeInicio',
-            'DataDeConclusao': 'DataDeInicio'
+            'DataDeConclusao': 'DataDeConclusao'
         },
         text_button_open_modal='Adicionar nova manutenção',
         text_button_save='Salvar manutenção',
         header_model='Nova manutenção',
         redirect_url='unidades',
         button_export_tittle='Exportar Excel',
-        button_export_link=reverse(
-            'exportar_relatorio_de_serivos_Jardinagem_excel',
-            kwargs={
-                'userid': userid,
-                'status': ','.join(['Agendado', 'Em andamento'])
-            }
-        ),
+        status=['Agendado', 'Em andamento'],
+        button_export_link='exportar_relatorio_de_serivos_Jardinagem_excel',
         modal_button=False,
         link_tipos=tipos,
         userid=userid,

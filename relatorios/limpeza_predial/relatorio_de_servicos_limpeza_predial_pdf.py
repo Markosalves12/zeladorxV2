@@ -1,4 +1,3 @@
-from servicos.models_jardinagem import ServicoJardinagemAgendado
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -11,18 +10,38 @@ from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_t
 from dashboards.data_visualization_limpeza_predial import data_visualization_limpeza_predial_reports
 from servicos.utils_limpeza_predial import (colect_dados_fato_servico_limpeza_predial,
                                             colect_dados_agendamentos_limpeza_predial)
+from datetime import datetime
 
-def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid, status):
-    if 'Concluido' in status.split(','):
-        dados = colect_dados_fato_servico_limpeza_predial(
-            request=request,
-            status=status.split(',')
-        )
-    else:
-        dados = colect_dados_agendamentos_limpeza_predial(
-            request=request,
-            status=status.split(',')
-        )
+def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid, status, DataDeInicio, DataDeConclusao, Areas,
+                                                   TipoServico, ServicosEscalados, ColaboradoresEscalados):
+
+    DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M') if DataDeInicio and DataDeInicio != "None" else 'None'
+    DataDeConclusao = datetime.strptime(DataDeConclusao, '%Y-%m-%dT%H:%M') if DataDeConclusao and DataDeConclusao != "None" else 'None'
+    ServicosEscalados = ServicosEscalados.split(',')
+    ColaboradoresEscalados = ColaboradoresEscalados.split(',')
+
+    filters = dict()
+
+    if DataDeInicio and DataDeInicio != "None":
+        filters['DataDeInicio__gte'] = DataDeInicio
+
+    if DataDeConclusao and DataDeConclusao != "None":
+        filters['DataDeConclusao__lte'] = DataDeConclusao
+
+    if ServicosEscalados and ServicosEscalados != ["None"]:
+        filters['ServicosEscalados__id__in'] = ServicosEscalados
+
+    if ColaboradoresEscalados and ColaboradoresEscalados != ["None"]:
+        filters['ColaboradoresEscalados__id__in'] = ColaboradoresEscalados
+
+    dados = colect_dados_fato_servico_limpeza_predial(
+        request=request,
+        DataDeInicio=DataDeInicio,
+        DataDeConclusao=DataDeConclusao,
+        ServicosEscalados=ServicosEscalados,
+        ColaboradoresEscalados=ColaboradoresEscalados,
+        status=status.split(',')
+    )
 
     # cria um buffer para inserir os dados no pdf
     buffer = BytesIO()

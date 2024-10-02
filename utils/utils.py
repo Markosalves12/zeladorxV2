@@ -109,6 +109,13 @@ class DataTableAndForms:
         self.history_rout = history_rout
         self.userid = userid
 
+    def extrair_valores(valor):
+        if isinstance(valor, list) and len(valor) == 1:  # Se tiver um único elemento na lista
+            return valor[0]  # Retorna o elemento diretamente
+        elif isinstance(valor, list) and len(valor) > 1:  # Se tiver mais de um elemento
+            return ', '.join(valor)  # Junta os elementos com ', '
+        return ''  # Se a lista for vazia ou não for uma lista, retorna string vazi
+
     def get_data_and_forms(self):
         # Verifica o tipo de modelo
         if isinstance(self.model, ModelBase):
@@ -118,15 +125,43 @@ class DataTableAndForms:
         else:
             raise ValueError("model deve ser uma instância de ModelBase ou QuerySet")
 
+        get_data = {
+            'DataDeInicio': 'None',
+            'DataDeConclusao': 'None',
+            'ServicosEscalados': 'None',
+            'ColaboradoresEscalados': 'None',
+            'Areas': 'None',
+            'TipoServico': 'None',
+        }
+
         # Aplica os filtros, se houver dados na requisição
         if self.request.method == 'GET':
             get_data = self.request.GET.dict()
             get_multiple_data = self.request.GET
-            print(get_multiple_data)
-            print(get_multiple_data.getlist('ServicosEscalados'))
-            print(get_multiple_data.getlist('ColaboradoresEscalados'))
             queryset = aplicar_filtros_dinamicos(queryset, get_data, self.filtro_mapeamento)
 
+            get_data = {
+                'DataDeInicio': ', '.join(get_multiple_data.getlist(
+                    'DataDeInicio')) if 'DataDeInicio' in get_multiple_data and get_multiple_data.getlist(
+                    'DataDeInicio') and get_multiple_data.getlist('DataDeInicio')[0] != '' else 'None',
+                'DataDeConclusao': ', '.join(get_multiple_data.getlist(
+                    'DataDeConclusao')) if 'DataDeConclusao' in get_multiple_data and get_multiple_data.getlist(
+                    'DataDeConclusao') and get_multiple_data.getlist('DataDeConclusao')[0] != '' else 'None',
+                'ServicosEscalados': ', '.join(get_multiple_data.getlist(
+                    'ServicosEscalados')) if 'ServicosEscalados' in get_multiple_data and get_multiple_data.getlist(
+                    'ServicosEscalados') else 'None',
+                'ColaboradoresEscalados': ', '.join(get_multiple_data.getlist(
+                    'ColaboradoresEscalados')) if 'ColaboradoresEscalados' in get_multiple_data and get_multiple_data.getlist(
+                    'ColaboradoresEscalados') else 'None',
+                'Areas': ', '.join(
+                    get_multiple_data.getlist('Areas')) if 'Areas' in get_multiple_data and get_multiple_data.getlist(
+                    'Areas') and get_multiple_data.getlist('Areas')[0] != '' else 'None',
+                'TipoServico': ', '.join(get_multiple_data.getlist(
+                    'TipoServico')) if 'TipoServico' in get_multiple_data and get_multiple_data.getlist(
+                    'TipoServico') and get_multiple_data.getlist('TipoServico')[0] != '' else 'None',
+            }
+
+        print(get_data)
 
         # Cria os formulários
         if self.userid:
@@ -142,7 +177,8 @@ class DataTableAndForms:
             data_objects=formatted_events,
             per_page=self.per_page
         )
-        return forms, dados_paginados
+
+        return forms, dados_paginados, get_data
 
     def format_event(self, dado):
         formatted_event = {coluna['nome']: getattr(dado, coluna['nome'], None) for coluna in self.columns}

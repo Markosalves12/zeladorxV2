@@ -10,11 +10,34 @@ from utils.utils import formatar_atributos
 from relatorios.utils import draw_image, draw_footer, save_plotly_fig_as_image, draw_header, add_figures_to_pdf
 from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_reports
 from utils.utils import generate_id_random
+from datetime import datetime
 
 
-def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status):
+def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDeInicio, DataDeConclusao, Areas,
+                                                   TipoServico, ServicosEscalados, ColaboradoresEscalados):
+
+    DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M') if DataDeInicio and DataDeInicio != "None" else 'None'
+    DataDeConclusao = datetime.strptime(DataDeConclusao, '%Y-%m-%dT%H:%M') if DataDeConclusao and DataDeConclusao != "None" else 'None'
+    ServicosEscalados = ServicosEscalados.split(',')
+    ColaboradoresEscalados = ColaboradoresEscalados.split(',')
+
+    filters = dict()
+
+    if DataDeInicio and DataDeInicio != "None":
+        filters['DataDeInicio__gte'] = DataDeInicio
+
+    if DataDeConclusao and DataDeConclusao != "None":
+        filters['DataDeConclusao__lte'] = DataDeConclusao
+
+    if ServicosEscalados and ServicosEscalados != ["None"]:
+        filters['ServicosEscalados__id__in'] = ServicosEscalados
+
+    if ColaboradoresEscalados and ColaboradoresEscalados != ["None"]:
+        filters['ColaboradoresEscalados__id__in'] = ColaboradoresEscalados
+
     dados = ServicoJardinagemAgendado.objects.filter(
-        status__in=status.split(',')
+        status__in=status.split(','),
+        **filters
     )
 
     # cria um buffer para inserir os dados no pdf

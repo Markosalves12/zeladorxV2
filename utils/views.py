@@ -7,7 +7,9 @@ from django.contrib import messages
 
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
                  text_button_open_modal, text_button_save,  header_model,
-                 redirect_url, form_search, filtro_mapeamento, sform_search=False, userid=False, button_export_tittle=False, button_export_link=False,
+                 redirect_url, form_search, filtro_mapeamento, sform_search=False, userid=False,
+                 button_export_tittle=False, button_export_link='exportar_relatorio_de_serivos_Jardinagem_excel',
+                 status=['Mobilizado'],
                  link_tipos=None, modal_button=True, configurate_gerente=False, history_rout=False,
                  permission_view=True, permission_edit=False, permission_crate=False,
                  permission_accompany=False):
@@ -42,7 +44,6 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                     email=email
                 )
 
-
                 configurate_permissions(
                     request=request,
                     model_class=model,
@@ -71,7 +72,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
             message=f'Algo de errado'
         )
 
-    forms, dados_paginados = dt_and_forms.get_data_and_forms()
+    forms, dados_paginados, get_data = dt_and_forms.get_data_and_forms()
 
     url_action = reverse(redirect_url, kwargs={'userid': request.session.get('userid', '')})
 
@@ -91,7 +92,14 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
             'sform_search': sform_search,
             'allowed_fields': list(filtro_mapeamento.keys()),
             'button_export_tittle': button_export_tittle,
-            'button_export_link': button_export_link,
+            'button_export_link': reverse(
+                f'{button_export_link}',
+                kwargs={
+                    'userid': userid,
+                    'status': ','.join(status),
+                    **get_data
+                }
+            ),
             'link_tipos': link_tipos,
             'modal_button': modal_button,
             'permission_view': permission_view,
@@ -100,7 +108,6 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
             'permission_accompany': permission_accompany,
         }
     )
-
 
 def edit_generic_view(request, model_class, form_class, template_name, id_random, app_name, redirect_url_name,
                       url_desmobilize, url_rehabilitate,
@@ -117,8 +124,6 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
 
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES, instance=objeto, request=request, userid=request.session.get('userid', '') )
-        print(form.errors)
-
         if form.is_valid():
             form.save()
             messages.info(

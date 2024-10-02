@@ -3,11 +3,18 @@ from servicos.headers_report_jardinagem import headers_report_services, headers_
 from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem, colect_dados_agendamentos_jardinagem
 from django.http import HttpResponse
 from utils.utils import generate_id_random
+from datetime import datetime
 
 
-def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid, status):
+def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid, status, DataDeInicio, DataDeConclusao, Areas,
+                                                   TipoServico, ServicosEscalados, ColaboradoresEscalados):
     wb = openpyxl.Workbook()
     ws = wb.active
+
+    DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M') if DataDeInicio and DataDeInicio != "None" else 'None'
+    DataDeConclusao = datetime.strptime(DataDeConclusao, '%Y-%m-%dT%H:%M') if DataDeConclusao and DataDeConclusao != "None" else 'None'
+    ServicosEscalados = ServicosEscalados.split(',')
+    ColaboradoresEscalados = ColaboradoresEscalados.split(',')
 
     if 'Concluido' in status.split(','):
         # cabeçalhos da tabela exportada
@@ -19,6 +26,10 @@ def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid, status):
 
         dados = colect_dados_fato_servico_jardinagem(
             request=request,
+            DataDeInicio=DataDeInicio,
+            DataDeConclusao=DataDeConclusao,
+            ServicosEscalados=ServicosEscalados,
+            ColaboradoresEscalados=ColaboradoresEscalados,
             status=status.split(',')
         )
 
@@ -60,6 +71,10 @@ def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid, status):
 
         dados = colect_dados_agendamentos_jardinagem(
             request=request,
+            DataDeInicio=DataDeInicio,
+            DataDeConclusao=DataDeConclusao,
+            ServicosEscalados=ServicosEscalados,
+            ColaboradoresEscalados=ColaboradoresEscalados,
             status=status.split(',')
         )
 

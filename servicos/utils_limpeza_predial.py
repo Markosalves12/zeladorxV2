@@ -3,7 +3,26 @@ from django.db.models import (ExpressionWrapper, F, CharField,
                               IntegerField, DurationField, DateTimeField
                               )
 
-def colect_dados_fato_servico_limpeza_predial(request, status=list):
+def colect_dados_fato_servico_limpeza_predial(request, DataDeInicio, DataDeConclusao, ServicosEscalados,
+                                         ColaboradoresEscalados, status=list):
+
+    filters = {
+        'status_servico__in': status,
+        'tipodeempresa': 'Limpeza predial',
+    }
+
+    if DataDeInicio and DataDeInicio != "None":
+        filters['data_de_inicio__gte'] = DataDeInicio
+
+    if DataDeConclusao and DataDeConclusao != "None":
+        filters['data_de_conclusao__lte'] = DataDeConclusao
+
+    if ServicosEscalados and ServicosEscalados != ["None"]:
+        filters['servicos_solicitados_id__in'] = ServicosEscalados
+
+    if ColaboradoresEscalados and ColaboradoresEscalados != ["None"]:
+        filters['colaboradores_chamados_id__in'] = ColaboradoresEscalados
+
     dados = FatoServicoLimpezaPredial.objects.annotate(
         tipodeempresa=ExpressionWrapper(
             F('Servico__ServicosEscalados__EmpresaSecundaria__setor__setor'),
@@ -110,13 +129,30 @@ def colect_dados_fato_servico_limpeza_predial(request, status=list):
             output_field=CharField()
         ),
     ).filter(
-        Servico__status__in=status,
-        tipodeempresa='Limpeza predial'
+        **filters
     )
 
     return dados
 
-def colect_dados_agendamentos_limpeza_predial(request, status=list):
+def colect_dados_agendamentos_limpeza_predial(request, DataDeInicio, DataDeConclusao, ServicosEscalados,
+                                         ColaboradoresEscalados, status=list):
+    filters = {
+        'status_servico__in': status,
+        'tipodeempresa': 'Limpeza predial',
+    }
+
+    if DataDeInicio and DataDeInicio != "None":
+        filters['data_de_inicio__gte'] = DataDeInicio
+
+    if DataDeConclusao and DataDeConclusao != "None":
+        filters['data_de_conclusao__lte'] = DataDeConclusao
+
+    if ServicosEscalados and ServicosEscalados != ["None"]:
+        filters['servicos_solicitados_id__in'] = ServicosEscalados
+
+    if ColaboradoresEscalados and ColaboradoresEscalados != ["None"]:
+        filters['colaboradores_chamados_id__in'] = ColaboradoresEscalados
+
     dados = ServicoLimpezaPredialAgendado.objects.annotate(
         tipodeempresa=ExpressionWrapper(
             F('ServicosEscalados__EmpresaSecundaria__setor__setor'),
@@ -139,6 +175,10 @@ def colect_dados_agendamentos_limpeza_predial(request, status=list):
             output_field=CharField()
         ),
         servicos_solicitados=ExpressionWrapper(
+            F('ServicosEscalados__nome'),
+            output_field=CharField()
+        ),
+        servicos_solicitados_id=ExpressionWrapper(
             F('ServicosEscalados__nome'),
             output_field=CharField()
         ),
@@ -175,12 +215,11 @@ def colect_dados_agendamentos_limpeza_predial(request, status=list):
             output_field=CharField()
         ),
         id_random_servico=ExpressionWrapper(
-            F('Servico__ServicosEscalados__id_random'),
+            F('id_random'),
             output_field=CharField()
         ),
     ).filter(
-        status_servico__in=status,
-        tipodeempresa='Limpeza predial'
+        **filters
     )
 
     return dados

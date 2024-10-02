@@ -4,11 +4,18 @@ from servicos.utils_limpeza_predial import (colect_dados_fato_servico_limpeza_pr
                                             colect_dados_agendamentos_limpeza_predial)
 from django.http import HttpResponse
 from utils.utils import generate_id_random
+from datetime import datetime
 
 
-def exportar_relatorio_de_serivos_limpeza_predial_excel(request, userid, status):
+def exportar_relatorio_de_serivos_limpeza_predial_excel(request, userid, status, DataDeInicio, DataDeConclusao, Areas,
+                                                   TipoServico, ServicosEscalados, ColaboradoresEscalados):
     wb = openpyxl.Workbook()
     ws = wb.active
+
+    DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M') if DataDeInicio and DataDeInicio != "None" else 'None'
+    DataDeConclusao = datetime.strptime(DataDeConclusao, '%Y-%m-%dT%H:%M') if DataDeConclusao and DataDeConclusao != "None" else 'None'
+    ServicosEscalados = ServicosEscalados.split(',')
+    ColaboradoresEscalados = ColaboradoresEscalados.split(',')
 
     if 'Concluido' in status.split(','):
         # cabeçalhos da tabela exportada
@@ -21,6 +28,10 @@ def exportar_relatorio_de_serivos_limpeza_predial_excel(request, userid, status)
         # Adicione os dados do relatório ao arquivo Excel
         dados = colect_dados_fato_servico_limpeza_predial(
             request=request,
+            DataDeInicio=DataDeInicio,
+            DataDeConclusao=DataDeConclusao,
+            ServicosEscalados=ServicosEscalados,
+            ColaboradoresEscalados=ColaboradoresEscalados,
             status=status.split(',')
         )
 
@@ -64,6 +75,10 @@ def exportar_relatorio_de_serivos_limpeza_predial_excel(request, userid, status)
         # Adicione os dados do relatório ao arquivo Excel
         dados = colect_dados_agendamentos_limpeza_predial(
             request=request,
+            DataDeInicio=DataDeInicio,
+            DataDeConclusao=DataDeConclusao,
+            ServicosEscalados=ServicosEscalados,
+            ColaboradoresEscalados=ColaboradoresEscalados,
             status=status.split(',')
         )
 

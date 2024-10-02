@@ -5,7 +5,8 @@ from django.http import HttpResponse
 from utils.utils import generate_id_random
 
 
-def exportar_relatorio_de_serivos_na_area_Jardinagem_excel(request, userid, id_random, type):
+def exportar_relatorio_de_serivos_na_area_Jardinagem_excel(request, userid, status, DataDeInicio, DataDeConclusao, Areas,
+                                                   TipoServico, ServicosEscalados, ColaboradoresEscalados, type):
     wb = openpyxl.Workbook()
     ws = wb.active
 
