@@ -6,12 +6,12 @@ class AreasLimpezaPredialForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, type='creat/edit', **kwargs):
         super(AreasLimpezaPredialForms, self).__init__(*args, **kwargs)
         # Excluir serviços com status 'Desmobilizado' do queryset
-        if userid:
-            # Ajustar o queryset do campo 'empresaprimaria'
-            empresas = define_empresas(request=request, userid=userid)
-            empresas_primarias_ids = empresas['empresas_primarias_ids']
-            empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+        # Ajustar o queryset do campo 'empresaprimaria'
+        empresas = define_empresas(request=request, userid=userid)
+        empresas_primarias_ids = empresas['empresas_primarias_ids']
+        empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
+        if userid and type=='creat/edit':
             self.fields['localidade'].queryset = self.fields['localidade'].queryset.filter(
                 unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
@@ -30,6 +30,16 @@ class AreasLimpezaPredialForms(forms.ModelForm):
         if type == 'search':
             for field_name, field in self.fields.items():
                 field.required = False
+
+            self.fields['localidade'].queryset = self.fields['localidade'].queryset.filter(
+                unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+            )
+
+            self.fields['servico'].queryset = self.fields['servico'].queryset.filter(
+                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+            )
 
     class Meta:
         model = AreaLimpezaPredial

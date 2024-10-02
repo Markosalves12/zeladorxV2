@@ -5,11 +5,11 @@ from empresasecundario.utils import define_empresas
 class PermissionsAccessEspecialForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
         super(PermissionsAccessEspecialForms, self).__init__(*args, **kwargs)
-        if userid:
-            empresas = define_empresas(request=request, userid=userid)
-            empresas_primarias_ids = empresas['empresas_primarias_ids']
-            empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+        empresas = define_empresas(request=request, userid=userid)
+        empresas_primarias_ids = empresas['empresas_primarias_ids']
+        empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
+        if userid:
             self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
                 empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 empresasecundaria__id_random__in=empresas_secundarias_ids,
@@ -18,6 +18,11 @@ class PermissionsAccessEspecialForms(forms.ModelForm):
         if type == 'search':
             for field_name, field in self.fields.items():
                 field.required = False
+
+            self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
+                empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                empresasecundaria__id_random__in=empresas_secundarias_ids,
+            )
 
             # Alterando o widget dos campos de seleção múltipla para SelectMultiple
             self.fields['Permissions'] = forms.ModelMultipleChoiceField(

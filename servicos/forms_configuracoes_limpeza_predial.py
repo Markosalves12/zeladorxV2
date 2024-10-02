@@ -8,11 +8,11 @@ from empresasecundario.utils import define_empresas
 class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
         super(ServicoLimpezaPredialConfiguradoForms, self).__init__(*args, **kwargs)
-        if userid:
-            empresas = define_empresas(request=request, userid=userid)
-            empresas_primarias_ids = empresas['empresas_primarias_ids']
-            empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+        empresas = define_empresas(request=request, userid=userid)
+        empresas_primarias_ids = empresas['empresas_primarias_ids']
+        empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
+        if userid and type=='creat/edit':
             self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
                 EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
@@ -32,6 +32,16 @@ class ServicoLimpezaPredialConfiguradoForms(forms.ModelForm):
         if type == 'search':
             for field_name, field in self.fields.items():
                 field.required = False
+
+            self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
+                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+            )
+
+            self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
+                localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+            )
 
             self.fields['diasaseremrealizado'] = forms.ModelMultipleChoiceField(
                 queryset=DiasDaSemana.objects.all(),

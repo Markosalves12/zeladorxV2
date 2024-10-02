@@ -121,7 +121,12 @@ class DataTableAndForms:
         # Aplica os filtros, se houver dados na requisição
         if self.request.method == 'GET':
             get_data = self.request.GET.dict()
+            get_multiple_data = self.request.GET
+            print(get_multiple_data)
+            print(get_multiple_data.getlist('ServicosEscalados'))
+            print(get_multiple_data.getlist('ColaboradoresEscalados'))
             queryset = aplicar_filtros_dinamicos(queryset, get_data, self.filtro_mapeamento)
+
 
         # Cria os formulários
         if self.userid:

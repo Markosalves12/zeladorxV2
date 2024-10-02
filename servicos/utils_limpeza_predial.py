@@ -15,7 +15,7 @@ def colect_dados_fato_servico_limpeza_predial(request, status=list):
         ),
         id_agendamento=ExpressionWrapper(
             F('Servico__id'),
-            output_field=CharField()
+            output_field=IntegerField()
         ),
         tipo_agendamento=ExpressionWrapper(
             F('Servico__TipoServico'),
@@ -31,7 +31,7 @@ def colect_dados_fato_servico_limpeza_predial(request, status=list):
         ),
         servicos_solicitados_id=ExpressionWrapper(
             F('Servico__ServicosEscalados__id'),
-            output_field=CharField()
+            output_field=IntegerField()
         ),
         data_de_inicio=ExpressionWrapper(
             F('Servico__DataDeInicio'),
@@ -51,7 +51,7 @@ def colect_dados_fato_servico_limpeza_predial(request, status=list):
         ),
         area_atendid_id=ExpressionWrapper(
             F('Servico__Areas__id'),
-            output_field=CharField()
+            output_field=IntegerField()
         ),
         area_total=ExpressionWrapper(
             F('Servico__Areas__dimensao'),

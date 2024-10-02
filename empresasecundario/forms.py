@@ -9,25 +9,29 @@ class EmpresaSecundariaForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
         super(EmpresaSecundariaForms, self).__init__(*args, **kwargs)
         # Excluir serviços com status 'Desmobilizado' do queryset
-        if userid:
-            empresas = define_empresas(request=request, userid=userid)
-            empresas_primarias_ids = empresas['empresas_primarias_ids']
-            empresa = EmpresaPrimaria.objects.get(id_random=empresas_primarias_ids[0])
-            setores = empresa.setor.all()  # Acessando o campo de chave estrangeira diretamente
+        empresas = define_empresas(request=request, userid=userid)
+        empresas_primarias_ids = empresas['empresas_primarias_ids']
+        empresa = EmpresaPrimaria.objects.get(id_random=empresas_primarias_ids[0])
+        setores = empresa.setor.all()  # Acessando o campo de chave estrangeira diretamente
 
+        self.fields['setor'].queryset = self.fields['setor'].queryset.filter(
+            id__in=setores
+        )
+
+        if userid and type=='creat/edit':
             # Ajustar o queryset do campo 'empresaprimaria'
             self.fields['empresaprimaria'].queryset = self.fields['empresaprimaria'].queryset.filter(
                 id_random__in=empresas_primarias_ids,
                 status__in=['Mobilizado']
             )
 
-            self.fields['setor'].queryset = self.fields['setor'].queryset.filter(
-                id__in=setores
-            )
-
         if type == 'search':
             for field_name, field in self.fields.items():
                 field.required = False
+
+            self.fields['empresaprimaria'].queryset = self.fields['empresaprimaria'].queryset.filter(
+                id_random__in=empresas_primarias_ids,
+            )
 
     setor = forms.ModelMultipleChoiceField(
         queryset=TypeZeladoria.objects.all(),

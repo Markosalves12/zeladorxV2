@@ -7,11 +7,11 @@ from empresasecundario.utils import define_empresas
 class ServicoJaridinagemAgendadoForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
         super(ServicoJaridinagemAgendadoForms, self).__init__(*args, **kwargs)
-        if userid:
-            empresas = define_empresas(request=request, userid=userid)
-            empresas_primarias_ids = empresas['empresas_primarias_ids']
-            empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+        empresas = define_empresas(request=request, userid=userid)
+        empresas_primarias_ids = empresas['empresas_primarias_ids']
+        empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
+        if userid and type=='creat/edit':
             self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
                 EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
@@ -40,6 +40,25 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
             self.fields['TipoServico'].choices = filtered_choices
 
         if type == 'search':
+            for field_name, field in self.fields.items():
+                field.required = False
+
+            # Alterando o widget dos campos de seleção múltipla para SelectMultiple
+            self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
+                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+            )
+
+            self.fields['ColaboradoresEscalados'].queryset = self.fields['ColaboradoresEscalados'].queryset.filter(
+                empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                empresasecundaria__id_random__in=empresas_secundarias_ids,
+            )
+
+            self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
+                localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+            )
+
             # Alterando o widget dos campos de seleção múltipla para SelectMultiple
             self.fields['ServicosEscalados'] = forms.ModelMultipleChoiceField(
                 queryset=CatalogodeServicoJardinagem.objects.all(),
@@ -51,7 +70,6 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
                 ),
                 label='Serviços escalados',
                 required=False,
-                initial=None
             )
 
             self.fields['ColaboradoresEscalados'] = forms.ModelMultipleChoiceField(
@@ -64,14 +82,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
                 ),
                 label='Colaboradores escalados',
                 required=False,
-                initial=None
             )
-
-            all_choices = self.fields['TipoServico'].choices
-            self.fields['TipoServico'].choices = all_choices
-
-            for field_name, field in self.fields.items():
-                field.required = False
 
     ServicosEscalados = forms.ModelMultipleChoiceField(
         queryset=CatalogodeServicoJardinagem.objects.all(),

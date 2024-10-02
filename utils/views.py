@@ -28,8 +28,6 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
         filtro_mapeamento=filtro_mapeamento
     )
 
-    forms, dados_paginados = dt_and_forms.get_data_and_forms()
-
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES, request=request, userid=userid)
         if form.is_valid():
@@ -73,6 +71,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
             message=f'Algo de errado'
         )
 
+    forms, dados_paginados = dt_and_forms.get_data_and_forms()
 
     url_action = reverse(redirect_url, kwargs={'userid': request.session.get('userid', '')})
 

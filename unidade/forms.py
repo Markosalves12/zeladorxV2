@@ -62,9 +62,4 @@ class UnidadeForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
-            # 'empresasecundaria': forms.Select(
-            #     attrs={
-            #         'class': 'form-control'
-            #     }
-            # )
         }

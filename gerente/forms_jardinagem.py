@@ -6,11 +6,11 @@ from empresasecundario.utils import define_empresas
 class GerenteJardinagemForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
         super(GerenteJardinagemForms, self).__init__(*args, **kwargs)
-        if userid:
-            empresas = define_empresas(request=request, userid=userid)
-            empresas_primarias_ids = empresas['empresas_primarias_ids']
-            empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+        empresas = define_empresas(request=request, userid=userid)
+        empresas_primarias_ids = empresas['empresas_primarias_ids']
+        empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
+        if userid and type=='creat/edit':
             self.fields['empresasecundaria'].queryset = self.fields['empresasecundaria'].queryset.filter(
                 empresaprimaria__id_random__in=empresas_primarias_ids,
                 setor__setor='Jardinagem',
@@ -20,6 +20,11 @@ class GerenteJardinagemForms(forms.ModelForm):
         if type == 'search':
             for field_name, field in self.fields.items():
                 field.required = False
+
+            self.fields['empresasecundaria'].queryset = self.fields['empresasecundaria'].queryset.filter(
+                empresaprimaria__id_random__in=empresas_primarias_ids,
+                setor__setor='Jardinagem',
+            )
 
             self.fields['empresasecundaria'] = forms.ModelMultipleChoiceField(
                 queryset=EmpresaSecundaria.objects.all(),

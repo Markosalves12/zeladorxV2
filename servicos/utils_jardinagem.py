@@ -16,7 +16,7 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
         ),
         id_agendamento=ExpressionWrapper(
             F('Servico__id'),
-            output_field=CharField()
+            output_field=IntegerField()
         ),
         tipo_agendamento=ExpressionWrapper(
             F('Servico__TipoServico'),
@@ -26,13 +26,13 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
             F('Servico__DescricaoDoServico'),
             output_field=CharField()
         ),
-        colaboradores_chamados = ExpressionWrapper(
+        colaboradores_chamados=ExpressionWrapper(
             F('Servico__ColaboradoresEscalados__username'),
             output_field=CharField()
         ),
         colaboradores_chamados_id=ExpressionWrapper(
             F('Servico__ColaboradoresEscalados__id'),
-            output_field=CharField()
+            output_field=IntegerField()
         ),
         servicos_solicitados=ExpressionWrapper(
             F('Servico__ServicosEscalados__nome'),
@@ -40,7 +40,7 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
         ),
         servicos_solicitados_id=ExpressionWrapper(
             F('Servico__ServicosEscalados__id'),
-            output_field=CharField()
+            output_field=IntegerField()
         ),
         data_de_inicio=ExpressionWrapper(
             F('Servico__DataDeInicio'),
@@ -68,7 +68,7 @@ def colect_dados_fato_servico_jardinagem(request, status=list):
         ),
         area_atendid_id=ExpressionWrapper(
             F('Servico__Areas__id'),
-            output_field=CharField()
+            output_field=IntegerField()
         ),
         periodicidade_de_retorno=ExpressionWrapper(
             F('Servico__Areas__periodicidade'),
