@@ -1,8 +1,10 @@
 from django.shortcuts import render, reverse
 from areas.models_jardinagem import AreasJardins
-from servicos.models_jardinagem import ServicoJardinagemAgendado, FatoServicoJardinagem
+from servicos.models_jardinagem import ServicoJardinagemAgendado
+from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from utils.utils import paginate
+from utils.utils import aplicar_filtros_dinamicos
 
 # Create your views here.
 def historico_de_servicos_areas_jardinagem(request, userid, id_random):
@@ -14,6 +16,18 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
         Areas__id_random=id_random,
         status__in=['Concluido']
     )
+
+    filtro_mapeamento = {
+        'TipoServico': 'TipoServico',
+        'ServicosEscalados': 'ServicosEscalados',
+        'ColaboradoresEscalados': 'ColaboradoresEscalados',
+        'DataDeInicio': 'DataDeInicio',
+        'DataDeConclusao': 'DataDeConclusao'
+    }
+
+    if request.method == 'GET':
+        get_data = request.GET.dict()
+        objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
 
     dados_paginados = paginate(
         request=request,
@@ -30,6 +44,9 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
             'foto_objeto': objeto.foto.url if objeto.foto else None,
             'Foto': True,
             'type': 'jardinagem_agendado',
+            'form_search': ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
+            'sform_search': True,
+            'allowed_fields': list(filtro_mapeamento.keys()),
             'dados_paginados': dados_paginados,
             'export_pdf': reverse(
                 viewname='exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
@@ -60,6 +77,18 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
         status__in=['Concluido']
     )
 
+    filtro_mapeamento = {
+        'Areas': 'Areas__id',
+        'TipoServico': 'TipoServico',
+        'ColaboradoresEscalados': 'ColaboradoresEscalados',
+        'DataDeInicio': 'DataDeInicio',
+        'DataDeConclusao': 'DataDeConclusao'
+    }
+
+    if request.method == 'GET':
+        get_data = request.GET.dict()
+        objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
+
     dados_paginados = paginate(
         request=request,
         data_objects=objetos,
@@ -75,6 +104,9 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
             'foto_objeto': None,
             'Foto': False,
             'type': 'jardinagem_agendado',
+            'form_search': ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
+            'sform_search': True,
+            'allowed_fields': list(filtro_mapeamento.keys()),
             'dados_paginados': dados_paginados,
             'export_pdf': reverse(
                 'exportar_relatorio_de_serivos_na_area_jardinagem_pdf',

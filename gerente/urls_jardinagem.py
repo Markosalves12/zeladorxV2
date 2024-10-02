@@ -1,5 +1,6 @@
 from django.urls import path
-from gerente.views_jardinagem import (gerentes_jardinagem, editar_gerente_jardinagem, alterar_status_gerente_jardinagem,
+from gerente.views_jardinagem import (gerentes_jardinagem, editar_gerente_jardinagem,
+                                      alterar_status_gerente_jardinagem,
                                       historico_de_servicos_gerente_jardinagem)
 
 

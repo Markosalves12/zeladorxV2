@@ -40,18 +40,37 @@
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     {% include 'partials/_left_sidebar_links.html' %}
-    {% if permission_crate %}
-      <div class="card-body d-flex justify-content-end">
-        <a href="{% url url_agendamento userid %}">
-          <button type="button" class="btn btn-block btn-primary btn-sm">Agendar novo serviço</button>
-        </a>
-      </div>
-    {% endif %}
-
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         {% include 'partials/_messages.html' %}
+        {% if sform_search %}
+            <form action="{{ redirect_url_name }}" method="GET" enctype="multipart/form-data">
+              <div class="card-body d-flex justify-content-end">
+                <div class="d-flex" style="gap: 15px;">
+                  <!-- Renderize apenas os campos específicos -->
+                  {% for field in form_search.visible_fields %}
+                    {% if field.name in allowed_fields %}
+                      <div class="d-flex flex-column" style="margin-right: 10px; text-align: center;">
+                        <label for="{{ field.id_for_label }}" style="margin-bottom: 5px;">{{ field.label }}</label>
+                        {{ field }}
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+                  <div class="d-flex align-items-end">
+                    <button type="submit" class="btn btn-success">Buscar</button>
+                  </div>
+                  {% if permission_crate %}
+                    <div class="d-flex align-items-end">
+                      <a href="{% url url_agendamento userid %}">
+                        <button type="button" class="btn btn-block btn-primary btn-sm">Agendar novo serviço</button>
+                      </a>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </form>
+        {% endif %}
         <div class="row">
           <!-- /.col -->
           <div class="col-md-12">

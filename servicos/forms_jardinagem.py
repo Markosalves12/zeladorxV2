@@ -35,25 +35,39 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
                 localidade__unidade__status__in=['Mobilizado']
             )
 
+            all_choices = self.fields['TipoServico'].choices
+            filtered_choices = [choice for choice in all_choices if choice[0] != 'Automático']
+            self.fields['TipoServico'].choices = filtered_choices
+
         if type == 'search':
+            # Alterando o widget dos campos de seleção múltipla para SelectMultiple
+            self.fields['ServicosEscalados'] = forms.ModelMultipleChoiceField(
+                queryset=CatalogodeServicoJardinagem.objects.all(),
+                widget=forms.Select(
+                    attrs={
+                        'class': 'form-control'  # Modifique a classe se necessário
+                    }
+                ),
+                label='Serviços escalados',
+                required=False,
+            )
+
+            self.fields['ColaboradoresEscalados'] = forms.ModelMultipleChoiceField(
+                queryset=Gerente.objects.all(),
+                widget=forms.Select(
+                    attrs={
+                        'class': 'form-control'  # Modifique a classe se necessário
+                    }
+                ),
+                label='Colaboradores escalados',
+                required=False
+            )
+
+            all_choices = self.fields['TipoServico'].choices
+            self.fields['TipoServico'].choices = all_choices
+
             for field_name, field in self.fields.items():
                 field.required = False
-
-            self.fields['ServicosEscalados'].widget = forms.Select(
-                attrs={
-                    'class': 'form-control'
-                }
-            )
-
-            self.fields['ColaboradoresEscalados'].widget = forms.Select(
-                attrs={
-                    'class': 'form-control'
-                }
-            )
-
-        choices_filtrados = [option for option in self.fields['TipoServico'].choices if option[0] != 'Automático']
-        # Definindo as novas opções filtradas
-        self.fields['TipoServico'].choices = choices_filtrados
 
     ServicosEscalados = forms.ModelMultipleChoiceField(
         queryset=CatalogodeServicoJardinagem.objects.all(),

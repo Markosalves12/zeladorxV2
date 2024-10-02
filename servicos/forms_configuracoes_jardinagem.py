@@ -33,6 +33,18 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
             for field_name, field in self.fields.items():
                 field.required = False
 
+            self.fields['diasaseremrealizado'] = forms.ModelMultipleChoiceField(
+                queryset=DiasDaSemana.objects.all(),
+                widget=forms.Select(
+                    attrs={
+                        'class': 'form-control'  # Modifique a classe se necessário
+                    }
+                ),
+                label='Colaboradores escalados',
+                required=False
+            )
+
+
     ServicosEscalados = forms.ModelMultipleChoiceField(
         queryset=CatalogodeServicoJardinagem.objects.all(),
         widget=forms.CheckboxSelectMultiple(

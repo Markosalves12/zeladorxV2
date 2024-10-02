@@ -59,6 +59,10 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
         filtro_mapeamento={
             'Areas': 'Areas__id',
             'TipoServico': 'TipoServico',
+            'ServicosEscalados': 'ServicosEscalados',
+            'ColaboradoresEscalados': 'ColaboradoresEscalados',
+            'DataDeInicio': 'DataDeInicio',
+            'DataDeConclusao': 'DataDeConclusao'
         },
         text_button_open_modal='Adicionar nova manutenção',
         text_button_save='Salvar manutenção',
@@ -142,6 +146,11 @@ def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
         filtro_mapeamento={
             'Areas': 'Areas__id',
             'TipoServico': 'TipoServico',
+            'ServicosEscalados': 'ServicosEscalados',
+            'ColaboradoresEscalados': 'ColaboradoresEscalados',
+            'DataDeInicio': 'DataDeInicio',
+            'DataDeConclusao': 'DataDeConclusao'
+
         },
         text_button_open_modal='Adicionar nova manutenção',
         text_button_save='Salvar manutenção',

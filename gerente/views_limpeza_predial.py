@@ -7,6 +7,7 @@ from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado
 from utils.utils import paginate
+from utils.utils import aplicar_filtros_dinamicos
 
 # Create your views here.
 def gerentes_limpeza_predial(request, userid):
@@ -76,6 +77,7 @@ def gerentes_limpeza_predial(request, userid):
         redirect_url='gerentes_limpeza_predial',
         configurate_gerente=True,
         link_tipos=tipos,
+        userid=userid,
         permission_view=permission_view,
         permission_edit=permission_edit,
         permission_crate=permission_crate
@@ -164,6 +166,15 @@ def historico_de_servicos_gerente_limpeza_predial(request, userid, id_random):
         ServicosEscalados__id_random=id_random,
     )
 
+    filtro_mapeamento = {
+        'username': 'username',
+        'email': 'email',
+    }
+
+    if request.method == 'GET':
+        get_data = request.GET.dict()
+        objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
+
     dados_paginados = paginate(
         request=request,
         data_objects=objetos,
@@ -177,19 +188,24 @@ def historico_de_servicos_gerente_limpeza_predial(request, userid, id_random):
             'app_name': f'Histórico de serviços {objeto}',
             'objeto': objeto,
             'foto_objeto': None,
+            'form_search': GerenteLimpezaPredialForms(request=request, userid=userid, type='search'),
+            'sform_search': True,
+            'allowed_fields': list(filtro_mapeamento.keys()),
             'dados_paginados': dados_paginados,
             'export_pdf': reverse(
-                'exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random
-                }
-            ),
-            'export_excel': reverse(
-                viewname='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
+                viewname='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
+                    'type': 'catalogo_de_servicos',
+                }
+            ),
+            'export_excel': reverse(
+                viewname='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random,
+                    'type': 'catalogo_de_servicos',
                 }
             ),
         }

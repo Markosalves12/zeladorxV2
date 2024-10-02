@@ -115,6 +115,7 @@ def servicos_configurados_jardinagem(request, userid):
         sform_search=True,
         filtro_mapeamento={
             'Areas': 'Areas__id',
+            'diasaseremrealizado': 'diasaseremrealizado'
         },
         text_button_open_modal='configurar novo serviço',
         text_button_save='configurar serviço',

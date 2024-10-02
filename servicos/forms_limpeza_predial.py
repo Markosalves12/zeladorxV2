@@ -31,9 +31,20 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
             )
 
         if type == 'search':
+            # Alterando o widget dos campos de seleção múltipla para SelectMultiple
+            self.fields['ServicosEscalados'] = forms.ModelMultipleChoiceField(
+                queryset=CatalogodeServicoLimpezaPredial.objects.all(),
+                widget=forms.Select(
+                    attrs={
+                        'class': 'form-control'  # Modifique a classe se necessário
+                    }
+                ),
+                label='Serviços escalados',
+                required=False,
+            )
+
             for field_name, field in self.fields.items():
                 field.required = False
-
 
         choices_filtrados = [option for option in self.fields['TipoServico'].choices if option[0] != 'Automático']
         # Definindo as novas opções filtradas

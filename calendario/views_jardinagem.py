@@ -1,10 +1,12 @@
 from django.shortcuts import render, reverse, redirect
 from servicos.models_jardinagem import ServicoJardinagemAgendado
+from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from django.db.models.functions import Now, TruncDate, ExtractDay
 from django.db.models import F, Q, ExpressionWrapper, IntegerField, DurationField
 from calendario.utils import format_event
 from permissionscontrol.utils import validate_permissions
 from django.contrib import messages
+from utils.utils import aplicar_filtros_dinamicos
 
 # Create your views here.
 def calendario_jardinagem(request, userid):
@@ -55,6 +57,17 @@ def calendario_jardinagem(request, userid):
         )/(3600*24*1000000)
     )
 
+    filtro_mapeamento = {
+        'Areas': 'Areas__id',
+        'TipoServico': 'TipoServico',
+        'DataDeInicio': 'DataDeInicio',
+        'DataDeConclusao': 'DataDeConclusao'
+    }
+
+    if request.method == 'GET':
+        get_data = request.GET.dict()
+        agendado = aplicar_filtros_dinamicos(agendado, get_data, filtro_mapeamento)
+
     tipos = [
         {'nome': 'Calendário de serviços', 'link': ''},
         {'nome': 'Jardinagem', 'link': reverse('calendario_jardinagem', kwargs={'userid': userid})},
@@ -80,6 +93,9 @@ def calendario_jardinagem(request, userid):
             'url_edicao': 'editar_servico_jardinagem_agendado',
             'url_cancelamento': 'cancelar_servico_jardinagem',
             'url_conclusao': 'concluir_servico_jardinagem',
+            'form_search': ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
+            'sform_search': True,
+            'allowed_fields': list(filtro_mapeamento.keys()),
             'permission_view': permission_view,
             'permission_edit': permission_edit,
             'permission_crate': permission_crate,

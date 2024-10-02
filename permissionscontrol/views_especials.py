@@ -51,6 +51,12 @@ def permissions_especials(request, userid):
         columns=colunas,
         edition_rout='editar_permissoes_especials',
         app_name='Permissões especiais',
+        form_search=PermissionsAccessEspecialForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'Gerente': 'Gerente__id',
+            'Permissions': 'Permissions'
+        },
         text_button_open_modal='Adicionar novo gestor',
         text_button_save='Salvar permissões',
         header_model='Novo gestor',

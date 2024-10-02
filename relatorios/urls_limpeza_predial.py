@@ -57,14 +57,12 @@ urlpatterns = [
         name='relatorios_de_servicos_limpeza_predial_pdf_agendados'
     ),
     path(
-        'exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf/<str:userid>/<str:id_random>/'
-        '<str:type>',
+        'exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf/<str:userid>/<str:id_random>/<str:type>',
         exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf,
         name='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf'
     ),
     path(
-        'exportar_relatorio_de_serivos_na_area_limpeza_predial_excel/<str:userid>/<str:id_random>/'
-        '<str:type>',
+        'exportar_relatorio_de_serivos_na_area_limpeza_predial_excel/<str:userid>/<str:id_random>/<str:type>',
         exportar_relatorio_de_serivos_na_area_limpeza_predial_excel,
         name='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel'
     ),

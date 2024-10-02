@@ -68,6 +68,10 @@ def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
         filtro_mapeamento={
             'Areas': 'area_atendid_id',
             'TipoServico': 'tipo_de_servico',
+            'ServicosEscalados': 'ServicosEscalados',
+            'ColaboradoresEscalados': 'ColaboradoresEscalados',
+            'DataDeInicio': 'data_de_inicio',
+            'DataDeConclusao': 'data_de_conclusao'
         },
         text_button_open_modal='Adicionar nova manutenção',
         text_button_save='Salvar manutenção',
@@ -161,6 +165,10 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
         filtro_mapeamento={
             'Areas': 'Areas__id',
             'TipoServico': 'tipo_de_servico',
+            'ServicosEscalados': 'ServicosEscalados',
+            'ColaboradoresEscalados': 'ColaboradoresEscalados',
+            'DataDeInicio': 'data_de_inicio',
+            'DataDeConclusao': 'data_de_conclusao'
         },
         text_button_open_modal='Adicionar nova manutenção',
         text_button_save='Salvar manutenção',

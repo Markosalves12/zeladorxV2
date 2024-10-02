@@ -6,12 +6,7 @@ from datetime import timedelta
 from dashboards.data_visualization import calculate_areas_and_counts, generate_chart, generate_grouped_chart
 from dashboards.utils_jardinagem import colect_dados_jardinagem
 
-def data_visualization_jardinagem_indicadores(request, userid):
-    agendado = colect_dados_jardinagem(
-        request=request,
-        userid=userid
-    )
-
+def data_visualization_jardinagem_indicadores(request, userid, agendado):
     em_andamento = agendado.filter(status='Em andamento').count()
     atrasados = agendado.filter(DataDeInicio__lt=timezone.now().date()).exclude(status="Em andamento").count()
 
@@ -43,18 +38,10 @@ def data_visualization_jardinagem_indicadores(request, userid):
 
 
 class data_visualization_jardinagem_graphs:
-    def __init__(self, request, userid):
+    def __init__(self, request, userid, agendado):
         self.request = request
         self.userid = userid
-        self.agendados = self.get_data()
-
-    def get_data(self):
-        agendado = colect_dados_jardinagem(
-            request=self.request,
-            userid=self.userid
-        )
-
-        return agendado
+        self.agendados = agendado
 
     one_day = timezone.now().date() + timedelta(days=1)
     seven_days = timezone.now().date() + timedelta(days=7)

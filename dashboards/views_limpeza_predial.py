@@ -1,18 +1,38 @@
 from django.shortcuts import render, reverse
 from dashboards.data_visualization_limpeza_predial import (data_visualization_limpeza_predial_indicadores,
                                                            data_visualization_limpeza_predial_graphs)
+from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
+from utils.utils import aplicar_filtros_dinamicos
+from dashboards.utils_limpeza_predial import colect_dados_limpeza_predial
 
 # Create your views here.
 def dashboard_produtividade_limpeza_predial(request, userid):
+    agendado = colect_dados_limpeza_predial(
+        request=request,
+        userid=userid
+    )
+
+    filtro_mapeamento = {
+        'Areas': 'Areas__id',
+        'TipoServico': 'TipoServico',
+        'ServicosEscalados': 'ServicosEscalados',
+        'DataDeInicio': 'DataDeInicio',
+        'DataDeConclusao': 'DataDeConclusao'
+    }
+
+    if request.method == 'GET':
+        get_data = request.GET.dict()
+        agendado = aplicar_filtros_dinamicos(agendado, get_data, filtro_mapeamento)
+
     (em_andamento, atrasados, proximos, agendamentos,
      total_de_areas_agendadas, total_de_areas_atrasadas,
-     total_de_areas_proximas, total_de_areas_em_andamento) = data_visualization_limpeza_predial_indicadores(request, userid)
+     total_de_areas_proximas, total_de_areas_em_andamento) = data_visualization_limpeza_predial_indicadores(request, userid, agendado)
 
-    figs_atrasados = data_visualization_limpeza_predial_graphs(request, userid).define_figs_atrasados()
-    figs_proximos = data_visualization_limpeza_predial_graphs(request, userid).define_figs_proximos()
-    figs_agendados = data_visualization_limpeza_predial_graphs(request, userid).define_figs_agendados()
-    figs_em_andamento = data_visualization_limpeza_predial_graphs(request, userid).define_figs_em_andamento()
-    figs_by_months = data_visualization_limpeza_predial_graphs(request, userid).define_figs_by_months()
+    figs_atrasados = data_visualization_limpeza_predial_graphs(request, userid, agendado).define_figs_atrasados()
+    figs_proximos = data_visualization_limpeza_predial_graphs(request, userid, agendado).define_figs_proximos()
+    figs_agendados = data_visualization_limpeza_predial_graphs(request, userid, agendado).define_figs_agendados()
+    figs_em_andamento = data_visualization_limpeza_predial_graphs(request, userid, agendado).define_figs_em_andamento()
+    figs_by_months = data_visualization_limpeza_predial_graphs(request, userid, agendado).define_figs_by_months()
 
     tipos = [
         {'nome': 'Dashboards', 'link': ''},
@@ -32,6 +52,9 @@ def dashboard_produtividade_limpeza_predial(request, userid):
             'em_andamento': em_andamento,
             'por_terreno': False,
             'por_colaborador': False,
+            'form_search': ServicoLimpezaPredialAgendadoForms(request=request, userid=userid, type='search'),
+            'sform_search': True,
+            'allowed_fields': list(filtro_mapeamento.keys()),
             **figs_atrasados,
             **figs_proximos,
             **figs_agendados,

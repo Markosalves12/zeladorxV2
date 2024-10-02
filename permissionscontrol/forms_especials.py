@@ -3,7 +3,7 @@ from permissionscontrol.models import PermissionsAccessEspecials, PermissionsEsp
 from empresasecundario.utils import define_empresas
 
 class PermissionsAccessEspecialForms(forms.ModelForm):
-    def __init__(self, *args, request, userid=str, **kwargs):
+    def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
         super(PermissionsAccessEspecialForms, self).__init__(*args, **kwargs)
         if userid:
             empresas = define_empresas(request=request, userid=userid)
@@ -13,6 +13,22 @@ class PermissionsAccessEspecialForms(forms.ModelForm):
             self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
                 empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 empresasecundaria__id_random__in=empresas_secundarias_ids,
+            )
+
+        if type == 'search':
+            for field_name, field in self.fields.items():
+                field.required = False
+
+            # Alterando o widget dos campos de seleção múltipla para SelectMultiple
+            self.fields['Permissions'] = forms.ModelMultipleChoiceField(
+                queryset=PermissionsEspecials.objects.all(),
+                widget=forms.Select(
+                    attrs={
+                        'class': 'form-control'  # Modifique a classe se necessário
+                    }
+                ),
+                label='Permissões concedidas',
+                required=False,
             )
 
     Permissions = forms.ModelMultipleChoiceField(

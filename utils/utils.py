@@ -65,54 +65,37 @@ def resize_image(image, max_width=620):
     img.save(img_io, format=img_format)
     return ContentFile(img_io.getvalue(), image.name)
 
+def aplicar_filtros_dinamicos(queryset, get_data, filtro_mapeamento):
+    # Itera sobre os dados enviados no GET
+    for field, value in get_data.items():
+        if value:  # Apenas aplica o filtro se houver um valor válido
+            # Verifica se o campo está no mapeamento de filtros personalizados
+            if field in filtro_mapeamento:
+                filtro_especifico = filtro_mapeamento[field]
 
-# class DataTableAndForms:
-#     def __init__(self, request, model, modelforms, per_page, columns, edition_rout, history_rout=False, userid=False):
-#         self.request = request
-#         self.model = model
-#         self.modelforms = modelforms
-#         self.per_page = per_page
-#         self.columns = columns
-#         self.edition_rout = edition_rout
-#         self.history_rout = history_rout
-#         self.userid = userid
-#
-#     def get_data_and_forms(self):
-#         if isinstance(self.model, ModelBase):
-#             queryset = self.model.objects.all()
-#         elif isinstance(self.model, QuerySet):
-#             queryset = self.model
-#         else:
-#             raise ValueError("model deve ser uma instância de ModelBase ou QuerySet")
-#
-#         if self.userid:
-#             forms = self.modelforms(request=self.request, userid=self.userid)
-#         else:
-#             forms = self.modelforms()
-#
-#         formatted_events = [self.format_event(dado) for dado in queryset]
-#         dados_paginados = paginate(
-#             request=self.request,
-#             data_objects=formatted_events,
-#             per_page=self.per_page
-#         )
-#         return forms, dados_paginados
-#
-#     def format_event(self, dado):
-#         formatted_event = {coluna['nome']: getattr(dado, coluna['nome'], None) for coluna in self.columns}
-#         formatted_event['id_random'] = dado.id_random
-#         formatted_event['editar_url'] = reverse(f'{self.edition_rout}',
-#                                                 kwargs={'userid': self.request.session.get('userid', ''),
-#                                                         'id_random': dado.id_random})
-#         if self.history_rout:
-#             formatted_event['history_rout'] = reverse(f'{self.history_rout}',
-#                                                           kwargs={
-#                                                               'userid': self.userid,
-#                                                               'id_random': dado.id_random
-#                                                           }
-#                                                       )
-#
-#         return formatted_event
+                # Verifica se o campo é 'DataDeInicio' para aplicar o filtro >=
+                if field == 'DataDeInicio':
+                    queryset = queryset.filter(**{f"{filtro_especifico}__gte": value})
+
+                # Verifica se o campo é 'DataDeConclusao' para aplicar o filtro <=
+                elif field == 'DataDeConclusao':
+                    queryset = queryset.filter(**{f"{filtro_especifico}__lte": value})
+
+                # Suporte para múltiplos valores (caso seja uma lista)
+                elif isinstance(value, list):
+                    queryset = queryset.filter(**{f"{filtro_especifico}__in": value})
+
+                else:
+                    # Aplica o filtro padrão para outros campos
+                    queryset = queryset.filter(**{filtro_especifico: value})
+
+            else:
+                # Log de campos ignorados que não têm mapeamento
+                print(f"Aviso: Campo '{field}' não encontrado no mapeamento de filtros.")
+
+    return queryset
+
+
 class DataTableAndForms:
     def __init__(self, request, model, modelforms, per_page, columns, edition_rout, filtro_mapeamento, history_rout=False, userid=False):
         self.request = request
@@ -137,7 +120,7 @@ class DataTableAndForms:
         # Aplica os filtros, se houver dados na requisição
         if self.request.method == 'GET':
             get_data = self.request.GET.dict()
-            queryset = self.aplicar_filtros_dinamicos(queryset, get_data)
+            queryset = aplicar_filtros_dinamicos(queryset, get_data, self.filtro_mapeamento)
 
         # Cria os formulários
         if self.userid:
@@ -154,20 +137,6 @@ class DataTableAndForms:
             per_page=self.per_page
         )
         return forms, dados_paginados
-
-    def aplicar_filtros_dinamicos(self, queryset, get_data):
-        # Mapeia campos do formulário para filtros específicos
-
-        # Itera sobre os dados enviados no GET
-        for field, value in get_data.items():
-            if value:  # Apenas aplica o filtro se houver um valor
-                # Verifica se o campo está no mapeamento de filtros personalizados
-                if field in self.filtro_mapeamento:
-                    filtro_especifico = self.filtro_mapeamento[field]
-                    # Aplica o filtro personalizado ao queryset
-                    queryset = queryset.filter(**{filtro_especifico: value})
-
-        return queryset
 
     def format_event(self, dado):
         formatted_event = {coluna['nome']: getattr(dado, coluna['nome'], None) for coluna in self.columns}
@@ -202,20 +171,3 @@ def formatar_atributos(queryset, atributo):
     valores_texto = ", ".join(str(valor) for valor in valores)
 
     return valores_texto
-
-
-def aplicar_filtros_dinamicos(page, get_data, filtro_mapeamento):
-    # Acessa o queryset original da página
-    queryset = page.object_list  # Obtém o queryset original associado à página
-
-    # Itera sobre os dados enviados no GET
-    for field, value in get_data.items():
-        if value:  # Apenas aplica o filtro se houver um valor
-            # Verifica se o campo está no mapeamento de filtros personalizados
-            if field in filtro_mapeamento:
-                filtro_especifico = filtro_mapeamento[field]
-                # Aplica o filtro personalizado ao queryset
-                queryset = queryset.filter(**{filtro_especifico: value})
-
-    # Retorna o queryset filtrado
-    return queryset

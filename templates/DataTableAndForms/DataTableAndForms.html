@@ -34,29 +34,9 @@
     <section class="content">
       <div class="container-fluid">
         {% include 'partials/_messages.html' %}
-            {% if sform_search %}
-              <div class="card-header d-flex justify-content-end">
-                <form action="{{ redirect_url_name }}" method="GET" enctype="multipart/form-data">
-                  <div class="card-body">
-                    <div class="form-inline" style="margin-right: 10px">
-                      <div class="form-inline" style="margin-right: 10px">
-                        <!-- Renderize apenas os campos específicos -->
-                        {% for field in form_search.visible_fields %}
-                          {% if field.name in allowed_fields %}
-                            <div class="form-inline" style="margin-right: 10px">
-                              <label for="{{ field.id_for_label }}" style="margin-right: 10px">{{ field.label }}</label>
-                              {{ field }}
-                            </div>
-                          {% endif %}
-                        {% endfor %}
-                        <button type="submit" class="btn btn-success">Buscar</button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            {% endif %}
-
+          <div class="card-header d-flex justify-content-end">
+            {% include 'partials/_form_search.html' %}
+          </div>
         <div class="row">
           <div class="col-md-12">
             <div class="card">
