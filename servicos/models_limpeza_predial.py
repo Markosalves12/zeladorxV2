@@ -5,6 +5,7 @@ from areas.models_limpeza_predial import AreaLimpezaPredial
 from datetime import timedelta
 from semana.models import DiasDaSemana
 from gerente.models import Gerente
+from utils.utils import resize_image
 
 
 class ServicoLimpezaPredialConfigurado(models.Model):
@@ -218,3 +219,9 @@ class FatoServicoLimpezaPredial(models.Model):
         null=True,
         max_length=2000,
     )
+
+    def save(self, *args, **kwargs):
+        if self.foto_entrega:
+            self.foto_entrega = resize_image(self.foto_entrega, max_width=500)
+
+        super(FatoServicoLimpezaPredial, self).save(*args, **kwargs)

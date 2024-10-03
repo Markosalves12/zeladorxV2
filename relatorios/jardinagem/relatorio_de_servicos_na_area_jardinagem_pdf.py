@@ -13,18 +13,45 @@ from utils.utils import formatar_atributos
 from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
 from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_reports
 from utils.utils import generate_id_random
+from datetime import datetime
 
-
-def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, status, DataDeInicio, DataDeConclusao, Areas,
+def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_random, DataDeInicio, DataDeConclusao, Areas,
                                                    TipoServico, ServicosEscalados, ColaboradoresEscalados, type):
+
+    DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M') if DataDeInicio and DataDeInicio != "None" else 'None'
+    DataDeConclusao = datetime.strptime(DataDeConclusao, '%Y-%m-%dT%H:%M') if DataDeConclusao and DataDeConclusao != "None" else 'None'
+    ServicosEscalados = ServicosEscalados.split(',')
+    ColaboradoresEscalados = ColaboradoresEscalados.split(',')
+
+    filters = dict()
+
+    if DataDeInicio and DataDeInicio != "None":
+        filters['DataDeInicio__gte'] = DataDeInicio
+
+    if DataDeConclusao and DataDeConclusao != "None":
+        filters['DataDeConclusao__lte'] = DataDeConclusao
+
+    if Areas and Areas != "None":
+        filters['Areas__id__in'] = Areas
+
+    if TipoServico and TipoServico != "None":
+        filters['TipoServico'] = TipoServico
+
+    if ServicosEscalados and ServicosEscalados != ["None"]:
+        filters['ServicosEscalados__id__in'] = ServicosEscalados
+
+    if ColaboradoresEscalados and ColaboradoresEscalados != ["None"]:
+        filters['ColaboradoresEscalados__id__in'] = ColaboradoresEscalados
+
     if type == 'catalogo_de_servicos':
         dados = ServicoJardinagemAgendado.objects.filter(
-            ServicosEscalados__id_random=id_random,
+            **filters,
             status__in=['Concluido']
         )
 
     elif type == 'configuracao':
         dados = ServicoJardinagemAgendado.objects.filter(
+            **filters,
             id_configuracao=id_random,
             status__in=['Concluido']
         )
@@ -35,7 +62,14 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, status
         )
 
         dados = ServicoJardinagemAgendado.objects.filter(
+            **filters,
             Areas__id_random=id_random,
+            status__in=['Concluido']
+        )
+
+    elif type == 'gerente':
+        dados = ServicoJardinagemAgendado.objects.filter(
+            **filters,
             status__in=['Concluido']
         )
 
@@ -175,7 +209,6 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, status
 
         p.setFont("Helvetica", 10)  # Reset font size to 12 for new page content
         y = height - 70
-
 
 
     fig_terreno = data_visualization_jardinagem_reports(request, userid).define_figs_concluidos()

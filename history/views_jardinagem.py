@@ -4,7 +4,7 @@ from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from utils.utils import paginate
-from utils.utils import aplicar_filtros_dinamicos
+from utils.utils import aplicar_filtros_dinamicos, define_filters
 
 # Create your views here.
 def historico_de_servicos_areas_jardinagem(request, userid, id_random):
@@ -19,46 +19,20 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
 
     filtro_mapeamento = {
         'TipoServico': 'TipoServico',
-        'ServicosEscalados': 'ServicosEscalados',
-        'ColaboradoresEscalados': 'ColaboradoresEscalados',
+        'ServicosEscalados': 'ServicosEscalados__id',
+        'ColaboradoresEscalados': 'ColaboradoresEscalados__id',
         'DataDeInicio': 'DataDeInicio',
-        'DataDeConclusao': 'DataDeConclusao'
+        'DataDeConclusao': 'DataDeConclusao',
+        'Areas': 'Areas__id'
     }
 
-    get_data = {
-        'DataDeInicio': 'None',
-        'DataDeConclusao': 'None',
-        'ServicosEscalados': 'None',
-        'ColaboradoresEscalados': 'None',
-        'Areas': 'None',
-        'TipoServico': 'None',
-    }
+    get_data = define_filters(request=request, isnull=True)
 
     if request.method == 'GET':
         get_data = request.GET.dict()
         objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
-        get_multiple_data = request.GET
 
-        get_data = {
-            'DataDeInicio': ', '.join(get_multiple_data.getlist(
-                'DataDeInicio')) if 'DataDeInicio' in get_multiple_data and get_multiple_data.getlist(
-                'DataDeInicio') and get_multiple_data.getlist('DataDeInicio')[0] != '' else 'None',
-            'DataDeConclusao': ', '.join(get_multiple_data.getlist(
-                'DataDeConclusao')) if 'DataDeConclusao' in get_multiple_data and get_multiple_data.getlist(
-                'DataDeConclusao') and get_multiple_data.getlist('DataDeConclusao')[0] != '' else 'None',
-            'ServicosEscalados': ', '.join(get_multiple_data.getlist(
-                'ServicosEscalados')) if 'ServicosEscalados' in get_multiple_data and get_multiple_data.getlist(
-                'ServicosEscalados') else 'None',
-            'ColaboradoresEscalados': ', '.join(get_multiple_data.getlist(
-                'ColaboradoresEscalados')) if 'ColaboradoresEscalados' in get_multiple_data and get_multiple_data.getlist(
-                'ColaboradoresEscalados') else 'None',
-            'Areas': ', '.join(
-                get_multiple_data.getlist('Areas')) if 'Areas' in get_multiple_data and get_multiple_data.getlist(
-                'Areas') and get_multiple_data.getlist('Areas')[0] != '' else 'None',
-            'TipoServico': ', '.join(get_multiple_data.getlist(
-                'TipoServico')) if 'TipoServico' in get_multiple_data and get_multiple_data.getlist(
-                'TipoServico') and get_multiple_data.getlist('TipoServico')[0] != '' else 'None',
-        }
+        get_data = define_filters(request=request, isnull=False)
 
     dados_paginados = paginate(
         request=request,
@@ -111,16 +85,21 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
     )
 
     filtro_mapeamento = {
-        'Areas': 'Areas__id',
-        'TipoServico': 'TipoServico',
-        'ColaboradoresEscalados': 'ColaboradoresEscalados',
-        'DataDeInicio': 'DataDeInicio',
-        'DataDeConclusao': 'DataDeConclusao'
-    }
+        'Areas': 'area_atendid_id',
+        'TipoServico': 'tipo_de_servico',
+        'ServicosEscalados': 'servicos_solicitados_id',
+        'ColaboradoresEscalados': 'colaboradores_chamados_id',
+        'DataDeInicio': 'data_de_inicio',
+        'DataDeConclusao': 'data_de_conclusao'
+    },
+
+    get_data = define_filters(request=request, isnull=True)
 
     if request.method == 'GET':
         get_data = request.GET.dict()
         objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
+
+        get_data = define_filters(request=request, isnull=False)
 
     dados_paginados = paginate(
         request=request,
@@ -146,6 +125,7 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
+                    **get_data,
                     'type': 'catalogo_de_servicos',
                 }
             ),
@@ -154,6 +134,7 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
+                    **get_data,
                     'type': 'catalogo_de_servicos',
                 }
             ),

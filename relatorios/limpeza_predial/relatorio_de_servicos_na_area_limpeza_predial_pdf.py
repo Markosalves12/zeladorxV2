@@ -10,22 +10,38 @@ from utils.utils import formatar_atributos, generate_id_random
 from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
 from dashboards.data_visualization_limpeza_predial import data_visualization_limpeza_predial_reports
 from areas.models_limpeza_predial import AreaLimpezaPredial
+from datetime import datetime
 
 
-def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, id_random, type):
+def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, id_random, DataDeInicio,
+                                                              DataDeConclusao, Areas, TipoServico, ServicosEscalados,
+                                                              ColaboradoresEscalados, type):
+
+    DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M')\
+        if DataDeInicio and DataDeInicio != "None" else 'None'
+    DataDeConclusao = datetime.strptime(DataDeConclusao, '%Y-%m-%dT%H:%M') \
+        if DataDeConclusao and DataDeConclusao != "None" else 'None'
+    ServicosEscalados = ServicosEscalados.split(',')
+    ColaboradoresEscalados = ColaboradoresEscalados.split(',')
+
+    print(ServicosEscalados, ColaboradoresEscalados, DataDeConclusao, DataDeInicio)
+
+    dados = colect_dados_fato_servico_limpeza_predial(
+        request=request,
+        DataDeInicio=DataDeInicio,
+        DataDeConclusao=DataDeConclusao,
+        ServicosEscalados=ServicosEscalados,
+        ColaboradoresEscalados=ColaboradoresEscalados,
+        status=['Concluido']
+    )
+
     if type == 'catalogo_de_servicos':
-        dados = colect_dados_fato_servico_limpeza_predial(
-            request=request,
-            status=['Concluido']
-        ).filter(
+        dados.filter(
             id_random_servico=id_random
         )
 
     if type == 'configuracao':
-        dados = colect_dados_fato_servico_limpeza_predial(
-            request=request,
-            status=['Concluido']
-        ).filter(
+        dados.filter(
             id_random_configuracao=id_random
         )
 
@@ -34,10 +50,7 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, i
             id_random=id_random
         )
 
-        dados = colect_dados_fato_servico_limpeza_predial(
-            request=request,
-            status=['Concluido']
-        ).filter(
+        dados.filter(
             id_random_area=id_random
         )
 

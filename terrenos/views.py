@@ -202,6 +202,12 @@ def areas_associadas_terrenos(request, userid, id_random):
         edition_rout='editar_area_jardins',
         history_rout='historico_de_servicos_areas_jardinagem',
         app_name=f'Áreas Jardinagem - {terreno.nome}',
+        form_search=TerrenoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'nome': 'nome',
+            'EmpresaSecundaria': 'EmpresaSecundaria__id'
+        },
         text_button_open_modal='Adicionar novo terreno',
         text_button_save='Salvar área',
         header_model='Novo terreno',

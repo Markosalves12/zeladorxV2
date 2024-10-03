@@ -27,9 +27,10 @@ class PermissionsAccessJardinagemForms(forms.ModelForm):
             # Alterando o widget dos campos de seleção múltipla para SelectMultiple
             self.fields['Permissions'] = forms.ModelMultipleChoiceField(
                 queryset=PermissionsJardinagem.objects.all(),
-                widget=forms.Select(
+                widget=forms.SelectMultiple(
                     attrs={
-                        'class': 'form-control'  # Modifique a classe se necessário
+                        'class': 'form-control',  # Modifique a classe se necessário
+                        'style': 'max-height: 40px; overflow-y: auto;'
                     }
                 ),
                 label='Permissões concedidas',

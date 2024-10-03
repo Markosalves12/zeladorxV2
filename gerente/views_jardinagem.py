@@ -5,9 +5,10 @@ from gerente.forms_jardinagem import GerenteJardinagemForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
-from servicos.models_jardinagem import ServicoJardinagemAgendado, FatoServicoJardinagem
+from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
 from utils.utils import paginate
-from utils.utils import aplicar_filtros_dinamicos
+from utils.utils import aplicar_filtros_dinamicos, define_filters
+from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 
 # Create your views here.
 def gerentes_jardinagem(request, userid):
@@ -162,25 +163,32 @@ def historico_de_servicos_gerente_jardinagem(request, userid, id_random):
         id_random=id_random
     )
 
-    servicos = FatoServicoJardinagem.objects.filter(
-        Gerente__id_random=userid
-    )
-
-    # Coletando os ids diretamente da queryset
-    servicos_ids = servicos.values_list('Servico__id_random', flat=True)
-
-    objetos = ServicoJardinagemAgendado.objects.filter(
-         id_random__in=servicos_ids
+    objetos = colect_dados_fato_servico_jardinagem(
+        request=request,
+        DataDeInicio='None',
+        DataDeConclusao='None',
+        ServicosEscalados=['None'],
+        ColaboradoresEscalados=['None'],
+        status=['Concluido'],
+    ).filter(
+        colaborador_envolvido_id_random=id_random
     )
 
     filtro_mapeamento = {
-        'username': 'username',
-        'email': 'email',
+        'TipoServico': 'tipo_de_servico',
+        'ServicosEscalados': 'servicos_solicitados_id',
+        'DataDeInicio': 'data_de_inicio',
+        'DataDeConclusao': 'data_de_conclusao',
+        'Areas': 'area_atendid_id'
     }
+
+    get_data = define_filters(request=request, isnull=True)
 
     if request.method == 'GET':
         get_data = request.GET.dict()
         objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
+
+        get_data = define_filters(request=request, isnull=False)
 
     dados_paginados = paginate(
         request=request,
@@ -195,16 +203,18 @@ def historico_de_servicos_gerente_jardinagem(request, userid, id_random):
             'app_name': f'Histórico de serviços {objeto}',
             'objeto': objeto,
             'foto_objeto': None,
-            'form_search': GerenteJardinagemForms(request=request, userid=userid, type='search'),
+            'form_search': ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
             'sform_search': True,
             'allowed_fields': list(filtro_mapeamento.keys()),
             'dados_paginados': dados_paginados,
+            'type': 'fato_jardinagem',
             'export_pdf': reverse(
                 'exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
-                    'type': 'catalogo_de_servicos',
+                    **get_data,
+                    'type': 'gerente',
                 }
             ),
             'export_excel': reverse(
@@ -212,7 +222,8 @@ def historico_de_servicos_gerente_jardinagem(request, userid, id_random):
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
-                    'type': 'catalogo_de_servicos',
+                    **get_data,
+                    'type': 'gerente',
                 }
             ),
         }

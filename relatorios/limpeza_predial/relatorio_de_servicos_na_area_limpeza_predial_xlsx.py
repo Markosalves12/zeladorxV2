@@ -3,9 +3,26 @@ from servicos.headers_report_limpeza_predial import headers_report_services
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
 from django.http import HttpResponse
 from utils.utils import generate_id_random
+from datetime import datetime
 
 
-def exportar_relatorio_de_serivos_na_area_limpeza_predial_excel(request, userid, id_random, type):
+def exportar_relatorio_de_serivos_na_area_limpeza_predial_excel(request, userid, id_random, DataDeInicio, DataDeConclusao, Areas,
+                                                   TipoServico, ServicosEscalados, ColaboradoresEscalados, type):
+
+    DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M') if DataDeInicio and DataDeInicio != "None" else 'None'
+    DataDeConclusao = datetime.strptime(DataDeConclusao, '%Y-%m-%dT%H:%M') if DataDeConclusao and DataDeConclusao != "None" else 'None'
+    ServicosEscalados = ServicosEscalados.split(',')
+    ColaboradoresEscalados = ColaboradoresEscalados.split(',')
+
+    dados = colect_dados_fato_servico_limpeza_predial(
+        request=request,
+        DataDeInicio=DataDeInicio,
+        DataDeConclusao=DataDeConclusao,
+        ServicosEscalados=ServicosEscalados,
+        ColaboradoresEscalados=ColaboradoresEscalados,
+        status=['Concluido']
+    )
+
     wb = openpyxl.Workbook()
     ws = wb.active
 
@@ -18,26 +35,17 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_excel(request, userid,
 
     # Adicione os dados do relatório ao arquivo Excel
     if type == 'catalogo_de_servicos':
-        dados = colect_dados_fato_servico_limpeza_predial(
-            request=request,
-            status=['Concluido']
-        ).filter(
+        dados.filter(
             id_random_servico=id_random
         )
 
     if type == 'configuracao':
-        dados = colect_dados_fato_servico_limpeza_predial(
-            request=request,
-            status=['Concluido']
-        ).filter(
+        dados.filter(
             id_random_configuracao=id_random
         )
 
     elif type == 'areas':
-        dados = colect_dados_fato_servico_limpeza_predial(
-            request=request,
-            status=['Concluido']
-        ).filter(
+        dados.filter(
             id_random_area=id_random
         )
 

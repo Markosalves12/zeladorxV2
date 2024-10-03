@@ -209,6 +209,10 @@ def colect_dados_agendamentos_jardinagem(request, DataDeInicio, DataDeConclusao,
             F('ColaboradoresEscalados__id'),
             output_field=IntegerField()
         ),
+        colaboradores_chamados_id_random=ExpressionWrapper(
+            F('ColaboradoresEscalados__id_random'),
+            output_field=IntegerField()
+        ),
         servicos_solicitados=ExpressionWrapper(
             F('ServicosEscalados__nome'),
             output_field=CharField()

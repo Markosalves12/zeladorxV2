@@ -7,7 +7,7 @@ from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado
 from utils.utils import paginate
-from utils.utils import aplicar_filtros_dinamicos
+from utils.utils import aplicar_filtros_dinamicos, define_filters
 
 # Create your views here.
 def gerentes_limpeza_predial(request, userid):

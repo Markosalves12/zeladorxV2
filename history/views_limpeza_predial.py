@@ -4,7 +4,7 @@ from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_pre
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from utils.utils import paginate
-from utils.utils import aplicar_filtros_dinamicos
+from utils.utils import aplicar_filtros_dinamicos, define_filters
 
 # Create your views here.
 def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
@@ -14,22 +14,30 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
 
     objetos = colect_dados_fato_servico_limpeza_predial(
         request=request,
+        DataDeInicio='None',
+        DataDeConclusao='None',
+        ServicosEscalados=['None'],
+        ColaboradoresEscalados=['None'],
         status=['Concluido']
     ).filter(
-        Servico__Areas__id_random=id_random
+        id_random_area=id_random
     )
 
     filtro_mapeamento = {
         'TipoServico': 'tipo_de_servico',
-        'ServicosEscalados': 'ServicosEscalados',
-        'ColaboradoresEscalados': 'ColaboradoresEscalados',
-        'DataDeInicio': 'DataDeInicio',
-        'DataDeConclusao': 'DataDeConclusao'
+        'ServicosEscalados': 'servicos_solicitados_id',
+        'DataDeInicio': 'data_de_inicio',
+        'DataDeConclusao': 'data_de_conclusao',
+        'Areas': 'area_atendid_id'
     }
+
+    get_data = define_filters(request=request, isnull=True)
 
     if request.method == 'GET':
         get_data = request.GET.dict()
         objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
+
+        get_data = define_filters(request=request, isnull=False)
 
     dados_paginados = paginate(
         request=request,
@@ -55,6 +63,7 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
+                    **get_data,
                     'type': 'areas'
                 }
             ),
@@ -63,6 +72,7 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
+                    **get_data,
                     'type': 'areas',
                 }
             ),
@@ -76,21 +86,30 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
 
     objetos = colect_dados_fato_servico_limpeza_predial(
         request=request,
+        DataDeInicio='None',
+        DataDeConclusao='None',
+        ServicosEscalados=['None'],
+        ColaboradoresEscalados=['None'],
         status=['Concluido']
     ).filter(
         id_random_servico=id_random
     )
 
     filtro_mapeamento = {
-        'Areas': 'Areas__id',
-        'TipoServico': 'TipoServico',
-        'DataDeInicio': 'DataDeInicio',
-        'DataDeConclusao': 'DataDeConclusao'
+        'TipoServico': 'tipo_de_servico',
+        'ServicosEscalados': 'servicos_solicitados_id',
+        'DataDeInicio': 'data_de_inicio',
+        'DataDeConclusao': 'data_de_conclusao',
+        'Areas': 'area_atendid_id'
     }
+
+    get_data = define_filters(request=request, isnull=True)
 
     if request.method == 'GET':
         get_data = request.GET.dict()
         objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
+
+        get_data = define_filters(request=request, isnull=False)
 
     dados_paginados = paginate(
         request=request,
@@ -116,6 +135,7 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
+                    **get_data,
                     'type': 'catalogo_de_servicos',
                 }
             ),
@@ -124,6 +144,7 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,
+                    **get_data,
                     'type': 'catalogo_de_servicos',
                 }
             ),

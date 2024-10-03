@@ -69,6 +69,8 @@
                   <span class="bg-green">Concluido {{ dado.DataDeConclusao }}</span>
                 {% elif type == 'fato_limpeza_predial' %}
                   <span class="bg-green">Concluido {{ dado.data_de_conclusao }}</span>
+                {% elif type == 'fato_jardinagem' %}
+                  <span class="bg-green">Concluido {{ dado.data_de_conclusao }}</span>
                 {% endif %}
               </div>
               <!-- /.timeline-label -->
@@ -76,7 +78,7 @@
               <div>
                 <i class="fas fa-message bg-blue"></i>
                 <div class="timeline-item">
-                  <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+<!--                  <span class="time"><i class="fas fa-clock"></i> 12:05</span>-->
                   <h3 class="timeline-header"><a href="#"></a> Descrição </h3>
                   {% if type == 'jardinagem_agendado' %}
                     <div class="timeline-body">
@@ -100,13 +102,25 @@
                       Área atendida: {{ dado.area_atendida }}</br>
                       Serviços escalados: {{ dado.servicos_solicitados }}</br>
                       Colaborador escalados: {{ dado.colaborador_envolvido }}</br>
+                      Horário de chegada: {{ dado.data_de_inicio }}</br>
+                      Horário de saída: {{ dado.data_de_conclusao }}</br>
+                    </div>
+                  {% elif type == 'fato_jardinagem' %}
+                    <div class="timeline-body">
+                      {{ dado.descricao_do_servico }}</br>
+                      </br>
+                      Área atendida: {{ dado.area_atendida }}</br>
+                      Serviços escalados: {{ dado.servicos_solicitados }}</br>
+                      Colaborador escalados: {{ dado.colaborador_envolvido }}</br>
+                      Horário de chegada: {{ dado.data_de_inicio }}</br>
+                      Horário de saída: {{ dado.data_de_conclusao }}</br>
                     </div>
                   {% endif %}
 
-                  <div class="timeline-footer">
-                    <a class="btn btn-primary btn-sm">Detalhamento da execução</a>
-                    <a class="btn btn-danger btn-sm">Deletar</a>
-                  </div>
+<!--                  <div class="timeline-footer">-->
+<!--                    <a class="btn btn-primary btn-sm">Detalhamento da execução</a>-->
+<!--                    <a class="btn btn-danger btn-sm">Deletar</a>-->
+<!--                  </div>-->
                 </div>
               </div>
               <!-- END timeline item -->
@@ -136,6 +150,19 @@
                       {% else %}
                         <img src="{% static 'dist/img/not found.png' %}" alt="Not found imagem" class="img-fluid">
                       {% endif %}
+
+<!--                    {% elif type == 'fato_jardinagem' %}-->
+<!--                      {% if dado.antes.url %}-->
+<!--                        <img src="{{ dado.antes.url }}" alt="Imagem do Objeto" class="img-fluid">-->
+<!--                      {% else %}-->
+<!--                        <img src="{% static 'dist/img/not found.png' %}" alt="Not found imagem" class="img-fluid">-->
+<!--                      {% endif %}-->
+
+<!--                      {% if dado.depois.url %}-->
+<!--                        <img src="{{ dado.depois.url }}" alt="Imagem do Objeto" class="img-fluid">-->
+<!--                      {% else %}-->
+<!--                        <img src="{% static 'dist/img/not found.png' %}" alt="Not found imagem" class="img-fluid">-->
+<!--                      {% endif %}-->
                     {% endif %}
                   </div>
                 </div>

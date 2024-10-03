@@ -4,6 +4,14 @@ from history.views_jardinagem import historico_de_servicos_areas_jardinagem, his
 
 urlpatterns = [
     # rota na raiz do sistema
-    path('historico_de_servicos_areas_jardinagem/<str:userid>/<str:id_random>', historico_de_servicos_areas_jardinagem, name='historico_de_servicos_areas_jardinagem'),
-    path('historico_de_servicos_catologo_de_servicos_jardinagem/<str:userid>/<str:id_random>', historico_de_servicos_catologo_de_servicos_jardinagem, name='historico_de_servicos_catologo_de_servicos_jardinagem'),
+    path(
+        'historico_de_servicos_areas_jardinagem/<str:userid>/<str:id_random>/',
+         historico_de_servicos_areas_jardinagem,
+         name='historico_de_servicos_areas_jardinagem'
+    ),
+    path(
+        'historico_de_servicos_catologo_de_servicos_jardinagem/<str:userid>/<str:id_random>',
+         historico_de_servicos_catologo_de_servicos_jardinagem,
+         name='historico_de_servicos_catologo_de_servicos_jardinagem'
+    ),
 ]
