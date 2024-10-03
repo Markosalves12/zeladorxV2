@@ -29,6 +29,12 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDe
     if DataDeConclusao and DataDeConclusao != "None":
         filters['DataDeConclusao__lte'] = DataDeConclusao
 
+    if TipoServico and TipoServico != "None":
+        filters['TipoServico'] = TipoServico
+
+    if Areas and Areas != "None":
+        filters['Areas__id'] = Areas
+
     if ServicosEscalados and ServicosEscalados != ["None"]:
         filters['ServicosEscalados__id__in'] = ServicosEscalados
 
@@ -174,7 +180,8 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDe
         figs_em_proximo = data_visualization_jardinagem_reports(request, userid).define_figs_proximos()
         p.drawString(50, start_y, f"Volume de servicos prestados")
         start_y -= 20
-        start_y, end_page = add_figures_to_pdf(p, {**figs_agendados, **figs_em_proximo, **figs_em_andamento}, start_y, start_y + 1,
+        start_y, end_page = add_figures_to_pdf(p, {**figs_agendados, **figs_em_proximo, **figs_em_andamento},
+                                               start_y, start_y + 1,
                                                header_image_path=header_image_path, width=width, height=height)
 
     draw_footer(

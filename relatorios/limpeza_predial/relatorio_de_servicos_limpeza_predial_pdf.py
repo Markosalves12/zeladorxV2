@@ -20,26 +20,14 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid, status, D
     ServicosEscalados = ServicosEscalados.split(',')
     ColaboradoresEscalados = ColaboradoresEscalados.split(',')
 
-    filters = dict()
-
-    if DataDeInicio and DataDeInicio != "None":
-        filters['DataDeInicio__gte'] = DataDeInicio
-
-    if DataDeConclusao and DataDeConclusao != "None":
-        filters['DataDeConclusao__lte'] = DataDeConclusao
-
-    if ServicosEscalados and ServicosEscalados != ["None"]:
-        filters['ServicosEscalados__id__in'] = ServicosEscalados
-
-    if ColaboradoresEscalados and ColaboradoresEscalados != ["None"]:
-        filters['ColaboradoresEscalados__id__in'] = ColaboradoresEscalados
-
     dados = colect_dados_fato_servico_limpeza_predial(
         request=request,
         DataDeInicio=DataDeInicio,
         DataDeConclusao=DataDeConclusao,
         ServicosEscalados=ServicosEscalados,
+        TipoServico=TipoServico,
         ColaboradoresEscalados=ColaboradoresEscalados,
+        Areas=Areas,
         status=status.split(',')
     )
 

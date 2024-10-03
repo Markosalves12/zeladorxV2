@@ -30,6 +30,8 @@ def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid, status, Data
             DataDeConclusao=DataDeConclusao,
             ServicosEscalados=ServicosEscalados,
             ColaboradoresEscalados=ColaboradoresEscalados,
+            TipoServico=TipoServico,
+            Areas=Areas,
             status=status.split(',')
         )
 
@@ -75,6 +77,8 @@ def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid, status, Data
             DataDeConclusao=DataDeConclusao,
             ServicosEscalados=ServicosEscalados,
             ColaboradoresEscalados=ColaboradoresEscalados,
+            TipoServico=TipoServico,
+            Areas=Areas,
             status=status.split(',')
         )
 

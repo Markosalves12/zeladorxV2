@@ -5,7 +5,7 @@ from django.db.models import (ExpressionWrapper, F, CharField,
 
 
 def colect_dados_fato_servico_jardinagem(request, DataDeInicio, DataDeConclusao, ServicosEscalados,
-                                         ColaboradoresEscalados, status=list):
+                                         ColaboradoresEscalados, TipoServico, Areas, status=list):
     # Adicione os dados do relatório ao arquivo Excel
     filters = {
         'status_servico__in': status,
@@ -18,11 +18,18 @@ def colect_dados_fato_servico_jardinagem(request, DataDeInicio, DataDeConclusao,
     if DataDeConclusao and DataDeConclusao != "None":
         filters['data_de_conclusao__lte'] = DataDeConclusao
 
+    if TipoServico and TipoServico != "None":
+        filters['tipo_de_servico'] = TipoServico
+
+    if Areas and Areas != "None":
+        filters['area_atendid_id'] = Areas
+
     if ServicosEscalados and ServicosEscalados != ["None"]:
         filters['servicos_solicitados_id__in'] = ServicosEscalados
 
     if ColaboradoresEscalados and ColaboradoresEscalados != ["None"]:
         filters['colaboradores_chamados_id__in'] = ColaboradoresEscalados
+
 
     dados = FatoServicoJardinagem.objects.annotate(
         tipodeempresa=ExpressionWrapper(
@@ -161,7 +168,7 @@ def colect_dados_fato_servico_jardinagem(request, DataDeInicio, DataDeConclusao,
 
 
 def colect_dados_agendamentos_jardinagem(request, DataDeInicio, DataDeConclusao, ServicosEscalados,
-                                         ColaboradoresEscalados, status=list):
+                                         ColaboradoresEscalados, TipoServico, Areas, status=list):
     # Adicione os dados do relatório ao arquivo Excel
     filters = {
         'status_servico__in': status,
@@ -173,6 +180,12 @@ def colect_dados_agendamentos_jardinagem(request, DataDeInicio, DataDeConclusao,
 
     if DataDeConclusao and DataDeConclusao != "None":
         filters['data_de_conclusao__lte'] = DataDeConclusao
+
+    if TipoServico and TipoServico != "None":
+        filters['tipo_agendamento'] = TipoServico
+
+    if Areas and Areas != "None":
+        filters['area_atendida_id'] = Areas
 
     if ServicosEscalados and ServicosEscalados != ["None"]:
         filters['servicos_solicitados_id__in'] = ServicosEscalados
@@ -243,6 +256,10 @@ def colect_dados_agendamentos_jardinagem(request, DataDeInicio, DataDeConclusao,
         ),
         area_atendida=ExpressionWrapper(
             F('Areas__nome'),
+            output_field=CharField()
+        ),
+        area_atendida_id=ExpressionWrapper(
+            F('Areas__id'),
             output_field=CharField()
         ),
         periodicidade_de_retorno=ExpressionWrapper(

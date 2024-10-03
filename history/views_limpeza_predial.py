@@ -1,10 +1,8 @@
-from django.shortcuts import render, reverse
 from areas.models_limpeza_predial import AreaLimpezaPredial
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
-from utils.utils import paginate
-from utils.utils import aplicar_filtros_dinamicos, define_filters
+from utils.views import generic_view_history
 
 # Create your views here.
 def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
@@ -16,6 +14,8 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
         request=request,
         DataDeInicio='None',
         DataDeConclusao='None',
+        TipoServico='None',
+        Areas='None',
         ServicosEscalados=['None'],
         ColaboradoresEscalados=['None'],
         status=['Concluido']
@@ -23,61 +23,30 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
         id_random_area=id_random
     )
 
-    filtro_mapeamento = {
-        'TipoServico': 'tipo_de_servico',
-        'ServicosEscalados': 'servicos_solicitados_id',
-        'DataDeInicio': 'data_de_inicio',
-        'DataDeConclusao': 'data_de_conclusao',
-        'Areas': 'area_atendid_id'
-    }
-
-    get_data = define_filters(request=request, isnull=True)
-
-    if request.method == 'GET':
-        get_data = request.GET.dict()
-        objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
-
-        get_data = define_filters(request=request, isnull=False)
-
-    dados_paginados = paginate(
+    return generic_view_history(
         request=request,
-        data_objects=objetos,
-        per_page=2
+        userid=userid,
+        id_random=id_random,
+        app_name=f'Histórico de serviços {objeto.nome}',
+        objeto=objeto,
+        objetos=objetos,
+        type_exibition='fato_limpeza_predial',
+        type_export='areas',
+        form_search=ServicoLimpezaPredialAgendadoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'TipoServico': 'tipo_de_servico',
+            'ServicosEscalados': 'servicos_solicitados_id',
+            'DataDeInicio': 'data_de_inicio',
+            'DataDeConclusao': 'data_de_conclusao',
+            'Areas': 'area_atendid_id'
+        },
+        export_pdf='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
+        export_excel='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
+        foto_objeto=None,
+        Foto=False
     )
 
-    return render(
-        request=request,
-        template_name="history/history.html",
-        context={
-            'app_name': f'Histórico de serviços {objeto.nome}',
-            'objeto': objeto,
-            'foto_objeto': objeto.foto.url if objeto.foto else None,
-            'Foto': True,
-            'type': 'fato_limpeza_predial',
-            'form_search': ServicoLimpezaPredialAgendadoForms(request=request, userid=userid, type='search'),
-            'sform_search': True,
-            'allowed_fields': list(filtro_mapeamento.keys()),
-            'dados_paginados': dados_paginados,
-            'export_pdf': reverse(
-                viewname='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random,
-                    **get_data,
-                    'type': 'areas'
-                }
-            ),
-            'export_excel': reverse(
-                viewname='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random,
-                    **get_data,
-                    'type': 'areas',
-                }
-            ),
-        }
-    )
 
 def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, id_random):
     objeto = CatalogodeServicoLimpezaPredial.objects.get(
@@ -88,6 +57,8 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
         request=request,
         DataDeInicio='None',
         DataDeConclusao='None',
+        TipoServico='None',
+        Areas='None',
         ServicosEscalados=['None'],
         ColaboradoresEscalados=['None'],
         status=['Concluido']
@@ -95,58 +66,26 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
         id_random_servico=id_random
     )
 
-    filtro_mapeamento = {
-        'TipoServico': 'tipo_de_servico',
-        'ServicosEscalados': 'servicos_solicitados_id',
-        'DataDeInicio': 'data_de_inicio',
-        'DataDeConclusao': 'data_de_conclusao',
-        'Areas': 'area_atendid_id'
-    }
-
-    get_data = define_filters(request=request, isnull=True)
-
-    if request.method == 'GET':
-        get_data = request.GET.dict()
-        objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
-
-        get_data = define_filters(request=request, isnull=False)
-
-    dados_paginados = paginate(
+    return generic_view_history(
         request=request,
-        data_objects=objetos,
-        per_page=1
-    )
-
-    return render(
-        request=request,
-        template_name="history/history.html",
-        context={
-            'app_name': f'Histórico de serviços {objeto.nome}',
-            'objeto': objeto,
-            'foto_objeto': None,
-            'Foto': False,
-            'type': 'fato_limpeza_predial',
-            'form_search': ServicoLimpezaPredialAgendadoForms(request=request, userid=userid, type='search'),
-            'sform_search': True,
-            'allowed_fields': list(filtro_mapeamento.keys()),
-            'dados_paginados': dados_paginados,
-            'export_pdf': reverse(
-                viewname='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random,
-                    **get_data,
-                    'type': 'catalogo_de_servicos',
-                }
-            ),
-            'export_excel': reverse(
-                viewname='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random,
-                    **get_data,
-                    'type': 'catalogo_de_servicos',
-                }
-            ),
-        }
+        userid=userid,
+        id_random=id_random,
+        app_name=f'Histórico de serviços {objeto.nome}',
+        objeto=objeto,
+        objetos=objetos,
+        type_exibition='fato_limpeza_predial',
+        type_export='catalogo_de_servicos',
+        form_search=ServicoLimpezaPredialAgendadoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'TipoServico': 'tipo_de_servico',
+            'ServicosEscalados': 'servicos_solicitados_id',
+            'DataDeInicio': 'data_de_inicio',
+            'DataDeConclusao': 'data_de_conclusao',
+            'Areas': 'area_atendid_id'
+        },
+        export_pdf='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
+        export_excel='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
+        foto_objeto=None,
+        Foto=False
     )

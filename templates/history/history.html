@@ -80,7 +80,7 @@
                 <div class="timeline-item">
 <!--                  <span class="time"><i class="fas fa-clock"></i> 12:05</span>-->
                   <h3 class="timeline-header"><a href="#"></a> Descrição </h3>
-                  {% if type == 'jardinagem_agendado' %}
+                  {% if type_exibition == 'jardinagem_agendado' %}
                     <div class="timeline-body">
                       {{ dado.DescricaoDoServico }}</br>
                       </br>
@@ -95,7 +95,7 @@
                         {{ colaborador }},
                       {% endfor %}
                     </div>
-                  {% elif type == 'fato_limpeza_predial' %}
+                  {% elif type_exibition == 'fato_limpeza_predial' %}
                     <div class="timeline-body">
                       {{ dado.descricao_do_servico }}</br>
                       </br>
@@ -105,7 +105,7 @@
                       Horário de chegada: {{ dado.data_de_inicio }}</br>
                       Horário de saída: {{ dado.data_de_conclusao }}</br>
                     </div>
-                  {% elif type == 'fato_jardinagem' %}
+                  {% elif type_exibition == 'fato_jardinagem' %}
                     <div class="timeline-body">
                       {{ dado.descricao_do_servico }}</br>
                       </br>
@@ -131,7 +131,7 @@
 <!--                  <span class="time"><i class="fas fa-clock"></i> 2 days ago</span>-->
                   <h3 class="timeline-header"><a href="#"></a> Fotos</h3>
                   <div class="timeline-body">
-                    {% if type == 'jardinagem_agendado' %}
+                    {% if type_exibition == 'jardinagem_agendado' %}
                       {% if dado.foto_solicitacao %}
                         <img src="{{ dado.foto_solicitacao.url }}" alt="Imagem do Objeto" class="img-fluid">
                       {% else %}
@@ -144,7 +144,7 @@
                         <img src="{% static 'dist/img/not found.png' %}" alt="Not found imagem" class="img-fluid">
                       {% endif %}
 
-                    {% elif type == 'fato_limpeza_predial' %}
+                    {% elif type_exibition == 'fato_limpeza_predial' %}
                       {% if dado.foto_entrega.url %}
                         <img src="{{ dado.foto_entrega.url }}" alt="Imagem do Objeto" class="img-fluid">
                       {% else %}

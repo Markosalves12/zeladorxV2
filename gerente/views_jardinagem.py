@@ -1,13 +1,11 @@
 # Create your views here.
-from django.shortcuts import reverse, render
+from django.shortcuts import reverse
 from gerente.models import Gerente
 from gerente.forms_jardinagem import GerenteJardinagemForms
-from utils.views import generic_view, edit_generic_view, gerneric_alter_status
+from utils.views import generic_view, edit_generic_view, gerneric_alter_status, generic_view_history
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
-from utils.utils import paginate
-from utils.utils import aplicar_filtros_dinamicos, define_filters
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 
 # Create your views here.
@@ -174,57 +172,26 @@ def historico_de_servicos_gerente_jardinagem(request, userid, id_random):
         colaborador_envolvido_id_random=id_random
     )
 
-    filtro_mapeamento = {
-        'TipoServico': 'tipo_de_servico',
-        'ServicosEscalados': 'servicos_solicitados_id',
-        'DataDeInicio': 'data_de_inicio',
-        'DataDeConclusao': 'data_de_conclusao',
-        'Areas': 'area_atendid_id'
-    }
-
-    get_data = define_filters(request=request, isnull=True)
-
-    if request.method == 'GET':
-        get_data = request.GET.dict()
-        objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
-
-        get_data = define_filters(request=request, isnull=False)
-
-    dados_paginados = paginate(
+    return generic_view_history(
         request=request,
-        data_objects=objetos,
-        per_page=1
-    )
-
-    return render(
-        request=request,
-        template_name="history/history.html",
-        context={
-            'app_name': f'Histórico de serviços {objeto}',
-            'objeto': objeto,
-            'foto_objeto': None,
-            'form_search': ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
-            'sform_search': True,
-            'allowed_fields': list(filtro_mapeamento.keys()),
-            'dados_paginados': dados_paginados,
-            'type': 'fato_jardinagem',
-            'export_pdf': reverse(
-                'exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random,
-                    **get_data,
-                    'type': 'gerente',
-                }
-            ),
-            'export_excel': reverse(
-                viewname='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random,
-                    **get_data,
-                    'type': 'gerente',
-                }
-            ),
-        }
+        userid=userid,
+        id_random=id_random,
+        app_name=f'Histórico de serviços {objeto.nome}',
+        objeto=objeto,
+        objetos=objetos,
+        type_exibition='fato_jardinagem',
+        type_export='gerente',
+        form_search=ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'TipoServico': 'tipo_de_servico',
+            'ServicosEscalados': 'servicos_solicitados_id',
+            'DataDeInicio': 'data_de_inicio',
+            'DataDeConclusao': 'data_de_conclusao',
+            'Areas': 'area_atendid_id'
+        },
+        export_pdf='exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
+        export_excel='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
+        foto_objeto=None,
+        Foto=False
     )

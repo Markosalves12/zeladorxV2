@@ -22,6 +22,8 @@ def relatorios_de_servicos_limpeza_predial_xlsx_concluidos(request, userid):
         request=request,
         DataDeInicio='None',
         DataDeConclusao='None',
+        TipoServico='None',
+        Areas='None',
         ServicosEscalados=['None'],
         ColaboradoresEscalados=['None'],
         status=['Concluido']

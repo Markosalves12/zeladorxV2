@@ -22,6 +22,8 @@ def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
         request=request,
         DataDeInicio='None',
         DataDeConclusao='None',
+        TipoServico='None',
+        Areas='None',
         ServicosEscalados=['None'],
         ColaboradoresEscalados=['None'],
         status=['Concluido']

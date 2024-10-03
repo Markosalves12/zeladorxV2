@@ -1,13 +1,12 @@
 # Create your views here.
-from django.shortcuts import reverse, render
+from django.shortcuts import reverse
 from gerente.models import Gerente
 from gerente.forms_limpeza_predial import GerenteLimpezaPredialForms
-from utils.views import generic_view, edit_generic_view, gerneric_alter_status
+from utils.views import generic_view, edit_generic_view, gerneric_alter_status, generic_view_history
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
-from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado
-from utils.utils import paginate
-from utils.utils import aplicar_filtros_dinamicos, define_filters
+from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
+from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 
 # Create your views here.
 def gerentes_limpeza_predial(request, userid):
@@ -163,51 +162,39 @@ def historico_de_servicos_gerente_limpeza_predial(request, userid, id_random):
         id_random=id_random
     )
 
-    objetos = ServicoLimpezaPredialAgendado.objects.filter(
-        ServicosEscalados__id_random=id_random,
+    objetos = colect_dados_fato_servico_limpeza_predial(
+        request=request,
+        DataDeInicio='None',
+        DataDeConclusao='None',
+        TipoServico='None',
+        Areas='None',
+        ServicosEscalados=['None'],
+        ColaboradoresEscalados=['None'],
+        status=['Concluido'],
+    ).filter(
+        colaborador_envolvido_id_random=id_random
     )
 
-    filtro_mapeamento = {
-        'username': 'username',
-        'email': 'email',
-    }
-
-    if request.method == 'GET':
-        get_data = request.GET.dict()
-        objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
-
-    dados_paginados = paginate(
+    return generic_view_history(
         request=request,
-        data_objects=objetos,
-        per_page=1
-    )
-
-    return render(
-        request=request,
-        template_name="history/history.html",
-        context={
-            'app_name': f'Histórico de serviços {objeto}',
-            'objeto': objeto,
-            'foto_objeto': None,
-            'form_search': GerenteLimpezaPredialForms(request=request, userid=userid, type='search'),
-            'sform_search': True,
-            'allowed_fields': list(filtro_mapeamento.keys()),
-            'dados_paginados': dados_paginados,
-            'export_pdf': reverse(
-                viewname='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random,
-                    'type': 'catalogo_de_servicos',
-                }
-            ),
-            'export_excel': reverse(
-                viewname='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random,
-                    'type': 'catalogo_de_servicos',
-                }
-            ),
-        }
+        userid=userid,
+        id_random=id_random,
+        app_name=f'Histórico de serviços {objeto.nome}',
+        objeto=objeto,
+        objetos=objetos,
+        type_exibition='fato_jardinagem',
+        type_export='gerente',
+        form_search=ServicoLimpezaPredialAgendadoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'TipoServico': 'tipo_de_servico',
+            'ServicosEscalados': 'servicos_solicitados_id',
+            'DataDeInicio': 'data_de_inicio',
+            'DataDeConclusao': 'data_de_conclusao',
+            'Areas': 'area_atendid_id'
+        },
+        export_pdf='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
+        export_excel='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
+        foto_objeto=None,
+        Foto=False
     )

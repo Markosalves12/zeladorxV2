@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from utils.utils import DataTableAndForms, aplicar_filtros_dinamicos
+from utils.utils import DataTableAndForms, aplicar_filtros_dinamicos, define_filters, paginate
 from django.urls import reverse
 from settings.utils import define_setting
 from permissionscontrol.utils import configurate_permissions
@@ -183,3 +183,56 @@ def gerneric_alter_status(request, model_class, redirect_url_name, id_random, ne
         )
 
     return redirect(redirect_url_name)
+
+
+def generic_view_history(request, userid, id_random, app_name, objeto, objetos, type_exibition, type_export, form_search,
+                         sform_search, filtro_mapeamento, export_pdf, export_excel,
+                         foto_objeto=None, Foto=False):
+
+    get_data = define_filters(request=request, isnull=True)
+
+    if request.method == 'GET':
+        get_data = request.GET.dict()
+        objetos = aplicar_filtros_dinamicos(objetos, get_data, filtro_mapeamento)
+
+        get_data = define_filters(request=request, isnull=False)
+
+    dados_paginados = paginate(
+        request=request,
+        data_objects=objetos,
+        per_page=2
+    )
+
+    return render(
+        request=request,
+        template_name='history/history.html',
+        context={
+            'app_name': f'{app_name}',
+            'objeto': objeto,
+            'foto_objeto': foto_objeto,
+            'Foto': Foto,
+            'type_exibition': type_exibition,
+            'form_search': form_search,
+            'sform_search': sform_search,
+            'allowed_fields': list(filtro_mapeamento.keys()),
+            'dados_paginados': dados_paginados,
+            'export_pdf': reverse(
+                f'{export_pdf}',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random,
+                    **get_data,
+                    'type': f'{type_export}',
+                }
+            ),
+            'export_excel': reverse(
+                viewname=f'{export_excel}',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random,
+                    **get_data,
+                    'type': f'{type_export}',
+                }
+            ),
+        }
+    )

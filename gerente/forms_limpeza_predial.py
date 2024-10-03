@@ -21,13 +21,11 @@ class GerenteLimpezaPredialForms(forms.ModelForm):
             for field_name, field in self.fields.items():
                 field.required = False
 
-            self.fields['empresasecundaria'].queryset = self.fields['empresasecundaria'].queryset.filter(
-                empresaprimaria__id_random__in=empresas_primarias_ids,
-                setor__setor='Limpeza predial',
-            )
-
             self.fields['empresasecundaria'] = forms.ModelMultipleChoiceField(
-                queryset=EmpresaSecundaria.objects.all(),
+                queryset=EmpresaSecundaria.objects.filter(
+                    empresaprimaria__id_random__in=empresas_primarias_ids,
+                    setor__setor='Limpeza predial',
+                ),
                 widget=forms.SelectMultiple(
                     attrs={
                         'class': 'form-control',  # Modifique a classe se necessário

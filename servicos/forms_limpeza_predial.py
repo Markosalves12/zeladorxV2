@@ -38,11 +38,6 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
             for field_name, field in self.fields.items():
                 field.required = False
 
-            self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
-                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-                EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
-            )
-
             self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
                 localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
@@ -50,7 +45,10 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
 
             # Alterando o widget dos campos de seleção múltipla para SelectMultiple
             self.fields['ServicosEscalados'] = forms.ModelMultipleChoiceField(
-                queryset=CatalogodeServicoLimpezaPredial.objects.all(),
+                queryset=CatalogodeServicoLimpezaPredial.objects.filter(
+                    EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                    EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+                ),
                 widget=forms.SelectMultiple(
                     attrs={
                         'class': 'form-control',  # Modifique a classe se necessário

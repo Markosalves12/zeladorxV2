@@ -4,7 +4,7 @@ from django.db.models import (ExpressionWrapper, F, CharField,
                               )
 
 def colect_dados_fato_servico_limpeza_predial(request, DataDeInicio, DataDeConclusao, ServicosEscalados,
-                                         ColaboradoresEscalados, status=list):
+                                         ColaboradoresEscalados, TipoServico, Areas, status=list):
 
     filters = {
         'status_servico__in': status,
@@ -14,8 +14,14 @@ def colect_dados_fato_servico_limpeza_predial(request, DataDeInicio, DataDeConcl
     if DataDeInicio and DataDeInicio != "None":
         filters['data_de_inicio__gte'] = DataDeInicio
 
+    if TipoServico and TipoServico != "None":
+        filters['tipo_de_servico'] = TipoServico
+
     if DataDeConclusao and DataDeConclusao != "None":
         filters['data_de_conclusao__lte'] = DataDeConclusao
+
+    if Areas and Areas != "None":
+        filters['area_atendid_id'] = Areas
 
     if ServicosEscalados and ServicosEscalados != ["None"]:
         filters['servicos_solicitados_id__in'] = ServicosEscalados
@@ -135,7 +141,7 @@ def colect_dados_fato_servico_limpeza_predial(request, DataDeInicio, DataDeConcl
     return dados
 
 def colect_dados_agendamentos_limpeza_predial(request, DataDeInicio, DataDeConclusao, ServicosEscalados,
-                                         ColaboradoresEscalados, status=list):
+                                         ColaboradoresEscalados, TipoServico, Areas, status=list):
     filters = {
         'status_servico__in': status,
         'tipodeempresa': 'Limpeza predial',
@@ -146,6 +152,12 @@ def colect_dados_agendamentos_limpeza_predial(request, DataDeInicio, DataDeConcl
 
     if DataDeConclusao and DataDeConclusao != "None":
         filters['data_de_conclusao__lte'] = DataDeConclusao
+
+    if Areas and Areas != "None":
+        filters['area_atendid_id'] = Areas
+
+    if TipoServico and TipoServico != "None":
+        filters['tipo_agendamento'] = TipoServico
 
     if ServicosEscalados and ServicosEscalados != ["None"]:
         filters['servicos_solicitados_id__in'] = ServicosEscalados
@@ -196,6 +208,10 @@ def colect_dados_agendamentos_limpeza_predial(request, DataDeInicio, DataDeConcl
         ),
         area_atendida=ExpressionWrapper(
             F('Areas__nome'),
+            output_field=CharField()
+        ),
+        area_atendid_id=ExpressionWrapper(
+            F('Areas__id'),
             output_field=CharField()
         ),
         area_total=ExpressionWrapper(

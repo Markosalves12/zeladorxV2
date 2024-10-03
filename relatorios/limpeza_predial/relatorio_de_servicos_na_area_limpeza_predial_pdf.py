@@ -24,8 +24,6 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, i
     ServicosEscalados = ServicosEscalados.split(',')
     ColaboradoresEscalados = ColaboradoresEscalados.split(',')
 
-    print(ServicosEscalados, ColaboradoresEscalados, DataDeConclusao, DataDeInicio)
-
     dados = colect_dados_fato_servico_limpeza_predial(
         request=request,
         DataDeInicio=DataDeInicio,

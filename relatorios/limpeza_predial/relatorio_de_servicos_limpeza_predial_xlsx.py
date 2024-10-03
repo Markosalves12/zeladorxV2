@@ -31,6 +31,8 @@ def exportar_relatorio_de_serivos_limpeza_predial_excel(request, userid, status,
             DataDeInicio=DataDeInicio,
             DataDeConclusao=DataDeConclusao,
             ServicosEscalados=ServicosEscalados,
+            Areas=Areas,
+            TipoServico=TipoServico,
             ColaboradoresEscalados=ColaboradoresEscalados,
             status=status.split(',')
         )
@@ -78,6 +80,8 @@ def exportar_relatorio_de_serivos_limpeza_predial_excel(request, userid, status,
             DataDeInicio=DataDeInicio,
             DataDeConclusao=DataDeConclusao,
             ServicosEscalados=ServicosEscalados,
+            Areas=Areas,
+            TipoServico=TipoServico,
             ColaboradoresEscalados=ColaboradoresEscalados,
             status=status.split(',')
         )
