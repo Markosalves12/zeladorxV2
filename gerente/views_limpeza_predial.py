@@ -196,5 +196,6 @@ def historico_de_servicos_gerente_limpeza_predial(request, userid, id_random):
         export_pdf='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
         export_excel='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
         foto_objeto=None,
-        Foto=False
+        Foto=False,
+        redirect_close_button='gerentes_limpeza_predial'
     )

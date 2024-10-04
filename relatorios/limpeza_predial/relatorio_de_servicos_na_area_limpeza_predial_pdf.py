@@ -35,24 +35,20 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, i
         status=['Concluido']
     )
 
-    # if type == 'catalogo_de_servicos':
-    #     dados.filter(
-    #         id_random_servico=id_random
-    #     )
-    #
-    # if type == 'configuracao':
-    #     dados.filter(
-    #         id_random_configuracao=id_random
-    #     )
+    if type == 'configuracao':
+        dados = dados.filter(
+            id_random_configuracao=id_random
+        )
 
-    if type == 'areas':
+    elif type == 'areas':
         object = AreaLimpezaPredial.objects.get(
             id_random=id_random
         )
-        #
-        # dados.filter(
-        #     id_random_area=id_random
-        # )
+
+    elif type == 'gerente':
+        dados = dados.filter(
+            colaborador_envolvido_id_random=id_random
+        )
 
     # cria um buffer para inserir os dados no pdf
     buffer = BytesIO()

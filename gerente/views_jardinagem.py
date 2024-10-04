@@ -195,5 +195,6 @@ def historico_de_servicos_gerente_jardinagem(request, userid, id_random):
         export_pdf='exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
         export_excel='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
         foto_objeto=None,
-        Foto=False
+        Foto=False,
+        redirect_close_button='gerentes_jardinagem'
     )

@@ -186,7 +186,7 @@ def gerneric_alter_status(request, model_class, redirect_url_name, id_random, ne
 
 
 def generic_view_history(request, userid, id_random, app_name, objeto, objetos, type_exibition, type_export, form_search,
-                         sform_search, filtro_mapeamento, export_pdf, export_excel,
+                         sform_search, filtro_mapeamento, export_pdf, export_excel, redirect_close_button,
                          foto_objeto=None, Foto=False):
 
     get_data = define_filters(request=request, isnull=True)
@@ -234,5 +234,6 @@ def generic_view_history(request, userid, id_random, app_name, objeto, objetos, 
                     'type': f'{type_export}',
                 }
             ),
+            'redirect_close_button': redirect_close_button
         }
     )

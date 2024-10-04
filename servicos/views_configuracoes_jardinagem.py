@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, reverse
 from servicos.models_jardinagem import ServicoJardinagemConfigurado
 from servicos.forms_configuracoes_jardinagem import ServicoJardinagemConfiguradoForms
-from utils.views import generic_view, edit_generic_view, gerneric_alter_status
+from utils.views import generic_view, edit_generic_view, gerneric_alter_status, generic_view_history
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from utils.utils import paginate
+
 
 def configurar_servico_jardinagem(request, userid):
     forms = ServicoJardinagemConfiguradoForms(request=request, userid=userid)
@@ -48,6 +49,7 @@ def configurar_servico_jardinagem(request, userid):
             'link_tipos': tipos
         }
     )
+
 
 def servicos_configurados_jardinagem(request, userid):
     permission_view = validate_permissions(
@@ -197,37 +199,24 @@ def historico_de_servicos_configurados_jardinagem(request, userid, id_random):
         status__in=['Concluido']
     )
 
-    dados_paginados = paginate(
+    return generic_view_history(
         request=request,
-        data_objects=objetos,
-        per_page=1
-    )
-
-    return render(
-        request=request,
-        template_name="history/history.html",
-        context={
-            'app_name': f'Histórico de serviços {objeto}',
-            'objeto': objeto,
-            'foto_objeto': None,
-            'Foto': False,
-            'type': 'jardinagem_agendado',
-            'dados_paginados': dados_paginados,
-            'export_pdf': reverse(
-                'exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random,
-                    'type': 'configuracao'
-                }
-            ),
-            'export_excel': reverse(
-                viewname='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random,
-                    'type': 'configuracao'
-                }
-            ),
-        }
+        userid=userid,
+        id_random=id_random,
+        app_name=f'Histórico de serviços {objeto}',
+        objeto=objeto,
+        objetos=objetos,
+        type_exibition='jardinagem_agendado',
+        type_export='configuracao',
+        form_search=ServicoJardinagemConfiguradoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'Areas': 'Areas__id',
+            'diasaseremrealizado': 'diasaseremrealizado'
+        },
+        export_pdf='exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
+        export_excel='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
+        foto_objeto=None,
+        Foto=False,
+        redirect_close_button='servicos_configurados_jardinagem'
     )
