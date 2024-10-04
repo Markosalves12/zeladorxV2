@@ -1,17 +1,14 @@
-from servicos.models_jardinagem import ServicoJardinagemAgendado
-from django.db.models.functions import Now
-from django.db.models import F, Q, ExpressionWrapper, IntegerField
+from django.db.models import Q
 from django.utils import timezone
-from datetime import timedelta
 from dashboards.data_visualization import calculate_areas_and_counts, generate_chart, generate_grouped_chart
 from dashboards.utils_jardinagem import colect_dados_jardinagem
+from utils.utils import define_range_time
 
 def data_visualization_jardinagem_indicadores(request, userid, agendado):
     em_andamento = agendado.filter(status='Em andamento').count()
     atrasados = agendado.filter(DataDeInicio__lt=timezone.now().date()).exclude(status="Em andamento").count()
 
-    one_day = timezone.now().date() + timedelta(days=1)
-    seven_days = timezone.now().date() + timedelta(days=7)
+    one_day, seven_days = define_range_time()
 
     proximos = agendado.filter(
         DataDeInicio__gte=one_day,
@@ -43,8 +40,7 @@ class data_visualization_jardinagem_graphs:
         self.userid = userid
         self.agendados = agendado
 
-    one_day = timezone.now().date() + timedelta(days=1)
-    seven_days = timezone.now().date() + timedelta(days=7)
+    one_day, seven_days = define_range_time()
 
     def define_figs_atrasados(self):
         fig_charts = {
@@ -272,8 +268,7 @@ class data_visualization_jardinagem_reports:
 
         return agendado
 
-    one_day = timezone.now().date() + timedelta(days=1)
-    seven_days = timezone.now().date() + timedelta(days=7)
+    one_day, seven_days = define_range_time()
 
     def define_figs_atrasados(self):
         fig_charts = {

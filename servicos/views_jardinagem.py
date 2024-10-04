@@ -2,13 +2,12 @@ from django.shortcuts import render, redirect, reverse
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms, FatoServicoJardinagemForms
 from utils.views import generic_view, edit_generic_view
-from django.utils import timezone
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
 from django.utils import timezone
-from datetime import timedelta
 from django.db.models import Case, When, Value, CharField
+from utils.utils import define_range_time
 
 # Create your views here.
 def agendar_servico_jardinagem(request, userid):
@@ -96,8 +95,7 @@ def servicos_agendados_jardinagem(request, userid):
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
-    one_day = timezone.now().date() + timedelta(days=1)
-    seven_days = timezone.now().date() + timedelta(days=7)
+    one_day, seven_days = define_range_time()
 
     return generic_view(
         request=request,

@@ -8,7 +8,14 @@ from django.core.files.base import ContentFile
 from django.shortcuts import reverse
 from django.db.models.base import ModelBase
 from django.db.models.query import QuerySet
+from django.utils import timezone
+from datetime import timedelta
 
+def define_range_time():
+    one_day = timezone.now().date()
+    seven_days = timezone.now().date() + timedelta(days=7)
+
+    return one_day, seven_days
 
 def generate_id_random(length=12):
     characters = string.ascii_letters + string.digits

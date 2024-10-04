@@ -5,11 +5,11 @@ from servicos.forms_limpeza_predial import (FatoServicoLimpezaPredialForms,
 from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
-from django.utils import timezone
 from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Case, When, Value, CharField
+from utils.utils import define_range_time
 
 def agendar_servico_limpeza_predial(request, userid):
     forms = ServicoLimpezaPredialAgendadoForms(request=request, userid=userid)
@@ -92,8 +92,7 @@ def servicos_agendados_limpeza_predial(request, userid):
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
-    one_day = timezone.now().date() + timedelta(days=1)
-    seven_days = timezone.now().date() + timedelta(days=7)
+    one_day, seven_days = define_range_time()
 
     return generic_view(
         request=request,
