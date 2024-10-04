@@ -7,7 +7,7 @@ import os
 from django.conf import settings
 from utils.utils import generate_id_random
 from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
-from dashboards.data_visualization_limpeza_predial import data_visualization_limpeza_predial_reports
+from dashboards.data_visualization_limpeza_predial import data_visualization_limpeza_predial_graphs
 from servicos.utils_limpeza_predial import (colect_dados_fato_servico_limpeza_predial,
                                             colect_dados_agendamentos_limpeza_predial)
 from datetime import datetime

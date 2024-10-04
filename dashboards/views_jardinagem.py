@@ -1,9 +1,9 @@
 from django.shortcuts import render, reverse
-from dashboards.data_visualization_jardinagem import (data_visualization_jardinagem_indicadores,
-                                                      data_visualization_jardinagem_graphs)
+from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_indicadores
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from utils.utils import aplicar_filtros_dinamicos
 from dashboards.utils_jardinagem import colect_dados_jardinagem
+from dashboards.utils_jardinagem import graphs_jardinagem_to_html
 
 # Create your views here.
 def dashboard_produtividade_jardinagem(request, userid):
@@ -29,11 +29,13 @@ def dashboard_produtividade_jardinagem(request, userid):
      total_de_areas_agendadas, total_de_areas_atrasadas,
      total_de_areas_proximas, total_de_areas_em_andamento) = data_visualization_jardinagem_indicadores(request, userid, agendado)
 
-    figs_atrasados = data_visualization_jardinagem_graphs(request, userid, agendado).define_figs_atrasados()
-    figs_proximos = data_visualization_jardinagem_graphs(request, userid, agendado).define_figs_proximos()
-    figs_agendados = data_visualization_jardinagem_graphs(request, userid, agendado).define_figs_agendados()
-    figs_em_andamento = data_visualization_jardinagem_graphs(request, userid, agendado).define_figs_em_andamento()
-    figs_by_months = data_visualization_jardinagem_graphs(request, userid, agendado).define_figs_by_months()
+    (fig_area_terreno_atrasado, fig_area_area_atrasado, fig_area_localidade_atrasado,
+     fig_area_colaborador_atrasado, fig_area_terreno_proximo, fig_area_localidade_proximo,
+     fig_area_area_proximo, fig_area_colaborador_proximo, fig_area_terreno_agendados,
+     fig_area_localidade_agendados, fig_area_area_agendados, fig_area_colaborador_agendados,
+     fig_area_terreno_em_andamento, fig_area_localidade_em_andamento,
+     fig_area_area_em_andamento,fig_area_colaborador_em_andamento, fig_mes_html) = graphs_jardinagem_to_html(request, userid, agendado)
+
 
     tipos = [
         {'nome': 'Dashboards', 'link': ''},
@@ -56,10 +58,22 @@ def dashboard_produtividade_jardinagem(request, userid):
             'form_search': ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
             'sform_search': True,
             'allowed_fields': list(filtro_mapeamento.keys()),
-            **figs_atrasados,
-            **figs_proximos,
-            **figs_agendados,
-            **figs_em_andamento,
-            **figs_by_months,
+            **fig_area_terreno_atrasado,
+            **fig_area_area_atrasado,
+            **fig_area_localidade_atrasado,
+            **fig_area_colaborador_atrasado,
+            **fig_area_terreno_proximo,
+            **fig_area_localidade_proximo,
+            **fig_area_area_proximo,
+            **fig_area_colaborador_proximo,
+            **fig_area_terreno_agendados,
+            **fig_area_localidade_agendados,
+            **fig_area_area_agendados,
+            **fig_area_colaborador_agendados,
+            **fig_area_terreno_em_andamento,
+            **fig_area_localidade_em_andamento,
+            **fig_area_area_em_andamento,
+            **fig_area_colaborador_em_andamento,
+            **fig_mes_html
         }
     )

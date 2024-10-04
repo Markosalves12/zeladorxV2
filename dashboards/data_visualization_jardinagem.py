@@ -1,7 +1,6 @@
 from django.db.models import Q
 from django.utils import timezone
 from dashboards.data_visualization import calculate_areas_and_counts, generate_chart, generate_grouped_chart
-from dashboards.utils_jardinagem import colect_dados_jardinagem
 from utils.utils import define_range_time
 
 def data_visualization_jardinagem_indicadores(request, userid, agendado):
@@ -35,489 +34,74 @@ def data_visualization_jardinagem_indicadores(request, userid, agendado):
 
 
 class data_visualization_jardinagem_graphs:
-    def __init__(self, request, userid, agendado):
+    def __init__(self, request, userid, agendado, filter_time=False):
         self.request = request
         self.userid = userid
         self.agendados = agendado
 
     one_day, seven_days = define_range_time()
 
-    def define_figs_atrasados(self):
+    def create_fig(self, name_fig, filters, field_name, title, label_type, color, sum_by, count_by,
+                   filter_time=False):
+        if filter_time:
+            self.agendados  = self.agendados.filter(
+                **filter_time
+            )
+
         fig_charts = {
-            # Terrenos
-            'fig_area_terreno_atrasado': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__lt=timezone.now().date()
-                ),
-                status='Agendado',
-                field_name='Areas__Terreno__nome',
-                title='Área Total por Tipo de Terreno (Atrasados)',
-                label_type='Terreno',
-                color='#dc3444'
-            ).to_html(full_html=False),
-
-            'fig_area_area_atrasado': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__lt=timezone.now().date()
-                ),
-                status='Agendado',
-                field_name='Areas__nome',
-                title='Área Total por área verde (Atrasados)',
-                label_type='Área',
-                color='#dc3444'
-            ).to_html(full_html=True),
-
-            'fig_area_localidade_atrasado': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__lt=timezone.now().date()
-                ),
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (Atrasados)',
-                label_type='Localidade',
-                color='#dc3444'
-            ).to_html(full_html=True),
-
-            # Colaborador
-            'fig_area_colaborador_atrasado': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__lt=timezone.now().date()
-                ),
-                status='Agendado',
-                field_name='ColaboradoresEscalados__username',
-                title='Área Total por colaborador (Atrasados)',
-                label_type='Colaborador',
-                color='#dc3444'
+            f'{name_fig}': generate_chart(
+                dados_servicos=self.agendados,
+                filters=filters,
+                field_name=field_name,
+                title=title,
+                label_type=label_type,
+                color=color,
+                sum_by=sum_by,
+                count_by=count_by
             ).to_html(full_html=True),
         }
 
         return fig_charts
 
-    def define_figs_proximos(self):
+    def define_figs_by_months(self, name_fig, filters, field_name, title, label_type, color,
+                              sum_by, count_by, date_column, filter_time=False):
+        if filter_time:
+            self.agendados  = self.agendados.filter(
+                **filter_time
+            )
+
         fig_charts = {
-            'fig_area_terreno_proximo': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.one_day,
-                    DataDeInicio__lte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__Terreno__nome',
-                title='Área Total por Tipo de Terreno (Próximos)',
-                label_type='Terreno',
-                color='#f6be04'
-            ).to_html(full_html=False),
-
-            # Localidade
-            'fig_area_localidade_proximo': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.one_day,
-                    DataDeInicio__lte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (Próximos)',
-                label_type='Localidade',
-                color='#f6be04'
-            ).to_html(full_html=False),
-
-            # Areas
-            'fig_area_area_proximo': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.one_day,
-                    DataDeInicio__lte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__nome',
-                title='Área Total por área verde (Próximos)',
-                label_type='Área',
-                color='#f6be04'
-            ).to_html(full_html=False),
-
-            'fig_area_colaborador_proximo': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.one_day,
-                    DataDeInicio__lte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='ColaboradoresEscalados__username',
-                title='Área Total por colaborador (Próximos)',
-                label_type='Colaborador',
-                color='#f6be04'
-            ).to_html(full_html=False),
-
-        }
-
-        return fig_charts
-
-    def define_figs_agendados(self):
-        fig_charts = {
-            'fig_area_terreno_agendados': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__Terreno__nome',
-                title='Área Total por Tipo de Terreno (agendados)',
-                label_type='Terreno',
-                color='#14a0b6'
-            ).to_html(full_html=False),
-
-            'fig_area_localidade_agendados': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (agendados)',
-                label_type='Localidade',
-                color='#14a0b6'
-            ).to_html(full_html=False),
-
-            'fig_area_area_agendados': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__nome',
-                title='Área Total por área verde (agendados)',
-                label_type='Área',
-                color='#14a0b6'
-            ).to_html(full_html=False),
-
-            'fig_area_colaborador_agendados': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='ColaboradoresEscalados__username',
-                title='Área Total por colaborador (agendados)',
-                label_type='Colaborador',
-                color='#14a0b6'
+            f'{name_fig}': generate_grouped_chart(
+                self.agendados,
+                filters=filters,
+                field_name=field_name,
+                title=title,
+                label_type=label_type,
+                sum_by=sum_by,
+                count_by=count_by,
+                date_column=date_column
             ).to_html(full_html=False),
         }
 
         return fig_charts
 
-    def define_figs_em_andamento(self):
+    def create_fig_report(self, name_fig, filters, field_name, title, label_type, color, sum_by, count_by,
+                   filter_time=False):
+        if filter_time:
+            self.agendados  = self.agendados.filter(
+                **filter_time
+            )
+
         fig_charts = {
-            'fig_area_terreno_em_andamento': generate_chart(
-                self.agendados,
-                status='Em andamento',
-                field_name='Areas__Terreno__nome',
-                title='Área Total por Tipo de Terreno (em andamento)',
-                label_type='Terreno',
-                color='#2aa042'
-            ).to_html(full_html=False),
-
-            'fig_area_localidade_em_andamento': generate_chart(
-                self.agendados,
-                status='Em andamento',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (em andamento)',
-                label_type='Localidade',
-                color='#2aa042'
-            ).to_html(full_html=False),
-
-            'fig_area_area_em_andamento': generate_chart(
-                self.agendados,
-                status='Em andamento',
-                field_name='Areas__nome',
-                title='Área Total por área verde (em andamento)',
-                label_type='Área',
-                color='#2aa042'
-            ).to_html(full_html=False),
-
-            'fig_area_colaborador_em_andamento': generate_chart(
-                self.agendados,
-                status='Em andamento',
-                field_name='ColaboradoresEscalados__username',
-                title='Área Total por colaborador (em andamento)',
-                label_type='Colaborador',
-                color='#2aa042'
-            ).to_html(full_html=False),
-        }
-
-        return fig_charts
-
-    def define_figs_by_months(self):
-        fig_charts = {
-            # mes a mes
-            'fig_mes_html': generate_grouped_chart(
-                self.agendados,
-                status='Agendado',
-                field_name='Areas__vegetacao__nome',
-                title='Serviços por Mês/vegetação (Agendado)',
-                label_type='vegetação'
-            ).to_html(full_html=False),
-        }
-
-        return fig_charts
-
-
-class data_visualization_jardinagem_reports:
-    def __init__(self, request, userid):
-        self.request = request
-        self.userid = userid
-        self.agendados = self.get_data()
-
-    def get_data(self):
-        agendado = colect_dados_jardinagem(
-            request=self.request,
-            userid=self.userid
-        )
-
-        return agendado
-
-    one_day, seven_days = define_range_time()
-
-    def define_figs_atrasados(self):
-        fig_charts = {
-            # Terrenos
-            'fig_area_terreno_atrasado': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__lt=timezone.now().date()
-                ),
-                status='Agendado',
-                field_name='Areas__Terreno__nome',
-                title='Área Total por Tipo de Terreno (Atrasados)',
-                label_type='Terreno',
-                color='#dc3444'
-            ),
-
-            'fig_area_area_atrasado': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__lt=timezone.now().date()
-                ),
-                status='Agendado',
-                field_name='Areas__nome',
-                title='Área Total por área verde (Atrasados)',
-                label_type='Área',
-                color='#dc3444'
-            ),
-
-            'fig_area_localidade_atrasado': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__lt=timezone.now().date()
-                ),
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (Atrasados)',
-                label_type='Localidade',
-                color='#dc3444'
-            ),
-
-            # Colaborador
-            'fig_area_colaborador_atrasado': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__lt=timezone.now().date()
-                ),
-                status='Agendado',
-                field_name='ColaboradoresEscalados__username',
-                title='Área Total por colaborador (Atrasados)',
-                label_type='Colaborador',
-                color='#dc3444'
-            ),
-        }
-
-        return fig_charts
-
-    def define_figs_proximos(self):
-        fig_charts = {
-            'fig_area_terreno_proximo': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.one_day,
-                    DataDeInicio__lte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__Terreno__nome',
-                title='Área Total por Tipo de Terreno (Próximos)',
-                label_type='Terreno',
-                color='#f6be04'
-            ),
-
-            # Localidade
-            'fig_area_localidade_proximo': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.one_day,
-                    DataDeInicio__lte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (Próximos)',
-                label_type='Localidade',
-                color='#f6be04'
-            ),
-
-            # Areas
-            'fig_area_area_proximo': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.one_day,
-                    DataDeInicio__lte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__nome',
-                title='Área Total por área verde (Próximos)',
-                label_type='Área',
-                color='#f6be04'
-            ),
-
-            'fig_area_colaborador_proximo': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.one_day,
-                    DataDeInicio__lte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='ColaboradoresEscalados__username',
-                title='Área Total por colaborador (Próximos)',
-                label_type='Colaborador',
-                color='#f6be04'
-            ),
-
-        }
-
-        return fig_charts
-
-    def define_figs_agendados(self):
-        fig_charts = {
-            'fig_area_terreno_agendados': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__Terreno__nome',
-                title='Área Total por Tipo de Terreno (agendados)',
-                label_type='Terreno',
-                color='#14a0b6'
-            ),
-
-            'fig_area_localidade_agendados': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (agendados)',
-                label_type='Localidade',
-                color='#14a0b6'
-            ),
-
-            'fig_area_area_agendados': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__nome',
-                title='Área Total por área verde (agendados)',
-                label_type='Área',
-                color='#14a0b6'
-            ),
-
-            'fig_area_colaborador_agendados': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='ColaboradoresEscalados__username',
-                title='Área Total por colaborador (agendados)',
-                label_type='Colaborador',
-                color='#14a0b6'
-            ),
-        }
-
-        return fig_charts
-
-    def define_figs_em_andamento(self):
-        fig_charts = {
-            'fig_area_terreno_em_andamento': generate_chart(
-                self.agendados,
-                status='Em andamento',
-                field_name='Areas__Terreno__nome',
-                title='Área Total por Tipo de Terreno (em andamento)',
-                label_type='Terreno',
-                color='#2aa042'
-            ).to_html(full_html=False),
-
-            'fig_area_localidade_em_andamento': generate_chart(
-                self.agendados,
-                status='Em andamento',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (em andamento)',
-                label_type='Localidade',
-                color='#2aa042'
-            ),
-
-            'fig_area_area_em_andamento': generate_chart(
-                self.agendados,
-                status='Em andamento',
-                field_name='Areas__nome',
-                title='Área Total por área verde (em andamento)',
-                label_type='Área',
-                color='#2aa042'
-            ),
-
-            'fig_area_colaborador_em_andamento': generate_chart(
-                self.agendados,
-                status='Em andamento',
-                field_name='ColaboradoresEscalados__username',
-                title='Área Total por colaborador (em andamento)',
-                label_type='Colaborador',
-                color='#2aa042'
-            ),
-        }
-
-        return fig_charts
-
-    def define_figs_concluidos(self):
-        fig_charts = {
-            # Terrenos
-            'fig_area_terreno_concluido': generate_chart(
-                self.agendados,
-                status='Concluido',
-                field_name='Areas__Terreno__nome',
-                title='Área Total por Tipo de Terreno (Concluidos)',
-                label_type='Terreno',
-                color='#001969'
-            ),
-
-            'fig_area_area_concluidos': generate_chart(
-                self.agendados,
-                status='Concluido',
-                field_name='Areas__nome',
-                title='Área Total por área verde (Concluidos)',
-                label_type='Área',
-                color='#001969'
-            ),
-
-            'fig_area_localidade_concluidos': generate_chart(
-                self.agendados,
-                status='Concluido',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (Concluidos)',
-                label_type='Localidade',
-                color='#001969'
-            ),
-
-            # Colaborador
-            'fig_area_colaborador_concluidos': generate_chart(
-                self.agendados,
-                status='Concluido',
-                field_name='ColaboradoresEscalados__username',
-                title='Área Total por colaborador (Concluidos)',
-                label_type='Colaborador',
-                color='#001969'
-            ),
-        }
-
-        return fig_charts
-
-    def define_figs_by_months(self):
-        fig_charts = {
-            'fig_mes_html': generate_grouped_chart(
-                self.agendados,
-                status='Agendado',
-                field_name='Areas__vegetacao__nome',
-                title='Serviços por Mês/vegetação (Agendado)',
-                label_type='vegetação'
+            f'{name_fig}': generate_chart(
+                dados_servicos=self.agendados,
+                filters=filters,
+                field_name=field_name,
+                title=title,
+                label_type=label_type,
+                color=color,
+                sum_by=sum_by,
+                count_by=count_by
             ),
         }
 

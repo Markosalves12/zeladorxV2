@@ -1,7 +1,6 @@
 from django.db.models import Q
 from django.utils import timezone
 from dashboards.data_visualization import calculate_areas_and_counts, generate_chart, generate_grouped_chart
-from dashboards.utils_limpeza_predial import colect_dados_limpeza_predial
 from utils.utils import define_range_time
 
 def data_visualization_limpeza_predial_indicadores(request, userid, agendado):
@@ -36,293 +35,75 @@ def data_visualization_limpeza_predial_indicadores(request, userid, agendado):
 
 
 class data_visualization_limpeza_predial_graphs:
-    def __init__(self, request, userid, agendado):
+    def __init__(self, request, userid, agendado, filter_time=False):
         self.request = request
         self.userid = userid
         self.agendados = agendado
 
     one_day, seven_days = define_range_time()
 
-    def define_figs_atrasados(self):
-        fig_charts = {
-            # Localidade
-            'fig_area_localidade_atrasado': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__lt=timezone.now().date()
-                ),
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (Atrasados)',
-                label_type='Localidade',
-                color='#dc3444'
-            ).to_html(full_html=True),
+    def create_fig(self, name_fig, filters, field_name, title, label_type, color, sum_by, count_by,
+                   filter_time=False):
+        if filter_time:
+            self.agendados  = self.agendados.filter(
+                **filter_time
+            )
 
-            # Areas
-            'fig_area_area_atrasado': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__lt=timezone.now().date()
-                ),
-                status='Agendado',
-                field_name='Areas__nome',
-                title='Área Total por área verde (Atrasados)',
-                label_type='Área',
-                color='#dc3444'
+        fig_charts = {
+            f'{name_fig}': generate_chart(
+                dados_servicos=self.agendados,
+                filters=filters,
+                field_name=field_name,
+                title=title,
+                label_type=label_type,
+                color=color,
+                sum_by=sum_by,
+                count_by=count_by
             ).to_html(full_html=True),
         }
 
         return fig_charts
 
-    def define_figs_proximos(self):
-        fig_charts = {
-            'fig_area_localidade_proximo': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.one_day,
-                    DataDeInicio__lte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (Próximos)',
-                label_type='Localidade',
-                color='#f6be04'
-            ).to_html(full_html=False),
+    def define_figs_by_months(self, name_fig, filters, field_name, title, label_type, color,
+                              sum_by, count_by, date_column, filter_time=False):
+        if filter_time:
+            self.agendados  = self.agendados.filter(
+                **filter_time
+            )
 
-            'fig_area_area_proximo': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.one_day,
-                    DataDeInicio__lte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__nome',
-                title='Área Total por área verde (Próximos)',
-                label_type='Área',
-                color='#f6be04'
+        fig_charts = {
+            f'{name_fig}': generate_grouped_chart(
+                self.agendados,
+                filters=filters,
+                field_name=field_name,
+                title=title,
+                label_type=label_type,
+                sum_by=sum_by,
+                count_by=count_by,
+                date_column=date_column
             ).to_html(full_html=False),
         }
 
         return fig_charts
 
-    def define_figs_agendados(self):
+    def create_fig_report(self, name_fig, filters, field_name, title, label_type, color, sum_by, count_by,
+                   filter_time=False):
+        if filter_time:
+            self.agendados  = self.agendados.filter(
+                **filter_time
+            )
+
         fig_charts = {
-            'fig_area_localidade_agendados': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (agendados)',
-                label_type='Localidade',
-                color='#14a0b6'
-            ).to_html(full_html=False),
-
-            'fig_area_area_agendados': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__nome',
-                title='Área Total por área verde (agendados)',
-                label_type='Área',
-                color='#14a0b6'
-            ).to_html(full_html=False),
-        }
-
-        return fig_charts
-
-    def define_figs_em_andamento(self):
-        fig_charts = {
-            'fig_area_localidade_em_andamento': generate_chart(
-                self.agendados,
-                status='Em andamento',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (em andamento)',
-                label_type='Localidade',
-                color='#2aa042'
-            ).to_html(full_html=False),
-
-            'fig_area_area_em_andamento': generate_chart(
-                self.agendados,
-                status='Em andamento',
-                field_name='Areas__nome',
-                title='Área Total por área limpeza predial (em andamento)',
-                label_type='Área',
-                color='#2aa042'
-            ).to_html(full_html=False),
-        }
-
-        return fig_charts
-
-    def define_figs_by_months(self):
-        fig_charts = {
-            # mes a mes
-            'fig_mes_html': generate_grouped_chart(
-                self.agendados,
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Serviços por Mês/vegetação (Agendado)',
-                label_type='localidade'
-            ).to_html(full_html=False),
-        }
-
-        return fig_charts
-
-class data_visualization_limpeza_predial_reports:
-    def __init__(self, request, userid):
-        self.request = request
-        self.userid = userid
-        self.agendados = self.get_data()
-
-    def get_data(self):
-        agendado = colect_dados_limpeza_predial(
-            request=self.request,
-            userid=self.userid
-        )
-
-        return agendado
-
-    one_day, seven_days = define_range_time()
-
-    def define_figs_atrasados(self):
-        fig_charts = {
-            # Localidade
-            'fig_area_localidade_atrasado': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__lt=timezone.now().date()
-                ),
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (Atrasados)',
-                label_type='Localidade',
-                color='#dc3444'
-            ),
-
-            # Areas
-            'fig_area_area_atrasado': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__lt=timezone.now().date()
-                ),
-                status='Agendado',
-                field_name='Areas__nome',
-                title='Área Total por área verde (Atrasados)',
-                label_type='Área',
-                color='#dc3444'
+            f'{name_fig}': generate_chart(
+                dados_servicos=self.agendados,
+                filters=filters,
+                field_name=field_name,
+                title=title,
+                label_type=label_type,
+                color=color,
+                sum_by=sum_by,
+                count_by=count_by
             ),
         }
 
         return fig_charts
-
-    def define_figs_proximos(self):
-        fig_charts = {
-            'fig_area_localidade_proximo': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.one_day,
-                    DataDeInicio__lte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (Próximos)',
-                label_type='Localidade',
-                color='#f6be04'
-            ),
-
-            'fig_area_area_proximo': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.one_day,
-                    DataDeInicio__lte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__nome',
-                title='Área Total por área verde (Próximos)',
-                label_type='Área',
-                color='#f6be04'
-            ),
-        }
-
-        return fig_charts
-
-    def define_figs_agendados(self):
-        fig_charts = {
-            'fig_area_localidade_agendados': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (agendados)',
-                label_type='Localidade',
-                color='#14a0b6'
-            ),
-
-            'fig_area_area_agendados': generate_chart(
-                self.agendados.filter(
-                    DataDeInicio__gte=self.seven_days,
-                ),
-                status='Agendado',
-                field_name='Areas__nome',
-                title='Área Total por área verde (agendados)',
-                label_type='Área',
-                color='#14a0b6'
-            ),
-        }
-
-        return fig_charts
-
-    def define_figs_em_andamento(self):
-        fig_charts = {
-            'fig_area_localidade_em_andamento': generate_chart(
-                self.agendados,
-                status='Em andamento',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (em andamento)',
-                label_type='Localidade',
-                color='#2aa042'
-            ),
-
-            'fig_area_area_em_andamento': generate_chart(
-                self.agendados,
-                status='Em andamento',
-                field_name='Areas__nome',
-                title='Área Total por área limpeza predial (em andamento)',
-                label_type='Área',
-                color='#2aa042'
-            ),
-        }
-
-        return fig_charts
-
-    def define_figs_concluidos(self):
-        fig_charts = {
-            'fig_area_localidade_concluidos': generate_chart(
-                self.agendados,
-                status='Concluido',
-                field_name='Areas__localidade__nome',
-                title='Área Total por localidade (Concluidos)',
-                label_type='Localidade',
-                color='#Concluidos'
-            ),
-
-            'fig_area_area_concluidos': generate_chart(
-                self.agendados,
-                status='Concluido',
-                field_name='Areas__nome',
-                title='Área Total por área limpeza predial (Concluidos)',
-                label_type='Área',
-                color='#Concluidos'
-            ),
-        }
-
-        return fig_charts
-
-    def define_figs_by_months(self):
-        fig_charts = {
-            # mes a mes
-            'fig_mes_html': generate_grouped_chart(
-                self.agendados,
-                status='Agendado',
-                field_name='Areas__localidade__nome',
-                title='Serviços por Mês/vegetação (Agendado)',
-                label_type='localidade'
-            ),
-        }
-
-        return fig_charts
-

@@ -19,23 +19,7 @@ def calculate_areas_and_counts(dados_servicos, status, date_filter=None):
         queryset = queryset.filter(date_filter)
     return get_total_area(queryset)
 
-
-def generate_chart(dados_servicos, status, field_name, title, label_type, color):
-    """
-    Gera um gráfico de barras horizontais para um conjunto de dados filtrados.
-    """
-    area, counts = get_total_area_by_category(dados_servicos.filter(status=status), field_name)
-    return plot_horizontal_bar_chart(area, title, 'Área Total', label_type, counts, color)
-
-
-def generate_grouped_chart(dados_servicos, status, field_name, title, label_type):
-    """
-    Gera um gráfico de barras agrupadas para um conjunto de dados filtrados.
-    """
-    area, counts, categories = get_total_area_and_counts_by_month(dados_servicos.filter(status=status), field_name)
-    return plot_grouped_bar_chart(area, title, 'Mês', 'Área Total', counts, categories, label_type)
-
-def get_total_area_by_category(queryset, category_field):
+def get_total_area_by_category(queryset, category_field, sum_by, count_by):
     """
     Calcula a soma das áreas e as contagens de itens para cada categoria.
 
@@ -48,8 +32,8 @@ def get_total_area_by_category(queryset, category_field):
         Um dicionário com a categoria como chave e a contagem de itens como valor.
     """
     data = queryset.values(category_field).annotate(
-        total_area=Sum('Areas__dimensao'),
-        count=Count('id')
+        total_area=Sum(sum_by),
+        count=Count(count_by)
     ).order_by()
 
     total_area_by_category = {item[category_field]: item['total_area'] for item in data}
@@ -105,7 +89,7 @@ def plot_horizontal_bar_chart(data, title, x_axis_title, y_axis_title, counts, m
     return fig
 
 
-def get_total_area_and_counts_by_month(queryset, field_name):
+def get_total_area_and_counts_by_month(queryset, field_name, sum_by, count_by, date_column):
     """
     Calcula a soma das áreas e as contagens de itens para cada mês e campo especificado.
 
@@ -119,11 +103,11 @@ def get_total_area_and_counts_by_month(queryset, field_name):
         Um dicionário com o mês como chave e a categoria como valor.
     """
     data = queryset.annotate(
-        month=TruncMonth('DataDeInicio'),
+        month=TruncMonth(date_column),
         category=F(field_name)
     ).values('month', 'category').annotate(
-        total_area=Sum('Areas__dimensao'),
-        count=Count('id')
+        total_area=Sum(sum_by),
+        count=Count(count_by)
     ).order_by('month', 'category')
 
     total_area_by_month = {}
@@ -201,3 +185,27 @@ def plot_grouped_bar_chart(data, title, x_axis_title, y_axis_title, counts, cate
     )
 
     return fig
+
+
+def generate_grouped_chart(dados_servicos, filters, field_name, title, label_type, sum_by, count_by, date_column):
+    """
+    Gera um gráfico de barras agrupadas para um conjunto de dados filtrados.
+    """
+    area, counts, categories = get_total_area_and_counts_by_month(
+        dados_servicos.filter(**filters),
+        field_name,
+        sum_by,
+        count_by,
+        date_column
+    )
+
+    return plot_grouped_bar_chart(area, title, 'Mês', 'Área Total', counts, categories, label_type)
+
+
+
+def generate_chart(dados_servicos, filters, field_name, title, label_type, color, sum_by, count_by):
+    """
+    Gera um gráfico de barras horizontais para um conjunto de dados filtrados.
+    """
+    area, counts = get_total_area_by_category(dados_servicos.filter(**filters), field_name, sum_by, count_by)
+    return plot_horizontal_bar_chart(area, title, 'Área Total', label_type, counts, color)

@@ -11,7 +11,7 @@ import os
 from django.conf import settings
 from utils.utils import formatar_atributos
 from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
-from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_reports
+from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_graphs
 from utils.utils import generate_id_random
 from datetime import datetime
 
