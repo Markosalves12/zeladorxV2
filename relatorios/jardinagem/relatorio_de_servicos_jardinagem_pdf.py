@@ -7,13 +7,13 @@ import os
 from django.conf import settings
 from utils.utils import formatar_atributos
 from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
-from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_graphs
-from utils.utils import generate_id_random
+from utils.utils import generate_id_random, define_range_time
 from datetime import datetime
 from relatorios.jardinagem.utils import (graphs_jardinagem_proximo_to_reports,
                                          graphs_jardinagem_atrasado_to_reports,
                                          graphs_jardinagem_agendado_to_reports,
-                                         graphs_jardinagem_em_andamento_to_reports)
+                                         graphs_jardinagem_em_andamento_to_reports,
+                                         graphs_jardinagem_concluido_to_reports)
 
 
 def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDeInicio, DataDeConclusao, Areas,
@@ -180,72 +180,9 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDe
     start_y = height - 100  # Posição inicial para o conteúdo após o cabeçalho
     p.setFont('Helvetica-Bold', 12)
 
-    if 'Concluido' in status.split(','):
-        figs_concluidos_terreno = data_visualization_jardinagem_graphs(request, userid, dados).create_fig_report(
-            name_fig='fig_area_terreno_concluido',
-            filters={'status': 'Concluido'},
-            field_name='Areas__Terreno__nome',
-            title='Área Total por Tipo de Terreno (Concluido)',
-            label_type='Terreno',
-            color='#020d3f',
-            sum_by='Areas__dimensao',
-            count_by='id',
-        )
-
-        figs_concluidos_vegetacao = data_visualization_jardinagem_graphs(request, userid, dados).create_fig_report(
-            name_fig='fig_area_vegetacao_concluido',
-            filters={'status': 'Concluido'},
-            field_name='Areas__vegetacao__nome',
-            title='Área Total por Tipo de Vegeteção (Concluido)',
-            label_type='Vegeteção',
-            color='#020d3f',
-            sum_by='Areas__dimensao',
-            count_by='id',
-        )
-
-        figs_concluidos_localidade = data_visualization_jardinagem_graphs(request, userid, dados).create_fig_report(
-            name_fig='figs_concluidos_localidade',
-            filters={'status': 'Concluido'},
-            field_name='Areas__localidade__nome',
-            title='Área Total por localidade (Concluido)',
-            label_type='Localidade',
-            color='#020d3f',
-            sum_by='Areas__dimensao',
-            count_by='id',
-        )
-
-        figs_concluidos_area = data_visualization_jardinagem_graphs(request, userid, dados).create_fig_report(
-            name_fig='figs_concluidos_area',
-            filters={'status': 'Concluido'},
-            field_name='Areas__nome',
-            title='Área Total por área verde (Concluido)',
-            label_type='Área',
-            color='#020d3f',
-            sum_by='Areas__dimensao',
-            count_by='id',
-        )
-
-        figs_concluidos_colaborador = data_visualization_jardinagem_graphs(request, userid, dados).create_fig_report(
-            name_fig='figs_concluidos_colaborador',
-            filters={'status': 'Concluido'},
-            field_name='ColaboradoresEscalados__username',
-            title='Área Total por colaborador (Concluido)',
-            label_type='Colaborador',
-            color='#020d3f',
-            sum_by='Areas__dimensao',
-            count_by='id',
-        )
-
-        figs_concluidos_servico = data_visualization_jardinagem_graphs(request, userid, dados).create_fig_report(
-            name_fig='figs_concluidos_servico',
-            filters={'status': 'Concluido'},
-            field_name='ServicosEscalados__nome',
-            title='Área Total por serviço (Concluido)',
-            label_type='Serviços',
-            color='#020d3f',
-            sum_by='Areas__dimensao',
-            count_by='id',
-        )
+    if 'Concluido' in status.split(',') and len(dados)>0:
+        (figs_concluidos_terreno, figs_concluidos_vegetacao, figs_concluidos_localidade,
+         figs_concluidos_area, figs_concluidos_colaborador, figs_concluidos_servico) = graphs_jardinagem_concluido_to_reports(request, userid, dados)
 
         p.drawString(50, start_y, f"Volume de servicos prestados")
         start_y -= 20
@@ -267,53 +204,67 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDe
         )
 
     else:
-        (figs_proximo_terreno,figs_proximo_vegetacao,figs_proximo_localidade,figs_proximo_area,
-         figs_proximo_colaborador,figs_proximo_servico,) = graphs_jardinagem_proximo_to_reports(request, userid, dados)
+        one_day, seven_days = define_range_time()
 
-        (figs_atrasados_terreno, figs_atrasados__vegetacao, figs_atrasados__localidade, figs_atrasados__area,
-         figs_atrasados__colaborador,figs_atrasados__servico,) = graphs_jardinagem_atrasado_to_reports(request, userid, dados)
+        graps_to_report = {}
 
-        (figs_agendado_terreno, figs_agendado_vegetacao, figs_agendado_localidade,
-         figs_agendado_area, figs_agendado_colaborador, figs_agendado_servico) = graphs_jardinagem_agendado_to_reports(request, userid, dados)
+        if len(dados.filter(DataDeInicio__gte=one_day, DataDeInicio__lte=seven_days)) > 0:
+            (figs_proximo_terreno,figs_proximo_vegetacao,figs_proximo_localidade,figs_proximo_area,
+             figs_proximo_colaborador,figs_proximo_servico,) = graphs_jardinagem_proximo_to_reports(request, userid, dados)
 
-        (figs_em_andamento_terreno, figs_em_andamento_vegetacao, figs_em_andamento_localidade,
-         figs_em_andamento_area, figs_em_andamento_colaborador, figs_em_andamento_servico) = graphs_jardinagem_em_andamento_to_reports(request, userid, dados)
-
-
-        p.drawString(50, start_y, f"Volume de servicos Agendados")
-        start_y -= 20
-        start_y, end_page = add_figures_to_pdf(
-            p,
-            {
+            graps_to_report.update(
                 **figs_proximo_terreno,
                 **figs_proximo_vegetacao,
                 **figs_proximo_localidade,
                 **figs_proximo_area,
                 **figs_proximo_colaborador,
                 **figs_proximo_servico,
+            )
 
+        if len(dados.filter(DataDeInicio__lt=one_day)) > 0:
+            (figs_atrasados_terreno, figs_atrasados__vegetacao, figs_atrasados__localidade, figs_atrasados__area,
+             figs_atrasados__colaborador,figs_atrasados__servico,) = graphs_jardinagem_atrasado_to_reports(request, userid, dados)
+
+            graps_to_report.update(
                 **figs_atrasados_terreno,
                 **figs_atrasados__vegetacao,
                 **figs_atrasados__localidade,
                 **figs_atrasados__area,
                 **figs_atrasados__colaborador,
                 **figs_atrasados__servico,
+            )
 
+        if len(dados.filter(DataDeInicio__gte=seven_days)) > 0:
+            (figs_agendado_terreno, figs_agendado_vegetacao, figs_agendado_localidade,
+             figs_agendado_area, figs_agendado_colaborador, figs_agendado_servico) = graphs_jardinagem_agendado_to_reports(request, userid, dados)
+
+            graps_to_report.update(
                 **figs_agendado_terreno,
                 **figs_agendado_vegetacao,
                 **figs_agendado_localidade,
                 **figs_agendado_area,
                 **figs_agendado_colaborador,
                 **figs_agendado_servico,
+            )
 
+        if len(dados.filter(status='Em andamento')) > 0:
+            (figs_em_andamento_terreno, figs_em_andamento_vegetacao, figs_em_andamento_localidade,
+             figs_em_andamento_area, figs_em_andamento_colaborador, figs_em_andamento_servico) = graphs_jardinagem_em_andamento_to_reports(request, userid, dados)
+
+            graps_to_report.update(
                 **figs_em_andamento_terreno,
                 **figs_em_andamento_vegetacao,
                 **figs_em_andamento_localidade,
                 **figs_em_andamento_area,
                 **figs_em_andamento_colaborador,
                 **figs_em_andamento_servico
+            )
 
-            }, start_y, start_y + 1,header_image_path=header_image_path, width=width, height=height)
+        p.drawString(50, start_y, f"Volume de servicos Agendados")
+        start_y -= 20
+        start_y, end_page = add_figures_to_pdf(
+            p,graps_to_report, start_y, start_y + 1,header_image_path=header_image_path, width=width, height=height)
+
 
     draw_footer(
         p,

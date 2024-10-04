@@ -179,7 +179,7 @@ def historico_de_servicos_gerente_limpeza_predial(request, userid, id_random):
         request=request,
         userid=userid,
         id_random=id_random,
-        app_name=f'Histórico de serviços {objeto.nome}',
+        app_name=f'Histórico de serviços {objeto.username}',
         objeto=objeto,
         objetos=objetos,
         type_exibition='fato_jardinagem',

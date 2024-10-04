@@ -1,5 +1,77 @@
 from utils.utils import define_range_time
 from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_graphs
+
+def graphs_jardinagem_concluido_to_reports(request, userid, agendado):
+    one_day, seven_days = define_range_time()
+    figs_concluidos_terreno = data_visualization_jardinagem_graphs(request, userid, agendado).create_fig_report(
+        name_fig='fig_area_terreno_concluido',
+        filters={'status': 'Concluido'},
+        field_name='Areas__Terreno__nome',
+        title='Área Total por Tipo de Terreno (Concluido)',
+        label_type='Terreno',
+        color='#020d3f',
+        sum_by='Areas__dimensao',
+        count_by='id',
+    )
+
+    figs_concluidos_vegetacao = data_visualization_jardinagem_graphs(request, userid, agendado).create_fig_report(
+        name_fig='fig_area_vegetacao_concluido',
+        filters={'status': 'Concluido'},
+        field_name='Areas__vegetacao__nome',
+        title='Área Total por Tipo de Vegeteção (Concluido)',
+        label_type='Vegeteção',
+        color='#020d3f',
+        sum_by='Areas__dimensao',
+        count_by='id',
+    )
+
+    figs_concluidos_localidade = data_visualization_jardinagem_graphs(request, userid, agendado).create_fig_report(
+        name_fig='figs_concluidos_localidade',
+        filters={'status': 'Concluido'},
+        field_name='Areas__localidade__nome',
+        title='Área Total por localidade (Concluido)',
+        label_type='Localidade',
+        color='#020d3f',
+        sum_by='Areas__dimensao',
+        count_by='id',
+    )
+
+    figs_concluidos_area = data_visualization_jardinagem_graphs(request, userid, agendado).create_fig_report(
+        name_fig='figs_concluidos_area',
+        filters={'status': 'Concluido'},
+        field_name='Areas__nome',
+        title='Área Total por área verde (Concluido)',
+        label_type='Área',
+        color='#020d3f',
+        sum_by='Areas__dimensao',
+        count_by='id',
+    )
+
+    figs_concluidos_colaborador = data_visualization_jardinagem_graphs(request, userid, agendado).create_fig_report(
+        name_fig='figs_concluidos_colaborador',
+        filters={'status': 'Concluido'},
+        field_name='ColaboradoresEscalados__username',
+        title='Área Total por colaborador (Concluido)',
+        label_type='Colaborador',
+        color='#020d3f',
+        sum_by='Areas__dimensao',
+        count_by='id',
+    )
+
+    figs_concluidos_servico = data_visualization_jardinagem_graphs(request, userid, agendado).create_fig_report(
+        name_fig='figs_concluidos_servico',
+        filters={'status': 'Concluido'},
+        field_name='ServicosEscalados__nome',
+        title='Área Total por serviço (Concluido)',
+        label_type='Serviços',
+        color='#020d3f',
+        sum_by='Areas__dimensao',
+        count_by='id',
+    )
+
+    return (figs_concluidos_terreno, figs_concluidos_vegetacao, figs_concluidos_localidade,
+            figs_concluidos_area, figs_concluidos_colaborador, figs_concluidos_servico)
+
 def graphs_jardinagem_proximo_to_reports(request, userid, agendado):
     one_day, seven_days = define_range_time()
     figs_proximo_terreno = data_visualization_jardinagem_graphs(request, userid, agendado).create_fig_report(

@@ -135,7 +135,7 @@ def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_servico_jardinagem_agendado',
-        app_name='relatório de serviços jardibagem pdf - Planejados',
+        app_name='relatório de serviços jardinagem pdf - Planejados',
         form_search=ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
         sform_search=True,
         filtro_mapeamento={
