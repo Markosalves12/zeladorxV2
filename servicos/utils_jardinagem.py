@@ -185,7 +185,7 @@ def colect_dados_agendamentos_jardinagem(request, DataDeInicio, DataDeConclusao,
         filters['tipo_agendamento'] = TipoServico
 
     if Areas and Areas != "None":
-        filters['area_atendida_id'] = Areas
+        filters['area_atendid_id'] = Areas
 
     if ServicosEscalados and ServicosEscalados != ["None"]:
         filters['servicos_solicitados_id__in'] = ServicosEscalados
@@ -204,7 +204,7 @@ def colect_dados_agendamentos_jardinagem(request, DataDeInicio, DataDeConclusao,
         ),
         id_agendamento=ExpressionWrapper(
             F('id'),
-            output_field=CharField()
+            output_field=IntegerField()
         ),
         tipo_agendamento=ExpressionWrapper(
             F('TipoServico'),
@@ -224,7 +224,7 @@ def colect_dados_agendamentos_jardinagem(request, DataDeInicio, DataDeConclusao,
         ),
         colaboradores_chamados_id_random=ExpressionWrapper(
             F('ColaboradoresEscalados__id_random'),
-            output_field=IntegerField()
+            output_field=CharField()
         ),
         servicos_solicitados=ExpressionWrapper(
             F('ServicosEscalados__nome'),
@@ -258,9 +258,9 @@ def colect_dados_agendamentos_jardinagem(request, DataDeInicio, DataDeConclusao,
             F('Areas__nome'),
             output_field=CharField()
         ),
-        area_atendida_id=ExpressionWrapper(
+        area_atendid_id=ExpressionWrapper(
             F('Areas__id'),
-            output_field=CharField()
+            output_field=IntegerField()
         ),
         periodicidade_de_retorno=ExpressionWrapper(
             F('Areas__periodicidade'),

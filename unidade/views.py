@@ -32,7 +32,8 @@ def unidades(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
-        {'nome': 'linkmapa', 'label': 'Mapa'},
+        {'nome': 'linkmapajardinagem', 'label': 'Mapa jardinagem'},
+        {'nome': 'linkmapalimnpezapredial', 'label': 'Mapa l. predial'},
         {'nome': 'empresasecundaria', 'label': 'Empresa'},
         {'nome': 'status', 'label': 'status'},
         {'nome': 'acoes', 'label': 'Ações'},

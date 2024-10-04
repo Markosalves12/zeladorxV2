@@ -24,9 +24,7 @@ def dashboard_produtividade_limpeza_predial(request, userid):
         get_data = request.GET.dict()
         agendado = aplicar_filtros_dinamicos(agendado, get_data, filtro_mapeamento)
 
-    (em_andamento, atrasados, proximos, agendamentos,
-     total_de_areas_agendadas, total_de_areas_atrasadas,
-     total_de_areas_proximas, total_de_areas_em_andamento) = data_visualization_limpeza_predial_indicadores(request, userid, agendado)
+    (em_andamento, atrasados, proximos, agendamentos) = data_visualization_limpeza_predial_indicadores(request, userid, agendado)
 
     (fig_area_area_atrasado, fig_area_localidade_atrasado, fig_area_localidade_proximo,
      fig_area_area_proximo, fig_area_localidade_agendados, fig_area_area_agendados,

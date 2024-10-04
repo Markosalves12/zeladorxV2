@@ -22,15 +22,7 @@ def data_visualization_jardinagem_indicadores(request, userid, agendado):
         DataDeInicio__gte=seven_days,
     ).count()
 
-    total_de_areas_agendadas = calculate_areas_and_counts(agendado, 'Agendado', Q(DataDeInicio__gte=seven_days))
-    total_de_areas_atrasadas = calculate_areas_and_counts(agendado, 'Agendado',
-                                                          Q(DataDeInicio__lt=timezone.now().date()))
-    total_de_areas_proximas = calculate_areas_and_counts(agendado, 'Agendado',
-                                                         Q(DataDeInicio__gte=one_day) & Q(DataDeInicio__lte=seven_days))
-    total_de_areas_em_andamento = calculate_areas_and_counts(agendado, 'Em andamento')
-
-    return (em_andamento, atrasados, proximos, agendamentos, total_de_areas_agendadas,
-            total_de_areas_atrasadas, total_de_areas_proximas, total_de_areas_em_andamento)
+    return (em_andamento, atrasados, proximos, agendamentos)
 
 
 class data_visualization_jardinagem_graphs:
