@@ -295,18 +295,18 @@ class data_visualization_limpeza_predial_reports:
                 self.agendados,
                 status='Concluido',
                 field_name='Areas__localidade__nome',
-                title='Área Total por localidade (em andamento)',
+                title='Área Total por localidade (Concluidos)',
                 label_type='Localidade',
-                color='#add8e6'
+                color='#Concluidos'
             ),
 
             'fig_area_area_concluidos': generate_chart(
                 self.agendados,
                 status='Concluido',
                 field_name='Areas__nome',
-                title='Área Total por área limpeza predial (em andamento)',
+                title='Área Total por área limpeza predial (Concluidos)',
                 label_type='Área',
-                color='#add8e6'
+                color='#Concluidos'
             ),
         }
 

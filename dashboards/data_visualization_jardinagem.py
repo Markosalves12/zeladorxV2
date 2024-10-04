@@ -474,27 +474,27 @@ class data_visualization_jardinagem_reports:
                 self.agendados,
                 status='Concluido',
                 field_name='Areas__Terreno__nome',
-                title='Área Total por Tipo de Terreno (Atrasados)',
+                title='Área Total por Tipo de Terreno (Concluidos)',
                 label_type='Terreno',
-                color='#add8e6'
+                color='#001969'
             ),
 
             'fig_area_area_concluidos': generate_chart(
                 self.agendados,
                 status='Concluido',
                 field_name='Areas__nome',
-                title='Área Total por área verde (Atrasados)',
+                title='Área Total por área verde (Concluidos)',
                 label_type='Área',
-                color='#add8e6'
+                color='#001969'
             ),
 
             'fig_area_localidade_concluidos': generate_chart(
                 self.agendados,
                 status='Concluido',
                 field_name='Areas__localidade__nome',
-                title='Área Total por localidade (Atrasados)',
+                title='Área Total por localidade (Concluidos)',
                 label_type='Localidade',
-                color='#add8e6'
+                color='#001969'
             ),
 
             # Colaborador
@@ -502,9 +502,9 @@ class data_visualization_jardinagem_reports:
                 self.agendados,
                 status='Concluido',
                 field_name='ColaboradoresEscalados__username',
-                title='Área Total por colaborador (Atrasados)',
+                title='Área Total por colaborador (Concluidos)',
                 label_type='Colaborador',
-                color='#add8e6'
+                color='#001969'
             ),
         }
 
@@ -522,5 +522,3 @@ class data_visualization_jardinagem_reports:
         }
 
         return fig_charts
-
-
