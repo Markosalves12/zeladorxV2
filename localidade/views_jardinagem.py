@@ -1,4 +1,4 @@
-from django.shortcuts import reverse
+from django.shortcuts import reverse, redirect
 from localidade.models_Jardinagem import LocalidadeJardiangem
 from localidade.forms_jardinagem import LocalidadeJardinagemForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status
@@ -50,6 +50,8 @@ def localidades_jardinagem(request, userid):
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
         tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('localidades_jardinagem', kwargs={'userid': userid})})
+    else:
+        return redirect('localidades_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('localidades_limpeza_predial', kwargs={'userid': userid})})

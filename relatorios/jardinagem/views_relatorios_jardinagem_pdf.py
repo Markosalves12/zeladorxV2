@@ -7,6 +7,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Case, When, Value, CharField
 from empresasecundario.utils import define_empresas
+from django.shortcuts import redirect
 
 
 def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
@@ -41,7 +42,9 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
                 'relatorios_de_servicos_jardinagem_pdf_concluidos',
                 kwargs={'userid': userid}
             )
-        },)
+        })
+    else:
+        return redirect('relatorios_de_servicos_limpeza_predial_pdf_concluidos', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {
@@ -119,6 +122,8 @@ def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
                 kwargs={'userid': userid}
             )
         },)
+    else:
+        return redirect('relatorios_de_servicos_limpeza_predial_pdf_agendados', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2,  {

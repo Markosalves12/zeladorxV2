@@ -32,11 +32,20 @@ def agendar_servico_limpeza_predial(request, userid):
             message=f'Algo de errado'
         )
 
+    empresas = define_empresas(request=request, userid=userid)
+    setores = empresas['setores']
+
     tipos = [
         {'nome': 'Agendar serviços', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('agendar_servico_jardinagem', kwargs={'userid': userid})},
-        {'nome': 'Limpeza predial', 'link': reverse('agendar_servico_limpeza_predial', kwargs={'userid': userid})},
     ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('agendar_servico_jardinagem', kwargs={'userid': userid})},)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('agendar_servico_limpeza_predial', kwargs={'userid': userid})})
+    else:
+        return redirect('agendar_servico_jardinagem', userid)
 
     return render(
         request=request,
@@ -96,6 +105,8 @@ def servicos_agendados_limpeza_predial(request, userid):
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})})
+    else:
+        return redirect('servicos_agendados_jardinagem', userid)
 
 
     one_day, seven_days = define_range_time()

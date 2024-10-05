@@ -52,6 +52,8 @@ def areas_jardins(request, userid):
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
         tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('areas_jardins', kwargs={'userid': userid})})
+    else:
+        return redirect('areas_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})})

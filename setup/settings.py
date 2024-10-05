@@ -99,6 +99,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'zeladorx.context_processors.create_global_parameters',
+                'zeladorx.context_processors.define_wallet',
                 'authenticate.context_processors.classicate_login',
             ],
         },

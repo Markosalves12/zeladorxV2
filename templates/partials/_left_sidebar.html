@@ -72,18 +72,22 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="{% url 'dashboard_produtividade_jardinagem' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Gerencial jardinagem</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'dashboard_produtividade_limpeza_predial' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Gerencial limpeza predial</p>
-            </a>
-          </li>
+          {% if habilitar_jardinagem %}
+            <li class="nav-item">
+              <a href="{% url 'dashboard_produtividade_jardinagem' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Gerencial jardinagem</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if habilitar_limpeza %}
+            <li class="nav-item">
+              <a href="{% url 'dashboard_produtividade_limpeza_predial' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Gerencial limpeza predial</p>
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </li>
 
@@ -97,18 +101,22 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="{% url 'catalogo_de_servicos_jardinagem' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Jardinagem</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'catalogo_de_servicos_limpeza_predial' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Limpeza predial</p>
-            </a>
-          </li>
+          {% if habilitar_jardinagem %}
+            <li class="nav-item">
+              <a href="{% url 'catalogo_de_servicos_jardinagem' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Jardinagem</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if habilitar_limpeza %}
+            <li class="nav-item">
+              <a href="{% url 'catalogo_de_servicos_limpeza_predial' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Limpeza predial</p>
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </li>
 
@@ -122,18 +130,22 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="{% url 'servicos_agendados_jardinagem' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Jardinagem</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'servicos_agendados_limpeza_predial' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Limpeza predial</p>
-            </a>
-          </li>
+          {% if habilitar_jardinagem %}
+            <li class="nav-item">
+              <a href="{% url 'servicos_agendados_jardinagem' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Jardinagem</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if habilitar_limpeza %}
+            <li class="nav-item">
+              <a href="{% url 'servicos_agendados_limpeza_predial' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Limpeza predial</p>
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </li>
 
@@ -147,18 +159,22 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="{% url 'servicos_configurados_jardinagem' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Jardinagem</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'servicos_configurados_limpeza_predial' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Limpeza predial</p>
-            </a>
-          </li>
+          {% if habilitar_jardinagem %}
+            <li class="nav-item">
+              <a href="{% url 'servicos_configurados_jardinagem' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Jardinagem</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if habilitar_limpeza %}
+            <li class="nav-item">
+              <a href="{% url 'servicos_configurados_limpeza_predial' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Limpeza predial</p>
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </li>
 
@@ -172,18 +188,22 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="{% url 'agendar_servico_jardinagem' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Jardinagem</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'agendar_servico_limpeza_predial' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Limpeza predial</p>
-            </a>
-          </li>
+          {% if habilitar_jardinagem %}
+            <li class="nav-item">
+              <a href="{% url 'agendar_servico_jardinagem' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Jardinagem</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if habilitar_limpeza %}
+            <li class="nav-item">
+              <a href="{% url 'agendar_servico_limpeza_predial' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Limpeza predial</p>
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </li>
 
@@ -198,18 +218,22 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="{% url 'configurar_servico_jardinagem' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Jardinagem</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'configurar_servico_limpeza_predial' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Limpeza predial</p>
-            </a>
-          </li>
+          {% if habilitar_jardinagem %}
+            <li class="nav-item">
+              <a href="{% url 'configurar_servico_jardinagem' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Jardinagem</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if habilitar_limpeza %}
+            <li class="nav-item">
+              <a href="{% url 'configurar_servico_limpeza_predial' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Limpeza predial</p>
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </li>
 
@@ -235,24 +259,38 @@
               <p>Localidades</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="{% url 'areas_jardins' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Áreas</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'terrenos' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Terrenos</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'vegetacao' userid %}" class="nav-link">
-              <i class="far fa-circle nav-icon"></i>
-              <p>Vegetação</p>
-            </a>
-          </li>
+          {% if habilitar_jardinagem %}
+            <li class="nav-item">
+              <a href="{% url 'areas_jardins' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Áreas Jardinagem</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if habilitar_limpeza %}
+            <li class="nav-item">
+              <a href="{% url 'areas_limpeza_predial' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Áreas L. Predial</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if habilitar_jardinagem %}
+            <li class="nav-item">
+              <a href="{% url 'terrenos' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Terrenos</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if habilitar_jardinagem %}
+            <li class="nav-item">
+              <a href="{% url 'vegetacao' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Vegetação</p>
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </li>
       <!--Gerentes-->

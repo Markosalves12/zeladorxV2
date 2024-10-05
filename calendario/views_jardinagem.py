@@ -1,12 +1,13 @@
 from django.shortcuts import render, reverse, redirect
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
-from django.db.models.functions import Now, TruncDate, ExtractDay
-from django.db.models import F, Q, ExpressionWrapper, IntegerField, DurationField
+from django.db.models.functions import Now
+from django.db.models import F, ExpressionWrapper, IntegerField
 from calendario.utils import format_event
 from permissionscontrol.utils import validate_permissions
 from django.contrib import messages
 from utils.utils import aplicar_filtros_dinamicos
+from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def calendario_jardinagem(request, userid):
@@ -49,14 +50,6 @@ def calendario_jardinagem(request, userid):
         permission_to_access=['328: Pode cancelar serviços agendados']
     )
 
-    agendado = ServicoJardinagemAgendado.objects.all().annotate(
-        data_atual=Now(),
-        status_agendamento=ExpressionWrapper(
-            F('DataDeInicio') - F('data_atual'),
-            output_field=IntegerField()
-        )/(3600*24*1000000)
-    )
-
     filtro_mapeamento = {
         'Areas': 'Areas__id',
         'TipoServico': 'TipoServico',
@@ -66,15 +59,37 @@ def calendario_jardinagem(request, userid):
         'DataDeConclusao': 'DataDeConclusao'
     }
 
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    agendado = ServicoJardinagemAgendado.objects.filter(
+            Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+    ).annotate(
+        data_atual=Now(),
+        status_agendamento=ExpressionWrapper(
+            F('DataDeInicio') - F('data_atual'),
+            output_field=IntegerField()
+        )/(3600*24*1000000)
+    )
+
     if request.method == 'GET':
         get_data = request.GET.dict()
         agendado = aplicar_filtros_dinamicos(agendado, get_data, filtro_mapeamento)
 
     tipos = [
         {'nome': 'Calendário de serviços', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('calendario_jardinagem', kwargs={'userid': userid})},
-        {'nome': 'Limpeza predial', 'link': reverse('calendario_limpeza_predial', kwargs={'userid': userid})},
     ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('calendario_jardinagem', kwargs={'userid': userid})})
+    else:
+        return redirect('calendario_limpeza_predial', userid)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('calendario_limpeza_predial', kwargs={'userid': userid})})
 
     formatted_events = [
         format_event(

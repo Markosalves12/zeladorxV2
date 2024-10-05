@@ -1,9 +1,10 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, redirect
 from dashboards.data_visualization_limpeza_predial import data_visualization_limpeza_predial_indicadores
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 from utils.utils import aplicar_filtros_dinamicos
 from dashboards.utils_limpeza_predial import colect_dados_limpeza_predial
 from dashboards.utils_limpeza_predial import graphs_limpeza_predial_to_html
+from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def dashboard_produtividade_limpeza_predial(request, userid):
@@ -20,6 +21,20 @@ def dashboard_produtividade_limpeza_predial(request, userid):
         'DataDeConclusao': 'DataDeConclusao'
     }
 
+    empresas = define_empresas(request=request, userid=userid)
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Dashboards', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('dashboard_produtividade_jardinagem', kwargs={'userid': userid})},)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('dashboard_produtividade_limpeza_predial', kwargs={'userid': userid})},)
+
+
     if request.method == 'GET':
         get_data = request.GET.dict()
         agendado = aplicar_filtros_dinamicos(agendado, get_data, filtro_mapeamento)
@@ -29,12 +44,6 @@ def dashboard_produtividade_limpeza_predial(request, userid):
     (fig_area_area_atrasado, fig_area_localidade_atrasado, fig_area_localidade_proximo,
      fig_area_area_proximo, fig_area_localidade_agendados, fig_area_area_agendados,
      fig_area_localidade_em_andamento, fig_area_area_em_andamento, fig_mes_html) = graphs_limpeza_predial_to_html(request, userid, agendado)
-
-    tipos = [
-        {'nome': 'Dashboards', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('dashboard_produtividade_jardinagem', kwargs={'userid': userid})},
-        {'nome': 'Limpeza predial', 'link': reverse('dashboard_produtividade_limpeza_predial', kwargs={'userid': userid})},
-    ]
 
     return render(
         request=request,

@@ -1,4 +1,4 @@
-from django.shortcuts import reverse
+from django.shortcuts import reverse, redirect
 from localidade.models_limpeza_predial import LocalidadeLimpezaPredial
 from localidade.forms_limpeza_predial import LocalidadeLimpezaPredialForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status
@@ -53,6 +53,8 @@ def localidades_limpeza_predial(request, userid):
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('localidades_limpeza_predial', kwargs={'userid': userid})})
+    else:
+        return redirect('localidades_jardinagem', userid)
 
     return generic_view(
         request=request,

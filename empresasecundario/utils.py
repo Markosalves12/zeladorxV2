@@ -20,21 +20,29 @@ def define_empresas(request, userid):
     # Setores da empresa primária
     empresa_primaria = EmpresaPrimaria.objects.get(id_random=empresas_primarias_ids[0])
     setores_primaria = empresa_primaria.setor.all()  # Acessando o campo de chave estrangeira
+    em_parceria = empresa_primaria.nome
 
     # Flags para habilitar campos da empresa primária
     habilitar_jardinagem = False
     habilitar_limpeza = False
 
+    # Flags para habilitar campos da empresa secundária
+    habilitar_jardinagem_secundaria = False
+    habilitar_limpeza_secundaria = False
+
     # Checar os setores da empresa primária para definir as flags
     for objeto in TypeZeladoria.objects.filter(id__in=setores_primaria):
         if 'Jardinagem' in objeto.setor:
             habilitar_jardinagem = True
+            # Definir permissão secundária se superuser for True
+            if gerente.superuser:
+                habilitar_jardinagem_secundaria = True
+
         if 'Limpeza predial' in objeto.setor:
             habilitar_limpeza = True
-
-    # Flags para habilitar campos da empresa secundária
-    habilitar_jardinagem_secundaria = False
-    habilitar_limpeza_secundaria = False
+            # Definir permissão secundária se superuser for True
+            if gerente.superuser:
+                habilitar_limpeza_secundaria = True
 
     # Setores das empresas secundárias
     setores_secundarias = []
@@ -54,6 +62,7 @@ def define_empresas(request, userid):
     return {
         'empresas_primarias_ids': empresas_primarias_ids,
         'empresas_secundarias_ids': empresas_secundarias_ids,
+        'em_parceria': em_parceria,
         'setores': {
             'habilitar_jardinagem': habilitar_jardinagem,
             'habilitar_limpeza': habilitar_limpeza,

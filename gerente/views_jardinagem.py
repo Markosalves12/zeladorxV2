@@ -1,5 +1,5 @@
 # Create your views here.
-from django.shortcuts import reverse
+from django.shortcuts import reverse, redirect
 from gerente.models import Gerente
 from gerente.forms_jardinagem import GerenteJardinagemForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status, generic_view_history
@@ -52,6 +52,8 @@ def gerentes_jardinagem(request, userid):
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
         tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('gerentes_jardinagem', kwargs={'userid': userid})})
+    else:
+        return redirect('gerentes_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('gerentes_limpeza_predial', kwargs={'userid': userid})})

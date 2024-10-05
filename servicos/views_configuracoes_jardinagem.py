@@ -31,11 +31,20 @@ def configurar_servico_jardinagem(request, userid):
             message=f'Algo de errado'
         )
 
+    empresas = define_empresas(request=request, userid=userid)
+    setores = empresas['setores']
+
     tipos = [
-        {'nome': 'Configurar serviços', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('configurar_servico_jardinagem', kwargs={'userid': userid})},
-        {'nome': 'Limpeza predial', 'link': reverse('configurar_servico_limpeza_predial', kwargs={'userid': userid})},
+        {'nome': 'Configurar serviços', 'link': ''}
     ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('configurar_servico_jardinagem', kwargs={'userid': userid})})
+    else:
+        return redirect('configurar_servico_limpeza_predial', userid)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('configurar_servico_limpeza_predial', kwargs={'userid': userid})},)
 
     return render(
         request=request,
@@ -101,7 +110,9 @@ def servicos_configurados_jardinagem(request, userid):
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_configurados_jardinagem', kwargs={'userid': userid})},)
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_configurados_jardinagem', kwargs={'userid': userid})})
+    else:
+        return redirect('servicos_configurados_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid})})

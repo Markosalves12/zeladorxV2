@@ -8,6 +8,7 @@ from empresasecundario.utils import define_empresas
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Case, When, Value, CharField
+from django.shortcuts import redirect
 
 # Create your views here.
 def relatorios_de_servicos_limpeza_predial_xlsx_concluidos(request, userid):
@@ -71,6 +72,8 @@ def relatorios_de_servicos_limpeza_predial_xlsx_concluidos(request, userid):
                 }
             )
         })
+    else:
+        return redirect('relatorios_de_servicos_jardinagem_xlsx_concluidos', userid)
 
     return generic_view(
         request=request,
@@ -148,6 +151,8 @@ def relatorios_de_servicos_limpeza_predial_xlsx_agendados(request, userid):
                 kwargs={'userid': userid}
             )
         })
+    else:
+        return redirect('relatorios_de_servicos_jardinagem_xlsx_agendados', userid)
 
     one_day = timezone.now().date() + timedelta(days=1)
     seven_days = timezone.now().date() + timedelta(days=7)

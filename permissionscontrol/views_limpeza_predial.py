@@ -1,4 +1,4 @@
-from django.shortcuts import reverse
+from django.shortcuts import reverse, redirect
 from utils.views import generic_view, edit_generic_view
 from permissionscontrol.models import (PermissionsAccessLimpezaPredial, PermissionsAccessJardinagem,
                                        PermissionsAccessEspecials)
@@ -46,6 +46,8 @@ def permissoes_limpeza_predial(request, userid):
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('permissoes_limpeza_predial', kwargs={'userid': userid})})
+    else:
+        return redirect('permissoes_jardinagem', userid)
 
     return generic_view(
         request=request,

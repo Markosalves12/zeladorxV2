@@ -12,7 +12,7 @@ class EmpresaSecundariaForms(forms.ModelForm):
         empresas_primarias_ids = empresas['empresas_primarias_ids']
         setores = empresas['setores']['setores_primaria']
 
-        if setores['setor']:
+        if setores.exists():
             self.fields['setor'].queryset = self.fields['setor'].queryset.filter(
                 id__in=setores
             )
