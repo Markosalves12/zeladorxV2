@@ -89,15 +89,20 @@ def servicos_configurados_limpeza_predial(request, userid):
         {'nome': 'historico', 'label': 'Histórico'},
     ]
 
-    tipos = [
-        {'nome': 'Serviços Configurados', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('servicos_configurados_jardinagem', kwargs={'userid': userid})},
-        {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid})}
-    ]
-
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Serviços Configurados', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_configurados_jardinagem', kwargs={'userid': userid})},)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid})})
 
     return generic_view(
         request=request,

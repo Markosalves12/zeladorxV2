@@ -41,15 +41,21 @@ def gerentes_jardinagem(request, userid):
         {'nome': 'historico', 'label': 'Histórico'},
     ]
 
-    tipos = [
-        {'nome': 'Gerentes', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('gerentes_jardinagem', kwargs={'userid': userid})},
-        {'nome': 'Limpeza predial', 'link': reverse('gerentes_limpeza_predial', kwargs={'userid': userid})},
-    ]
-
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Gerentes', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('gerentes_jardinagem', kwargs={'userid': userid})})
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('gerentes_limpeza_predial', kwargs={'userid': userid})})
+
 
     return generic_view(
         request=request,

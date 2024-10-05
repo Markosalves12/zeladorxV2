@@ -6,6 +6,7 @@ from permissionscontrol.utils import validate_permissions
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Case, When, Value, CharField
+from empresasecundario.utils import define_empresas
 
 
 def relatorios_de_servicos_limpeza_predial_pdf_concluidos(request, userid):
@@ -25,23 +26,30 @@ def relatorios_de_servicos_limpeza_predial_pdf_concluidos(request, userid):
         {'nome': 'status', 'label': 'Status'},
     ]
 
+    empresas = define_empresas(request=request, userid=userid)
+    setores = empresas['setores']
+
     tipos = [
         {'nome': 'Relatório de serviços', 'link': ''},
-        {
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1,         {
             'nome': 'Serviços concluidos, Jardinagem PDF',
             'link': reverse(
                 'relatorios_de_servicos_jardinagem_pdf_concluidos',
                 kwargs={'userid': userid}
             )
-        },
-        {
+        },)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {
             'nome': 'Serviços concluidos, Limpeza predial PDF',
             'link': reverse(
                 'relatorios_de_servicos_limpeza_predial_pdf_concluidos',
                 kwargs={'userid': userid}
             )
-        }
-    ]
+        })
 
     return generic_view(
         request=request,

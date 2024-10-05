@@ -82,15 +82,21 @@ def servicos_agendados_limpeza_predial(request, userid):
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 
-    tipos = [
-        {'nome': 'Serviços agendados', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem', kwargs={'userid': userid})},
-        {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})},
-    ]
-
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Serviços agendados', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem', kwargs={'userid': userid})})
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})})
+
 
     one_day, seven_days = define_range_time()
 

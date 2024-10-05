@@ -31,16 +31,22 @@ def permissoes_jardinagem(request, userid):
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 
-    tipos = [
-        {'nome': 'Tipo de permissão', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('permissoes_jardinagem', kwargs={'userid': userid})},
-        {'nome': 'Limpeza predial', 'link': reverse('permissoes_limpeza_predial', kwargs={'userid': userid})},
-        {'nome': 'Especiais', 'link': reverse('permissions_especials', kwargs={'userid': userid})},
-    ]
-
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Tipo de permissão', 'link': ''},
+        {'nome': 'Especiais', 'link': reverse('permissions_especials', kwargs={'userid': userid})},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('permissoes_jardinagem', kwargs={'userid': userid})})
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('permissoes_limpeza_predial', kwargs={'userid': userid})})
+
 
     return generic_view(
         request=request,

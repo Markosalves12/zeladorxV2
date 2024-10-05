@@ -54,8 +54,5 @@ class Unidade(models.Model):
         default='Mobilizado'
     )
 
-    # class Meta:
-    #     unique_together = ('nome', 'empresasecundaria', )
-
     def __str__(self):
         return self.nome

@@ -234,6 +234,6 @@ def generic_view_history(request, userid, id_random, app_name, objeto, objetos, 
                     'type': f'{type_export}',
                 }
             ),
-            'redirect_close_button': redirect_close_button
+            'redirect_close_button': reverse(redirect_close_button, kwargs={'userid': userid})
         }
     )

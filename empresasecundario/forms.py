@@ -3,7 +3,6 @@ from django import forms
 from empresasecundario.utils import define_empresas
 from zeladorx.models import TypeZeladoria
 from empresaprimaria.models import EmpresaPrimaria
-from permissionscontrol.utils import validate_permissions
 
 class EmpresaSecundariaForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
@@ -11,12 +10,14 @@ class EmpresaSecundariaForms(forms.ModelForm):
         # Excluir serviços com status 'Desmobilizado' do queryset
         empresas = define_empresas(request=request, userid=userid)
         empresas_primarias_ids = empresas['empresas_primarias_ids']
-        empresa = EmpresaPrimaria.objects.get(id_random=empresas_primarias_ids[0])
-        setores = empresa.setor.all()  # Acessando o campo de chave estrangeira diretamente
+        setores = empresas['setores']['setores_primaria']
 
-        self.fields['setor'].queryset = self.fields['setor'].queryset.filter(
-            id__in=setores
-        )
+        if setores['setor']:
+            self.fields['setor'].queryset = self.fields['setor'].queryset.filter(
+                id__in=setores
+            )
+        else:
+            self.fields.pop('setor')
 
         if userid and type=='creat/edit':
             # Ajustar o queryset do campo 'empresaprimaria'

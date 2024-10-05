@@ -150,27 +150,10 @@
                       {% else %}
                         <img src="{% static 'dist/img/not found.png' %}" alt="Not found imagem" class="img-fluid">
                       {% endif %}
-
-<!--                    {% elif type == 'fato_jardinagem' %}-->
-<!--                      {% if dado.antes.url %}-->
-<!--                        <img src="{{ dado.antes.url }}" alt="Imagem do Objeto" class="img-fluid">-->
-<!--                      {% else %}-->
-<!--                        <img src="{% static 'dist/img/not found.png' %}" alt="Not found imagem" class="img-fluid">-->
-<!--                      {% endif %}-->
-
-<!--                      {% if dado.depois.url %}-->
-<!--                        <img src="{{ dado.depois.url }}" alt="Imagem do Objeto" class="img-fluid">-->
-<!--                      {% else %}-->
-<!--                        <img src="{% static 'dist/img/not found.png' %}" alt="Not found imagem" class="img-fluid">-->
-<!--                      {% endif %}-->
                     {% endif %}
                   </div>
                 </div>
               </div>
-              <!-- END timeline item -->
-              <!-- timeline item -->
-<!--              </div>-->
-              <!-- END timeline item -->
               <div>
                 <i class="fas fa-clock bg-gray"></i>
               </div>
@@ -179,18 +162,28 @@
           <!-- /.col -->
         </div>
         {% endfor %}
-            <div class="card-body d-flex justify-content-end">
-              <a href="{{ export_excel }}">
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
-                  Exportar Excel
-                </button>
-              </a>
-              <a href="{{ export_pdf }}">
-                <button type="button" class="btn btn-primary">
-                  Exportar PDF
-                </button>
-              </a>
-            </div>
+        <div class="modal-footer justify-content-between">
+          <!-- Botão Fechar à esquerda -->
+          <a href="{{ redirect_close_button }}">
+            <button type="button" class="btn btn-default" data-dismiss="modal">
+              Fechar
+            </button>
+          </a>
+
+          <!-- Botões agrupados à direita -->
+          <div class="ml-auto">
+            <a href="{{ export_excel }}">
+              <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
+                Exportar Excel
+              </button>
+            </a>
+            <a href="{{ export_pdf }}">
+              <button type="button" class="btn btn-primary">
+                Exportar PDF
+              </button>
+            </a>
+          </div>
+        </div>
           {% include 'partials/_paginate.html' %}
 
       </div>

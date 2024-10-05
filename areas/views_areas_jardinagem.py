@@ -1,4 +1,4 @@
-from django.shortcuts import reverse
+from django.shortcuts import reverse, redirect
 from areas.models_jardinagem import AreasJardins
 from areas.forms_jardinagem import AreasJardinsForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status
@@ -41,15 +41,20 @@ def areas_jardins(request, userid):
         {'nome': 'historico', 'label': 'Histórico'},
     ]
 
-    tipos = [
-        {'nome': 'Tipo de área', 'link': ''},
-        {'nome': 'Jardinagem', 'link': reverse('areas_jardins', kwargs={'userid': userid})},
-        {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})},
-    ]
-
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Tipo de área', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('areas_jardins', kwargs={'userid': userid})})
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})})
 
     return generic_view(
         request=request,

@@ -29,20 +29,25 @@ def unidades(request, userid):
         permission_to_access=['340: Pode criar novas unidades']
     )
 
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
-        {'nome': 'linkmapajardinagem', 'label': 'Mapa jardinagem'},
-        {'nome': 'linkmapalimnpezapredial', 'label': 'Mapa l. predial'},
         {'nome': 'empresasecundaria', 'label': 'Empresa'},
         {'nome': 'status', 'label': 'status'},
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Mapa'},
     ]
 
-    empresas = define_empresas(request=request, userid=userid)
-    empresas_primarias_ids = empresas['empresas_primarias_ids']
-    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    if setores['habilitar_jardinagem']:
+        colunas.insert(2, {'nome': 'linkmapajardinagem', 'label': 'Mapa Jardinagem'})
+
+    if setores['habilitar_limpeza']:
+        colunas.insert(3, {'nome': 'linkmapalimnpezapredial', 'label': 'Mapa Limpeza Predial'})
 
     return generic_view(
         request=request,
