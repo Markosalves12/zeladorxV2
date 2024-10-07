@@ -8,6 +8,7 @@ from empresasecundario.utils import define_empresas
 from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 
+
 # Create your views here.
 def gerentes_jardinagem(request, userid):
     empresas = define_empresas(request=request, userid=userid)
@@ -25,7 +26,8 @@ def gerentes_jardinagem(request, userid):
         return redirect('gerentes_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('gerentes_limpeza_predial', kwargs={'userid': userid})})
+        tipos.insert(2, {'nome': 'Limpeza predial',
+                         'link': reverse('gerentes_limpeza_predial', kwargs={'userid': userid})})
 
     permission_view = validate_permissions(
         request=request,
@@ -151,6 +153,7 @@ def editar_gerente_jardinagem(request, userid, id_random):
         ),
     )
 
+
 def alterar_status_gerente_jardinagem(request, userid, id_random, new_status):
     objeto = Gerente.objects.get(id_random=id_random)
     return gerneric_alter_status(
@@ -164,12 +167,27 @@ def alterar_status_gerente_jardinagem(request, userid, id_random, new_status):
 
 
 def historico_de_servicos_gerente_jardinagem(request, userid, id_random):
+    permission_extract_pdf = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['311: Pode extrair relatórios PDF de limpeza predial']
+    )
+
+    permission_extract_xlsx = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['310: Pode extrair relatórios XLSX de limpeza predial']
+    )
+
     objeto = Gerente.objects.get(
         id_random=id_random
     )
 
     objetos = colect_dados_fato_servico_jardinagem(
         request=request,
+        userid=userid,
         DataDeInicio='None',
         DataDeConclusao='None',
         TipoServico='None',
@@ -203,5 +221,7 @@ def historico_de_servicos_gerente_jardinagem(request, userid, id_random):
         export_excel='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
         foto_objeto=None,
         Foto=False,
-        redirect_close_button='gerentes_jardinagem'
+        redirect_close_button='gerentes_jardinagem',
+        permission_extract_pdf=permission_extract_pdf,
+        permission_extract_xlsx=permission_extract_xlsx
     )

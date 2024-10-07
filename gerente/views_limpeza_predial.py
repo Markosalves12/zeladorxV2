@@ -165,12 +165,27 @@ def alterar_status_gerente_limpeza_predial(request, userid, id_random, new_statu
 
 
 def historico_de_servicos_gerente_limpeza_predial(request, userid, id_random):
+    permission_extract_pdf = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['311: Pode extrair relatórios PDF de limpeza predial']
+    )
+
+    permission_extract_xlsx = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['310: Pode extrair relatórios XLSX de limpeza predial']
+    )
+
     objeto = Gerente.objects.get(
         id_random=id_random
     )
 
     objetos = colect_dados_fato_servico_limpeza_predial(
         request=request,
+        userid=userid,
         DataDeInicio='None',
         DataDeConclusao='None',
         TipoServico='None',
@@ -204,5 +219,7 @@ def historico_de_servicos_gerente_limpeza_predial(request, userid, id_random):
         export_excel='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
         foto_objeto=None,
         Foto=False,
-        redirect_close_button='gerentes_limpeza_predial'
+        redirect_close_button='gerentes_limpeza_predial',
+        permission_extract_pdf=permission_extract_pdf,
+        permission_extract_xlsx=permission_extract_xlsx
     )

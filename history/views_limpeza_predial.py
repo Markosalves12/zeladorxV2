@@ -3,15 +3,31 @@ from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_pre
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from utils.views import generic_view_history
+from permissionscontrol.utils import validate_permissions
 
 # Create your views here.
 def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
+    permission_extract_pdf = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['311: Pode extrair relatórios PDF de limpeza predial']
+    )
+
+    permission_extract_xlsx = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['310: Pode extrair relatórios XLSX de limpeza predial']
+    )
+
     objeto = AreaLimpezaPredial.objects.get(
         id_random=id_random
     )
 
     objetos = colect_dados_fato_servico_limpeza_predial(
         request=request,
+        userid=userid,
         DataDeInicio='None',
         DataDeConclusao='None',
         TipoServico='None',
@@ -45,17 +61,34 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
         export_excel='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
         foto_objeto=None,
         Foto=False,
-        redirect_close_button='areas_limpeza_predial'
+        redirect_close_button='areas_limpeza_predial',
+        permission_extract_pdf=permission_extract_pdf,
+        permission_extract_xlsx=permission_extract_xlsx
     )
 
 
 def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, id_random):
+    permission_extract_pdf = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['311: Pode extrair relatórios PDF de limpeza predial']
+    )
+
+    permission_extract_xlsx = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['310: Pode extrair relatórios XLSX de limpeza predial']
+    )
+
     objeto = CatalogodeServicoLimpezaPredial.objects.get(
         id_random=id_random
     )
 
     objetos = colect_dados_fato_servico_limpeza_predial(
         request=request,
+        userid=userid,
         DataDeInicio='None',
         DataDeConclusao='None',
         TipoServico='None',
@@ -89,5 +122,7 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
         export_excel='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
         foto_objeto=None,
         Foto=False,
-        redirect_close_button='catalogo_de_servicos_limpeza_predial'
+        redirect_close_button='catalogo_de_servicos_limpeza_predial',
+        permission_extract_pdf=permission_extract_pdf,
+        permission_extract_xlsx=permission_extract_xlsx
     )

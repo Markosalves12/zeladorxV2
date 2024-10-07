@@ -84,9 +84,9 @@
                         <!-- Botões agrupados à direita -->
                         <div class="ml-auto">
                           <button type="POST" class="btn btn-primary">{{ text_button }}</button>
-                          {% if permission_exclude %}
-                            <button type="button" class="btn btn-danger">Excluir</button>
-                          {% endif %}
+<!--                          {% if permission_exclude %}-->
+<!--                            <button type="button" class="btn btn-danger">Excluir</button>-->
+<!--                          {% endif %}-->
                           {% if permission_desmobilize %}
                             {% if objeto.status == "Mobilizado" %}
                               <a href="{{ url_desmobilize }}">

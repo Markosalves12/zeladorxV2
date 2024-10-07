@@ -206,12 +206,33 @@ def alterar_status_servico_limpezapredial_configurado(request, userid, id_random
 
 
 def historico_de_servicos_configurados_limpeza_predial(request, userid, id_random):
+    permission_extract_pdf = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['311: Pode extrair relatórios PDF de limpeza predial']
+    )
+
+    permission_extract_xlsx = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['310: Pode extrair relatórios XLSX de limpeza predial']
+    )
+
     objeto = ServicoLimpezaPredialConfigurado.objects.get(
         id_random=id_random
     )
 
     objetos = colect_dados_fato_servico_limpeza_predial(
         request=request,
+        DataDeInicio='None',
+        DataDeConclusao='None',
+        ServicosEscalados=['None'],
+        ColaboradoresEscalados=['None'],
+        TipoServico='None',
+        Areas='None',
+        userid=userid,
         status=['Concluido']
     ).filter(
         id_random_configuracao=id_random
@@ -236,5 +257,7 @@ def historico_de_servicos_configurados_limpeza_predial(request, userid, id_rando
         export_excel='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
         foto_objeto=None,
         Foto=False,
-        redirect_close_button='servicos_configurados_limpeza_predial'
+        redirect_close_button='servicos_configurados_limpeza_predial',
+        permission_extract_pdf=permission_extract_pdf,
+        permission_extract_xlsx=permission_extract_xlsx
     )

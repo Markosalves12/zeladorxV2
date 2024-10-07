@@ -172,16 +172,20 @@
 
           <!-- Botões agrupados à direita -->
           <div class="ml-auto">
-            <a href="{{ export_excel }}">
-              <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
-                Exportar Excel
-              </button>
-            </a>
-            <a href="{{ export_pdf }}">
-              <button type="button" class="btn btn-primary">
-                Exportar PDF
-              </button>
-            </a>
+            {% if permission_extract_pdf %}
+              <a href="{{ export_excel }}">
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
+                  Exportar Excel
+                </button>
+              </a>
+            {% endif %}
+            {% if permission_extract_xlsx %}
+              <a href="{{ export_pdf }}">
+                <button type="button" class="btn btn-primary">
+                  Exportar PDF
+                </button>
+              </a>
+            {% endif %}
           </div>
         </div>
           {% include 'partials/_paginate.html' %}

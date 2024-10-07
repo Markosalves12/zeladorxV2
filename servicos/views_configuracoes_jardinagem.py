@@ -207,6 +207,20 @@ def alterar_status_servico_jardinagem_configurado(request, userid, id_random, ne
 
 
 def historico_de_servicos_configurados_jardinagem(request, userid, id_random):
+    permission_extract_pdf = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['311: Pode extrair relatórios PDF de jardinagem']
+    )
+
+    permission_extract_xlsx = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['310: Pode extrair relatórios XLSX de jardinagem']
+    )
+
     objeto = ServicoJardinagemConfigurado.objects.get(
         id_random=id_random
     )
@@ -235,5 +249,7 @@ def historico_de_servicos_configurados_jardinagem(request, userid, id_random):
         export_excel='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
         foto_objeto=None,
         Foto=False,
-        redirect_close_button='servicos_configurados_jardinagem'
+        redirect_close_button='servicos_configurados_jardinagem',
+        permission_extract_pdf=permission_extract_pdf,
+        permission_extract_xlsx=permission_extract_xlsx
     )

@@ -1,7 +1,7 @@
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from catalogo_de_servicos.forms_limpeza_predial import CatalogoServicoLimpezaPredialForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status
-from django.shortcuts import reverse
+from django.shortcuts import reverse, redirect
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 
@@ -22,6 +22,8 @@ def catalogo_de_servicos_limpeza_predial(request, userid):
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('catalogo_de_servicos_limpeza_predial', kwargs={'userid': userid})})
+    else:
+        return redirect('catalogo_de_servicos_jardinagem', userid)
 
     permission_view = validate_permissions(
         request=request,

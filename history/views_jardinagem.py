@@ -3,9 +3,25 @@ from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from utils.views import generic_view_history
+from permissionscontrol.utils import validate_permissions
+
 
 # Create your views here.
 def historico_de_servicos_areas_jardinagem(request, userid, id_random):
+    permission_extract_pdf = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['311: Pode extrair relatórios PDF de jardinagem']
+    )
+
+    permission_extract_xlsx = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['310: Pode extrair relatórios XLSX de jardinagem']
+    )
+
     objeto = AreasJardins.objects.get(
         id_random=id_random
     )
@@ -38,10 +54,27 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
         export_excel='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
         foto_objeto=None,
         Foto=False,
-        redirect_close_button='areas_jardins'
+        redirect_close_button='areas_jardins',
+        permission_extract_pdf=permission_extract_pdf,
+        permission_extract_xlsx=permission_extract_xlsx
     )
 
+
 def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_random):
+    permission_extract_pdf = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['311: Pode extrair relatórios PDF de jardinagem']
+    )
+
+    permission_extract_xlsx = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['310: Pode extrair relatórios XLSX de jardinagem']
+    )
+
     objeto = CatalogodeServicoJardinagem.objects.get(
         id_random=id_random
     )
@@ -74,5 +107,7 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
         export_excel='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
         foto_objeto=None,
         Foto=False,
-        redirect_close_button='catalogo_de_servicos_jardinagem'
+        redirect_close_button='catalogo_de_servicos_jardinagem',
+        permission_extract_pdf=permission_extract_pdf,
+        permission_extract_xlsx=permission_extract_xlsx
     )
