@@ -19,6 +19,12 @@ class PermissionsAccessLimpezaPredialForms(forms.ModelForm):
             for field_name, field in self.fields.items():
                 field.required = False
 
+            self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
+                empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                empresasecundaria__id_random__in=empresas_secundarias_ids,
+                empresasecundaria__setor__setor='Limpeza predial'
+            )
+
             # Alterando o widget dos campos de seleção múltipla para SelectMultiple
             self.fields['Permissions'] = forms.ModelMultipleChoiceField(
                 queryset=PermissionsLimpezaPredial.objects.all(),

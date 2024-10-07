@@ -9,6 +9,23 @@ from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_pre
 from utils.utils import paginate
 
 def configurar_servico_limpeza_predial(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Configurar serviços', 'link': ''}
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem',
+                         'link': reverse('configurar_servico_jardinagem', kwargs={'userid': userid})})
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial',
+                         'link': reverse('configurar_servico_limpeza_predial', kwargs={'userid': userid})})
+    else:
+        return redirect('configurar_servico_jardinagem', userid)
+
     forms = ServicoLimpezaPredialConfiguradoForms(request=request, userid=userid)
 
     if request.method == 'POST':
@@ -30,23 +47,6 @@ def configurar_servico_limpeza_predial(request, userid):
             message=f'Algo de errado'
         )
 
-    empresas = define_empresas(request=request, userid=userid)
-    setores = empresas['setores']
-
-    tipos = [
-        {'nome': 'Configurar serviços', 'link': ''}
-    ]
-
-    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem',
-                         'link': reverse('configurar_servico_jardinagem', kwargs={'userid': userid})})
-
-    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial',
-                         'link': reverse('configurar_servico_limpeza_predial', kwargs={'userid': userid})})
-    else:
-        return redirect('configurar_servico_jardinagem', userid)
-
     return render(
         request=request,
         template_name='DataTableAndForms/CreateObject.html',
@@ -61,6 +61,23 @@ def configurar_servico_limpeza_predial(request, userid):
     )
 
 def servicos_configurados_limpeza_predial(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Serviços Configurados', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_configurados_jardinagem', kwargs={'userid': userid})},)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid})})
+    else:
+        return redirect('servicos_configurados_jardinagem', userid)
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -99,23 +116,6 @@ def servicos_configurados_limpeza_predial(request, userid):
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Histórico'},
     ]
-
-    empresas = define_empresas(request=request, userid=userid)
-    empresas_primarias_ids = empresas['empresas_primarias_ids']
-    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
-    setores = empresas['setores']
-
-    tipos = [
-        {'nome': 'Serviços Configurados', 'link': ''},
-    ]
-
-    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_configurados_jardinagem', kwargs={'userid': userid})},)
-
-    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid})})
-    else:
-        return redirect('servicos_configurados_jardinagem', userid)
 
     return generic_view(
         request=request,

@@ -28,6 +28,7 @@ def exportar_relatorio_de_serivos_limpeza_predial_excel(request, userid, status,
         # Adicione os dados do relatório ao arquivo Excel
         dados = colect_dados_fato_servico_limpeza_predial(
             request=request,
+            userid=userid,
             DataDeInicio=DataDeInicio,
             DataDeConclusao=DataDeConclusao,
             ServicosEscalados=ServicosEscalados,
@@ -77,6 +78,7 @@ def exportar_relatorio_de_serivos_limpeza_predial_excel(request, userid, status,
         # Adicione os dados do relatório ao arquivo Excel
         dados = colect_dados_agendamentos_limpeza_predial(
             request=request,
+            userid=userid,
             DataDeInicio=DataDeInicio,
             DataDeConclusao=DataDeConclusao,
             ServicosEscalados=ServicosEscalados,

@@ -10,6 +10,25 @@ from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def permissoes_jardinagem(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Tipo de permissão', 'link': ''},
+        {'nome': 'Especiais', 'link': reverse('permissions_especials', kwargs={'userid': userid})},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('permissoes_jardinagem', kwargs={'userid': userid})})
+    else:
+        return redirect('permissoes_limpeza_predial', userid)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('permissoes_limpeza_predial', kwargs={'userid': userid})})
+
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -31,30 +50,13 @@ def permissoes_jardinagem(request, userid):
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 
-    empresas = define_empresas(request=request, userid=userid)
-    empresas_primarias_ids = empresas['empresas_primarias_ids']
-    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
-    setores = empresas['setores']
-
-    tipos = [
-        {'nome': 'Tipo de permissão', 'link': ''},
-        {'nome': 'Especiais', 'link': reverse('permissions_especials', kwargs={'userid': userid})},
-    ]
-
-    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('permissoes_jardinagem', kwargs={'userid': userid})})
-    else:
-        return redirect('permissoes_limpeza_predial', userid)
-
-    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('permissoes_limpeza_predial', kwargs={'userid': userid})})
-
 
     return generic_view(
         request=request,
         model=PermissionsAccessJardinagem.objects.filter(
             Gerente__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Gerente__empresasecundaria__id_random__in=empresas_secundarias_ids,
+            Gerente__empresasecundaria__setor__setor='Jardinagem'
         ),
         form_class=PermissionsAccessJardinagemForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
@@ -79,6 +81,11 @@ def permissoes_jardinagem(request, userid):
 
 
 def editar_permissoes_jardinagem(request, userid, id_random):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
     permissions_instance_especials = PermissionsAccessEspecials.objects.filter(
         Gerente__id_random=userid
     ).first()
@@ -95,30 +102,8 @@ def editar_permissoes_jardinagem(request, userid, id_random):
         id_random=userid
     )
 
-    permission_edit = validate_permissions(
-        request=request,
-        userid=userid,
-        permission_type='jardinagem',
-        permission_to_access=['300: Pode editar permissões de jardinagem']
-    )
-
     tipos = [
         {'nome': 'Editar permissões', 'link': ''},
-        {
-            'nome': 'Jardinagem',
-            'link': reverse(
-                'editar_permissoes_jardinagem',
-                kwargs={'userid': userid, 'id_random': permissions_instance_jardinagem.id_random})},
-        {
-            'nome': 'Limpeza predial',
-            'link': reverse(
-                'editar_permissoes_limpeza_predial',
-                kwargs={
-                    'userid': userid,
-                    'id_random': permissions_instance_limpeza_predial.id_random
-                }
-            )
-        },
         {
             'nome': 'Especiais',
             'link': reverse(
@@ -130,6 +115,35 @@ def editar_permissoes_jardinagem(request, userid, id_random):
             )
         },
     ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1,         {
+            'nome': 'Jardinagem',
+            'link': reverse(
+                'editar_permissoes_jardinagem',
+                kwargs={'userid': userid, 'id_random': permissions_instance_jardinagem.id_random})
+        },)
+    else:
+        return redirect('permissoes_limpeza_predial', userid)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2,         {
+            'nome': 'Limpeza predial',
+            'link': reverse(
+                'editar_permissoes_limpeza_predial',
+                kwargs={
+                    'userid': userid,
+                    'id_random': permissions_instance_limpeza_predial.id_random
+                }
+            )
+        })
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['300: Pode editar permissões de jardinagem']
+    )
 
     return edit_generic_view(
         request=request,

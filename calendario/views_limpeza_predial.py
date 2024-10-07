@@ -15,6 +15,23 @@ def calendario_limpeza_predial(request, userid):
         messages.error(request, "usuario nao logado")
         return redirect('login')
 
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Calendário de serviços', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('calendario_jardinagem', kwargs={'userid': userid})})
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('calendario_limpeza_predial', kwargs={'userid': userid})})
+    else:
+        return redirect('calendario_jardinagem', userid)
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -59,11 +76,6 @@ def calendario_limpeza_predial(request, userid):
         'DataDeConclusao': 'DataDeConclusao'
     }
 
-    empresas = define_empresas(request=request, userid=userid)
-    empresas_primarias_ids = empresas['empresas_primarias_ids']
-    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
-    setores = empresas['setores']
-
     agendado = ServicoLimpezaPredialAgendado.objects.filter(
             Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
@@ -79,17 +91,6 @@ def calendario_limpeza_predial(request, userid):
         get_data = request.GET.dict()
         agendado = aplicar_filtros_dinamicos(agendado, get_data, filtro_mapeamento)
 
-    tipos = [
-        {'nome': 'Calendário de serviços', 'link': ''},
-    ]
-
-    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('calendario_jardinagem', kwargs={'userid': userid})})
-
-    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('calendario_limpeza_predial', kwargs={'userid': userid})})
-    else:
-        return redirect('calendario_jardinagem', userid)
 
     formatted_events = [
         format_event(

@@ -8,6 +8,24 @@ from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def areas_jardins(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Tipo de área', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('areas_jardins', kwargs={'userid': userid})})
+    else:
+        return redirect('areas_limpeza_predial', userid)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})})
+
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -40,23 +58,6 @@ def areas_jardins(request, userid):
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Histórico'},
     ]
-
-    empresas = define_empresas(request=request, userid=userid)
-    empresas_primarias_ids = empresas['empresas_primarias_ids']
-    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
-    setores = empresas['setores']
-
-    tipos = [
-        {'nome': 'Tipo de área', 'link': ''},
-    ]
-
-    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('areas_jardins', kwargs={'userid': userid})})
-    else:
-        return redirect('areas_limpeza_predial', userid)
-
-    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})})
 
     return generic_view(
         request=request,
@@ -152,6 +153,40 @@ def editar_area_jardins(request, userid, id_random):
 
 
 def areas_associadas_localidades_jardinagem(request, userid, id_random):
+    empresas = define_empresas(request=request, userid=userid)
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Tipo de área', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {
+            'nome': 'Jardinagem',
+            'link': reverse(
+                'areas_jardins',
+                kwargs={
+                    'userid': userid,
+                }
+            )
+        }
+    )
+    else:
+        return redirect('areas_limpeza_predial', userid)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {
+            'nome': 'Limpeza predial',
+            'link': reverse(
+                'areas_limpeza_predial',
+                kwargs={
+                    'userid': userid,
+                }
+            )
+        }
+    )
+
+
     localidade = LocalidadeJardiangem.objects.get(
         id_random=id_random
     )
@@ -190,28 +225,6 @@ def areas_associadas_localidades_jardinagem(request, userid, id_random):
         {'nome': 'localidade', 'label': 'Localidade'},
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Histórico'},
-    ]
-
-    tipos = [
-        {'nome': 'Tipo de área', 'link': ''},
-        {
-            'nome': 'Jardinagem',
-            'link': reverse(
-                'areas_jardins',
-                kwargs={
-                    'userid': userid,
-                }
-            )
-        },
-        {
-            'nome': 'Limpeza predial',
-            'link': reverse(
-                'areas_limpeza_predial',
-                kwargs={
-                    'userid': userid,
-                }
-            )
-        },
     ]
 
     return generic_view(

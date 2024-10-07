@@ -2,9 +2,13 @@ from servicos.models_limpeza_predial import FatoServicoLimpezaPredial, ServicoLi
 from django.db.models import (ExpressionWrapper, F, CharField,
                               IntegerField, DurationField, DateTimeField
                               )
+from empresasecundario.utils import define_empresas
 
-def colect_dados_fato_servico_limpeza_predial(request, DataDeInicio, DataDeConclusao, ServicosEscalados,
+def colect_dados_fato_servico_limpeza_predial(request, userid, DataDeInicio, DataDeConclusao, ServicosEscalados,
                                          ColaboradoresEscalados, TipoServico, Areas, status=list):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
     filters = {
         'status_servico__in': status,
@@ -135,13 +139,19 @@ def colect_dados_fato_servico_limpeza_predial(request, DataDeInicio, DataDeConcl
             output_field=CharField()
         ),
     ).filter(
-        **filters
+        **filters,
+        Servico__Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+        Servico__Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
     )
 
     return dados
 
-def colect_dados_agendamentos_limpeza_predial(request, DataDeInicio, DataDeConclusao, ServicosEscalados,
+def colect_dados_agendamentos_limpeza_predial(request, userid, DataDeInicio, DataDeConclusao, ServicosEscalados,
                                          ColaboradoresEscalados, TipoServico, Areas, status=list):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
     filters = {
         'status_servico__in': status,
         'tipodeempresa': 'Limpeza predial',
@@ -235,7 +245,9 @@ def colect_dados_agendamentos_limpeza_predial(request, DataDeInicio, DataDeConcl
             output_field=CharField()
         ),
     ).filter(
-        **filters
+        **filters,
+        Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+        Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
     )
 
     return dados

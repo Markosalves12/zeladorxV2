@@ -118,8 +118,20 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
         }
 
 class FatoServicoLimpezaPredialForms(forms.ModelForm):
-    # def __init__(self, *args, id_random_servico=None, **kwargs):
-    #     super(FatoServicoLimpezaPredial, self).__init__()
+    def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
+        super(FatoServicoLimpezaPredialForms, self).__init__(*args, **kwargs)
+        empresas = define_empresas(request=request, userid=userid)
+        empresas_primarias_ids = empresas['empresas_primarias_ids']
+        empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+        if userid and type == 'creat/edit':
+            self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
+                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+                EmpresaSecundaria__status__in=['Mobilizado'],
+                empresasecundaria__setor__setor__in=['Limpeza predial'],
+                status__in=['Mobilizado']
+            )
 
     class Meta:
         model = FatoServicoLimpezaPredial

@@ -6,8 +6,27 @@ from localidade.models_limpeza_predial import LocalidadeLimpezaPredial
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 
+
 # Create your views here.
 def areas_limpeza_predial(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Tipo de área', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('areas_jardins', kwargs={'userid': userid})}, )
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2,
+                     {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})})
+    else:
+        return redirect('areas_jardins', userid)
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -30,32 +49,15 @@ def areas_limpeza_predial(request, userid):
     )
 
     colunas = [
-        {'nome': 'id', 'label': '#','largura': '10px'},
+        {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
-        {'nome': 'dimensao','label': 'Dimensão' },
+        {'nome': 'dimensao', 'label': 'Dimensão'},
         {'nome': 'servico', 'label': 'Serviço'},
         {'nome': 'localidade', 'label': 'Localidade'},
         {'nome': 'status', 'label': 'status'},
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Histórico'},
     ]
-
-    empresas = define_empresas(request=request, userid=userid)
-    empresas_primarias_ids = empresas['empresas_primarias_ids']
-    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
-    setores = empresas['setores']
-
-    tipos = [
-        {'nome': 'Tipo de área', 'link': ''},
-    ]
-
-    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('areas_jardins', kwargs={'userid': userid})},)
-
-    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('areas_limpeza_predial', kwargs={'userid': userid})})
-    else:
-        return redirect('areas_jardins', userid)
 
     return generic_view(
         request=request,
@@ -149,6 +151,37 @@ def editar_area_limpeza_predial(request, userid, id_random):
 
 
 def areas_associadas_localidades_limpeza_predial(request, userid, id_random):
+    empresas = define_empresas(request=request, userid=userid)
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Tipo de área', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {
+            'nome': 'Jardinagem',
+            'link': reverse(
+                'areas_jardins',
+                kwargs={
+                    'userid': userid,
+                }
+            )
+        })
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {
+            'nome': 'Limpeza predial',
+            'link': reverse(
+                'areas_limpeza_predial',
+                kwargs={
+                    'userid': userid,
+                }
+            )
+        })
+    else:
+        return redirect('areas_jardins', userid)
+
     localidade = LocalidadeLimpezaPredial.objects.get(
         id_random=id_random
     )
@@ -186,28 +219,6 @@ def areas_associadas_localidades_limpeza_predial(request, userid, id_random):
         {'nome': 'localidade', 'label': 'Localidade'},
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Histórico'},
-    ]
-
-    tipos = [
-        {'nome': 'Tipo de área', 'link': ''},
-        {
-            'nome': 'Jardinagem',
-            'link': reverse(
-                'areas_jardins',
-                kwargs={
-                    'userid': userid,
-                }
-            )
-        },
-        {
-            'nome': 'Limpeza predial',
-            'link': reverse(
-                'areas_limpeza_predial',
-                kwargs={
-                    'userid': userid,
-                }
-            )
-        },
     ]
 
     return generic_view(

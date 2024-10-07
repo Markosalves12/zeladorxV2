@@ -22,6 +22,7 @@ class PermissionsAccessJardinagemForms(forms.ModelForm):
             self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
                 empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 empresasecundaria__id_random__in=empresas_secundarias_ids,
+                empresasecundaria__setor__setor='Jardinagem'
             )
 
             # Alterando o widget dos campos de seleção múltipla para SelectMultiple

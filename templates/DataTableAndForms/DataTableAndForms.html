@@ -240,7 +240,6 @@
                                 {% if field.name == 'empresasecundaria' %}
                                   <div class="form-group">
                                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-
                                     <!-- Container com checkboxes paginados -->
                                     <div id="checkbox-container">
                                       {% for empresa in field %}
@@ -254,6 +253,26 @@
                                     <div id="pagination-controls">
                                       <button type="button" id="prev-page" onclick="prevPage()" class="btn btn-info">Anterior</button>
                                       <button type="button" id="next-page" onclick="nextPage()" class="btn btn-info">Proximo</button>
+                                    </div>
+                                  </div>
+                                {% endif %}
+                                {% if field.name == 'ServicosEscalados' %}
+                                  <div class="form-group">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                                    <!-- Container com checkboxes paginados -->
+                                    <div id="checkbox-servicos">
+                                      {% for servico in field %}
+                                        <div class="checkbox-item">
+                                          {{ servico }}
+                                        </div>
+                                      {% endfor %}
+                                    </div>
+
+                                    <!-- Controles de paginação -->
+                                    <div id="pagination-controls-servicos-escalados">
+                                      <button type="button" id="prev-page-servicos-escalados" onclick="prevPage()" class="btn btn-info">Anterior</button>
+                                      <button type="button" id="next-page-servicos-escalados" onclick="nextPage()" class="btn btn-info">Proximo</button>
                                     </div>
                                   </div>
                                 {% else %}
@@ -303,6 +322,36 @@
             container.style.display = 'none';
         }
     };
+</script>
+
+<script>
+  const itemsPerPage = 5;
+  let currentPage = 1;
+
+  function paginate() {
+    const items = document.querySelectorAll('.checkbox-item');
+    const totalItems = items.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    items.forEach((item, index) => {
+      item.style.display = (index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage) ? 'block' : 'none';
+    });
+
+    document.getElementById('prev-page-servicos-escalados').style.display = (currentPage === 1) ? 'none' : 'inline';
+    document.getElementById('next-page-servicos-escalados').style.display = (currentPage === totalPages) ? 'none' : 'inline';
+  }
+
+  function nextPage() {
+    currentPage++;
+    paginate();
+  }
+
+  function prevPage() {
+    currentPage--;
+    paginate();
+  }
+
+  window.onload = paginate;
 </script>
 
 <script>

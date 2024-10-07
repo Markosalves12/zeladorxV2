@@ -10,6 +10,22 @@ from utils.utils import paginate
 
 
 def configurar_servico_jardinagem(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Configurar serviços', 'link': ''}
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('configurar_servico_jardinagem', kwargs={'userid': userid})})
+    else:
+        return redirect('configurar_servico_limpeza_predial', userid)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('configurar_servico_limpeza_predial', kwargs={'userid': userid})},)
+
+
     forms = ServicoJardinagemConfiguradoForms(request=request, userid=userid)
 
     if request.method == 'POST':
@@ -31,21 +47,6 @@ def configurar_servico_jardinagem(request, userid):
             message=f'Algo de errado'
         )
 
-    empresas = define_empresas(request=request, userid=userid)
-    setores = empresas['setores']
-
-    tipos = [
-        {'nome': 'Configurar serviços', 'link': ''}
-    ]
-
-    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('configurar_servico_jardinagem', kwargs={'userid': userid})})
-    else:
-        return redirect('configurar_servico_limpeza_predial', userid)
-
-    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('configurar_servico_limpeza_predial', kwargs={'userid': userid})},)
-
     return render(
         request=request,
         template_name='DataTableAndForms/CreateObject.html',
@@ -61,6 +62,23 @@ def configurar_servico_jardinagem(request, userid):
 
 
 def servicos_configurados_jardinagem(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Serviços Configurados', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_configurados_jardinagem', kwargs={'userid': userid})})
+    else:
+        return redirect('servicos_configurados_limpeza_predial', userid)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid})})
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -99,23 +117,6 @@ def servicos_configurados_jardinagem(request, userid):
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Histórico'},
     ]
-
-    empresas = define_empresas(request=request, userid=userid)
-    empresas_primarias_ids = empresas['empresas_primarias_ids']
-    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
-    setores = empresas['setores']
-
-    tipos = [
-        {'nome': 'Serviços Configurados', 'link': ''},
-    ]
-
-    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_configurados_jardinagem', kwargs={'userid': userid})})
-    else:
-        return redirect('servicos_configurados_limpeza_predial', userid)
-
-    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid})})
 
     return generic_view(
         request=request,

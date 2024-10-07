@@ -26,6 +26,7 @@ def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid, status, Data
 
         dados = colect_dados_fato_servico_jardinagem(
             request=request,
+            userid=userid,
             DataDeInicio=DataDeInicio,
             DataDeConclusao=DataDeConclusao,
             ServicosEscalados=ServicosEscalados,
@@ -73,6 +74,7 @@ def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid, status, Data
 
         dados = colect_dados_agendamentos_jardinagem(
             request=request,
+            userid=userid,
             DataDeInicio=DataDeInicio,
             DataDeConclusao=DataDeConclusao,
             ServicosEscalados=ServicosEscalados,

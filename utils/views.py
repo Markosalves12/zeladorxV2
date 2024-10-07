@@ -32,6 +32,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
 
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES, request=request, userid=userid)
+        print(form.errors)
         if form.is_valid():
             if configurate_gerente:
                 email = form.cleaned_data['email']
@@ -123,12 +124,12 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
     forms = form_class(instance=objeto, request=request, userid=request.session.get('userid', ''))
 
     if request.method == 'POST':
-        form = form_class(request.POST, request.FILES, instance=objeto, request=request, userid=request.session.get('userid', '') )
+        form = form_class(request.POST, request.FILES, instance=objeto, request=request, userid=request.session.get('userid', ''))
         if form.is_valid():
             form.save()
             messages.info(
                 request=request,
-                message=f'{objeto}, alterações salvas'
+                message=f'alterações salvas'
             )
 
             return redirect(reverse(redirect_url_name, kwargs={'userid': request.session.get('userid', ''), 'id_random':id_random}))

@@ -168,6 +168,8 @@ class DataTableAndForms:
         else:
             raise ValueError("model deve ser uma instância de ModelBase ou QuerySet")
 
+        get_data = define_filters(request=self.request, isnull=True)
+
         # Aplica os filtros, se houver dados na requisição
         if self.request.method == 'GET':
             get_data = self.request.GET.dict()

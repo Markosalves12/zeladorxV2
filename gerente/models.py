@@ -7,7 +7,12 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.hashers import make_password
 from empresasecundario.models import EmpresaSecundaria
 from notifications.utils import enviar_notificacao
-from utils.utils import resize_image
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Create your models here.
 class GerenteManager(BaseUserManager):
@@ -83,7 +88,7 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
     )
 
     password = models.CharField(
-        max_length=128,  # Alterado para suportar hashes de senha
+        max_length=600,  # Alterado para suportar hashes de senha
         blank=True,
         null=True
     )
@@ -137,8 +142,8 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
 
     objects = GerenteManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'funcao', 'username']
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['username', 'email']
 
     def __str__(self):
         return f'{self.username}'
@@ -151,10 +156,6 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
             self.username = self.username.strip().capitalize()
 
         super(Gerente, self).save(*args, **kwargs)
-
-    # função dispara a senha por email caso o campo senha esteja em braco
-    # nesse caso isso é ativado nos formularios html
-    # pelo admin do django pode se criar alterar manualemnte
 
     def save(self, *args, **kwargs):
         if not self.pk and not self.password:
@@ -178,6 +179,16 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
 
         else:
             self.password = make_password(self.password)
+
+        if User.objects.filter(username=self.username).exists():
+            pass
+        else:
+            usuario = User.objects.create_user(
+                username=self.username,
+                email=self.email,
+                password=str(os.getenv('DEFAULT_PASSWORD')),
+            )
+            usuario.save()
 
         super().save(*args, **kwargs)
 

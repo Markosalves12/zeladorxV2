@@ -7,6 +7,23 @@ from permissionscontrol.utils import validate_permissions
 
 # Create your views here.
 def empresas_jardinagem(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Tipo de empresa', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('empresas_jardinagem', kwargs={'userid': userid})})
+    else:
+        return redirect('empresas_limpeza_predial', userid)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('empresas_limpeza_predial', kwargs={'userid': userid})})
+
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -37,23 +54,6 @@ def empresas_jardinagem(request, userid):
         {'nome': 'status', 'label': 'status'},
         {'nome': 'acoes', 'label': 'Ações'},
     ]
-
-    empresas = define_empresas(request=request, userid=userid)
-    empresas_primarias_ids = empresas['empresas_primarias_ids']
-    setores = empresas['setores']
-
-    tipos = [
-        {'nome': 'Tipo de empresa', 'link': ''},
-    ]
-
-    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('empresas_jardinagem', kwargs={'userid': userid})})
-    else:
-        return redirect('empresas_limpeza_predial', userid)
-
-    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('empresas_limpeza_predial', kwargs={'userid': userid})})
-
 
     return generic_view(
         request=request,

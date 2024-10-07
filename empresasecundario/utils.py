@@ -12,10 +12,17 @@ def define_empresas(request, userid):
         for empresa in gerente.empresasecundaria.all()
     ]
 
-    empresas_secundarias_ids = [
-        empresa.id_random
-        for empresa in gerente.empresasecundaria.all()
-    ]
+    # Caso o gerente seja superusuário, retorna todas as empresas secundárias associadas à empresa primária
+    if gerente.superuser:
+        empresas_secundarias_ids = [
+            empresa.id_random
+            for empresa in EmpresaSecundaria.objects.filter(empresaprimaria__id_random__in=empresas_primarias_ids)
+        ]
+    else:
+        empresas_secundarias_ids = [
+            empresa.id_random
+            for empresa in gerente.empresasecundaria.all()
+        ]
 
     # Setores da empresa primária
     empresa_primaria = EmpresaPrimaria.objects.get(id_random=empresas_primarias_ids[0])

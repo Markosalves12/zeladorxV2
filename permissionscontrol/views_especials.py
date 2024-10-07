@@ -116,4 +116,6 @@ def editar_permissoes_especials(request, userid, id_random):
         redirect_close_button=reverse('permissions_especials', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_edit=permission_edit,
+        url_desmobilize=None,
+        url_rehabilitate=None,
     )

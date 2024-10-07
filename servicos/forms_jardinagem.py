@@ -23,6 +23,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
                 empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 empresasecundaria__id_random__in=empresas_secundarias_ids,
                 empresasecundaria__status__in=['Mobilizado'],
+                empresasecundaria__setor__setor__in=['Jardinagem'],
                 status__in=['Mobilizado']
             )
 

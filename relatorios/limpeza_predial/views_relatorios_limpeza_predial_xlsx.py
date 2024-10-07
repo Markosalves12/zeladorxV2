@@ -21,6 +21,7 @@ def relatorios_de_servicos_limpeza_predial_xlsx_concluidos(request, userid):
 
     dados = colect_dados_fato_servico_limpeza_predial(
         request=request,
+        userid=userid,
         DataDeInicio='None',
         DataDeConclusao='None',
         TipoServico='None',

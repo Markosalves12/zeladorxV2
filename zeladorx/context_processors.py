@@ -9,7 +9,23 @@ def create_global_parameters(request):
     }
 
 def define_wallet(request):
-    empresas = define_empresas(request=request, userid=request.session.get('userid', ''))
+    try:
+        empresas = define_empresas(request=request, userid=request.session.get('userid', ''))
+    except:
+        empresas = {
+            'empresas_primarias_ids': 1,
+            'empresas_secundarias_ids': 1,
+            'em_parceria': 1,
+            'setores': {
+                'habilitar_jardinagem': False,
+                'habilitar_limpeza': False,
+                'habilitar_jardinagem_secundaria': False,
+                'habilitar_limpeza_secundaria': False,
+                'setores_primaria': '',
+                'setores_secundarias': '',
+            }
+        }
+
     setores = empresas['setores']
     em_parceria = empresas['em_parceria']
     habilitar_jardinagem = False

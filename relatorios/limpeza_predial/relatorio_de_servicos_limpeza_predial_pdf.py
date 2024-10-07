@@ -49,6 +49,7 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid, status, D
     if 'Concluido' in status.split(','):
         dados = colect_dados_fato_servico_limpeza_predial(
             request=request,
+            userid=userid,
             DataDeInicio=DataDeInicio,
             DataDeConclusao=DataDeConclusao,
             ServicosEscalados=ServicosEscalados,
@@ -61,6 +62,7 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid, status, D
     else:
         dados = colect_dados_agendamentos_limpeza_predial(
             request=request,
+            userid=userid,
             DataDeInicio=DataDeInicio,
             DataDeConclusao=DataDeConclusao,
             ServicosEscalados=ServicosEscalados,

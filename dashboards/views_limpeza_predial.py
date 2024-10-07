@@ -8,19 +8,6 @@ from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def dashboard_produtividade_limpeza_predial(request, userid):
-    agendado = colect_dados_limpeza_predial(
-        request=request,
-        userid=userid
-    )
-
-    filtro_mapeamento = {
-        'Areas': 'Areas__id',
-        'TipoServico': 'TipoServico',
-        'ServicosEscalados': 'ServicosEscalados__id',
-        'DataDeInicio': 'DataDeInicio',
-        'DataDeConclusao': 'DataDeConclusao'
-    }
-
     empresas = define_empresas(request=request, userid=userid)
     setores = empresas['setores']
 
@@ -34,6 +21,19 @@ def dashboard_produtividade_limpeza_predial(request, userid):
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('dashboard_produtividade_limpeza_predial', kwargs={'userid': userid})},)
 
+
+    agendado = colect_dados_limpeza_predial(
+        request=request,
+        userid=userid
+    )
+
+    filtro_mapeamento = {
+        'Areas': 'Areas__id',
+        'TipoServico': 'TipoServico',
+        'ServicosEscalados': 'ServicosEscalados__id',
+        'DataDeInicio': 'DataDeInicio',
+        'DataDeConclusao': 'DataDeConclusao'
+    }
 
     if request.method == 'GET':
         get_data = request.GET.dict()

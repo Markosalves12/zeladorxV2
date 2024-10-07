@@ -11,6 +11,21 @@ from utils.utils import define_range_time
 
 # Create your views here.
 def agendar_servico_jardinagem(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Agendar serviços', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('agendar_servico_jardinagem', kwargs={'userid': userid})},)
+    else:
+        return redirect('agendar_servico_jardinagem', userid)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('agendar_servico_limpeza_predial', kwargs={'userid': userid})})
+
     forms = ServicoJaridinagemAgendadoForms(request=request, userid=userid)
 
     if request.method == 'POST':
@@ -31,21 +46,6 @@ def agendar_servico_jardinagem(request, userid):
             message=f'Algo de errado'
         )
 
-    empresas = define_empresas(request=request, userid=userid)
-    setores = empresas['setores']
-
-    tipos = [
-        {'nome': 'Agendar serviços', 'link': ''},
-    ]
-
-    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('agendar_servico_jardinagem', kwargs={'userid': userid})},)
-    else:
-        return redirect('agendar_servico_jardinagem', userid)
-
-    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('agendar_servico_limpeza_predial', kwargs={'userid': userid})})
-
 
     return render(
         request=request,
@@ -61,6 +61,23 @@ def agendar_servico_jardinagem(request, userid):
     )
 
 def servicos_agendados_jardinagem(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Serviços agendados', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem', kwargs={'userid': userid})})
+    else:
+        return redirect('servicos_agendados_limpeza_predial', userid)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})})
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -91,23 +108,6 @@ def servicos_agendados_jardinagem(request, userid):
         {'nome': 'novo_status', 'label': 'Status'},
         {'nome': 'acoes', 'label': 'Ações'},
     ]
-
-    empresas = define_empresas(request=request, userid=userid)
-    empresas_primarias_ids = empresas['empresas_primarias_ids']
-    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
-    setores = empresas['setores']
-
-    tipos = [
-        {'nome': 'Serviços agendados', 'link': ''},
-    ]
-
-    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem', kwargs={'userid': userid})})
-    else:
-        return redirect('servicos_agendados_limpeza_predial', userid)
-
-    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})})
 
     one_day, seven_days = define_range_time()
 
@@ -174,7 +174,7 @@ def editar_servico_jardinagem_agendado(request, userid, id_random):
         url_rehabilitate=reverse(
             'cancelar_servico_jardinagem',
             kwargs={
-                'userid':userid,
+                'userid': userid,
                 'id_random': id_random
             }
         ),
@@ -257,7 +257,6 @@ def cancelar_servico_jardinagem(request, userid, id_random):
 def concluir_servico_jardinagem(request, userid, id_random):
     objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     objeto.status = 'Concluido'
-    objeto.DataDeConclusao = timezone.now()
     objeto.save()
 
     messages.success(
