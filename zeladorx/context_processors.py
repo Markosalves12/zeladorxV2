@@ -13,9 +13,9 @@ def define_wallet(request):
         empresas = define_empresas(request=request, userid=request.session.get('userid', ''))
     except:
         empresas = {
-            'empresas_primarias_ids': 1,
-            'empresas_secundarias_ids': 1,
-            'em_parceria': 1,
+            'empresas_primarias_ids': 0,
+            'empresas_secundarias_ids': 0,
+            'em_parceria': '',
             'setores': {
                 'habilitar_jardinagem': False,
                 'habilitar_limpeza': False,

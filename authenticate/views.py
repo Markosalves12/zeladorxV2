@@ -21,7 +21,7 @@ def login(request):
             email = forms['email'].value()
             senha = forms['senha'].value()
 
-            print(email,'\n', senha)
+            print(email, '\n', senha)
 
             try:
                 gerente = Gerente.objects.get(
@@ -32,21 +32,6 @@ def login(request):
                     email=email
                 )
 
-                usuario = auth.authenticate(
-                    request,
-                    username=usuario,
-                    password=str(os.getenv('DEFAULT_PASSWORD')),
-                )
-
-                if usuario is not None:
-                    auth.login(request, usuario)
-                    # messages.success(request, f"{nome} logado com sucesso")
-                    print("logado")
-                else:
-                    print("Rejeitado")
-
-
-                print('222')
                 if check_password(senha, gerente.password) and gerente.status == "Mobilizado":
                     request.session['login_nome'] = gerente.username
                     request.session['userid'] = gerente.id_random
@@ -54,7 +39,6 @@ def login(request):
                     auth.login(request, usuario)
 
                     return redirect('calendario_jardinagem', gerente.id_random)
-                print('eeeee')
             except:
                 pass
 
@@ -69,8 +53,6 @@ def login(request):
 
 def logout(request):
     auth.logout(request)
-    request.session['login_nome'] = ''
-    request.session['userid'] = str(os.getenv('ID_RANDOM_DEFAULT_USER'))
     messages.success(request, "Logout efetuado com sucesso")
 
     return redirect('login')

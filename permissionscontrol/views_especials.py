@@ -6,8 +6,15 @@ from permissionscontrol.forms_especials import PermissionsAccessEspecialForms
 from gerente.models import Gerente
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
+from django.contrib import messages
+from django.shortcuts import redirect
+
 
 def permissions_especials(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -43,7 +50,8 @@ def permissions_especials(request, userid):
         tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('permissoes_jardinagem', kwargs={'userid': userid})})
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('permissoes_limpeza_predial', kwargs={'userid': userid})})
+        tipos.insert(2, {'nome': 'Limpeza predial',
+                         'link': reverse('permissoes_limpeza_predial', kwargs={'userid': userid})})
 
     return generic_view(
         request=request,
@@ -72,7 +80,12 @@ def permissions_especials(request, userid):
         userid=userid
     )
 
+
 def editar_permissoes_especials(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permissions_instance_especials = PermissionsAccessEspecials.objects.filter(
         Gerente__id_random=userid
     ).first()
@@ -99,10 +112,13 @@ def editar_permissoes_especials(request, userid, id_random):
     tipos = [
         {'nome': 'Editar permissões', 'link': ''},
         {'nome': 'Jardinagem', 'link': reverse('editar_permissoes_jardinagem',
-                                               kwargs={'userid': userid, 'id_random': permissions_instance_jardinagem.id_random})},
+                                               kwargs={'userid': userid,
+                                                       'id_random': permissions_instance_jardinagem.id_random})},
         {'nome': 'Limpeza predial', 'link': reverse('editar_permissoes_limpeza_predial',
-                                                     kwargs={'userid': userid, 'id_random': permissions_instance_limpeza_predial.id_random})},
-        {'nome': 'Especiais', 'link': reverse('editar_permissoes_especials', kwargs={'userid': userid, 'id_random': permissions_instance_especials.id_random})},
+                                                    kwargs={'userid': userid,
+                                                            'id_random': permissions_instance_limpeza_predial.id_random})},
+        {'nome': 'Especiais', 'link': reverse('editar_permissoes_especials', kwargs={'userid': userid,
+                                                                                     'id_random': permissions_instance_especials.id_random})},
     ]
 
     return edit_generic_view(

@@ -4,10 +4,16 @@ from unidade.forms import UnidadeForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status
 from empresasecundario.utils import define_empresas
 from permissionscontrol.utils import validate_permissions
+from django.shortcuts import redirect
+from django.contrib import messages
 
 
 # Create your views here.
 def unidades(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -79,6 +85,10 @@ def unidades(request, userid):
 
 
 def editar_unidade(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_edit = validate_permissions(
         request=request,
         userid=userid,

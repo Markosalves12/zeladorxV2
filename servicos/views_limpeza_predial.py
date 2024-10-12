@@ -12,6 +12,10 @@ from django.db.models import Case, When, Value, CharField
 from utils.utils import define_range_time
 
 def agendar_servico_limpeza_predial(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
     setores = empresas['setores']
 
@@ -61,6 +65,10 @@ def agendar_servico_limpeza_predial(request, userid):
     )
 
 def servicos_agendados_limpeza_predial(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -115,6 +123,7 @@ def servicos_agendados_limpeza_predial(request, userid):
         model=ServicoLimpezaPredialAgendado.objects.filter(
             Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+            status__in=['Agendado', 'Em andamento']
         ).annotate(
             novo_status=Case(
                 When(status='Em andamento', then=Value('Em andamento')),
@@ -151,6 +160,10 @@ def servicos_agendados_limpeza_predial(request, userid):
     )
 
 def editar_servico_limpeza_predial_agendado(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
@@ -185,6 +198,10 @@ def editar_servico_limpeza_predial_agendado(request, userid, id_random):
     )
 
 def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     objeto = ServicoLimpezaPredialAgendado.objects.get(id_random=id_random)
     forms = FatoServicoLimpezaPredialForms(
         initial={

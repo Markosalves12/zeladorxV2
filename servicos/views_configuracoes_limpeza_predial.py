@@ -9,6 +9,10 @@ from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_pre
 from utils.utils import paginate
 
 def configurar_servico_limpeza_predial(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
     setores = empresas['setores']
 
@@ -61,6 +65,10 @@ def configurar_servico_limpeza_predial(request, userid):
     )
 
 def servicos_configurados_limpeza_predial(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -148,6 +156,10 @@ def servicos_configurados_limpeza_predial(request, userid):
 
 
 def editar_servico_limpezapredial_configurado(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
@@ -188,6 +200,10 @@ def editar_servico_limpezapredial_configurado(request, userid, id_random):
 
 
 def alterar_status_servico_limpezapredial_configurado(request, userid, id_random, new_status):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     objeto = ServicoLimpezaPredialConfigurado.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,
@@ -206,6 +222,10 @@ def alterar_status_servico_limpezapredial_configurado(request, userid, id_random
 
 
 def historico_de_servicos_configurados_limpeza_predial(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_extract_pdf = validate_permissions(
         request=request,
         userid=userid,

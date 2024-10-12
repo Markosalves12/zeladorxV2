@@ -4,10 +4,16 @@ from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem, cole
 from django.http import HttpResponse
 from utils.utils import generate_id_random
 from datetime import datetime
+from django.contrib import messages
+from django.shortcuts import redirect
 
 
 def exportar_relatorio_de_serivos_Jardinagem_excel(request, userid, status, DataDeInicio, DataDeConclusao, Areas,
                                                    TipoServico, ServicosEscalados, ColaboradoresEscalados):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     wb = openpyxl.Workbook()
     ws = wb.active
 

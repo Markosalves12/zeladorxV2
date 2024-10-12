@@ -8,7 +8,6 @@ from django.contrib.auth.hashers import make_password
 from empresasecundario.models import EmpresaSecundaria
 from notifications.utils import enviar_notificacao
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from dotenv import load_dotenv
 import os
 
@@ -58,7 +57,6 @@ class GerenteManager(BaseUserManager):
             email=email,
             username=username,
             password=password,
-            # gestor=gestor,
             status='Mobilizado'
         )
         user.is_admin = True
@@ -142,7 +140,7 @@ class Gerente(AbstractBaseUser, PermissionsMixin):
 
     objects = GerenteManager()
 
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'email']
 
     def __str__(self):

@@ -5,9 +5,14 @@ from utils.utils import aplicar_filtros_dinamicos
 from dashboards.utils_limpeza_predial import colect_dados_limpeza_predial
 from dashboards.utils_limpeza_predial import graphs_limpeza_predial_to_html
 from empresasecundario.utils import define_empresas
+from django.contrib import messages
 
 # Create your views here.
 def dashboard_produtividade_limpeza_predial(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
     setores = empresas['setores']
 

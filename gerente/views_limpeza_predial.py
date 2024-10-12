@@ -7,9 +7,15 @@ from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
+from django.contrib import messages
+
 
 # Create your views here.
 def gerentes_limpeza_predial(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -23,7 +29,8 @@ def gerentes_limpeza_predial(request, userid):
         tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('gerentes_jardinagem', kwargs={'userid': userid})})
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('gerentes_limpeza_predial', kwargs={'userid': userid})})
+        tipos.insert(2, {'nome': 'Limpeza predial',
+                         'link': reverse('gerentes_limpeza_predial', kwargs={'userid': userid})})
     else:
         redirect('gerentes_jardinagem', userid)
 
@@ -49,7 +56,7 @@ def gerentes_limpeza_predial(request, userid):
     )
 
     colunas = [
-        {'nome': 'id', 'label': '#','largura': '10px'},
+        {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'username', 'label': 'Nome'},
         {'nome': 'email', 'label': 'E-mail'},
         {'nome': 'empresasecundaria', 'label': 'Empresa(s)'},
@@ -92,6 +99,10 @@ def gerentes_limpeza_predial(request, userid):
 
 
 def editar_gerente_limpeza_predial(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
@@ -153,6 +164,10 @@ def editar_gerente_limpeza_predial(request, userid, id_random):
 
 
 def alterar_status_gerente_limpeza_predial(request, userid, id_random, new_status):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     objeto = Gerente.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,
@@ -165,6 +180,10 @@ def alterar_status_gerente_limpeza_predial(request, userid, id_random, new_statu
 
 
 def historico_de_servicos_gerente_limpeza_predial(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_extract_pdf = validate_permissions(
         request=request,
         userid=userid,

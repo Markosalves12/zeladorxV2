@@ -8,9 +8,14 @@ from datetime import timedelta
 from django.db.models import Case, When, Value, CharField
 from empresasecundario.utils import define_empresas
 from django.shortcuts import redirect
+from django.contrib import messages
 
 
 def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -90,6 +95,10 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
 
 
 def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,

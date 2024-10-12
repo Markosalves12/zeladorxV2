@@ -6,10 +6,15 @@ from permissionscontrol.forms_limpeza_predial import PermissionsAccessLimpezaPre
 from gerente.models import Gerente
 from empresasecundario.utils import define_empresas
 from permissionscontrol.utils import validate_permissions
+from django.contrib import messages
 
 
 # Create your views here.
 def permissoes_limpeza_predial(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -24,7 +29,8 @@ def permissoes_limpeza_predial(request, userid):
         tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('permissoes_jardinagem', kwargs={'userid': userid})})
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('permissoes_limpeza_predial', kwargs={'userid': userid})})
+        tipos.insert(2, {'nome': 'Limpeza predial',
+                         'link': reverse('permissoes_limpeza_predial', kwargs={'userid': userid})})
     else:
         return redirect('permissoes_jardinagem', userid)
 
@@ -81,6 +87,10 @@ def permissoes_limpeza_predial(request, userid):
 # o envio do id random esta quebrando o codigo
 # definir o id random dentro da função
 def editar_permissoes_limpeza_predial(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permissions_instance_especials = PermissionsAccessEspecials.objects.filter(
         Gerente__id_random=userid
     ).first()
@@ -100,18 +110,20 @@ def editar_permissoes_limpeza_predial(request, userid, id_random):
         {'nome': 'Tipo de permissão', 'link': ''},
         {
             'nome': 'Especiais',
-            'link': reverse('editar_permissoes_especials', kwargs={'userid': userid,'id_random': permissions_instance_especials.id_random})
+            'link': reverse('editar_permissoes_especials',
+                            kwargs={'userid': userid, 'id_random': permissions_instance_especials.id_random})
         },
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
         tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('editar_permissoes_jardinagem',
-                                               kwargs={'userid': userid,
-                                                       'id_random': permissions_instance_jardinagem.id_random})},)
+                                                               kwargs={'userid': userid,
+                                                                       'id_random': permissions_instance_jardinagem.id_random})}, )
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('editar_permissoes_limpeza_predial',
-                                                    kwargs={'userid': userid, 'id_random': permissions_instance_limpeza_predial.id_random})})
+                                                                    kwargs={'userid': userid,
+                                                                            'id_random': permissions_instance_limpeza_predial.id_random})})
 
     gerente = Gerente.objects.get(
         id_random=userid

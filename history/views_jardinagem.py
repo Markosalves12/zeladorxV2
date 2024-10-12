@@ -4,10 +4,16 @@ from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from utils.views import generic_view_history
 from permissionscontrol.utils import validate_permissions
+from django.contrib import messages
+from django.shortcuts import redirect
 
 
 # Create your views here.
 def historico_de_servicos_areas_jardinagem(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_extract_pdf = validate_permissions(
         request=request,
         userid=userid,
@@ -61,6 +67,10 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
 
 
 def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_extract_pdf = validate_permissions(
         request=request,
         userid=userid,

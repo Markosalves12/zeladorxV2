@@ -11,11 +11,15 @@ from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_t
 from relatorios.limpeza_predial.utils import graphs_limpeza_predial_concluido_to_reports
 from areas.models_limpeza_predial import AreaLimpezaPredial
 from datetime import datetime
-
+from django.shortcuts import redirect
+from django.contrib import messages
 
 def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, id_random, DataDeInicio,
                                                               DataDeConclusao, Areas, TipoServico, ServicosEscalados,
                                                               ColaboradoresEscalados, type):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
 
     DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M')\
         if DataDeInicio and DataDeInicio != "None" else 'None'

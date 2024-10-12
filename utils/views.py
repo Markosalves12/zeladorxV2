@@ -136,9 +136,8 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
 
         messages.error(
             request=request,
-            message=f'Algo de errado'
+            message=f'{objeto}, Algo de errado'
         )
-
 
     return render(
         request=request,
@@ -189,6 +188,9 @@ def gerneric_alter_status(request, model_class, redirect_url_name, id_random, ne
 def generic_view_history(request, userid, id_random, app_name, objeto, objetos, type_exibition, type_export, form_search,
                          sform_search, filtro_mapeamento, export_pdf, export_excel, redirect_close_button,
                          foto_objeto=None, Foto=False, permission_extract_pdf=False, permission_extract_xlsx=False):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
 
     get_data = define_filters(request=request, isnull=True)
 

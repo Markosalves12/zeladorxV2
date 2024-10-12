@@ -6,10 +6,16 @@ from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from areas.models_jardinagem import AreasJardins
 from areas.forms_jardinagem import AreasJardinsForms
+from django.shortcuts import redirect
+from django.contrib import messages
 
 
 # Create your views here.
 def vegetacao(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -74,6 +80,10 @@ def vegetacao(request, userid):
 
 
 def editar_vegetacao(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
@@ -153,6 +163,10 @@ def alterar_status_vegetacao(request, userid, id_random, new_status):
 
 
 def areas_associadas_vegetacao(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     vegetacao = CatalogoVegetacao.objects.get(
         id_random=id_random
     )

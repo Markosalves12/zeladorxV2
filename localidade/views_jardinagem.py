@@ -4,16 +4,22 @@ from localidade.forms_jardinagem import LocalidadeJardinagemForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
+from django.contrib import messages
+
 
 # Create your views here.
 def localidades_jardinagem(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
     setores = empresas['setores']
 
     tipos = [
-        {'nome': 'Tipo de localidade','link': ''},
+        {'nome': 'Tipo de localidade', 'link': ''},
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
@@ -22,7 +28,8 @@ def localidades_jardinagem(request, userid):
         return redirect('localidades_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('localidades_limpeza_predial', kwargs={'userid': userid})})
+        tipos.insert(2, {'nome': 'Limpeza predial',
+                         'link': reverse('localidades_limpeza_predial', kwargs={'userid': userid})})
 
     permission_view = validate_permissions(
         request=request,
@@ -87,6 +94,10 @@ def localidades_jardinagem(request, userid):
 
 
 def editar_localidade_jardinagem(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
@@ -146,7 +157,12 @@ def editar_localidade_jardinagem(request, userid, id_random):
         ),
     )
 
+
 def alterar_status_localidade_jardinagem(request, userid, id_random, new_status):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     objeto = LocalidadeJardiangem.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,

@@ -4,10 +4,15 @@ from utils.views import generic_view, edit_generic_view, gerneric_alter_status
 from django.shortcuts import reverse, redirect
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
+from django.contrib import messages
 
 
 # Create your views here.
 def catalogo_de_servicos_jardinagem(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -86,6 +91,10 @@ def catalogo_de_servicos_jardinagem(request, userid):
 
 
 def editar_catalogo_de_servicos_jardinagem(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
@@ -147,6 +156,10 @@ def editar_catalogo_de_servicos_jardinagem(request, userid, id_random):
 
 
 def alterar_status_catalogo_de_servicos_jardinagem(request, userid, id_random, new_status):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     objeto = CatalogodeServicoJardinagem.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,

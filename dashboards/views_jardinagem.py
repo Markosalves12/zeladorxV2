@@ -5,9 +5,14 @@ from utils.utils import aplicar_filtros_dinamicos
 from dashboards.utils_jardinagem import colect_dados_jardinagem
 from dashboards.utils_jardinagem import graphs_jardinagem_to_html
 from empresasecundario.utils import define_empresas
+from django.contrib import messages
 
 # Create your views here.
 def dashboard_produtividade_jardinagem(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
     setores = empresas['setores']
 

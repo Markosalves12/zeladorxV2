@@ -105,7 +105,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
     class Meta:
         model = ServicoJardinagemAgendado
         fields = ['DataDeInicio', 'DataDeConclusao', 'ServicosEscalados', 'ColaboradoresEscalados',
-                  'DescricaoDoServico', 'Areas', 'TipoServico', 'foto_solicitacao', 'foto_entrega', 'ServicoCompunsivo']
+                  'DescricaoDoServico', 'Areas', 'TipoServico', 'foto_solicitacao', 'foto_entrega',]
 
         labels = {
             'DataDeInicio': 'Data marcada para inicio',
@@ -158,11 +158,6 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
                 }
             ),
             'foto_entrega': forms.FileInput(
-                attrs={
-                    'class': 'form-control'
-                }
-            ),
-            'ServicoCompunsivo': forms.NullBooleanSelect(
                 attrs={
                     'class': 'form-control'
                 }

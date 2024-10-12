@@ -6,10 +6,14 @@ from permissionscontrol.forms_jardinagem import PermissionsAccessJardinagemForms
 from gerente.models import Gerente
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
-
+from django.contrib import messages
 
 # Create your views here.
 def permissoes_jardinagem(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -81,9 +85,11 @@ def permissoes_jardinagem(request, userid):
 
 
 def editar_permissoes_jardinagem(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
-    empresas_primarias_ids = empresas['empresas_primarias_ids']
-    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
     setores = empresas['setores']
 
     permissions_instance_especials = PermissionsAccessEspecials.objects.filter(

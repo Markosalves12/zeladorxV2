@@ -7,10 +7,15 @@ from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
+from django.contrib import messages
 
 
 # Create your views here.
 def gerentes_jardinagem(request, userid):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -94,6 +99,10 @@ def gerentes_jardinagem(request, userid):
 
 
 def editar_gerente_jardinagem(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
@@ -155,6 +164,10 @@ def editar_gerente_jardinagem(request, userid, id_random):
 
 
 def alterar_status_gerente_jardinagem(request, userid, id_random, new_status):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     objeto = Gerente.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,
@@ -167,6 +180,10 @@ def alterar_status_gerente_jardinagem(request, userid, id_random, new_status):
 
 
 def historico_de_servicos_gerente_jardinagem(request, userid, id_random):
+    if not request.user.is_authenticated:
+        messages.error(request, "usuario nao logado")
+        return redirect('login')
+
     permission_extract_pdf = validate_permissions(
         request=request,
         userid=userid,
