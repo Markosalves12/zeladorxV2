@@ -1,4 +1,4 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import reverse
 from unidade.models import Unidade
 from unidade.forms import UnidadeForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status
@@ -10,10 +10,6 @@ from django.contrib import messages
 
 # Create your views here.
 def unidades(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -59,19 +55,19 @@ def unidades(request, userid):
         request=request,
         model=Unidade.objects.filter(
             empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-            empresasecundaria__id_random__in=empresas_secundarias_ids
-        ),
+            empresasecundaria__id_random__in=empresas_secundarias_ids,
+        ).distinct(),
         form_class=UnidadeForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
         edition_rout='editar_unidade',
         history_rout='visualizar_unidade_jardinagem',
         app_name='Unidades',
-        form_search=UnidadeForms(request=request, userid=userid),
+        form_search=UnidadeForms(request=request, userid=userid, type='search'),
         sform_search=True,
         filtro_mapeamento={
             'nome': 'nome',
-            'EmpresaSecundaria': 'EmpresaSecundaria__id'
+            'empresasecundaria': 'empresasecundaria__id'
         },
         text_button_open_modal='Adicionar nova unidade',
         text_button_save='Salvar unidade',

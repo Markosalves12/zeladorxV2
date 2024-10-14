@@ -3,20 +3,15 @@ from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 from django.urls import reverse
 from utils.views import generic_view
-from permissionscontrol.utils import validate_permissions
+from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Case, When, Value, CharField
 from django.shortcuts import redirect
-from django.contrib import messages
 
 # Create your views here.
 def relatorios_de_servicos_limpeza_predial_xlsx_concluidos(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -114,10 +109,6 @@ def relatorios_de_servicos_limpeza_predial_xlsx_concluidos(request, userid):
 
 
 def relatorios_de_servicos_limpeza_predial_xlsx_agendados(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -173,7 +164,7 @@ def relatorios_de_servicos_limpeza_predial_xlsx_agendados(request, userid):
             Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
             status__in=['Agendado', 'Em andamento']
-        ).annotate(
+        ).distinct().annotate(
             novo_status=Case(
                 When(status='Em andamento', then=Value('Em andamento')),
                 When(DataDeInicio__gte=one_day, DataDeInicio__lt=seven_days, then=Value('Próximo')),

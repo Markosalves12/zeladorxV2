@@ -3,17 +3,12 @@ from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from utils.views import generic_view_history
-from permissionscontrol.utils import validate_permissions
-from django.contrib import messages
+from permissionscontrol.utils import validate_permissions, verify_login
 from django.shortcuts import redirect
 
 
 # Create your views here.
 def historico_de_servicos_areas_jardinagem(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_extract_pdf = validate_permissions(
         request=request,
         userid=userid,
@@ -35,7 +30,7 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
     objetos = ServicoJardinagemAgendado.objects.filter(
         Areas__id_random=id_random,
         status__in=['Concluido']
-    )
+    ).distinct()
 
     return generic_view_history(
         request=request,
@@ -67,10 +62,6 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
 
 
 def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_extract_pdf = validate_permissions(
         request=request,
         userid=userid,
@@ -92,7 +83,7 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
     objetos = ServicoJardinagemAgendado.objects.filter(
         ServicosEscalados__id_random=id_random,
         status__in=['Concluido']
-    )
+    ).distinct()
 
     return generic_view_history(
         request=request,

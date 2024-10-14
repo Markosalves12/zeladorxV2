@@ -3,17 +3,12 @@ from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_pre
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from utils.views import generic_view_history
-from permissionscontrol.utils import validate_permissions
-from django.contrib import messages
+from permissionscontrol.utils import validate_permissions, verify_login
 from django.shortcuts import redirect
 
 
 # Create your views here.
 def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_extract_pdf = validate_permissions(
         request=request,
         userid=userid,
@@ -44,7 +39,7 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
         status=['Concluido']
     ).filter(
         id_random_area=id_random
-    )
+    ).distinct()
 
     return generic_view_history(
         request=request,
@@ -75,10 +70,6 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
 
 
 def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_extract_pdf = validate_permissions(
         request=request,
         userid=userid,
@@ -109,7 +100,7 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
         status=['Concluido']
     ).filter(
         id_random_servico=id_random
-    )
+    ).distinct()
 
     return generic_view_history(
         request=request,

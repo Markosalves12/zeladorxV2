@@ -12,14 +12,15 @@ from relatorios.limpeza_predial.utils import graphs_limpeza_predial_concluido_to
 from areas.models_limpeza_predial import AreaLimpezaPredial
 from datetime import datetime
 from django.shortcuts import redirect
-from django.contrib import messages
+from permissionscontrol.utils import verify_login
 
 def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, id_random, DataDeInicio,
                                                               DataDeConclusao, Areas, TipoServico, ServicosEscalados,
                                                               ColaboradoresEscalados, type):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
 
     DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M')\
         if DataDeInicio and DataDeInicio != "None" else 'None'

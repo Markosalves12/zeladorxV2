@@ -2,7 +2,6 @@ from utils.utils import define_range_time
 from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_graphs
 
 def graphs_jardinagem_concluido_to_reports(request, userid, agendado):
-    one_day, seven_days = define_range_time()
     figs_concluidos_terreno = data_visualization_jardinagem_graphs(request, userid, agendado).create_fig_report(
         name_fig='fig_area_terreno_concluido',
         filters={'status': 'Concluido'},

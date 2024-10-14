@@ -2,16 +2,17 @@ from django.shortcuts import render, redirect, reverse
 from servicos.models_jardinagem import ServicoJardinagemConfigurado
 from servicos.forms_configuracoes_jardinagem import ServicoJardinagemConfiguradoForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status, generic_view_history
-from permissionscontrol.utils import validate_permissions
+from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 
 
 def configurar_servico_jardinagem(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
 
     empresas = define_empresas(request=request, userid=userid)
     setores = empresas['setores']
@@ -33,7 +34,7 @@ def configurar_servico_jardinagem(request, userid):
 
     if request.method == 'POST':
         form = ServicoJardinagemConfiguradoForms(request.POST, request.FILES, request=request, userid=userid)
-        print(form.errors)
+
         if form.is_valid():
             form.save()
             messages.info(
@@ -130,7 +131,7 @@ def servicos_configurados_jardinagem(request, userid):
         model=ServicoJardinagemConfigurado.objects.filter(
             Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-        ),
+        ).distinct(),
         form_class=ServicoJardinagemConfiguradoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,

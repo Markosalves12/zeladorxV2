@@ -5,13 +5,14 @@ from utils.utils import aplicar_filtros_dinamicos
 from dashboards.utils_jardinagem import colect_dados_jardinagem
 from dashboards.utils_jardinagem import graphs_jardinagem_to_html
 from empresasecundario.utils import define_empresas
-from django.contrib import messages
+from permissionscontrol.utils import verify_login, validate_permissions
 
 # Create your views here.
 def dashboard_produtividade_jardinagem(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
 
     empresas = define_empresas(request=request, userid=userid)
     setores = empresas['setores']
@@ -28,6 +29,12 @@ def dashboard_produtividade_jardinagem(request, userid):
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('dashboard_produtividade_limpeza_predial', kwargs={'userid': userid})},)
 
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['380: Pode visualizar o dashboard gerencial']
+    )
 
     agendado = colect_dados_jardinagem(
         request=request,
@@ -60,6 +67,7 @@ def dashboard_produtividade_jardinagem(request, userid):
         request=request,
         template_name='dashboards/dashboard_produtividade.html',
         context={
+            'permission_view': permission_view,
             'app_name': 'Dashboard gerencial jardinagem',
             'link_tipos': tipos,
             'agendamentos': agendamentos,

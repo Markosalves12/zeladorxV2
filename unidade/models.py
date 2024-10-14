@@ -38,7 +38,7 @@ class Unidade(models.Model):
         to=EmpresaSecundaria,
         blank=False,
         null=False,
-        related_name='REmpresaSecundariaUnidade'
+        related_name='REmpresaSecundariaUnidade',
     )
 
     status_options = [

@@ -18,7 +18,7 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
                 EmpresaSecundaria__status__in=['Mobilizado'],
                 status__in=['Mobilizado']
-            )
+            ).distinct()
 
             self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
                 localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
@@ -27,7 +27,7 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
                 status__in=['Mobilizado'],
                 localidade__status__in=['Mobilizado'],
                 localidade__unidade__status__in=['Mobilizado']
-            )
+            ).distinct()
 
         if type == 'search':
             for field_name, field in self.fields.items():
@@ -36,15 +36,15 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
             self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
                 EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
-            )
+            ).distinct()
 
             self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
                 localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-            )
+            ).distinct()
 
             self.fields['diasaseremrealizado'] = forms.ModelMultipleChoiceField(
-                queryset=DiasDaSemana.objects.all(),
+                queryset=DiasDaSemana.objects.distinct(),
                 widget=forms.SelectMultiple(
                     attrs={
                         'class': 'form-control',  # Modifique a classe se necessário
@@ -58,7 +58,7 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
 
 
     ServicosEscalados = forms.ModelMultipleChoiceField(
-        queryset=CatalogodeServicoJardinagem.objects.all(),
+        queryset=CatalogodeServicoJardinagem.objects.distinct(),
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'
@@ -69,7 +69,7 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
     )
 
     diasaseremrealizado = forms.ModelMultipleChoiceField(
-        queryset=DiasDaSemana.objects.all(),  # Usa as opções definidas no modelo
+        queryset=DiasDaSemana.objects.distinct(),  # Usa as opções definidas no modelo
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'

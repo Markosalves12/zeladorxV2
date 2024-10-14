@@ -14,15 +14,16 @@ from relatorios.jardinagem.utils import (graphs_jardinagem_proximo_to_reports,
                                          graphs_jardinagem_agendado_to_reports,
                                          graphs_jardinagem_em_andamento_to_reports,
                                          graphs_jardinagem_concluido_to_reports)
-from django.contrib import messages
+from permissionscontrol.utils import verify_login
 from django.shortcuts import redirect
 
 
 def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDeInicio, DataDeConclusao, Areas,
                                                    TipoServico, ServicosEscalados, ColaboradoresEscalados):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
 
     DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M') if DataDeInicio and DataDeInicio != "None" else 'None'
     DataDeConclusao = datetime.strptime(DataDeConclusao, '%Y-%m-%dT%H:%M') if DataDeConclusao and DataDeConclusao != "None" else 'None'

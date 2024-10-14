@@ -2,16 +2,16 @@ from django.shortcuts import render, redirect, reverse
 from servicos.models_limpeza_predial import ServicoLimpezaPredialConfigurado
 from servicos.forms_configuracoes_limpeza_predial import ServicoLimpezaPredialConfiguradoForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status, generic_view_history
-from permissionscontrol.utils import validate_permissions
+from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
-from utils.utils import paginate
 
 def configurar_servico_limpeza_predial(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
 
     empresas = define_empresas(request=request, userid=userid)
     setores = empresas['setores']
@@ -34,7 +34,7 @@ def configurar_servico_limpeza_predial(request, userid):
 
     if request.method == 'POST':
         form = ServicoLimpezaPredialConfiguradoForms(request.POST, request.FILES, request=request, userid=userid)
-        print(form.errors)
+
         if form.is_valid():
             form.save()
             messages.info(
@@ -65,10 +65,6 @@ def configurar_servico_limpeza_predial(request, userid):
     )
 
 def servicos_configurados_limpeza_predial(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -130,7 +126,7 @@ def servicos_configurados_limpeza_predial(request, userid):
         model=ServicoLimpezaPredialConfigurado.objects.filter(
             Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-        ),
+        ).distinct(),
         form_class=ServicoLimpezaPredialConfiguradoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -156,10 +152,6 @@ def servicos_configurados_limpeza_predial(request, userid):
 
 
 def editar_servico_limpezapredial_configurado(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
@@ -200,10 +192,6 @@ def editar_servico_limpezapredial_configurado(request, userid, id_random):
 
 
 def alterar_status_servico_limpezapredial_configurado(request, userid, id_random, new_status):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     objeto = ServicoLimpezaPredialConfigurado.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,
@@ -222,10 +210,6 @@ def alterar_status_servico_limpezapredial_configurado(request, userid, id_random
 
 
 def historico_de_servicos_configurados_limpeza_predial(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_extract_pdf = validate_permissions(
         request=request,
         userid=userid,

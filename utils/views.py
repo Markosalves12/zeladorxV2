@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from utils.utils import DataTableAndForms, aplicar_filtros_dinamicos, define_filters, paginate
 from django.urls import reverse
 from settings.utils import define_setting
-from permissionscontrol.utils import configurate_permissions
+from permissionscontrol.utils import configurate_permissions, verify_login
 from django.contrib import messages
 
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
@@ -14,9 +14,10 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                  permission_view=True, permission_edit=False, permission_crate=False,
                  permission_accompany=False):
 
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
 
     dt_and_forms = DataTableAndForms(
         request=request,
@@ -32,7 +33,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
 
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES, request=request, userid=userid)
-        print(form.errors)
+
         if form.is_valid():
             if configurate_gerente:
                 email = form.cleaned_data['email']
@@ -115,9 +116,10 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
                       redirect_close_button, link_tipos=None, permission_edit=False, permission_exclude=False,
                       permission_desmobilize=False, permission_rehabilitate=False,
                       ):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=request.session.get('userid', ''))
+
+    if block == True:
+        return redirect('logout')
 
     objeto = get_object_or_404(model_class, id_random=id_random)
 
@@ -162,9 +164,10 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
 
 
 def gerneric_alter_status(request, model_class, redirect_url_name, id_random, new_status, message):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
 
     objeto = get_object_or_404(model_class, id_random=id_random)
     objeto.status = new_status
@@ -188,9 +191,10 @@ def gerneric_alter_status(request, model_class, redirect_url_name, id_random, ne
 def generic_view_history(request, userid, id_random, app_name, objeto, objetos, type_exibition, type_export, form_search,
                          sform_search, filtro_mapeamento, export_pdf, export_excel, redirect_close_button,
                          foto_objeto=None, Foto=False, permission_extract_pdf=False, permission_extract_xlsx=False):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
 
     get_data = define_filters(request=request, isnull=True)
 

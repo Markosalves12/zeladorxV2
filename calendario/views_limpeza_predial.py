@@ -4,16 +4,15 @@ from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 from django.db.models.functions import Now
 from django.db.models import F, ExpressionWrapper, IntegerField
 from calendario.utils import format_event
-from permissionscontrol.utils import validate_permissions
-from django.contrib import messages
+from permissionscontrol.utils import validate_permissions, verify_login
 from utils.utils import aplicar_filtros_dinamicos
 from empresasecundario.utils import define_empresas
 
-
 def calendario_limpeza_predial(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
 
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
@@ -85,7 +84,7 @@ def calendario_limpeza_predial(request, userid):
             F('DataDeInicio') - F('data_atual'),
             output_field=IntegerField()
         )/(3600*24*1000000)
-    )
+    ).distinct()
 
     if request.method == 'GET':
         get_data = request.GET.dict()
@@ -94,7 +93,7 @@ def calendario_limpeza_predial(request, userid):
 
     formatted_events = [
         format_event(
-            servico,
+            servico
         )
         for servico in agendado
     ]

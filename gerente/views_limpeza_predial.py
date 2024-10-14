@@ -3,19 +3,14 @@ from django.shortcuts import reverse, redirect
 from gerente.models import Gerente
 from gerente.forms_limpeza_predial import GerenteLimpezaPredialForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status, generic_view_history
-from permissionscontrol.utils import validate_permissions
+from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
-from django.contrib import messages
 
 
 # Create your views here.
 def gerentes_limpeza_predial(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -71,7 +66,7 @@ def gerentes_limpeza_predial(request, userid):
             empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             empresasecundaria__id_random__in=empresas_secundarias_ids,
             empresasecundaria__setor__setor='Limpeza predial'
-        ),
+        ).distinct(),
         form_class=GerenteLimpezaPredialForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -99,10 +94,6 @@ def gerentes_limpeza_predial(request, userid):
 
 
 def editar_gerente_limpeza_predial(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
@@ -164,10 +155,6 @@ def editar_gerente_limpeza_predial(request, userid, id_random):
 
 
 def alterar_status_gerente_limpeza_predial(request, userid, id_random, new_status):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     objeto = Gerente.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,
@@ -180,10 +167,6 @@ def alterar_status_gerente_limpeza_predial(request, userid, id_random, new_statu
 
 
 def historico_de_servicos_gerente_limpeza_predial(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_extract_pdf = validate_permissions(
         request=request,
         userid=userid,

@@ -1,4 +1,6 @@
 from django.shortcuts import reverse
+
+
 def format_event(servico):
     # Define a cor com base no status_agendamento
     if servico.status == "Em andamento":
@@ -22,8 +24,8 @@ def format_event(servico):
         textColor = "#000000"
 
     elif servico.status_agendamento < 0:
-        background_color = "#FF0000"
-        border_color = "#FF0000"
+        background_color = "#ff0000"
+        border_color = "#ff0000"
         textColor = "#FFFFFF"
 
     elif servico.status_agendamento > 7:

@@ -3,8 +3,6 @@ from dashboards.data_visualization_limpeza_predial import data_visualization_lim
 
 
 def graphs_limpeza_predial_concluido_to_reports(request, userid, agendado):
-    one_day, seven_days = define_range_time()
-
     figs_concluidos_localidade = data_visualization_limpeza_predial_graphs(request, userid, agendado).create_fig_report(
         name_fig='figs_concluidos_localidade',
         filters={'status_servico': 'Concluido'},

@@ -6,14 +6,9 @@ from permissionscontrol.forms_jardinagem import PermissionsAccessJardinagemForms
 from gerente.models import Gerente
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
-from django.contrib import messages
 
 # Create your views here.
 def permissoes_jardinagem(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -61,7 +56,7 @@ def permissoes_jardinagem(request, userid):
             Gerente__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Gerente__empresasecundaria__id_random__in=empresas_secundarias_ids,
             Gerente__empresasecundaria__setor__setor='Jardinagem'
-        ),
+        ).distinct(),
         form_class=PermissionsAccessJardinagemForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -85,10 +80,6 @@ def permissoes_jardinagem(request, userid):
 
 
 def editar_permissoes_jardinagem(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     empresas = define_empresas(request=request, userid=userid)
     setores = empresas['setores']
 
@@ -133,7 +124,7 @@ def editar_permissoes_jardinagem(request, userid, id_random):
         return redirect('permissoes_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2,         {
+        tipos.insert(2,{
             'nome': 'Limpeza predial',
             'link': reverse(
                 'editar_permissoes_limpeza_predial',

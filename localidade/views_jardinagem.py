@@ -4,15 +4,10 @@ from localidade.forms_jardinagem import LocalidadeJardinagemForms
 from utils.views import generic_view, edit_generic_view, gerneric_alter_status
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
-from django.contrib import messages
 
 
 # Create your views here.
 def localidades_jardinagem(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -68,7 +63,7 @@ def localidades_jardinagem(request, userid):
         model=LocalidadeJardiangem.objects.filter(
             unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-        ),
+        ).distinct(),
         form_class=LocalidadeJardinagemForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -94,10 +89,6 @@ def localidades_jardinagem(request, userid):
 
 
 def editar_localidade_jardinagem(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
@@ -159,10 +150,6 @@ def editar_localidade_jardinagem(request, userid, id_random):
 
 
 def alterar_status_localidade_jardinagem(request, userid, id_random, new_status):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     objeto = LocalidadeJardiangem.objects.get(id_random=id_random)
     return gerneric_alter_status(
         request=request,

@@ -55,7 +55,7 @@ def terrenos(request, userid):
         model=Terreno.objects.filter(
             EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             EmpresaSecundaria__id_random__in=empresas_secundarias_ids
-        ),
+        ).distinct(),
         form_class=TerrenoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,

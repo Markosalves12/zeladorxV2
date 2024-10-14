@@ -5,14 +5,15 @@ from django.http import HttpResponse
 from utils.utils import generate_id_random
 from datetime import datetime
 from django.shortcuts import redirect
-from django.contrib import messages
+from permissionscontrol.utils import verify_login
 
 
 def exportar_relatorio_de_serivos_na_area_limpeza_predial_excel(request, userid, id_random, DataDeInicio, DataDeConclusao, Areas,
                                                    TipoServico, ServicosEscalados, ColaboradoresEscalados, type):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
 
     DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M') if DataDeInicio and DataDeInicio != "None" else 'None'
     DataDeConclusao = datetime.strptime(DataDeConclusao, '%Y-%m-%dT%H:%M') if DataDeConclusao and DataDeConclusao != "None" else 'None'

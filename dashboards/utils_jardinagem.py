@@ -16,7 +16,7 @@ def colect_dados_jardinagem(request, userid):
             F('DataDeInicio') - F('data_atual'),
             output_field=IntegerField()
         ) / (3600 * 24 * 1000000)
-    ).filter(
+    ).distinct().filter(
         Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
         Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
         status__in=['Agendado', 'Em andamento']

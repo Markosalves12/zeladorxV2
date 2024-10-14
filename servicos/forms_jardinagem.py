@@ -17,7 +17,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
                 EmpresaSecundaria__status__in=['Mobilizado'],
                 status__in=['Mobilizado']
-            )
+            ).distinct()
 
             self.fields['ColaboradoresEscalados'].queryset = self.fields['ColaboradoresEscalados'].queryset.filter(
                 empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
@@ -25,7 +25,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
                 empresasecundaria__status__in=['Mobilizado'],
                 empresasecundaria__setor__setor__in=['Jardinagem'],
                 status__in=['Mobilizado']
-            )
+            ).distinct()
 
             self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
                 localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
@@ -34,7 +34,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
                 status__in=['Mobilizado'],
                 localidade__status__in=['Mobilizado'],
                 localidade__unidade__status__in=['Mobilizado']
-            )
+            ).distinct()
 
             all_choices = self.fields['TipoServico'].choices
             filtered_choices = [choice for choice in all_choices if choice[0] != 'Automático']
@@ -47,14 +47,14 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
             self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
                 localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-            )
+            ).distinct()
 
             # Alterando o widget dos campos de seleção múltipla para SelectMultiple
             self.fields['ServicosEscalados'] = forms.ModelMultipleChoiceField(
                 queryset=CatalogodeServicoJardinagem.objects.filter(
                     EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                     EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
-                ),
+                ).distinct(),
                 widget=forms.SelectMultiple(
                     attrs={
                         'class': 'form-control',  # Modifique a classe se necessário
@@ -69,7 +69,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
                 queryset=Gerente.objects.filter(
                     empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                     empresasecundaria__id_random__in=empresas_secundarias_ids,
-                ),
+                ).distinct(),
                 widget=forms.SelectMultiple(
                     attrs={
                         'class': 'form-control',  # Modifique a classe se necessário
@@ -81,7 +81,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
             )
 
     ServicosEscalados = forms.ModelMultipleChoiceField(
-        queryset=CatalogodeServicoJardinagem.objects.all(),
+        queryset=CatalogodeServicoJardinagem.objects.distinct(),
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'
@@ -92,7 +92,7 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
     )
 
     ColaboradoresEscalados = forms.ModelMultipleChoiceField(
-        queryset=Gerente.objects.all(),
+        queryset=Gerente.objects.distinct(),
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'
@@ -170,11 +170,11 @@ class FatoServicoJardinagemForms(forms.ModelForm):
         super(FatoServicoJardinagemForms, self).__init__(*args, **kwargs)
         self.fields['Servico'].queryset = self.fields['Servico'].queryset.filter(
             id_random=id_random
-        )
+        ).distinct()
 
         self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
             status__in=['Mobilizado']
-        )
+        ).distinct()
 
     class Meta:
         model = FatoServicoJardinagem

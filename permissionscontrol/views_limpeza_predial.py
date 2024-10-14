@@ -6,15 +6,10 @@ from permissionscontrol.forms_limpeza_predial import PermissionsAccessLimpezaPre
 from gerente.models import Gerente
 from empresasecundario.utils import define_empresas
 from permissionscontrol.utils import validate_permissions
-from django.contrib import messages
 
 
 # Create your views here.
 def permissoes_limpeza_predial(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -61,7 +56,7 @@ def permissoes_limpeza_predial(request, userid):
             Gerente__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Gerente__empresasecundaria__id_random__in=empresas_secundarias_ids,
             Gerente__empresasecundaria__setor__setor='Limpeza predial'
-        ),
+        ).distinct(),
         form_class=PermissionsAccessLimpezaPredialForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -87,10 +82,6 @@ def permissoes_limpeza_predial(request, userid):
 # o envio do id random esta quebrando o codigo
 # definir o id random dentro da função
 def editar_permissoes_limpeza_predial(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permissions_instance_especials = PermissionsAccessEspecials.objects.filter(
         Gerente__id_random=userid
     ).first()
@@ -124,6 +115,8 @@ def editar_permissoes_limpeza_predial(request, userid, id_random):
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('editar_permissoes_limpeza_predial',
                                                                     kwargs={'userid': userid,
                                                                             'id_random': permissions_instance_limpeza_predial.id_random})})
+    else:
+        return redirect('editar_permissoes_jardinagem', userid)
 
     gerente = Gerente.objects.get(
         id_random=userid

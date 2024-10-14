@@ -12,10 +12,6 @@ from django.contrib import messages
 
 # Create your views here.
 def vegetacao(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -55,7 +51,7 @@ def vegetacao(request, userid):
         model=CatalogoVegetacao.objects.filter(
             EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
-        ),
+        ).distinct(),
         form_class=CatalogoVegetacaoForm,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -80,10 +76,6 @@ def vegetacao(request, userid):
 
 
 def editar_vegetacao(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
@@ -163,10 +155,6 @@ def alterar_status_vegetacao(request, userid, id_random, new_status):
 
 
 def areas_associadas_vegetacao(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     vegetacao = CatalogoVegetacao.objects.get(
         id_random=id_random
     )

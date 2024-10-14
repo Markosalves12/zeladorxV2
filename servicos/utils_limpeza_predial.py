@@ -138,7 +138,7 @@ def colect_dados_fato_servico_limpeza_predial(request, userid, DataDeInicio, Dat
             F('Servico__TipoServico'),
             output_field=CharField()
         ),
-    ).filter(
+    ).distinct().filter(
         **filters,
         Servico__Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
         Servico__Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
@@ -244,7 +244,7 @@ def colect_dados_agendamentos_limpeza_predial(request, userid, DataDeInicio, Dat
             F('id_random'),
             output_field=CharField()
         ),
-    ).filter(
+    ).distinct().filter(
         **filters,
         Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
         Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,

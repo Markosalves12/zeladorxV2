@@ -44,33 +44,6 @@
     <section class="content">
       <div class="container-fluid">
         {% include 'partials/_messages.html' %}
-        {% if sform_search %}
-            <form action="{{ redirect_url_name }}" method="GET" enctype="multipart/form-data">
-              <div class="card-body d-flex justify-content-end">
-                <div class="d-flex" style="gap: 15px;">
-                  <!-- Renderize apenas os campos específicos -->
-                  {% for field in form_search.visible_fields %}
-                    {% if field.name in allowed_fields %}
-                      <div class="d-flex flex-column" style="margin-right: 10px; text-align: center;">
-                        <label for="{{ field.id_for_label }}" style="margin-bottom: 5px;">{{ field.label }}</label>
-                        {{ field }}
-                      </div>
-                    {% endif %}
-                  {% endfor %}
-                  <div class="d-flex align-items-end">
-                    <button type="submit" class="btn btn-success">Buscar</button>
-                  </div>
-                  {% if permission_crate %}
-                    <div class="d-flex align-items-end">
-                      <a href="{% url url_agendamento userid %}">
-                        <button type="button" class="btn btn-block btn-primary">Agendar novo serviço</button>
-                      </a>
-                    </div>
-                  {% endif %}
-                </div>
-              </div>
-            </form>
-        {% endif %}
         <div class="row">
           <!-- /.col -->
           <div class="col-md-12">
@@ -78,6 +51,33 @@
               <div class="card-body p-0">
                 <!-- THE CALENDAR -->
                 {% if permission_view %}
+                    {% if sform_search %}
+                      <form action="{{ redirect_url_name }}" method="GET" enctype="multipart/form-data">
+                        <div class="card-body d-flex justify-content-end">
+                          <div class="d-flex" style="gap: 15px;">
+                            <!-- Renderize apenas os campos específicos -->
+                            {% for field in form_search.visible_fields %}
+                              {% if field.name in allowed_fields %}
+                                <div class="d-flex flex-column" style="margin-right: 10px; text-align: center;">
+                                  <label for="{{ field.id_for_label }}" style="margin-bottom: 5px;">{{ field.label }}</label>
+                                  {{ field }}
+                                </div>
+                              {% endif %}
+                            {% endfor %}
+                            <div class="d-flex align-items-end">
+                              <button type="submit" class="btn btn-success">Buscar</button>
+                            </div>
+                            {% if permission_crate %}
+                              <div class="d-flex align-items-end">
+                                <a href="{% url url_agendamento userid %}">
+                                  <button type="button" class="btn btn-block btn-primary">Agendar novo serviço</button>
+                                </a>
+                              </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </form>
+                  {% endif %}
                   <div id="calendar"></div>
                 {% else %}
                   {% include 'partials/_access_rejected.html' %}
@@ -140,8 +140,6 @@
 <!-- Page specific script -->
 <script>
   $(function () {
-    // initialize the calendar
-    // -----------------------------------------------------------------
     moment.locale('pt-br');
     var date = new Date()
     var d = date.getDate(),
@@ -184,8 +182,7 @@
           },
         {% endfor %}
       ],
-      editable: true,
-      droppable: true, // this allows things to be dropped onto the calendar
+
       eventClick: function(info) {
         // Abre o modal ao clicar no evento
         var modal = $('#modal-default');
@@ -283,6 +280,7 @@
     var currColor = '#3c8dbc'; // Red by default
     // Color chooser button
     $('#color-chooser > li > a').click(function (e) {
+
       e.preventDefault();
       // Save color
       currColor = $(this).css('color');
@@ -299,22 +297,6 @@
       if (val.length == 0) {
         return;
       }
-
-      // Create events
-      var event = $('<div />');
-      event.css({
-        'background-color': currColor,
-        'border-color': currColor,
-        'color': '#fff'
-      }).addClass('external-event');
-      event.text(val);
-      $('#external-events').prepend(event);
-
-      // Add draggable functionality
-      ini_events(event);
-
-      // Remove event from text input
-      $('#new-event').val('');
     });
   });
 </script>

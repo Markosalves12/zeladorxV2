@@ -1,8 +1,19 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from permissionscontrol.models import (PermissionsAccessJardinagem,
                                        PermissionsAccessLimpezaPredial,
                                        PermissionsAccessEspecials)
 from gerente.models import Gerente
+from django.contrib import messages
+
+def verify_login(request, userid):
+    gerente = Gerente.objects.get(id_random=userid)
+    if gerente.status == 'Desmobilizado':
+        # messages.error(request, "usuario nao logado")
+        return True
+
+    if not request.user.is_authenticated:
+        # messages.error(request, "usuario nao logado")
+        return True
 
 def configurate_permissions(request, model_class, email):
     objeto = get_object_or_404(model_class, email=email)

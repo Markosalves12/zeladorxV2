@@ -6,7 +6,7 @@ from empresaprimaria.models import EmpresaPrimaria
 from zeladorx.models import TypeZeladoria
 
 class UnidadeForms(forms.ModelForm):
-    def __init__(self, *args, request, userid=str, **kwargs):
+    def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
         super(UnidadeForms, self).__init__(*args, **kwargs)
         # Excluir serviços com status 'Desmobilizado' do queryset
         empresas = define_empresas(request=request, userid=userid)
@@ -14,7 +14,7 @@ class UnidadeForms(forms.ModelForm):
         empresas_secundarias_ids = empresas['empresas_secundarias_ids']
         setores = empresas['setores']
 
-        if userid:
+        if userid and type=='creat/edit':
             # Ajustar o queryset do campo 'empresaprimaria'
             self.fields['empresasecundaria'].queryset = self.fields['empresasecundaria'].queryset.filter(
                 empresaprimaria__id_random__in=empresas_primarias_ids,
@@ -22,16 +22,24 @@ class UnidadeForms(forms.ModelForm):
                 status__in=['Mobilizado']
             )
 
-        # habilitar_jardinagem = False
-        # habilitar_limpeza = False
-        #
-        # # Checar os setores e definir se os campos devem ser habilitados
-        # for objeto in TypeZeladoria.objects.filter(id__in=setores):
-        #     if 'Jardinagem' in objeto.setor:
-        #         habilitar_jardinagem = True
-        #
-        #     if 'Limpeza predial' in objeto.setor:
-        #         habilitar_limpeza = True
+        if type == 'search':
+            for field_name, field in self.fields.items():
+                field.required = False
+
+            self.fields['empresasecundaria'] = forms.ModelMultipleChoiceField(
+                queryset=EmpresaSecundaria.objects.filter(
+                    empresaprimaria__id_random__in=empresas_primarias_ids,
+                ),
+                widget=forms.SelectMultiple(
+                    attrs={
+                        'class': 'form-control',  # Modifique a classe se necessário
+                        'style': 'max-height: 40px; overflow-y: auto;'
+                    }
+                ),
+                label='Empresas que atende',
+                required=False,
+                initial=None
+            )
 
         # Habilitar os campos se as condições forem verdadeiras
         if setores['habilitar_jardinagem']:

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms, FatoServicoJardinagemForms
 from utils.views import generic_view, edit_generic_view
-from permissionscontrol.utils import validate_permissions
+from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
 from django.utils import timezone
@@ -11,9 +11,10 @@ from utils.utils import define_range_time
 
 # Create your views here.
 def agendar_servico_jardinagem(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
 
     empresas = define_empresas(request=request, userid=userid)
     setores = empresas['setores']
@@ -65,10 +66,6 @@ def agendar_servico_jardinagem(request, userid):
     )
 
 def servicos_agendados_jardinagem(request, userid):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
@@ -125,7 +122,7 @@ def servicos_agendados_jardinagem(request, userid):
             Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
             status__in=['Agendado', 'Em andamento']
-        ).annotate(
+        ).distinct().annotate(
             novo_status=Case(
                 When(status='Em andamento', then=Value('Em andamento')),
                 When(DataDeInicio__gte=one_day, DataDeInicio__lt=seven_days, then=Value('Próximo')),
@@ -163,10 +160,6 @@ def servicos_agendados_jardinagem(request, userid):
 
 
 def editar_servico_jardinagem_agendado(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
-
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
@@ -202,9 +195,10 @@ def editar_servico_jardinagem_agendado(request, userid, id_random):
 
 
 def realizar_servico_jardinagem_agendado(request, userid, id_random):
-    if not request.user.is_authenticated:
-        messages.error(request, "usuario nao logado")
-        return redirect('login')
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
 
     objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     forms = FatoServicoJardinagemForms(
@@ -259,6 +253,11 @@ def realizar_servico_jardinagem_agendado(request, userid, id_random):
 
 
 def cancelar_servico_jardinagem(request, userid, id_random):
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
+
     objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     objeto.status = 'Cancelado'
     objeto.save()
@@ -272,6 +271,11 @@ def cancelar_servico_jardinagem(request, userid, id_random):
 
 
 def concluir_servico_jardinagem(request, userid, id_random):
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
+
     objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
     objeto.status = 'Concluido'
     objeto.save()
