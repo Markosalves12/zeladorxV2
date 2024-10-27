@@ -143,6 +143,7 @@ def editar_catalogo_de_servicos_jardinagem(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
+        userid=userid
     )
 
 
@@ -154,5 +155,6 @@ def alterar_status_catalogo_de_servicos_jardinagem(request, userid, id_random, n
         redirect_url_name=reverse('editar_catalogo_de_servicos_jardinagem', kwargs={'userid': userid, 'id_random': id_random}),
         id_random=id_random,
         new_status=new_status,
+        userid=userid,
         message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
     )

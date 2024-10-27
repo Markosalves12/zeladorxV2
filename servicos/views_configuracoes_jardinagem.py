@@ -197,6 +197,7 @@ def editar_servico_jardinagem_configurado(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
+        userid=userid
     )
 
 
@@ -218,6 +219,7 @@ def alterar_status_servico_jardinagem_configurado(request, userid, id_random, ne
         ),
         id_random=id_random,
         new_status=new_status,
+        userid=userid,
         message=f'{objeto} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto} desmobilizado com sucesso'
     )
 

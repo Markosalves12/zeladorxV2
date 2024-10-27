@@ -200,7 +200,7 @@ class DataTableAndForms:
         # Adiciona o id_random e o URL de edição
         formatted_event['id_random'] = dado.id_random
         formatted_event['editar_url'] = reverse(f'{self.edition_rout}',
-                                                kwargs={'userid': self.request.session.get('userid', ''),
+                                                kwargs={'userid': self.userid,
                                                         'id_random': dado.id_random})
 
         # Se houver history_rout, adiciona a rota de histórico, incluindo os dados do filtro

@@ -112,11 +112,11 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
     )
 
 def edit_generic_view(request, model_class, form_class, template_name, id_random, app_name, redirect_url_name,
-                      url_desmobilize, url_rehabilitate,
+                      url_desmobilize, url_rehabilitate, userid,
                       redirect_close_button, link_tipos=None, permission_edit=False, permission_exclude=False,
                       permission_desmobilize=False, permission_rehabilitate=False,
                       ):
-    block = verify_login(request=request, userid=request.session.get('userid', ''))
+    block = verify_login(request=request, userid=userid)
 
     if block == True:
         return redirect('logout')
@@ -163,7 +163,7 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
     )
 
 
-def gerneric_alter_status(request, model_class, redirect_url_name, id_random, new_status, message):
+def gerneric_alter_status(request, model_class, redirect_url_name, id_random, new_status, message, userid):
     block = verify_login(request=request, userid=userid)
 
     if block == True:

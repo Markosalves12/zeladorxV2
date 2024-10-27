@@ -255,13 +255,12 @@
                                     </div>
 
                                     <!-- Controles de paginação -->
-                                    <div id="pagination-controls">
-                                      <button type="button" id="prev-page" onclick="prevPage()" class="btn btn-info">Anterior</button>
-                                      <button type="button" id="next-page" onclick="nextPage()" class="btn btn-info">Proximo</button>
+                                    <div id="pagination-controls-empresa-operadora">
+                                      <button type="button" id="prev-page-empresa-operadora" onclick="prevPage()" class="btn btn-info">Anterior</button>
+                                      <button type="button" id="next-page-empresa-operadora" onclick="nextPage()" class="btn btn-info">Proximo</button>
                                     </div>
                                   </div>
-                                {% endif %}
-                                {% if field.name == 'ServicosEscalados' %}
+                                {% elif field.name == 'ServicosEscalados' %}
                                   <div class="form-group">
                                     <label for="{{ field.id_for_label }}">{{ field.label }}</label>
 
@@ -372,8 +371,8 @@
       item.style.display = (index >= (currentPage - 1) * itemsPerPage && index < currentPage * itemsPerPage) ? 'block' : 'none';
     });
 
-    document.getElementById('prev-page').style.display = (currentPage === 1) ? 'none' : 'inline';
-    document.getElementById('next-page').style.display = (currentPage === totalPages) ? 'none' : 'inline';
+    document.getElementById('prev-page-empresa-operadora').style.display = (currentPage === 1) ? 'none' : 'inline';
+    document.getElementById('next-page-empresa-operadora').style.display = (currentPage === totalPages) ? 'none' : 'inline';
   }
 
   function nextPage() {

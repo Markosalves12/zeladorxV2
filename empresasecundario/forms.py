@@ -47,11 +47,13 @@ class EmpresaSecundariaForms(forms.ModelForm):
 
     class Meta:
         model = EmpresaSecundaria
-        fields = ['nome', 'razao_social', 'CNPJ', 'logo', 'setor', 'empresaprimaria', ]
+        fields = ['nome',
+                  # 'razao_social',
+                  # 'CNPJ',
+                  # 'logo',
+                  'setor', 'empresaprimaria', ]
         labels = {
             'nome': 'Nome',
-            'razao_social': 'Razão social',
-            'CNPJ': 'CNPJ (apenas os números)',
             'setor': 'Setor',
             'empresaprimaria': 'Empresa operadora',
         }
@@ -72,11 +74,11 @@ class EmpresaSecundariaForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
-            'logo': forms.FileInput(
-                attrs={
-                    'class': 'form-control'
-                }
-            ),
+            # 'logo': forms.FileInput(
+            #     attrs={
+            #         'class': 'form-control'
+            #     }
+            # ),
             'setor': forms.Select(
                 attrs={
                     'class': 'form-control'

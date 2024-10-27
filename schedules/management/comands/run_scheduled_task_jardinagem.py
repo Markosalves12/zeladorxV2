@@ -29,13 +29,17 @@ def agendar_servicos_jardinagem_configurados():
         # Obter a área correspondente
         area = AreasJardins.objects.get(id_random=obj.Areas.id_random)
 
-        # Obter todos os serviços escalados do Catalogo
+        # Filtrar apenas os serviços escalados que estão mobilizados
         ServicosEscalados = CatalogodeServicoJardinagem.objects.filter(
-            id_random__in=[servico.id_random for servico in obj.ServicosEscalados.all()]
+            id_random__in=[servico.id_random for servico in obj.ServicosEscalados.all()],
+            status='Mobilizado'  # Filtrar serviços apenas com status 'Mobilizado'
         )
-        ColaboradoresEscalados = Gerente.objects.get(
-            id_random='MuUe1D3pvT3v'
-        ),
+
+        # Se não houver serviços escalados mobilizados, ignorar o agendamento
+        if not ServicosEscalados.exists():
+            continue  # Pula para o próximo objeto, já que não há serviços aplicáveis
+
+        ColaboradoresEscalados = Gerente.objects.get(id_random='MuUe1D3pvT3v')
         idconfigurate = obj.id_random
         diasaseremrealizado = obj.diasaseremrealizado.all()
         tempomedioplanejado = obj.tempomedioplanejado
@@ -69,7 +73,6 @@ def agendar_servicos_jardinagem_configurados():
                         DataDeInicio=data_inicio,
                         DataDeConclusao=data_conclusao,
                         TipoServico='Automático',
-
                     )
 
                     # Salva o objeto de agendamento
@@ -77,4 +80,4 @@ def agendar_servicos_jardinagem_configurados():
 
                     # Adiciona todos os serviços escalados ao campo ManyToMany
                     new_service_scheduled.ServicosEscalados.set(ServicosEscalados)
-                    new_service_scheduled.ColaboradoresEscalados.set(ColaboradoresEscalados)
+                    new_service_scheduled.ColaboradoresEscalados.add(ColaboradoresEscalados)

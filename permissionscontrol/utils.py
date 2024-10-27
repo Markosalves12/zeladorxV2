@@ -3,7 +3,6 @@ from permissionscontrol.models import (PermissionsAccessJardinagem,
                                        PermissionsAccessLimpezaPredial,
                                        PermissionsAccessEspecials)
 from gerente.models import Gerente
-from django.contrib import messages
 
 def verify_login(request, userid):
     gerente = Gerente.objects.get(id_random=userid)
@@ -14,6 +13,8 @@ def verify_login(request, userid):
     if not request.user.is_authenticated:
         # messages.error(request, "usuario nao logado")
         return True
+
+    return False
 
 def configurate_permissions(request, model_class, email):
     objeto = get_object_or_404(model_class, email=email)

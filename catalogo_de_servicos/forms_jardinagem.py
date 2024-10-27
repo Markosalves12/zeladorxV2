@@ -13,6 +13,7 @@ class CatalogoServicoJardinagemForms(forms.ModelForm):
             self.fields['EmpresaSecundaria'].queryset = self.fields['EmpresaSecundaria'].queryset.filter(
                 empresaprimaria__id_random__in=empresas_primarias_ids,
                 id_random__in=empresas_secundarias_ids,
+                setor__setor__in = ['Jardinagem'],
                 status__in=['Mobilizado']
             )
 

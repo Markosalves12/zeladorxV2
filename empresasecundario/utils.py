@@ -2,6 +2,7 @@ from empresaprimaria.models import EmpresaPrimaria
 from empresasecundario.models import EmpresaSecundaria
 from zeladorx.models import TypeZeladoria
 from gerente.models import Gerente
+from unidade.models import Unidade
 
 def define_empresas(request, userid):
     gerente = Gerente.objects.get(id_random=userid)
@@ -51,10 +52,24 @@ def define_empresas(request, userid):
             if gerente.superuser:
                 habilitar_limpeza_secundaria = True
 
-    # Setores das empresas secundárias
+    # Setores das empresas secundárias e IDs das unidades atendidas
     setores_secundarias = []
+    unidades_secundarias_ids = []
+
+    # Buscar todas as unidades que estão associadas às empresas secundárias
+    if gerente.superuser:
+        # Se superusuário, retornar todas as unidades associadas às empresas secundárias
+        unidades_secundarias = Unidade.objects.filter(empresasecundaria__id_random__in=empresas_secundarias_ids)
+    else:
+        # Se não for superusuário, filtrar pelas unidades específicas onde o gerente está alocado
+        unidades_secundarias = Unidade.objects.filter(
+            empresasecundaria__id_random__in=empresas_secundarias_ids,
+        )
+
+    unidades_secundarias_ids.extend([unidade.id_random for unidade in unidades_secundarias])
+
+    # Verificar os setores das empresas secundárias
     for empresa_secundaria in EmpresaSecundaria.objects.filter(id_random__in=empresas_secundarias_ids):
-        # Acessar setores associados à empresa secundária
         setores = empresa_secundaria.setor.all()
         setores_secundarias.extend(setores)
 
@@ -65,7 +80,7 @@ def define_empresas(request, userid):
             if 'Limpeza predial' in objeto.setor:
                 habilitar_limpeza_secundaria = True
 
-    # Retornar as informações das empresas e setores
+    # Retornar as informações das empresas, setores e unidades
     return {
         'empresas_primarias_ids': empresas_primarias_ids,
         'empresas_secundarias_ids': empresas_secundarias_ids,
@@ -77,5 +92,6 @@ def define_empresas(request, userid):
             'habilitar_limpeza_secundaria': habilitar_limpeza_secundaria,
             'setores_primaria': setores_primaria,
             'setores_secundarias': setores_secundarias,
-        }
+        },
+        'unidades_secundarias_ids': unidades_secundarias_ids
     }

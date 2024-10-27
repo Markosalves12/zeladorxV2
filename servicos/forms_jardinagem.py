@@ -117,7 +117,6 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
             'Areas': 'Area para ser atendida',
             'foto_solicitacao': 'Foto da área na solicitação',
             'foto_entrega': 'Foto da área na entrega',
-            'ServicoCompunsivo': 'Serviço compulsivo'
         }
 
         widgets = {
@@ -168,11 +167,19 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
 class FatoServicoJardinagemForms(forms.ModelForm):
     def __init__(self, *args, request, userid=str, id_random=str, **kwargs):
         super(FatoServicoJardinagemForms, self).__init__(*args, **kwargs)
+        empresas = define_empresas(request=request, userid=userid)
+        empresas_primarias_ids = empresas['empresas_primarias_ids']
+        empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
         self.fields['Servico'].queryset = self.fields['Servico'].queryset.filter(
             id_random=id_random
         ).distinct()
 
         self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
+            empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            empresasecundaria__id_random__in=empresas_secundarias_ids,
+            empresasecundaria__status__in=['Mobilizado'],
+            empresasecundaria__setor__setor__in=['Jardinagem'],
             status__in=['Mobilizado']
         ).distinct()
 

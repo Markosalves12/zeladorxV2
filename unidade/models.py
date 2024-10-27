@@ -29,10 +29,10 @@ class Unidade(models.Model):
         max_length=300
     )
 
-    foto = models.ImageField(
-        upload_to="media/%Y/%m/%d/",
-        blank=True,
-    )
+    # foto = models.ImageField(
+    #     upload_to="media/%Y/%m/%d/",
+    #     blank=True,
+    # )
 
     empresasecundaria = models.ManyToManyField(
         to=EmpresaSecundaria,

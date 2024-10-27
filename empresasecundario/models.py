@@ -18,23 +18,23 @@ class EmpresaSecundaria(models.Model):
         max_length=40
     )
 
-    razao_social = models.CharField(
-        blank=False,
-        null=False,
-        max_length=120,
-    )
-
-    CNPJ = models.CharField(
-        blank=False,
-        null=False,
-        max_length=40,
-    )
-
-    logo = models.ImageField(
-        upload_to="media/%Y/%m/%d/",
-        blank=True,
-        max_length=1000
-    )
+    # razao_social = models.CharField(
+    #     blank=False,
+    #     null=False,
+    #     max_length=120,
+    # )
+    #
+    # CNPJ = models.CharField(
+    #     blank=False,
+    #     null=False,
+    #     max_length=40,
+    # )
+    #
+    # logo = models.ImageField(
+    #     upload_to="media/%Y/%m/%d/",
+    #     blank=True,
+    #     max_length=1000
+    # )
 
     status_options = [
         ('Mobilizado', 'Mobilizado'),
@@ -64,11 +64,11 @@ class EmpresaSecundaria(models.Model):
         related_name='REmpresaPrimaria'
     )
 
-    def save(self, *args, **kwargs):
-        if self.logo:
-            self.logo = resize_image(self.logo, max_width=40)
-
-        super(EmpresaSecundaria, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if self.logo:
+    #         self.logo = resize_image(self.logo, max_width=40)
+    #
+    #     super(EmpresaSecundaria, self).save(*args, **kwargs)
 
     def __str__(self):
         setores = ", ".join(setor.setor for setor in self.setor.all())

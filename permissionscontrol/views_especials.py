@@ -131,4 +131,5 @@ def editar_permissoes_especials(request, userid, id_random):
         permission_edit=permission_edit,
         url_desmobilize=None,
         url_rehabilitate=None,
+        userid=userid
     )

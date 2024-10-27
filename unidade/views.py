@@ -34,6 +34,7 @@ def unidades(request, userid):
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    unidades_secundarias_ids = empresas['unidades_secundarias_ids']
     setores = empresas['setores']
 
     colunas = [
@@ -56,6 +57,7 @@ def unidades(request, userid):
         model=Unidade.objects.filter(
             empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             empresasecundaria__id_random__in=empresas_secundarias_ids,
+            id_random__in=unidades_secundarias_ids
         ).distinct(),
         form_class=UnidadeForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
@@ -142,6 +144,7 @@ def editar_unidade(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
+        userid=userid
     )
 
 
@@ -159,5 +162,6 @@ def alterar_status_unidade(request, userid, id_random, new_status):
         ),
         id_random=id_random,
         new_status=new_status,
+        userid=userid,
         message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
     )

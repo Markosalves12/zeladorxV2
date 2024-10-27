@@ -187,6 +187,7 @@ def editar_servico_limpeza_predial_agendado(request, userid, id_random):
                 'id_random': id_random
             }
         ),
+        userid=userid,
     )
 
 def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
@@ -199,7 +200,10 @@ def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
     forms = FatoServicoLimpezaPredialForms(
         initial={
             'Servico': objeto
-        }
+        },
+        id_random=id_random,
+        request=request,
+        userid=userid
     )
 
     permission_accompany = validate_permissions(
@@ -210,7 +214,8 @@ def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
     )
 
     if request.method == 'POST':
-        form = FatoServicoLimpezaPredialForms(request.POST, request.FILES)
+        form = FatoServicoLimpezaPredialForms(request.POST, request.FILES, id_random=id_random,
+                                              request=request, userid=userid)
         print(form.errors)
         if form.is_valid():
             form.save()

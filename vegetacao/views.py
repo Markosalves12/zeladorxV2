@@ -133,6 +133,7 @@ def editar_vegetacao(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
+        userid=userid
     )
 
 
@@ -150,6 +151,7 @@ def alterar_status_vegetacao(request, userid, id_random, new_status):
         ),
         id_random=id_random,
         new_status=new_status,
+        userid=userid,
         message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
     )
 

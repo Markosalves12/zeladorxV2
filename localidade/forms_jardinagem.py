@@ -16,7 +16,7 @@ class LocalidadeJardinagemForms(forms.ModelForm):
                 empresasecundaria__id_random__in=empresas_secundarias_ids,
                 empresasecundaria__status__in=['Mobilizado'],
                 status__in=['Mobilizado']
-            )
+            ).distinct()
 
         if type == 'search':
             for field_name, field in self.fields.items():
@@ -25,7 +25,7 @@ class LocalidadeJardinagemForms(forms.ModelForm):
             self.fields['unidade'].queryset = self.fields['unidade'].queryset.filter(
                 empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 empresasecundaria__id_random__in=empresas_secundarias_ids,
-            )
+            ).distinct()
 
     class Meta:
         model = LocalidadeJardiangem

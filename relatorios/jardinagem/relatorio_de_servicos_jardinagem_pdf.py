@@ -287,7 +287,7 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDe
 
     # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="relatorio de servicos {generate_id_random()}.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="relatorio de servicos {status} {generate_id_random()}.pdf"'
 
     return response
 

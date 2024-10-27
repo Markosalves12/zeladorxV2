@@ -20,7 +20,7 @@ class UnidadeForms(forms.ModelForm):
                 empresaprimaria__id_random__in=empresas_primarias_ids,
                 id_random__in=empresas_secundarias_ids,
                 status__in=['Mobilizado']
-            )
+            ).distinct()
 
         if type == 'search':
             for field_name, field in self.fields.items():
@@ -29,7 +29,7 @@ class UnidadeForms(forms.ModelForm):
             self.fields['empresasecundaria'] = forms.ModelMultipleChoiceField(
                 queryset=EmpresaSecundaria.objects.filter(
                     empresaprimaria__id_random__in=empresas_primarias_ids,
-                ),
+                ).distinct(),
                 widget=forms.SelectMultiple(
                     attrs={
                         'class': 'form-control',  # Modifique a classe se necessário
@@ -57,34 +57,28 @@ class UnidadeForms(forms.ModelForm):
             self.fields.pop('linkmapalimnpezapredial')
 
     empresasecundaria = forms.ModelMultipleChoiceField(
-        queryset=EmpresaSecundaria.objects.all(),
+        queryset=EmpresaSecundaria.objects.all().distinct(),
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'
             }
         ),
-        label='Empresas que atende',
+        label='Empresa operadora',
         required=True  # Defina como True se a seleção de colaboradores for obrigató
     )
 
     class Meta:
         model = Unidade
-        fields = ['nome', 'linkmapajardinagem', 'linkmapalimnpezapredial', 'foto', 'empresasecundaria']
+        fields = ['nome', 'linkmapajardinagem', 'linkmapalimnpezapredial', 'empresasecundaria']
         labels = {
             'nome': 'Nome',
             'linkmapajardinagem': 'Link do mapa jardinagem da unidade',
             'linkmapalimnpezapredial': 'Link do mapa limpeza predial da unidade',
-            'foto': 'Fotos da unidade',
             'EmpresaSecundaria': 'Empresa operadora',
         }
 
         widgets = {
             'nome': forms.TextInput(
-                attrs={
-                    'class': 'form-control'
-                }
-            ),
-            'foto': forms.FileInput(
                 attrs={
                     'class': 'form-control'
                 }

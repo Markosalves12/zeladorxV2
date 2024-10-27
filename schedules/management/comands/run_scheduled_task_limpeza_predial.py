@@ -28,10 +28,16 @@ def agendar_servicos_limpeza_predial_configurados():
         # Obter a área correspondente
         area = AreaLimpezaPredial.objects.get(id_random=obj.Areas.id_random)
 
-        # Obter todos os serviços escalados do Catalogo
+        # Filtrar apenas os serviços escalados que estão mobilizados
         ServicosEscalados = CatalogodeServicoLimpezaPredial.objects.filter(
-            id_random__in=[servico.id_random for servico in obj.ServicosEscalados.all()]
+            id_random__in=[servico.id_random for servico in obj.ServicosEscalados.all()],
+            status='Mobilizado'  # Filtrar serviços apenas com status 'Mobilizado'
         )
+
+        # Se não houver serviços escalados mobilizados, ignorar o agendamento
+        if not ServicosEscalados.exists():
+            continue  # Pula para o próximo objeto, já que não há serviços aplicáveis
+
         idconfigurate = obj.id_random
         diasaseremrealizado = obj.diasaseremrealizado.all()
         tempomedioplanejado = obj.tempomedioplanejado

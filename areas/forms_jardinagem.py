@@ -68,7 +68,7 @@ class AreasJardinsForms(forms.ModelForm):
 
     class Meta:
         model = AreasJardins
-        fields = ['nome', 'dimensao', 'Terreno', 'vegetacao', 'servico', 'localidade', 'foto']
+        fields = ['nome', 'dimensao', 'Terreno', 'vegetacao', 'servico', 'localidade', 'foto', 'periodicidade']
 
         labels = {
             'nome': 'Nome da região',
@@ -78,6 +78,7 @@ class AreasJardinsForms(forms.ModelForm):
             'servico': 'Serviço principal aplicado',
             'localidade': 'Localidade',
             'foto': 'Foto da região',
+            'periodicidade': 'Periodicidade de retorno'
         }
 
         widgets = {

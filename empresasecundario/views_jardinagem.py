@@ -48,8 +48,6 @@ def empresas_jardinagem(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
-        {'nome': 'razao_social', 'label': 'Razão social'},
-        {'nome': 'CNPJ', 'label': 'CNPJ'},
         {'nome': 'setor', 'label': 'Setor'},
         {'nome': 'status', 'label': 'status'},
         {'nome': 'acoes', 'label': 'Ações'},
@@ -142,6 +140,7 @@ def editar_empresa_jardinagem(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
+        userid=userid
     )
 
 
@@ -153,5 +152,6 @@ def alterar_status_empresa_jardinagem(request, userid, id_random, new_status):
         redirect_url_name=reverse('editar_empresa_jardinagem', kwargs={'userid': userid, 'id_random': id_random}),
         id_random=id_random,
         new_status=new_status,
+        userid=userid,
         message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
     )

@@ -146,6 +146,7 @@ def editar_localidade_jardinagem(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
+        userid=userid
     )
 
 
@@ -157,5 +158,6 @@ def alterar_status_localidade_jardinagem(request, userid, id_random, new_status)
         redirect_url_name=reverse('editar_localidade_jardinagem', kwargs={'userid': userid, 'id_random': id_random}),
         id_random=id_random,
         new_status=new_status,
+        userid=userid,
         message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
     )
