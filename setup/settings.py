@@ -36,9 +36,9 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['zeladorx.com.br', 'www.zeladorx.com.br', '*.zeladorx.com.br']
 
 # Application definition
 
@@ -147,7 +147,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'America/Sao_paulo'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
