@@ -6,31 +6,31 @@ from servicos.views_limpeza_predial import (agendar_servico_limpeza_predial, ser
 
 urlpatterns = [
     path(
-        'agendar_servico_limpeza_predial/<str:userid>',
+        'agendar-servico-limpeza-predial/<str:userid>',
         agendar_servico_limpeza_predial,
         name='agendar_servico_limpeza_predial'
     ),
     path(
-        'servicos_agendados_limpeza_predial/<str:userid>',
+        'servicos-agendados-limpeza-predial/<str:userid>',
         servicos_agendados_limpeza_predial,
         name='servicos_agendados_limpeza_predial'
     ),
     path(
-        'editar_servico_limpeza_predial_agendado/<str:userid>/<str:id_random>',
+        'editar-servico-limpeza-predial-agendado/<str:userid>/<str:id_random>',
         editar_servico_limpeza_predial_agendado,
         name='editar_servico_limpeza_predial_agendado'
     ),
     path(
-        'realizar_servico_limpeza_predial_agendado/<str:userid>/<str:id_random>',
+        'realizar-servico-limpeza-predial-agendado/<str:userid>/<str:id_random>',
         realizar_servico_limpeza_predial_agendado,
         name='realizar_servico_limpeza_predial_agendado'
     ),
     path(
-        'cancelar_servico_limpeza_predial/<str:userid>/<str:id_random>',
+        'cancelar-servico-limpeza-predial/<str:userid>/<str:id_random>',
         cancelar_servico_limpeza_predial,
          name='cancelar_servico_limpeza_predial'),
     path(
-        'concluir_servico_limpeza_predial/<str:userid>/<str:id_random>',
+        'concluir-servico-limpeza-predial/<str:userid>/<str:id_random>',
         concluir_servico_limpeza_predial,
          name='concluir_servico_limpeza_predial'
     ),

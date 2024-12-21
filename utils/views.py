@@ -13,6 +13,8 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                  link_tipos=None, modal_button=True, configurate_gerente=False, history_rout=False,
                  permission_view=True, permission_edit=False, permission_crate=False,
                  permission_accompany=False):
+    if not request.user.is_authenticated:
+        return redirect('logout')
 
     block = verify_login(request=request, userid=userid)
 
@@ -116,6 +118,9 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
                       redirect_close_button, link_tipos=None, permission_edit=False, permission_exclude=False,
                       permission_desmobilize=False, permission_rehabilitate=False,
                       ):
+    if not request.user.is_authenticated:
+        return redirect('logout')
+
     block = verify_login(request=request, userid=userid)
 
     if block == True:
@@ -165,6 +170,8 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
 
 def gerneric_alter_status(request, model_class, redirect_url_name, id_random, new_status, message, userid):
     block = verify_login(request=request, userid=userid)
+    if not request.user.is_authenticated:
+        return redirect('logout')
 
     if block == True:
         return redirect('logout')
@@ -191,6 +198,9 @@ def gerneric_alter_status(request, model_class, redirect_url_name, id_random, ne
 def generic_view_history(request, userid, id_random, app_name, objeto, objetos, type_exibition, type_export, form_search,
                          sform_search, filtro_mapeamento, export_pdf, export_excel, redirect_close_button,
                          foto_objeto=None, Foto=False, permission_extract_pdf=False, permission_extract_xlsx=False):
+    if not request.user.is_authenticated:
+        return redirect('logout')
+
     block = verify_login(request=request, userid=userid)
 
     if block == True:

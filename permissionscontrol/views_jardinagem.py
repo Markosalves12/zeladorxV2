@@ -95,9 +95,9 @@ def editar_permissoes_jardinagem(request, userid, id_random):
         Gerente__id_random=userid
     ).first()
 
-    gerente = Gerente.objects.get(
-        id_random=userid
-    )
+    # gerente = Gerente.objects.get(
+    #     id_random=userid
+    # )
 
     tipos = [
         {'nome': 'Editar permissões', 'link': ''},
@@ -148,7 +148,7 @@ def editar_permissoes_jardinagem(request, userid, id_random):
         form_class=PermissionsAccessJardinagemForms,
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
-        app_name=f'Editar permissoes jardinagem {gerente.username}',
+        app_name=f'Editar permissões jardinagem',
         redirect_url_name='editar_permissoes_jardinagem',
         redirect_close_button=reverse('permissoes_jardinagem', kwargs={'userid': userid}),
         link_tipos=tipos,

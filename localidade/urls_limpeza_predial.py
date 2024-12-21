@@ -4,14 +4,14 @@ from localidade.views_limpeza_predial import (localidades_limpeza_predial, edita
 
 
 urlpatterns = [
-    path('localidades_limpeza_predial/<str:userid>', localidades_limpeza_predial, name='localidades_limpeza_predial'),
+    path('localidades-limpeza-predial/<str:userid>', localidades_limpeza_predial, name='localidades_limpeza_predial'),
     path(
-        'editar_localidade_limpeza_predial/<str:userid>/<str:id_random>',
+        'editar-localidade-limpeza-predial/<str:userid>/<str:id_random>',
         editar_localidade_limpeza_predial,
         name='editar_localidade_limpeza_predial'
     ),
     path(
-        'alterar_status_localidade_limpeza_predial/<str:userid>/<str:id_random>/<str:new_status>',
+        'alterar-status-localidade-limpeza-predial/<str:userid>/<str:id_random>/<str:new_status>',
         alterar_status_localidade_limpeza_predial,
         name='alterar_status_localidade_limpeza_predial'
     ),

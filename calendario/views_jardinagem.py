@@ -10,6 +10,9 @@ from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def calendario_jardinagem(request, userid):
+    if not request.user.is_authenticated:
+        return redirect('logout')
+
     block = verify_login(request=request, userid=userid)
 
     if block == True:

@@ -6,19 +6,19 @@ from gerente.views_jardinagem import (gerentes_jardinagem, editar_gerente_jardin
 
 urlpatterns = [
     # rota na raiz do sistema
-    path('gerentes_jardinagem/<str:userid>', gerentes_jardinagem, name='gerentes_jardinagem'),
+    path('gerentes-jardinagem/<str:userid>', gerentes_jardinagem, name='gerentes_jardinagem'),
     path(
-        'editar_gerente_jardinagem/<str:userid>/<str:id_random>',
+        'editar-gerente-jardinagem/<str:userid>/<str:id_random>',
         editar_gerente_jardinagem,
         name='editar_gerente_jardinagem'
     ),
     path(
-        'alterar_status_gerente_jardinagem/<str:userid>/<str:id_random>/<str:new_status>',
+        'alterar-status-gerente-jardinagem/<str:userid>/<str:id_random>/<str:new_status>',
          alterar_status_gerente_jardinagem,
          name='alterar_status_gerente_jardinagem'
     ),
     path(
-        'historico_de_servicos_gerente_jardinagem/<str:userid>/<str:id_random>',
+        'historico-de-servicos-gerente-jardinagem/<str:userid>/<str:id_random>',
         historico_de_servicos_gerente_jardinagem,
         name='historico_de_servicos_gerente_jardinagem'
     ),

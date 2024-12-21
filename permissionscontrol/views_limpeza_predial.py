@@ -118,9 +118,9 @@ def editar_permissoes_limpeza_predial(request, userid, id_random):
     else:
         return redirect('editar_permissoes_jardinagem', userid)
 
-    gerente = Gerente.objects.get(
-        id_random=userid
-    )
+    # gerente = Gerente.objects.get(
+    #     id_random=userid
+    # )
 
     permission_edit = validate_permissions(
         request=request,
@@ -135,7 +135,7 @@ def editar_permissoes_limpeza_predial(request, userid, id_random):
         form_class=PermissionsAccessLimpezaPredialForms,
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
-        app_name=f'Editar permissoes limpeza predia {gerente.username}',
+        app_name=f'Editar permissões limpeza predial',
         redirect_url_name='editar_permissoes_limpeza_predial',
         redirect_close_button=reverse('permissoes_limpeza_predial', kwargs={'userid': userid}),
         link_tipos=tipos,

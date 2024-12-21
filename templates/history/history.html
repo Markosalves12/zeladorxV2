@@ -145,10 +145,10 @@
                       {% endif %}
 
                     {% elif type_exibition == 'fato_limpeza_predial' %}
-                      {% if dado.foto_entrega.url %}
-                        <img src="{{ dado.foto_entrega.url }}" alt="Imagem do Objeto" class="img-fluid">
-                      {% else %}
+                      {% if dado.foto_entrega == "" or dado.foto_entrega == null %}
                         <img src="{% static 'dist/img/not found.png' %}" alt="Not found imagem" class="img-fluid">
+                      {% else %}
+                        <img src="{{ dado.foto_entrega.url }}" alt="Imagem do Objeto" class="img-fluid">
                       {% endif %}
                     {% endif %}
                   </div>

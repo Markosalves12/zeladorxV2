@@ -15,7 +15,7 @@ def relatorios_de_servicos_limpeza_predial_xlsx_concluidos(request, userid):
     permission_view = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['310: Pode extrair relatórios XLSX de limpeza predial']
     )
 
@@ -40,7 +40,7 @@ def relatorios_de_servicos_limpeza_predial_xlsx_concluidos(request, userid):
         {'nome': 'id_agendamento', 'label': 'id agendamento'},
         {'nome': 'tipo_agendamento', 'label': 'Tipo de agendamento'},
         {'nome': 'descricao_do_servico', 'label': 'Descrição serviço'},
-        {'nome': 'colaboradores_chamados', 'label': 'Colaboradores'},
+        {'nome': 'colaborador_envolvido', 'label': 'Colaboradores'},
         {'nome': 'servicos_solicitados', 'label': 'Servicos solicitados'},
         {'nome': 'status_servico', 'label': 'Status'},
     ]

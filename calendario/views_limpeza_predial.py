@@ -9,6 +9,9 @@ from utils.utils import aplicar_filtros_dinamicos
 from empresasecundario.utils import define_empresas
 
 def calendario_limpeza_predial(request, userid):
+    if not request.user.is_authenticated:
+        return redirect('logout')
+
     block = verify_login(request=request, userid=userid)
 
     if block == True:
@@ -35,21 +38,21 @@ def calendario_limpeza_predial(request, userid):
         request=request,
         userid=userid,
         permission_type='limpeza_predial',
-        permission_to_access=['372: Pode visualizar serviços configurados']
+        permission_to_access=['322: Pode visualizar serviços agendados']
     )
 
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
         permission_type='limpeza_predial',
-        permission_to_access=['371: Pode editar serviços configurados']
+        permission_to_access=['321: Pode editar serviços agendados']
     )
 
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
         permission_type='limpeza_predial',
-        permission_to_access=['370: Pode configurar novos serviços']
+        permission_to_access=['320: Pode agendar novos serviços']
     )
 
     permission_accompany = validate_permissions(

@@ -97,21 +97,21 @@ def editar_unidade(request, userid, id_random):
     permission_exclude = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='especials',
         permission_to_access=['343: Pode excluir unidades']
     )
 
     permission_desmobilize = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='especials',
         permission_to_access=['344: Pode desmobilizar unidades']
     )
 
     permission_rehabilitate = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='especials',
         permission_to_access=['345: Pode reabilitar unidades']
     )
 

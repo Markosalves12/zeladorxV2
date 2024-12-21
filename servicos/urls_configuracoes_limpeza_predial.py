@@ -7,26 +7,26 @@ from servicos.views_configuracoes_limpeza_predial import (configurar_servico_lim
 
 urlpatterns = [
     path(
-        'configurar_servico_limpeza_predial/<str:userid>',
+        'configurar-servico-limpeza-predial/<str:userid>',
          configurar_servico_limpeza_predial,
          name='configurar_servico_limpeza_predial'
     ),
     path(
-        'editar_servico_limpezapredial_configurado/<str:userid>/<str:id_random>',
+        'editar-servico-limpezapredial-configurado/<str:userid>/<str:id_random>',
          editar_servico_limpezapredial_configurado,
          name='editar_servico_limpezapredial_configurado'
     ),
     path(
-        'servicos_configurados_limpeza_predial/<str:userid>',
+        'servicos-configurados-limpeza-predial/<str:userid>',
          servicos_configurados_limpeza_predial,
          name='servicos_configurados_limpeza_predial'
     ),
-    path('alterar_status_servico_limpezapredial_configurado/<str:userid>/<str:id_random>/<str:new_status>',
+    path('alterar-status-servico-limpezapredial-configurado/<str:userid>/<str:id_random>/<str:new_status>',
          alterar_status_servico_limpezapredial_configurado,
          name='alterar_status_servico_limpezapredial_configurado'
     ),
     path(
-        'historico_de_servicos_configurados_limpeza_predial/<str:userid>/<str:id_random>',
+        'historico-de-servicos-configurados-limpeza-predial/<str:userid>/<str:id_random>',
         historico_de_servicos_configurados_limpeza_predial,
         name='historico_de_servicos_configurados_limpeza_predial'
     ),

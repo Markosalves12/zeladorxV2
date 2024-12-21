@@ -5,16 +5,16 @@ from catalogo_de_servicos.views_limpeza_predial import (catalogo_de_servicos_lim
 
 urlpatterns = [
     path(
-        'catalogo_de_servicos_limpeza_predial/<str:userid>',
+        'catalogo-de-servicos-limpeza-predial/<str:userid>',
         catalogo_de_servicos_limpeza_predial,
         name='catalogo_de_servicos_limpeza_predial'
     ),
     path(
-        'editar_catalogo_de_servicos_limpeza_predial/<str:userid>/<str:id_random>',
+        'editar-catalogo-de-servicos-limpeza-predial/<str:userid>/<str:id_random>',
         editar_catalogo_de_servicos_limpeza_predial,
         name='editar_catalogo_de_servicos_limpeza_predial'
     ),
-    path('alterar_status_catalogo_de_servicos_limpeza_predial/<str:userid>/<str:id_random>/<str:new_status>',
+    path('alterar-status-catalogo-de-servicos-limpeza-predial/<str:userid>/<str:id_random>/<str:new_status>',
          alterar_status_catalogo_de_servicos_limpeza_predial,
          name='alterar_status_catalogo_de_servicos_limpeza_predial'
     ),

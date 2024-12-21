@@ -10,10 +10,6 @@ def verify_login(request, userid):
         # messages.error(request, "usuario nao logado")
         return True
 
-    if not request.user.is_authenticated:
-        # messages.error(request, "usuario nao logado")
-        return True
-
     return False
 
 def configurate_permissions(request, model_class, email):
