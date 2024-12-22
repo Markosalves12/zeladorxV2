@@ -119,7 +119,6 @@ def update_password(request, token):
     if request.method == "POST":
         forms = UpdatePassword(request.POST)
 
-        print("form")
         if forms.is_valid():
             email = forms['email'].value()
             token = forms['token'].value()
