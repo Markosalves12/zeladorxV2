@@ -13,6 +13,7 @@ import os.path
 from pathlib import Path
 from dotenv import load_dotenv
 from django.contrib.messages import constants as messages
+import django_heroku
 
 load_dotenv()
 
@@ -38,7 +39,7 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['zeladorx.com.br', 'www.zeladorx.com.br', '*.zeladorx.com.br']
+ALLOWED_HOSTS = ['*.zeladorx.com.br']
 
 # Application definition
 
@@ -181,3 +182,5 @@ MESSAGE_TAGS = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+django_heroku.settings(locals())
