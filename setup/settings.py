@@ -28,20 +28,12 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
-
-EMAIL_HOST="smtp.gmail.com"
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-EMAIL_HOST_USER="markosapereira@gmail.com"
-EMAIL_HOST_PASSWORD="vjcj cxge bnno knxv"
-EMAIL_USE_SSL=False
-
-# EMAIL_HOST = os.getenv('EMAIL_HOST')
-# EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
-# EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
-# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-# EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -59,7 +51,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'areas.apps.AreasConfig',
     'banco_de_imagens.apps.BancoDeImagensConfig',
-    # 'catalogo_de_materiais.apps.CatalogoDeMateriaisConfig',
     'catalogo_de_servicos.apps.CatalogoDeServicosConfig',
     'dashboards.apps.DashboardsConfig',
     'empresaprimaria.apps.EmpresaprimariaConfig',
@@ -72,7 +63,6 @@ INSTALLED_APPS = [
     'unidade.apps.UnidadeConfig',
     'utils.apps.UtilsConfig',
     'vegetacao.apps.VegetacaoConfig',
-    # 'equipamentos.apps.EquipamentosConfig',
     'servicos.apps.ServicosConfig',
     'settings.apps.SettingsConfig',
     'schedules.apps.SchedulesConfig',
