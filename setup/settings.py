@@ -39,7 +39,7 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*.zeladorx.com.br']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
