@@ -10,7 +10,7 @@ from django.shortcuts import redirect
 def exportar_relatorio_de_serivos_Jardinagem_excel(
     request, userid, status, DataDeInicio, DataDeConclusao, Areas,
     TipoServico, ServicosEscalados, ColaboradoresEscalados
-):
+    ):
     # Verifica login
     block = verify_login(request=request, userid=userid)
     if block:
@@ -66,25 +66,46 @@ def exportar_relatorio_de_serivos_Jardinagem_excel(
         cell.value = header_title
 
     # Adiciona os dados ao Excel
-    for row_num, row in enumerate(dados, start=2):
-        row_data = [
-            row.tipodeempresa, row.empresaprestadora,
-            row.id_agendamento, row.tipo_agendamento,
-            row.descricao_do_servico, row.colaboradores_chamados,
-            row.servicos_solicitados,
-            row.data_de_inicio.replace(tzinfo=None) if row.data_de_inicio else None,
-            row.data_de_conclusao.replace(tzinfo=None) if row.data_de_conclusao else None,
-            row.antes, row.depois, row.status_servico, row.area_atendida,
-            row.id_random_area, row.periodicidade_de_retorno, row.area_total,
-            row.tipo_vegetacao, row.tipo_terreno, row.localidade, row.unidade,
-            row.id_servico, row.tempo_na_area, row.colaborador_envolvido,
-            row.colaborador_envolvido_id_random,
-            row.data_hora_chegada.replace(tzinfo=None) if row.data_hora_chegada else None,
-            row.data_hora_retorno.replace(tzinfo=None) if row.data_hora_retorno else None
-        ]
-        for col_num, value in enumerate(row_data, start=1):
-            cell = ws.cell(row=row_num, column=col_num)
-            cell.value = value
+    if 'Concluido' in status.split(','):
+        for row_num, row in enumerate(dados, start=2):
+            row_data = [
+                row.tipodeempresa, row.empresaprestadora,
+                row.id_agendamento, row.tipo_agendamento,
+                row.descricao_do_servico, row.colaboradores_chamados,
+                row.servicos_solicitados,
+                row.data_de_inicio.replace(tzinfo=None) if row.data_de_inicio else None,
+                row.data_de_conclusao.replace(tzinfo=None) if row.data_de_conclusao else None,
+                row.antes, row.depois, row.status_servico, row.area_atendida,
+                row.id_random_area, row.periodicidade_de_retorno, row.area_total,
+                row.tipo_vegetacao, row.tipo_terreno, row.localidade, row.unidade,
+                row.id_servico, row.tempo_na_area, row.colaborador_envolvido,
+                row.colaborador_envolvido_id_random,
+                row.data_hora_chegada.replace(tzinfo=None) if row.data_hora_chegada else None,
+                row.data_hora_retorno.replace(tzinfo=None) if row.data_hora_retorno else None
+            ]
+            for col_num, value in enumerate(row_data, start=1):
+                cell = ws.cell(row=row_num, column=col_num)
+                cell.value = value
+
+    else:
+        for row_num, row in enumerate(dados, start=2):
+            row_data = [
+                row.tipodeempresa, row.empresaprestadora,
+                row.id_agendamento, row.tipo_agendamento,
+                row.descricao_do_servico, row.colaboradores_chamados,
+                row.servicos_solicitados,
+                row.data_de_inicio.replace(tzinfo=None) if row.data_de_inicio else None,
+                row.data_de_conclusao.replace(tzinfo=None) if row.data_de_inicio else None,
+                row.antes, row.depois, row.status_servico, row.area_atendida,
+                row.periodicidade_de_retorno, row.area_total, row.tipo_vegetacao, row.tipo_terreno,
+                row.localidade, row.unidade, row.id_random_area
+            ]
+            for col_num, value in enumerate(row_data, start=1):
+                cell = ws.cell(
+                    row=row_num,
+                    column=col_num
+                )
+                cell.value = value
 
     # Configura a resposta HTTP
     response = HttpResponse(

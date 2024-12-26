@@ -68,24 +68,44 @@ def exportar_relatorio_de_serivos_limpeza_predial_excel(
         cell.value = header_title
 
     # Adiciona os dados ao Excel
-    for row_num, row in enumerate(dados, start=2):
-        row_data = [
-            row.tipodeempresa, row.empresaprestadora, row.id_agendamento,
-            row.tipo_agendamento, row.descricao_do_servico, row.servicos_solicitados,
-            row.data_de_inicio.replace(tzinfo=None) if row.data_de_inicio else None,
-            row.data_de_conclusao.replace(tzinfo=None) if row.data_de_conclusao else None,
-            row.status_servico, row.area_atendida, row.area_total, row.localidade,
-            row.unidade, row.id_random_area, row.tempo_na_area if 'Concluido' in status_list else None,
-            row.colaborador_envolvido if 'Concluido' in status_list else None,
-            row.colaborador_envolvido_id_random if 'Concluido' in status_list else None,
-            row.foto_conclusao if 'Concluido' in status_list else None,
-            row.data_hora_chegada.replace(tzinfo=None) if row.data_hora_chegada else None,
-            row.data_hora_retorno.replace(tzinfo=None) if row.data_hora_retorno else None
-        ]
-        row_data = [value for value in row_data if value is not None]  # Remove valores não aplicáveis
-        for col_num, value in enumerate(row_data, start=1):
-            cell = ws.cell(row=row_num, column=col_num)
-            cell.value = value
+    if 'Concluido' in status_list:
+        for row_num, row in enumerate(dados, start=2):
+            row_data = [
+                row.tipodeempresa, row.empresaprestadora, row.id_agendamento,
+                row.tipo_agendamento, row.descricao_do_servico, row.servicos_solicitados,
+                row.data_de_inicio.replace(tzinfo=None) if row.data_de_inicio else None,
+                row.data_de_conclusao.replace(tzinfo=None) if row.data_de_conclusao else None,
+                row.status_servico, row.area_atendida, row.area_total, row.localidade,
+                row.unidade, row.id_random_area, row.tempo_na_area if 'Concluido' in status_list else None,
+                row.colaborador_envolvido if 'Concluido' in status_list else None,
+                row.colaborador_envolvido_id_random if 'Concluido' in status_list else None,
+                row.foto_conclusao if 'Concluido' in status_list else None,
+                row.data_hora_chegada.replace(tzinfo=None) if row.data_hora_chegada else None,
+                row.data_hora_retorno.replace(tzinfo=None) if row.data_hora_retorno else None
+            ]
+            row_data = [value for value in row_data if value is not None]  # Remove valores não aplicáveis
+            for col_num, value in enumerate(row_data, start=1):
+                cell = ws.cell(row=row_num, column=col_num)
+                cell.value = value
+
+    else:
+        for row_num, row in enumerate(dados, start=2):
+            row_data = [
+                row.tipodeempresa, row.empresaprestadora,
+                row.id_agendamento, row.tipo_agendamento,
+                row.descricao_do_servico, row.servicos_solicitados,
+                row.data_de_inicio.replace(tzinfo=None) if row.data_de_inicio else None,
+                row.data_de_conclusao.replace(tzinfo=None) if row.data_de_inicio else None,
+                row.status_servico,
+                row.area_atendida, row.area_total,
+                row.localidade, row.unidade, row.id_random_area
+            ]
+            for col_num, value in enumerate(row_data, start=1):
+                cell = ws.cell(
+                    row=row_num,
+                    column=col_num
+                )
+                cell.value = value
 
     # Configura a resposta HTTP
     response = HttpResponse(
