@@ -32,6 +32,13 @@ def configurar_servico_limpeza_predial(request, userid):
 
     forms = ServicoLimpezaPredialConfiguradoForms(request=request, userid=userid)
 
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['370: Pode configurar novos serviços']
+    )
+
     if request.method == 'POST':
         form = ServicoLimpezaPredialConfiguradoForms(request.POST, request.FILES, request=request, userid=userid)
 
@@ -60,7 +67,8 @@ def configurar_servico_limpeza_predial(request, userid):
             'redirect_close_button': reverse('calendario_limpeza_predial', kwargs={'userid': userid}),
             'redirect_url_name': reverse('configurar_servico_limpeza_predial', kwargs={'userid': userid}),
             'text_button_save': 'Configurar Serviço',
-            'link_tipos': tipos
+            'link_tipos': tipos,
+            'permission_crate': permission_crate,
         }
     )
 

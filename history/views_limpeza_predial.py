@@ -57,7 +57,7 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
             'ServicosEscalados': 'servicos_solicitados_id',
             'DataDeInicio': 'data_de_inicio',
             'DataDeConclusao': 'data_de_conclusao',
-            'Areas': 'area_atendid_id'
+            # 'Areas': 'area_atendid_id'
         },
         export_pdf='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
         export_excel='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',

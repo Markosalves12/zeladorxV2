@@ -26,11 +26,11 @@ urlpatterns = [
         name='realizar_servico_limpeza_predial_agendado'
     ),
     path(
-        'cancelar-servico-limpeza-predial/<str:userid>/<str:id_random>',
+        'cancelar-servico-limpeza-predial/<str:userid>/<str:id_random>/<str:type>',
         cancelar_servico_limpeza_predial,
          name='cancelar_servico_limpeza_predial'),
     path(
-        'concluir-servico-limpeza-predial/<str:userid>/<str:id_random>',
+        'concluir-servico-limpeza-predial/<str:userid>/<str:id_random>/<str:type>',
         concluir_servico_limpeza_predial,
          name='concluir_servico_limpeza_predial'
     ),

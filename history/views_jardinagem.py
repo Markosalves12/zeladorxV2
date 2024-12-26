@@ -49,7 +49,7 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
             'ColaboradoresEscalados': 'ColaboradoresEscalados__id',
             'DataDeInicio': 'DataDeInicio',
             'DataDeConclusao': 'DataDeConclusao',
-            'Areas': 'Areas__id'
+            # 'Areas': 'Areas__id'
         },
         export_pdf='exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
         export_excel='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',

@@ -60,6 +60,9 @@ urlpatterns = [
     path('', include('history.urls_limpeza_predial')),
     path('', include('history.urls_jardinagem')),
     path('', include('schedules.urls')),
+
+    path('', include('kanban.urls_jardinagem')),
+    path('', include('kanban.urls_limpeza_predial')),
 ]+static(
     settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT

@@ -69,6 +69,13 @@ def calendario_limpeza_predial(request, userid):
         permission_to_access=['328: Pode cancelar serviços agendados']
     )
 
+    permission_acompleshed = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['326 Pode concluir serviços em andamento']
+    )
+
     filtro_mapeamento = {
         'Areas': 'Areas__id',
         'TipoServico': 'TipoServico',
@@ -120,6 +127,7 @@ def calendario_limpeza_predial(request, userid):
             'permission_edit': permission_edit,
             'permission_crate': permission_crate,
             'permission_accompany': permission_accompany,
-            'permission_cancel': permission_cancel
+            'permission_cancel': permission_cancel,
+            'permission_acompleshed': permission_acompleshed
         }
     )

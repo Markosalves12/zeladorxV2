@@ -33,6 +33,13 @@ def agendar_servico_limpeza_predial(request, userid):
 
     forms = ServicoLimpezaPredialAgendadoForms(request=request, userid=userid)
 
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['320: Pode agendar novos serviços']
+    )
+
     if request.method == 'POST':
         form = ServicoLimpezaPredialAgendadoForms(request.POST, request.FILES, request=request, userid=userid)
         if form.is_valid():
@@ -60,7 +67,8 @@ def agendar_servico_limpeza_predial(request, userid):
             'redirect_close_button': reverse('calendario_limpeza_predial', kwargs={'userid': userid}),
             'redirect_url_name': reverse('agendar_servico_limpeza_predial', kwargs={'userid': userid}),
             'text_button_save': 'Agendar Serviço',
-            "link_tipos": tipos
+            "link_tipos": tipos,
+            'permission_crate': permission_crate,
         }
     )
 
@@ -177,14 +185,16 @@ def editar_servico_limpeza_predial_agendado(request, userid, id_random):
             'cancelar_servico_limpeza_predial',
             kwargs={
                 'userid': userid,
-                'id_random': id_random
+                'id_random': id_random,
+                'type': 'calendario'
             }
         ),
         url_desmobilize=reverse(
             'cancelar_servico_limpeza_predial',
             kwargs={
                 'userid': userid,
-                'id_random': id_random
+                'id_random': id_random,
+                'type': 'calendario'
             }
         ),
         userid=userid,
@@ -246,7 +256,7 @@ def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
         }
     )
 
-def cancelar_servico_limpeza_predial(request, userid, id_random):
+def cancelar_servico_limpeza_predial(request, userid, id_random, type):
     block = verify_login(request=request, userid=userid)
 
     if block == True:
@@ -261,10 +271,14 @@ def cancelar_servico_limpeza_predial(request, userid, id_random):
         message=f'serviço {objeto} cancelado'
     )
 
-    return redirect('calendario_limpeza_predial', userid)
+    if type == 'calendario':
+        return redirect('calendario_limpeza_predial', userid)
+
+    elif type == 'kanban':
+        return redirect('kanban_limpeza_predial', userid)
 
 
-def concluir_servico_limpeza_predial(request, userid, id_random):
+def concluir_servico_limpeza_predial(request, userid, id_random, type):
     block = verify_login(request=request, userid=userid)
 
     if block == True:
@@ -279,4 +293,8 @@ def concluir_servico_limpeza_predial(request, userid, id_random):
         message=f'serviço {objeto} concluido com sucesso'
     )
 
-    return redirect('calendario_limpeza_predial', userid)
+    if type == 'calendario':
+        return redirect('calendario_limpeza_predial', userid)
+
+    elif type == 'kanban':
+        return redirect('kanban_limpeza_predial', userid)

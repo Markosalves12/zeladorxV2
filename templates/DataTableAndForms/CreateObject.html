@@ -36,73 +36,77 @@
         <div class="row">
           <div class="col-md-12">
             <div class="card">
+              {% if permission_crate %}
               <!-- /.card-header -->
-              <div class="card-body">
-                <form action="{{ redirect_url_name }}" method="POST" enctype="multipart/form-data">
-                  <div class="card-body">
-                    <div class="form-group">
-                      {% csrf_token %}
-                        <div class="form-group">
-                          {% for field in forms.visible_fields %}
-                            <!-- Identifique o campo 'Permissions' para aplicar a lógica de paginação -->
-                            {% if field.name == 'empresasecundaria' %}
-                              <div class="form-group">
-                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <div class="card-body">
+                  <form action="{{ redirect_url_name }}" method="POST" enctype="multipart/form-data">
+                    <div class="card-body">
+                      <div class="form-group">
+                        {% csrf_token %}
+                          <div class="form-group">
+                            {% for field in forms.visible_fields %}
+                              <!-- Identifique o campo 'Permissions' para aplicar a lógica de paginação -->
+                              {% if field.name == 'empresasecundaria' %}
+                                <div class="form-group">
+                                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
 
-                                <!-- Container com checkboxes paginados -->
-                                <div id="checkbox-container">
-                                  {% for empresa in field %}
-                                    <div class="checkbox-item">
-                                      {{ empresa }}
-                                    </div>
-                                  {% endfor %}
-                                </div>
+                                  <!-- Container com checkboxes paginados -->
+                                  <div id="checkbox-container">
+                                    {% for empresa in field %}
+                                      <div class="checkbox-item">
+                                        {{ empresa }}
+                                      </div>
+                                    {% endfor %}
+                                  </div>
 
-                                <!-- Controles de paginação -->
-                                <div id="pagination-controls">
-                                  <button type="button" id="prev-page" onclick="prevPage()" class="btn btn-info">Anterior</button>
-                                  <button type="button" id="next-page" onclick="nextPage()" class="btn btn-info">Proximo</button>
+                                  <!-- Controles de paginação -->
+                                  <div id="pagination-controls">
+                                    <button type="button" id="prev-page" onclick="prevPage()" class="btn btn-info">Anterior</button>
+                                    <button type="button" id="next-page" onclick="nextPage()" class="btn btn-info">Proximo</button>
+                                  </div>
                                 </div>
-                              </div>
-                            {% endif %}
-                            {% if field.name == 'ServicosEscalados' %}
-                              <div class="form-group">
-                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                              {% endif %}
+                              {% if field.name == 'ServicosEscalados' %}
+                                <div class="form-group">
+                                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
 
-                                <!-- Container com checkboxes paginados -->
-                                <div id="checkbox-servicos">
-                                  {% for servico in field %}
-                                    <div class="checkbox-item">
-                                      {{ servico }}
-                                    </div>
-                                  {% endfor %}
-                                </div>
+                                  <!-- Container com checkboxes paginados -->
+                                  <div id="checkbox-servicos">
+                                    {% for servico in field %}
+                                      <div class="checkbox-item">
+                                        {{ servico }}
+                                      </div>
+                                    {% endfor %}
+                                  </div>
 
-                                <!-- Controles de paginação -->
-                                <div id="pagination-controls-servicos-escalados">
-                                  <button type="button" id="prev-page-servicos-escalados" onclick="prevPage()" class="btn btn-info">Anterior</button>
-                                  <button type="button" id="next-page-servicos-escalados" onclick="nextPage()" class="btn btn-info">Proximo</button>
+                                  <!-- Controles de paginação -->
+                                  <div id="pagination-controls-servicos-escalados">
+                                    <button type="button" id="prev-page-servicos-escalados" onclick="prevPage()" class="btn btn-info">Anterior</button>
+                                    <button type="button" id="next-page-servicos-escalados" onclick="nextPage()" class="btn btn-info">Proximo</button>
+                                  </div>
                                 </div>
-                              </div>
-                            {% else %}
-                              <!-- Renderização normal para outros campos -->
-                              <div class="form-group">
-                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                {{ field }}
-                              </div>
-                            {% endif %}
-                          {% endfor %}
-                        </div>
+                              {% else %}
+                                <!-- Renderização normal para outros campos -->
+                                <div class="form-group">
+                                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                  {{ field }}
+                                </div>
+                              {% endif %}
+                            {% endfor %}
+                          </div>
+                      </div>
+                      <div class="modal-footer justify-content-between">
+                        <a href="{{ redirect_close_button }}">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                        </a>
+                        <button type="POST" class="btn btn-primary">{{ text_button_save }}</button>
+                      </div>
                     </div>
-                    <div class="modal-footer justify-content-between">
-                      <a href="{{ redirect_close_button }}">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-                      </a>
-                      <button type="POST" class="btn btn-primary">{{ text_button_save }}</button>
-                    </div>
-                  </div>
-                </form>
-              </div>
+                  </form>
+                </div>
+              {% else %}
+                {% include 'partials/_access_rejected.html' %}
+              {% endif %}
             </div>
           </div>
         </div>

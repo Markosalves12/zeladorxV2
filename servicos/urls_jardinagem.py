@@ -26,12 +26,12 @@ urlpatterns = [
         name='realizar_servico_jardinagem_agendado'
     ),
     path(
-        'cancelar-servico-jardinagem/<str:userid>/<str:id_random>',
+        'cancelar-servico-jardinagem/<str:userid>/<str:id_random>/<str:type>',
         cancelar_servico_jardinagem,
         name='cancelar_servico_jardinagem'
     ),
     path(
-        'concluir-servico-jardinagem/<str:userid>/<str:id_random>',
+        'concluir-servico-jardinagem/<str:userid>/<str:id_random>/<str:type>',
         concluir_servico_jardinagem,
         name='concluir_servico_jardinagem'
     ),
