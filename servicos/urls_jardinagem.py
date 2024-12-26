@@ -6,7 +6,7 @@ from servicos.views_jardinagem import (agendar_servico_jardinagem, editar_servic
 
 urlpatterns = [
     path(
-        'agendar-servico-jardinagem/<str:userid>',
+        'agendar-servico-jardinagem/<str:type>/<str:userid>',
         agendar_servico_jardinagem,
         name='agendar_servico_jardinagem'
     ),

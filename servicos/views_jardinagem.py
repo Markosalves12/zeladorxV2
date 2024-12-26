@@ -10,7 +10,7 @@ from django.db.models import Case, When, Value, CharField
 from utils.utils import define_range_time
 
 # Create your views here.
-def agendar_servico_jardinagem(request, userid):
+def agendar_servico_jardinagem(request, type, userid):
     block = verify_login(request=request, userid=userid)
 
     if block == True:
@@ -24,12 +24,30 @@ def agendar_servico_jardinagem(request, userid):
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('agendar_servico_jardinagem', kwargs={'userid': userid})},)
+        tipos.insert(
+            1,
+            {
+                'nome': 'Jardinagem',
+                'link': reverse(
+                    'agendar_servico_jardinagem',
+                    kwargs={'type': type, 'userid': userid}
+                )
+            },
+        )
     else:
-        return redirect('agendar_servico_jardinagem', userid)
+        return redirect('agendar_servico_jardinagem', type, userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('agendar_servico_limpeza_predial', kwargs={'userid': userid})})
+        tipos.insert(
+            2,
+            {
+                'nome': 'Limpeza predial',
+                'link': reverse(
+                    'agendar_servico_limpeza_predial',
+                    kwargs={'type': type, 'userid': userid}
+                )
+            }
+        )
 
     forms = ServicoJaridinagemAgendadoForms(request=request, userid=userid)
 
@@ -58,6 +76,12 @@ def agendar_servico_jardinagem(request, userid):
             message=f'Algo de errado'
         )
 
+    redirect_close_button = None
+
+    if type == 'calendario':
+        redirect_close_button = reverse('calendario_jardinagem', kwargs={'userid': userid})
+    elif type == 'kanban':
+        redirect_close_button = reverse('kanban_jardinagem', kwargs={'userid': userid})
 
     return render(
         request=request,
@@ -65,10 +89,10 @@ def agendar_servico_jardinagem(request, userid):
         context={
             'forms': forms,
             'app_name': 'Agendar serviço de jardinagem',
-            'redirect_close_button': reverse('calendario_jardinagem', kwargs={'userid': userid}),
-            'redirect_url_name': reverse('agendar_servico_jardinagem', kwargs={'userid': userid}),
+            'redirect_close_button': redirect_close_button,
+            'redirect_url_name': reverse('agendar_servico_jardinagem', kwargs={'type': type, 'userid': userid}),
             'text_button_save': 'Agendar Serviço',
-            "link_tipos": tipos,
+            'link_tipos': tipos,
             'permission_crate': permission_crate,
         }
     )

@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.db.models import Case, When, Value, CharField
 from utils.utils import define_range_time
 
-def agendar_servico_limpeza_predial(request, userid):
+def agendar_servico_limpeza_predial(request, type, userid):
     block = verify_login(request=request, userid=userid)
 
     if block == True:
@@ -24,12 +24,29 @@ def agendar_servico_limpeza_predial(request, userid):
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('agendar_servico_jardinagem', kwargs={'userid': userid})},)
+        tipos.insert(
+            1,
+            {
+                'nome': 'Jardinagem',
+                'link': reverse(
+                    'agendar_servico_jardinagem',
+                    kwargs={'type': type, 'userid': userid})
+            },
+        )
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('agendar_servico_limpeza_predial', kwargs={'userid': userid})})
+        tipos.insert(
+            2,
+            {
+                'nome': 'Limpeza predial',
+                'link': reverse(
+                    'agendar_servico_limpeza_predial',
+                    kwargs={'type': type, 'userid': userid}
+                )
+            }
+        )
     else:
-        return redirect('agendar_servico_jardinagem', userid)
+        return redirect('agendar_servico_jardinagem', type, userid)
 
     forms = ServicoLimpezaPredialAgendadoForms(request=request, userid=userid)
 
@@ -58,16 +75,23 @@ def agendar_servico_limpeza_predial(request, userid):
             message=f'Algo de errado'
         )
 
+    redirect_close_button = None
+
+    if type == 'calendario':
+        redirect_close_button = reverse('calendario_limpeza_predial', kwargs={'userid': userid})
+    elif type == 'kanban':
+        redirect_close_button = reverse('kanban_limpeza_predial', kwargs={'userid': userid})
+
     return render(
         request=request,
         template_name='DataTableAndForms/CreateObject.html',
         context={
             'forms': forms,
             'app_name': 'Agendar serviço de limpeza predial',
-            'redirect_close_button': reverse('calendario_limpeza_predial', kwargs={'userid': userid}),
-            'redirect_url_name': reverse('agendar_servico_limpeza_predial', kwargs={'userid': userid}),
+            'redirect_close_button': redirect_close_button,
+            'redirect_url_name': reverse('agendar_servico_limpeza_predial', kwargs={'type': type, 'userid': userid}),
             'text_button_save': 'Agendar Serviço',
-            "link_tipos": tipos,
+            'link_tipos': tipos,
             'permission_crate': permission_crate,
         }
     )

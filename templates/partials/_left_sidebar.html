@@ -187,7 +187,7 @@
         <ul class="nav nav-treeview">
           {% if habilitar_jardinagem %}
             <li class="nav-item">
-              <a href="{% url 'agendar_servico_jardinagem' userid %}" class="nav-link">
+              <a href="{% url 'agendar_servico_jardinagem' 'calendario' userid %}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Jardinagem</p>
               </a>
@@ -195,7 +195,7 @@
           {% endif %}
           {% if habilitar_limpeza %}
             <li class="nav-item">
-              <a href="{% url 'agendar_servico_limpeza_predial' userid %}" class="nav-link">
+              <a href="{% url 'agendar_servico_limpeza_predial' 'calendario' userid %}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Limpeza predial</p>
               </a>

@@ -6,7 +6,7 @@ from servicos.views_limpeza_predial import (agendar_servico_limpeza_predial, ser
 
 urlpatterns = [
     path(
-        'agendar-servico-limpeza-predial/<str:userid>',
+        'agendar-servico-limpeza-predial/<str:type>/<str:userid>',
         agendar_servico_limpeza_predial,
         name='agendar_servico_limpeza_predial'
     ),
