@@ -257,7 +257,7 @@ def graphs_jardinagem_agendado_to_reports(request, userid, agendado):
         name_fig='figs_agendado_localidade',
         filters={'status': 'Agendado'},
         field_name='Areas__localidade__nome',
-        title='Área Total por localidade (Atrasados)',
+        title='Área Total por localidade (Agendados)',
         label_type='Localidade',
         color='#14a0b6',
         sum_by='Areas__dimensao',
@@ -269,7 +269,7 @@ def graphs_jardinagem_agendado_to_reports(request, userid, agendado):
         name_fig='figs_agendado_area',
         filters={'status': 'Agendado'},
         field_name='Areas__nome',
-        title='Área Total por área verde (Atrasados)',
+        title='Área Total por área verde (Agendados)',
         label_type='Área',
         color='#14a0b6',
         sum_by='Areas__dimensao',
@@ -312,7 +312,7 @@ def graphs_jardinagem_em_andamento_to_reports(request, userid, agendado):
         field_name='Areas__Terreno__nome',
         title='Área Total por Tipo de Terreno (Em andamento)',
         label_type='Terreno',
-        color='#14a0b6',
+        color='#008000',
         sum_by='Areas__dimensao',
         count_by='id',
     )
@@ -323,7 +323,7 @@ def graphs_jardinagem_em_andamento_to_reports(request, userid, agendado):
         field_name='Areas__vegetacao__nome',
         title='Área Total por Tipo de Vegeteção (Em andamento)',
         label_type='Vegeteção',
-        color='#14a0b6',
+        color='#008000',
         sum_by='Areas__dimensao',
         count_by='id',
     )
@@ -334,7 +334,7 @@ def graphs_jardinagem_em_andamento_to_reports(request, userid, agendado):
         field_name='Areas__localidade__nome',
         title='Área Total por localidade (Em andamento)',
         label_type='Localidade',
-        color='#14a0b6',
+        color='#008000',
         sum_by='Areas__dimensao',
         count_by='id',
     )
@@ -345,7 +345,7 @@ def graphs_jardinagem_em_andamento_to_reports(request, userid, agendado):
         field_name='Areas__nome',
         title='Área Total por área verde (Em andamento)',
         label_type='Área',
-        color='#14a0b6',
+        color='#008000',
         sum_by='Areas__dimensao',
         count_by='id',
     )
@@ -356,7 +356,7 @@ def graphs_jardinagem_em_andamento_to_reports(request, userid, agendado):
         field_name='ColaboradoresEscalados__username',
         title='Área Total por colaborador (Em andamento)',
         label_type='Colaborador',
-        color='#14a0b6',
+        color='#008000',
         sum_by='Areas__dimensao',
         count_by='id',
     )
@@ -367,7 +367,7 @@ def graphs_jardinagem_em_andamento_to_reports(request, userid, agendado):
         field_name='ServicosEscalados__nome',
         title='Área Total por serviço (Em andamento)',
         label_type='Serviços',
-        color='#14a0b6',
+        color='#008000',
         sum_by='Areas__dimensao',
         count_by='id',
     )
