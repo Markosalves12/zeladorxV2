@@ -8,6 +8,8 @@ from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Case, When, Value, CharField
 from utils.utils import define_range_time
+from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
+
 
 # Create your views here.
 def agendar_servico_jardinagem(request, type, userid):
@@ -97,6 +99,7 @@ def agendar_servico_jardinagem(request, type, userid):
         }
     )
 
+
 def servicos_agendados_jardinagem(request, userid):
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
@@ -108,12 +111,14 @@ def servicos_agendados_jardinagem(request, userid):
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem', kwargs={'userid': userid})})
+        tipos.insert(1, {'nome': 'Jardinagem',
+                         'link': reverse('servicos_agendados_jardinagem', kwargs={'userid': userid})})
     else:
         return redirect('servicos_agendados_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})})
+        tipos.insert(2, {'nome': 'Limpeza predial',
+                         'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})})
 
     permission_view = validate_permissions(
         request=request,
@@ -137,7 +142,7 @@ def servicos_agendados_jardinagem(request, userid):
     )
 
     colunas = [
-        {'nome': 'id','label': '#','largura': '10px'},
+        {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
@@ -271,7 +276,6 @@ def realizar_servico_jardinagem_agendado(request, userid, id_random):
             message=f'Algo de errado'
         )
 
-
     return render(
         request=request,
         template_name='DataTableAndForms/EditObject.html',
@@ -329,3 +333,83 @@ def concluir_servico_jardinagem(request, userid, id_random, type):
 
     elif type == 'kanban':
         return redirect('kanban_jardinagem', userid)
+
+
+def view_detailing_jardinagem(request, userid, id_random):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['390: Pode visualizar o detalhamento de serviços']
+    )
+
+    # permission_edit = validate_permissions(
+    #     request=request,
+    #     userid=userid,
+    #     permission_type='jardinagem',
+    #     permission_to_access=['321: Pode editar serviços agendados']
+    # )
+    #
+    # permission_crate = validate_permissions(
+    #     request=request,
+    #     userid=userid,
+    #     permission_type='jardinagem',
+    #     permission_to_access=['320: Pode agendar novos serviços']
+    # )
+
+    colunas = [
+        {'nome': 'id', 'label': '#', 'largura': '10px'},
+        {'nome': 'tipo_agendamento', 'label': 'Tipo de agendamento'},
+        {'nome': 'descricao_do_servico', 'label': 'Descrição do Serviço'},
+        {'nome': 'servicos_solicitados', 'label': 'Serviços Solicitados'},
+        {'nome': 'data_de_inicio', 'label': 'Data de Início'},
+        {'nome': 'data_de_conclusao', 'label': 'Data de conclusao'},
+        {'nome': 'tempo_na_area', 'label': 'Tempo na área'},
+        {'nome': 'localidade', 'label': 'Localidade'},
+        {'nome': 'unidade', 'label': 'Unidade'},
+        {'nome': 'localidade', 'label': 'Localidade'},
+        {'nome': 'colaborador_envolvido', 'label': 'Colaborador envolvido'},
+        {'nome': 'data_hora_chegada', 'label': 'Data e hora de chagada'},
+        {'nome': 'data_hora_retorno', 'label': 'Data e hora de retorno'},
+        {'nome': 'acoes', 'label': 'Ações'},
+    ]
+
+    objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
+
+    return generic_view(
+        request=request,
+        model=colect_dados_fato_servico_jardinagem(
+            request=request,
+            userid=userid,
+            DataDeInicio=None,
+            DataDeConclusao=None,
+            ServicosEscalados=None,
+            ColaboradoresEscalados=None,
+            TipoServico=None,
+            Areas=None,
+            status=['Concluido', 'Agendado', 'Em andamento']
+        ).filter(
+            Servico__id_random=id_random
+        ),
+        form_class=ServicoJaridinagemAgendadoForms,
+        template_name='DataTableAndForms/DataTableAndForms.html',
+        columns=colunas,
+        edition_rout='editar_servico_jardinagem_agendado',
+        app_name=f'Detalhamento de execução -- {objeto.DescricaoDoServico}',
+        form_search=ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'ColaboradoresEscalados': 'Gerente__id',
+            'DataDeInicio': 'Servico__DataDeInicio',
+            'DataDeConclusao': 'Servico__DataDeConclusao'
+        },
+        text_button_open_modal='agendar novo serviço',
+        text_button_save='agendar serviço',
+        header_model='solicitar serviço',
+        redirect_url='servicos_agendados_jardinagem',
+        link_tipos=None,
+        # permission_crate=permission_crate,
+        permission_view=permission_view,
+        # permission_edit=permission_edit,
+        userid=userid
+    )

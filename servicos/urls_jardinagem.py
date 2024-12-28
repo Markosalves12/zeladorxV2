@@ -2,7 +2,7 @@ from django.urls import path
 from servicos.views_jardinagem import (agendar_servico_jardinagem, editar_servico_jardinagem_agendado,
                                        servicos_agendados_jardinagem,
                                        realizar_servico_jardinagem_agendado, cancelar_servico_jardinagem,
-                                       concluir_servico_jardinagem)
+                                       concluir_servico_jardinagem, view_detailing_jardinagem)
 
 urlpatterns = [
     path(
@@ -34,5 +34,11 @@ urlpatterns = [
         'concluir-servico-jardinagem/<str:userid>/<str:id_random>/<str:type>',
         concluir_servico_jardinagem,
         name='concluir_servico_jardinagem'
+    ),
+
+    path(
+        'detalhamento-servico-jardinagem/<str:userid>/<str:id_random>',
+        view_detailing_jardinagem,
+        name='view_detailing_jardinagem'
     ),
 ]

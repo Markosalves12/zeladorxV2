@@ -335,6 +335,9 @@
                                         {% if permission_accompany %}
                                           <p><a href="{% url url_acompanhamento userid event.id_random %}">Acompanhar evento</a></p>
                                         {% endif %}
+                                        <p>
+                                          <a href="{% url url_detalhamento userid event.id_random %}">Detalhamento</a>
+                                        </p>
                                         <div class="modal-footer">
                                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
 

@@ -87,7 +87,8 @@ class PermissionsJardinagem(models.Model):
         ('355: Pode reabilitar vegetações', '355: Pode reabilitar vegetações'),
         # configurar essa permissão nos agendamentos
         ('360: Recebe serviços de jardinagem', '360: Recebe serviços de jardinagem'),
-        ('361: Pode acompanhar serviços agendados para si próprio', '361: Pode acompanhar serviços agendados para si próprio'),
+        ('361: Pode acompanhar serviços agendados para si próprio',
+         '361: Pode acompanhar serviços agendados para si próprio'),
 
         ('370: Pode configurar novos serviços', '370: Pode configurar novos serviços'),
         ('371: Pode editar serviços configurados', '371: Pode editar serviços configurados'),
@@ -95,6 +96,9 @@ class PermissionsJardinagem(models.Model):
         ('373: Pode excluir serviços configurados', '373: Pode excluir serviços configurados'),
 
         ('380: Pode visualizar o dashboard gerencial', '380: Pode visualizar o dashboard gerencial'),
+
+        ('390: Pode visualizar o detalhamento de serviços', '390: Pode visualizar o detalhamento de serviços'),
+        ('391: Pode editar o acompanhamento de servicos', '391: Pode editar o acompanhamento de servicos'),
     ]
 
     Permissions = models.CharField(
@@ -223,6 +227,9 @@ class PermissionsLimpezaPredial(models.Model):
         ('373: Pode excluir serviços configurados', '373: Pode excluir serviços configurados'),
 
         ('380: Pode visualizar o dashboard gerencial', '380: Pode visualizar o dashboard gerencial'),
+
+        ('390: Pode visualizar o detalhamento de serviços', '390: Pode visualizar o detalhamento de serviços'),
+        ('391: Pode editar o acompanhamento de servicos', '391: Pode editar o acompanhamento de servicos'),
     ]
 
     Permissions = models.CharField(

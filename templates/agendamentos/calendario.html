@@ -191,6 +191,7 @@
         var acompUrl = "{% url url_acompanhamento userid  '__id__' %}".replace('__id__', info.event.id);
         var cancelUrl = "{% url url_cancelamento userid '__id__' 'calendario' %}".replace('__id__', info.event.id);
         var concluirUrl = "{% url url_conclusao userid '__id__' 'calendario' %}".replace('__id__', info.event.id);
+        var detailingUrl = "{% url url_detalhamento userid '__id__' %}".replace('__id__', info.event.id);
         var status = info.event.extendedProps.status;
 
         var formattedStart = moment(info.event.start).format('dddd DD/MM/YYYY HH:mm');
@@ -212,6 +213,7 @@
           modalContent = `
             <p><strong>Status:</strong> ${status}</p>
             <p><strong>Data de Conclusão:</strong> ${completionDate}</p>
+            <p><a href="${detailingUrl}">Detalhamento</a></p>
           `;
         } else if (status === "Em andamento") {
           modalContent = `
@@ -223,6 +225,7 @@
             {% if permission_accompany %}
               <p><a href="${acompUrl}">Acompanhar evento</a></p>
             {% endif %}
+            <p><a href="${detailingUrl}">Detalhamento</a></p>
           `;
           {% if permission_acompleshed %}
             modalFooter += `
@@ -237,6 +240,7 @@
               <p><a href="${editUrl}">Editar evento</a></p>
             {% endif %}
             <p><a href="${acompUrl}">Acompanhar evento</a></p>
+<!--            <p><a href="${detailingUrl}">Detalhamento</a></p>-->
           `;
           modalFooter += `
             {% if permission_cancel %}

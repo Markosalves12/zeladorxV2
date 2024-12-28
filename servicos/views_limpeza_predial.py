@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Case, When, Value, CharField
 from utils.utils import define_range_time
+from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
 
 def agendar_servico_limpeza_predial(request, type, userid):
     block = verify_login(request=request, userid=userid)
@@ -322,3 +323,69 @@ def concluir_servico_limpeza_predial(request, userid, id_random, type):
 
     elif type == 'kanban':
         return redirect('kanban_limpeza_predial', userid)
+
+
+def view_detailing_limpeza_predial(request, userid, id_random):
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['390: Pode visualizar o detalhamento de serviços']
+    )
+
+    colunas = [
+        {'nome': 'id', 'label': '#', 'largura': '10px'},
+        {'nome': 'tipo_agendamento', 'label': 'Tipo de agendamento'},
+        {'nome': 'descricao_do_servico', 'label': 'Descrição do Serviço'},
+        {'nome': 'servicos_solicitados', 'label': 'Serviços Solicitados'},
+        {'nome': 'data_de_inicio', 'label': 'Data de Início'},
+        {'nome': 'data_de_conclusao', 'label': 'Data de conclusao'},
+        {'nome': 'tempo_na_area', 'label': 'Tempo na área'},
+        {'nome': 'localidade', 'label': 'Localidade'},
+        {'nome': 'unidade', 'label': 'Unidade'},
+        {'nome': 'localidade', 'label': 'Localidade'},
+        {'nome': 'colaborador_envolvido', 'label': 'Colaborador envolvido'},
+        {'nome': 'data_hora_chegada', 'label': 'Data e hora de chagada'},
+        {'nome': 'data_hora_retorno', 'label': 'Data e hora de retorno'},
+        {'nome': 'acoes', 'label': 'Ações'},
+    ]
+
+    objeto = ServicoLimpezaPredialAgendado.objects.get(id_random=id_random)
+
+    return generic_view(
+        request=request,
+        model=colect_dados_fato_servico_limpeza_predial(
+            request=request,
+            userid=userid,
+            DataDeInicio=None,
+            DataDeConclusao=None,
+            ServicosEscalados=None,
+            ColaboradoresEscalados=None,
+            TipoServico=None,
+            Areas=None,
+            status=['Concluido', 'Agendado', 'Em andamento']
+        ).filter(
+            Servico__id_random=id_random
+        ),
+        form_class=ServicoLimpezaPredialAgendadoForms,
+        template_name='DataTableAndForms/DataTableAndForms.html',
+        columns=colunas,
+        edition_rout='editar_servico_limpeza_predial_agendado',
+        app_name=f'Detalhamento de execução -- {objeto.DescricaoDoServico}',
+        form_search=ServicoLimpezaPredialAgendadoForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'Areas': 'Areas__id',
+            'TipoServico': 'TipoServico',
+            'ServicosEscalados': 'ServicosEscalados__id',
+            'DataDeInicio': 'DataDeInicio',
+            'DataDeConclusao': 'DataDeConclusao'
+        },
+        text_button_open_modal='agendar novo serviço',
+        text_button_save='agendar serviço',
+        header_model='solicitar serviço',
+        redirect_url='servicos_agendados_limpeza_predial',
+        link_tipos=None,
+        permission_view=permission_view,
+        userid=userid
+    )

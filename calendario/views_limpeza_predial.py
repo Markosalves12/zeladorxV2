@@ -120,6 +120,7 @@ def calendario_limpeza_predial(request, userid):
             'url_edicao': 'editar_servico_limpeza_predial_agendado',
             'url_cancelamento': 'cancelar_servico_limpeza_predial',
             'url_conclusao': 'concluir_servico_limpeza_predial',
+            'url_detalhamento': 'view_detailing_limpeza_predial',
             'form_search': ServicoLimpezaPredialAgendadoForms(request=request, userid=userid, type='search'),
             'sform_search': True,
             'allowed_fields': list(filtro_mapeamento.keys()),

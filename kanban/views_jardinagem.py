@@ -122,6 +122,7 @@ def kanban_jardinagem(request, userid):
             'url_edicao': 'editar_servico_jardinagem_agendado',
             'url_cancelamento': 'cancelar_servico_jardinagem',
             'url_conclusao': 'concluir_servico_jardinagem',
+            'url_detalhamento': 'view_detailing_jardinagem',
             'form_search': ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
             'sform_search': True,
             'allowed_fields': list(filtro_mapeamento.keys()),
