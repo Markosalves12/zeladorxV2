@@ -375,11 +375,9 @@ def view_detailing_limpeza_predial(request, userid, id_random):
         form_search=ServicoLimpezaPredialAgendadoForms(request=request, userid=userid, type='search'),
         sform_search=True,
         filtro_mapeamento={
-            'Areas': 'Areas__id',
-            'TipoServico': 'TipoServico',
-            'ServicosEscalados': 'ServicosEscalados__id',
-            'DataDeInicio': 'DataDeInicio',
-            'DataDeConclusao': 'DataDeConclusao'
+            'ServicosEscalados': 'Servico__ServicosEscalados__id',
+            'DataDeInicio': 'Servico__DataDeInicio',
+            'DataDeConclusao': 'Servico__DataDeConclusao'
         },
         text_button_open_modal='agendar novo serviço',
         text_button_save='agendar serviço',
