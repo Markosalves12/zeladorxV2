@@ -94,6 +94,8 @@ class PermissionsJardinagem(models.Model):
         ('371: Pode editar serviços configurados', '371: Pode editar serviços configurados'),
         ('372: Pode visualizar serviços configurados', '372: Pode visualizar serviços configurados'),
         ('373: Pode excluir serviços configurados', '373: Pode excluir serviços configurados'),
+        ('374: Pode desmobilizar serviços configurados', '374: Pode desmobilizar serviços configurados'),
+        ('375: Pode reabilitar serviços configurados', '375: Pode reabilitar serviços configurados'),
 
         ('380: Pode visualizar o dashboard gerencial', '380: Pode visualizar o dashboard gerencial'),
 
@@ -225,6 +227,8 @@ class PermissionsLimpezaPredial(models.Model):
         ('371: Pode editar serviços configurados', '371: Pode editar serviços configurados'),
         ('372: Pode visualizar serviços configurados', '372: Pode visualizar serviços configurados'),
         ('373: Pode excluir serviços configurados', '373: Pode excluir serviços configurados'),
+        ('374: Pode desmobilizar serviços configurados', '374: Pode desmobilizar serviços configurados'),
+        ('375: Pode reabilitar serviços configurados', '375: Pode reabilitar serviços configurados'),
 
         ('380: Pode visualizar o dashboard gerencial', '380: Pode visualizar o dashboard gerencial'),
 

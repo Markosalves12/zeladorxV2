@@ -117,4 +117,9 @@ class AreasJardinsForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
+            'periodicidade': forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
         }

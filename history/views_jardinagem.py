@@ -3,8 +3,7 @@ from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from utils.views import generic_view_history
-from permissionscontrol.utils import validate_permissions, verify_login
-from django.shortcuts import redirect
+from permissionscontrol.utils import validate_permissions
 
 
 # Create your views here.
@@ -49,7 +48,6 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
             'ColaboradoresEscalados': 'ColaboradoresEscalados__id',
             'DataDeInicio': 'DataDeInicio',
             'DataDeConclusao': 'DataDeConclusao',
-            # 'Areas': 'Areas__id'
         },
         export_pdf='exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
         export_excel='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',

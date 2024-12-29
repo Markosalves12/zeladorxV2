@@ -3,8 +3,7 @@ from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_pre
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from utils.views import generic_view_history
-from permissionscontrol.utils import validate_permissions, verify_login
-from django.shortcuts import redirect
+from permissionscontrol.utils import validate_permissions
 
 
 # Create your views here.
@@ -57,7 +56,6 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
             'ServicosEscalados': 'servicos_solicitados_id',
             'DataDeInicio': 'data_de_inicio',
             'DataDeConclusao': 'data_de_conclusao',
-            # 'Areas': 'area_atendid_id'
         },
         export_pdf='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
         export_excel='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',

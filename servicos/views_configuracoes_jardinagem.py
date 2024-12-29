@@ -175,6 +175,20 @@ def editar_servico_jardinagem_configurado(request, userid, id_random):
         permission_to_access=['371: Pode editar serviços configurados']
     )
 
+    permission_desmobilize = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['374: Pode desmobilizar serviços configurados']
+    )
+
+    permission_rehabilitate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['375: Pode reabilitar serviços configurados']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=ServicoJardinagemConfigurado,
@@ -186,8 +200,8 @@ def editar_servico_jardinagem_configurado(request, userid, id_random):
         redirect_close_button=reverse('servicos_configurados_jardinagem', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=True,
-        permission_desmobilize=True,
-        permission_rehabilitate=True,
+        permission_desmobilize=permission_desmobilize,
+        permission_rehabilitate=permission_rehabilitate,
         url_desmobilize=reverse(
             'alterar_status_servico_jardinagem_configurado',
             kwargs={

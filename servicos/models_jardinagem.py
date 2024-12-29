@@ -173,11 +173,13 @@ class ServicoJardinagemAgendado(models.Model):
     foto_solicitacao = models.ImageField(
         upload_to="media/%Y/%m/%d/",
         blank=True,
+        max_length=2000
     )
 
     foto_entrega = models.ImageField(
         upload_to="media/%Y/%m/%d/",
         blank=True,
+        max_length=2000
     )
 
     DataDeConclusao = models.DateTimeField(

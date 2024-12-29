@@ -60,6 +60,7 @@ class AreasJardins(models.Model):
     foto = models.ImageField(
         upload_to="media/%Y/%m/%d/",
         blank=True,
+        max_length=2000
     )
 
     periodicidade_options = [
