@@ -387,7 +387,7 @@ def view_detailing_jardinagem(request, userid, id_random):
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
-        edition_rout='editar_execucao_servico_jardinagem_agendado',
+        edition_rout='editar_servico_jardinagem_agendado',
         app_name=f'Detalhamento de execução -- {objeto.DescricaoDoServico}',
         form_search=ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
         sform_search=True,
