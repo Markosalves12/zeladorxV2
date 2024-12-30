@@ -37,7 +37,7 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
