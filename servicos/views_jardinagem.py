@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from servicos.models_jardinagem import ServicoJardinagemAgendado
+from servicos.models_jardinagem import ServicoJardinagemAgendado, FatoServicoJardinagem
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms, FatoServicoJardinagemForms
 from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions, verify_login
@@ -343,19 +343,12 @@ def view_detailing_jardinagem(request, userid, id_random):
         permission_to_access=['390: Pode visualizar o detalhamento de serviços']
     )
 
-    # permission_edit = validate_permissions(
-    #     request=request,
-    #     userid=userid,
-    #     permission_type='jardinagem',
-    #     permission_to_access=['321: Pode editar serviços agendados']
-    # )
-    #
-    # permission_crate = validate_permissions(
-    #     request=request,
-    #     userid=userid,
-    #     permission_type='jardinagem',
-    #     permission_to_access=['320: Pode agendar novos serviços']
-    # )
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['391: Pode editar o acompanhamento de servicos']
+    )
 
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
@@ -371,7 +364,7 @@ def view_detailing_jardinagem(request, userid, id_random):
         {'nome': 'colaborador_envolvido', 'label': 'Colaborador envolvido'},
         {'nome': 'data_hora_chegada', 'label': 'Data e hora de chagada'},
         {'nome': 'data_hora_retorno', 'label': 'Data e hora de retorno'},
-        {'nome': 'acoes', 'label': 'Ações'},
+        # {'nome': 'acoes', 'label': 'Ações'},
     ]
 
     objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
@@ -394,7 +387,7 @@ def view_detailing_jardinagem(request, userid, id_random):
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
-        edition_rout='editar_servico_jardinagem_agendado',
+        edition_rout='editar_execucao_servico_jardinagem_agendado',
         app_name=f'Detalhamento de execução -- {objeto.DescricaoDoServico}',
         form_search=ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
         sform_search=True,
@@ -408,8 +401,49 @@ def view_detailing_jardinagem(request, userid, id_random):
         header_model='solicitar serviço',
         redirect_url='servicos_agendados_jardinagem',
         link_tipos=None,
-        # permission_crate=permission_crate,
+        # button_export_tittle='Exportar Excel',
+        # status=['Concluido', 'Agendado', 'Em andamento'],
+        # button_export_link='exportar_relatorio_de_serivos_Jardinagem_excel',
         permission_view=permission_view,
-        # permission_edit=permission_edit,
+        permission_edit=permission_edit,
         userid=userid
+    )
+
+
+## Finalizar a função para editar tarefas agendadas
+def editar_execucao_servico_jardinagem_agendado(request, userid, id_random):
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['391: Pode editar o acompanhamento de servicos']
+    )
+
+    return edit_generic_view(
+        request=request,
+        model_class=FatoServicoJardinagem,
+        form_class=FatoServicoJardinagemForms,
+        template_name='DataTableAndForms/EditObject.html',
+        id_random=id_random,
+        app_name='Editar acompanhamento de tarefa',
+        redirect_url_name='editar_execucao_servico_jardinagem_agendado',
+        redirect_close_button=reverse('calendario_jardinagem', kwargs={'userid': userid}),
+        permission_edit=permission_edit,
+        url_rehabilitate=reverse(
+            'cancelar_servico_jardinagem',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+                'type': 'calendario'
+            }
+        ),
+        url_desmobilize=reverse(
+            'cancelar_servico_jardinagem',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+                'type': 'calendario'
+            }
+        ),
+        userid=userid,
     )

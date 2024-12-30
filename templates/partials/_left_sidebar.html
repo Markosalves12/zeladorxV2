@@ -57,37 +57,6 @@
           </li>
         </ul>
       </li>
-
-
-      <!--Dashboards-->
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <i class="nav-icon fas fa-tachometer-alt"></i>
-          <p>
-            Dashboard
-            <i class="right fas fa-angle-left"></i>
-          </p>
-        </a>
-        <ul class="nav nav-treeview">
-          {% if habilitar_jardinagem %}
-            <li class="nav-item">
-              <a href="{% url 'dashboard_produtividade_jardinagem' userid %}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Gerencial jardinagem</p>
-              </a>
-            </li>
-          {% endif %}
-          {% if habilitar_limpeza %}
-            <li class="nav-item">
-              <a href="{% url 'dashboard_produtividade_limpeza_predial' userid %}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Gerencial limpeza predial</p>
-              </a>
-            </li>
-          {% endif %}
-        </ul>
-      </li>
-
       <!--Catálogo de serviços-->
       <li class="nav-item">
         <a href="#" class="nav-link">
@@ -336,12 +305,6 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
-<!--          <li class="nav-item">-->
-<!--            <a href="" class="nav-link">-->
-<!--              <i class="far fa-circle nav-icon"></i>-->
-<!--              <p>Configurações</p>-->
-<!--            </a>-->
-<!--          </li>-->
           <li class="nav-item">
             <a href="{% url 'logout' %}" class="nav-link">
               <i class="far fa-circle nav-icon"></i>
@@ -388,6 +351,30 @@
             <span class="badge badge-info right"></span>
           </p>
         </a>
+      </li>
+      <li class="nav-header">Dashboards</li>
+      <li class="nav-item">
+        <a href="#" class="nav-link active">
+          <i class="nav-icon fas fa-tachometer-alt"></i>
+          <p>
+            Dashboards
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{% url 'dashboard_produtividade_jardinagem' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Gerencial</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'dashboard_administrativo_jardinagem' userid %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Administrativo</p>
+              </a>
+            </li>
+        </ul>
       </li>
     </ul>
   </nav>

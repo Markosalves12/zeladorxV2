@@ -384,6 +384,9 @@ def view_detailing_limpeza_predial(request, userid, id_random):
         header_model='solicitar serviço',
         redirect_url='servicos_agendados_limpeza_predial',
         link_tipos=None,
+        # button_export_tittle='Exportar Excel',
+        # status=['Concluido', 'Agendado', 'Em andamento'],
+        # button_export_link='exportar_relatorio_de_serivos_limpeza_predial_excel',
         permission_view=permission_view,
         userid=userid
     )
