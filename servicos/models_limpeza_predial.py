@@ -214,7 +214,7 @@ class FatoServicoLimpezaPredial(models.Model):
     )
 
     foto_entrega = models.ImageField(
-        upload_to="media/%Y/%m/%d/",
+        upload_to="entrega_servico_limpeza_predial/%Y/%m/%d/",
         blank=True,
         null=True,
         max_length=2000,

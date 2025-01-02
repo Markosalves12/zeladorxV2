@@ -40,7 +40,7 @@ class AreaLimpezaPredial(models.Model):
     )
 
     foto = models.ImageField(
-        upload_to="media/%Y/%m/%d/",
+        upload_to="areaslimpezapredial/%Y/%m/%d/",
         blank=True,
         max_length=2000
     )

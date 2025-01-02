@@ -171,13 +171,13 @@ class ServicoJardinagemAgendado(models.Model):
     )
 
     foto_solicitacao = models.ImageField(
-        upload_to="media/%Y/%m/%d/",
+        upload_to="solicitacao_servico_jardinagem/%Y/%m/%d/",
         blank=True,
         max_length=2000
     )
 
     foto_entrega = models.ImageField(
-        upload_to="media/%Y/%m/%d/",
+        upload_to="entrega_servico_jardinagem/%Y/%m/%d/",
         blank=True,
         max_length=2000
     )

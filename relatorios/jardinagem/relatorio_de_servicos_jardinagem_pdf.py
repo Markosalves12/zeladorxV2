@@ -269,7 +269,7 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDe
         p.drawString(50, start_y, f"Volume de servicos Agendados")
         start_y -= 20
         start_y, end_page = add_figures_to_pdf(
-            p,graps_to_report, start_y, start_y + 1,header_image_path=header_image_path, width=width, height=height)
+            p, graps_to_report, start_y, start_y + 1, header_image_path=header_image_path, width=width, height=height)
 
 
     draw_footer(

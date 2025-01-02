@@ -14,6 +14,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from django.contrib.messages import constants as messages
 import django_heroku
+from google.oauth2 import service_account
 
 load_dotenv()
 
@@ -37,9 +38,9 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['.zeladorx.com.br']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -74,6 +75,7 @@ INSTALLED_APPS = [
     'zeladorx.apps.ZeladorxConfig',
     'background_task',
     'kanban.apps.KanbanConfig',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -164,6 +166,28 @@ STATIC_ROOT = os.path.join(
 )
 
 STATIC_URL = 'static/'
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {
+            "bucket_name": "production_zeladorx",
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {
+            "bucket_name": "production_zeladorx",  # Nome do seu bucket
+            "location": "static",  # Diretório dentro do bucket para os arquivos estáticos
+        },
+    },
+}
+
+GS_PROJECT_ID = "bucketzeladorx"
+
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.path.join(BASE_DIR, "bucketzeladorx.json")
+)
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',

@@ -45,7 +45,7 @@ class EmpresaPrimaria(models.Model):
     )
 
     logo = models.ImageField(
-        upload_to="media/%Y/%m/%d/",
+        upload_to="logoprimaria/%Y/%m/%d/",
         blank=True,
         null=True,
         max_length=1000

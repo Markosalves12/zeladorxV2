@@ -58,7 +58,7 @@ class AreasJardins(models.Model):
     )
 
     foto = models.ImageField(
-        upload_to="media/%Y/%m/%d/",
+        upload_to="areasverdes/%Y/%m/%d/",
         blank=True,
         max_length=2000
     )
