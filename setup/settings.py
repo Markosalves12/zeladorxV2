@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from django.contrib.messages import constants as messages
 import django_heroku
 from google.oauth2 import service_account
+import json
 
 load_dotenv()
 
@@ -185,8 +186,8 @@ STORAGES = {
 
 GS_PROJECT_ID = "bucketzeladorx"
 
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, "bucketzeladorx.json")
+GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
+    json.loads(os.getenv("GS_CREDENTIALS"))
 )
 
 MESSAGE_TAGS = {
