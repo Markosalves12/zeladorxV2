@@ -41,7 +41,7 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid, status, D
     # defini a posição inicial do cursor
     x = 50
 
-    header_image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/logo alt.png')
+    header_image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/logo alt.png')
 
     # função que cria o cabeçalho propriamente falado
 
@@ -116,12 +116,12 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid, status, D
                         y -= 7
                         p.drawString(x, y, "Na entrega")
                         y -= 7
-                        image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_conclusao)
+                        image_path = dado.foto_conclusao.url
                     else:
                         y -= 7
                         p.drawString(x, y, "Na entrega")
                         y -= 7
-                        image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
+                        image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')
 
                     draw_image(image_path, x, y, p)
 

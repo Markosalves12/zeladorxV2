@@ -69,4 +69,4 @@ class AreaLimpezaPredial(models.Model):
         super(AreaLimpezaPredial, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.nome
+        return f'{self.nome} | {self.localidade}'

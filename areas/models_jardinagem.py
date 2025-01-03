@@ -104,4 +104,4 @@ class AreasJardins(models.Model):
         unique_together = ('nome', 'vegetacao', 'Terreno')
 
     def __str__(self):
-        return self.nome
+        return f'{self.nome} | {self.localidade}'

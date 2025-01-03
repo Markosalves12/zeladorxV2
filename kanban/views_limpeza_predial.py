@@ -32,7 +32,7 @@ def kanban_limpeza_predial(request, userid):
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('kanban_limpeza_predial', kwargs={'userid': userid})})
     else:
-        return redirect('calendario_jardinagem', userid)
+        return redirect('kanban_jardinagem', userid)
 
     permission_view = validate_permissions(
         request=request,

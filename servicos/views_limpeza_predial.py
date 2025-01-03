@@ -69,7 +69,7 @@ def agendar_servico_limpeza_predial(request, type, userid):
                         f'em {form.cleaned_data["Areas"]} agendado.'
             )
 
-            return redirect('agendar_servico_limpeza_predial', userid)
+            return redirect('agendar_servico_limpeza_predial', type, userid)
 
         messages.error(
             request=request,

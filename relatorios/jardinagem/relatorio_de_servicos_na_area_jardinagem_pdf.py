@@ -89,7 +89,7 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
     # defini a posição inicial do cursor
     x = 50
 
-    header_image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/logo alt.png')
+    header_image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/logo alt.png')
 
     # função que cria o cabeçalho propriamente falado
     draw_header(c=p, header_image_path=header_image_path, width=width, height=height)
@@ -110,12 +110,14 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
             y -= 7
             p.drawString(x, y, "Área")
             y -= 7
-            image_path = os.path.join(settings.MEDIA_ROOT, object.foto.name)
+            # image_path = os.path.join(settings.MEDIA_ROOT, object.foto.name)
+            image_path = object.foto.url
         else:
             y -= 7
             p.drawString(x, y, "Área")
             y -= 7
-            image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
+            # image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
+            image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')
 
         height1 = draw_image(image_path, x, y, p)
 
@@ -174,12 +176,14 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
                     y -= 7
                     p.drawString(x, y, "Na solicitação")
                     y -= 7
-                    image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_solicitacao.name)
+                    # image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_solicitacao.name)
+                    image_path = dado.foto_solicitacao.url
                 else:
                     y -= 7
                     p.drawString(x, y, "Na solicitação")
                     y -= 7
-                    image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
+                    # image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
+                    image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')
 
                 height1 = draw_image(image_path, x, y, p)
 
@@ -191,12 +195,14 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
                     y -= 7
                     p.drawString(x, y, "Na entrega")
                     y -= 7
-                    image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_entrega.name)
+                    # image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_entrega.name)
+                    image_path = dado.foto_entrega.url
                 else:
                     y -= 7
                     p.drawString(x, y, "Na entrega")
                     y -= 7
-                    image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
+                    # image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
+                    image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')
 
                 draw_image(image_path, x, y, p)
 

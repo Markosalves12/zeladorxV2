@@ -38,7 +38,7 @@ EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -188,6 +188,9 @@ GS_PROJECT_ID = "bucketzeladorx"
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     os.path.join(BASE_DIR, "bucketzeladorx.json")
 )
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = f"https://storage.googleapis.com/{STORAGES['default']['OPTIONS']['bucket_name']}/media/"
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',

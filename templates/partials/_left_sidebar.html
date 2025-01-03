@@ -5,6 +5,7 @@
   </div>
 
   <!-- SidebarSearch Form -->
+<!--  para remover o destaque branco basta retirar a tag ative de active das urls relativas no menus suspensos-->
   <div class="form-inline">
     <div class="input-group" data-widget="sidebar-search">
       <input class="form-control form-control-sidebar" type="search" placeholder="Pesquisar" aria-label="Search">
@@ -30,25 +31,25 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'relatorios_de_servicos_jardinagem_xlsx_concluidos' userid %}" class="nav-link">
+            <a href="{% url 'relatorios_de_servicos_jardinagem_xlsx_concluidos' userid %}" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
               <p>Excel S. concluidos</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'relatorios_de_servicos_jardinagem_pdf_concluidos' userid %}" class="nav-link">
+            <a href="{% url 'relatorios_de_servicos_jardinagem_pdf_concluidos' userid %}" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
               <p>PDF S. concluidos</p>
             </a>
           </li>
-                    <li class="nav-item">
-            <a href="{% url 'relatorios_de_servicos_jardinagem_xlsx_agendados' userid %}" class="nav-link">
+          <li class="nav-item">
+            <a href="{% url 'relatorios_de_servicos_jardinagem_xlsx_agendados' userid %}" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
               <p>Excel S. planejados</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'relatorios_de_servicos_jardinagem_pdf_agendados' userid %}" class="nav-link">
+            <a href="{% url 'relatorios_de_servicos_jardinagem_pdf_agendados' userid %}" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
               <p>PDF S. planejados</p>
             </a>
@@ -67,7 +68,7 @@
         <ul class="nav nav-treeview">
           {% if habilitar_jardinagem %}
             <li class="nav-item">
-              <a href="{% url 'catalogo_de_servicos_jardinagem' userid %}" class="nav-link">
+              <a href="{% url 'catalogo_de_servicos_jardinagem' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Jardinagem</p>
               </a>
@@ -75,7 +76,7 @@
           {% endif %}
           {% if habilitar_limpeza %}
             <li class="nav-item">
-              <a href="{% url 'catalogo_de_servicos_limpeza_predial' userid %}" class="nav-link">
+              <a href="{% url 'catalogo_de_servicos_limpeza_predial' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Limpeza predial</p>
               </a>
@@ -96,7 +97,7 @@
         <ul class="nav nav-treeview">
           {% if habilitar_jardinagem %}
             <li class="nav-item">
-              <a href="{% url 'servicos_agendados_jardinagem' userid %}" class="nav-link">
+              <a href="{% url 'servicos_agendados_jardinagem' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Jardinagem</p>
               </a>
@@ -104,7 +105,7 @@
           {% endif %}
           {% if habilitar_limpeza %}
             <li class="nav-item">
-              <a href="{% url 'servicos_agendados_limpeza_predial' userid %}" class="nav-link">
+              <a href="{% url 'servicos_agendados_limpeza_predial' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Limpeza predial</p>
               </a>
@@ -125,7 +126,7 @@
         <ul class="nav nav-treeview">
           {% if habilitar_jardinagem %}
             <li class="nav-item">
-              <a href="{% url 'servicos_configurados_jardinagem' userid %}" class="nav-link">
+              <a href="{% url 'servicos_configurados_jardinagem' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Jardinagem</p>
               </a>
@@ -133,7 +134,7 @@
           {% endif %}
           {% if habilitar_limpeza %}
             <li class="nav-item">
-              <a href="{% url 'servicos_configurados_limpeza_predial' userid %}" class="nav-link">
+              <a href="{% url 'servicos_configurados_limpeza_predial' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Limpeza predial</p>
               </a>
@@ -154,7 +155,7 @@
         <ul class="nav nav-treeview">
           {% if habilitar_jardinagem %}
             <li class="nav-item">
-              <a href="{% url 'agendar_servico_jardinagem' 'calendario' userid %}" class="nav-link">
+              <a href="{% url 'agendar_servico_jardinagem' 'calendario' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Jardinagem</p>
               </a>
@@ -162,7 +163,7 @@
           {% endif %}
           {% if habilitar_limpeza %}
             <li class="nav-item">
-              <a href="{% url 'agendar_servico_limpeza_predial' 'calendario' userid %}" class="nav-link">
+              <a href="{% url 'agendar_servico_limpeza_predial' 'calendario' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Limpeza predial</p>
               </a>
@@ -184,7 +185,7 @@
         <ul class="nav nav-treeview">
           {% if habilitar_jardinagem %}
             <li class="nav-item">
-              <a href="{% url 'configurar_servico_jardinagem' userid %}" class="nav-link">
+              <a href="{% url 'configurar_servico_jardinagem' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Jardinagem</p>
               </a>
@@ -192,7 +193,7 @@
           {% endif %}
           {% if habilitar_limpeza %}
             <li class="nav-item">
-              <a href="{% url 'configurar_servico_limpeza_predial' userid %}" class="nav-link">
+              <a href="{% url 'configurar_servico_limpeza_predial' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Limpeza predial</p>
               </a>
@@ -212,20 +213,20 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'unidades' userid %}" class="nav-link">
+            <a href="{% url 'unidades' userid %}" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
               <p>Unidades</p>
             </a>
           </li>
           <li class="nav-item">
-            <a href="{% url 'localidades_jardinagem' userid %}" class="nav-link">
+            <a href="{% url 'localidades_jardinagem' userid %}" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
               <p>Localidades</p>
             </a>
           </li>
           {% if habilitar_jardinagem %}
             <li class="nav-item">
-              <a href="{% url 'areas_jardins' userid %}" class="nav-link">
+              <a href="{% url 'areas_jardins' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Áreas Jardinagem</p>
               </a>
@@ -233,7 +234,7 @@
           {% endif %}
           {% if habilitar_limpeza %}
             <li class="nav-item">
-              <a href="{% url 'areas_limpeza_predial' userid %}" class="nav-link">
+              <a href="{% url 'areas_limpeza_predial' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Áreas L. Predial</p>
               </a>
@@ -241,7 +242,7 @@
           {% endif %}
           {% if habilitar_jardinagem %}
             <li class="nav-item">
-              <a href="{% url 'terrenos' userid %}" class="nav-link">
+              <a href="{% url 'terrenos' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Terrenos</p>
               </a>
@@ -249,7 +250,7 @@
           {% endif %}
           {% if habilitar_jardinagem %}
             <li class="nav-item">
-              <a href="{% url 'vegetacao' userid %}" class="nav-link">
+              <a href="{% url 'vegetacao' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Vegetação</p>
               </a>
@@ -268,7 +269,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'gerentes_jardinagem' userid %}" class="nav-link">
+            <a href="{% url 'gerentes_jardinagem' userid %}" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
               <p>Gerentes</p>
             </a>
@@ -286,7 +287,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'empresas_jardinagem' userid %}" class="nav-link">
+            <a href="{% url 'empresas_jardinagem' userid %}" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
               <p>Empresas</p>
             </a>
@@ -304,7 +305,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'logout' %}" class="nav-link">
+            <a href="{% url 'logout' %}" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
               <p>Logout</p>
             </a>
@@ -323,7 +324,7 @@
         </a>
         <ul class="nav nav-treeview">
           <li class="nav-item">
-            <a href="{% url 'permissoes_jardinagem' userid %}" class="nav-link">
+            <a href="{% url 'permissoes_jardinagem' userid %}" class="nav-link active">
               <i class="far fa-circle nav-icon"></i>
               <p>Gerentes</p>
             </a>
@@ -361,13 +362,13 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="{% url 'dashboard_produtividade_jardinagem' userid %}" class="nav-link">
+              <a href="{% url 'dashboard_produtividade_jardinagem' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Gerencial</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{% url 'dashboard_administrativo_jardinagem' userid %}" class="nav-link">
+              <a href="{% url 'dashboard_administrativo_jardinagem' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Administrativo</p>
               </a>

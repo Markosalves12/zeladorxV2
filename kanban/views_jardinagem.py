@@ -30,7 +30,7 @@ def kanban_jardinagem(request, userid):
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
         tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('kanban_jardinagem', kwargs={'userid': userid})})
     else:
-        return redirect('calendario_limpeza_predial', userid)
+        return redirect('kanban_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('kanban_limpeza_predial', kwargs={'userid': userid})})

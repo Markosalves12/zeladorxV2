@@ -71,7 +71,7 @@ def agendar_servico_jardinagem(request, type, userid):
                         f'em {form.cleaned_data["Areas"]} agendado.'
             )
 
-            return redirect('agendar_servico_jardinagem', userid)
+            return redirect('agendar_servico_jardinagem', type, userid)
 
         messages.error(
             request=request,
