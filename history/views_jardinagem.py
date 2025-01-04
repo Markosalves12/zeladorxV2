@@ -51,8 +51,8 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
         },
         export_pdf='exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
         export_excel='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
-        foto_objeto=None,
-        Foto=False,
+        foto_objeto=objeto.foto.url,
+        Foto=True,
         redirect_close_button='areas_jardins',
         permission_extract_pdf=permission_extract_pdf,
         permission_extract_xlsx=permission_extract_xlsx
