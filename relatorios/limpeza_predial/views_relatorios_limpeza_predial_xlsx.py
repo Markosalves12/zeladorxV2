@@ -112,7 +112,7 @@ def relatorios_de_servicos_limpeza_predial_xlsx_agendados(request, userid):
     permission_view = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['310: Pode extrair relatórios XLSX de limpeza predial']
     )
 
