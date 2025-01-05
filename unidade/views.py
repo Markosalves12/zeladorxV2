@@ -46,10 +46,10 @@ def unidades(request, userid):
         {'nome': 'historico', 'label': 'Mapa'},
     ]
 
-    if setores['habilitar_jardinagem']:
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
         colunas.insert(2, {'nome': 'linkmapajardinagem', 'label': 'Mapa Jardinagem'})
 
-    if setores['habilitar_limpeza']:
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         colunas.insert(3, {'nome': 'linkmapalimnpezapredial', 'label': 'Mapa Limpeza Predial'})
 
     return generic_view(

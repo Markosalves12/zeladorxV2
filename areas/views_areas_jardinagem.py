@@ -50,6 +50,7 @@ def areas_jardins(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
+        {'nome': 'dimensao', 'label': 'Dimensão M²'},
         {'nome': 'Terreno', 'label': 'Terreno'},
         {'nome': 'vegetacao', 'label': 'vegetação'},
         {'nome': 'servico', 'label': 'Serviços'},

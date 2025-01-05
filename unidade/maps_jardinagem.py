@@ -1,7 +1,7 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, redirect
 from unidade.models import Unidade
 from permissionscontrol.utils import validate_permissions
-
+from empresasecundario.utils import define_empresas
 
 # Create your views here.
 def visualizar_unidade_jardinagem(request, userid, id_random):
@@ -16,29 +16,44 @@ def visualizar_unidade_jardinagem(request, userid, id_random):
         permission_to_access=['342: Pode visualizar unidades']
     )
 
+    empresas = define_empresas(request=request, userid=userid)
+    setores = empresas['setores']
+
     tipos = [
         {'nome': 'Tipo de mapa', 'link': ''},
-        {
-            'nome': 'Jardinagem',
-            'link': reverse(
-                'visualizar_unidade_jardinagem',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random
-                }
-            )
-        },
-        {
-            'nome': 'Limpeza predial',
-            'link': reverse(
-                'visualizar_unidade_limpeza_predial',
-                kwargs={
-                    'userid': userid,
-                    'id_random': id_random
-                }
-            )
-        },
     ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(
+            1,
+            {
+                'nome': 'Jardinagem',
+                'link': reverse(
+                    'visualizar_unidade_jardinagem',
+                    kwargs={
+                        'userid': userid,
+                        'id_random': id_random
+                    }
+                )
+            }
+        )
+    else:
+        return redirect('visualizar_unidade_limpeza_predial', userid, id_random)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(
+            2,
+            {
+                'nome': 'Limpeza predial',
+                'link': reverse(
+                    'visualizar_unidade_limpeza_predial',
+                    kwargs={
+                        'userid': userid,
+                        'id_random': id_random
+                    }
+                )
+            }
+        )
 
     return render(
         request=request,

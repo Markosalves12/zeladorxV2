@@ -4,6 +4,7 @@ from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from utils.views import generic_view_history
 from permissionscontrol.utils import validate_permissions
+from django.templatetags.static import static
 
 
 # Create your views here.
@@ -59,7 +60,7 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
         },
         export_pdf='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
         export_excel='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
-        foto_objeto=objeto.fot.url,
+        foto_objeto = objeto.foto.url if objeto.foto and hasattr(objeto.foto, 'url') else static('dist/img/not found.png'),
         Foto=True,
         redirect_close_button='areas_limpeza_predial',
         permission_extract_pdf=permission_extract_pdf,
