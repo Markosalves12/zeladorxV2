@@ -79,7 +79,7 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDe
     page_number = 1
     p.setFont("Helvetica", 10)
 
-    if len(dados)>1:
+    if len(dados)>0:
         for dado in dados:
             # Add the data_inicio
             p.setFont('Helvetica-Bold', 10)

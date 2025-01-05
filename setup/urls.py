@@ -22,7 +22,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('zeladorxadministration/', admin.site.urls),
     path('', include('authenticate.urls')),
     path('', include('calendario.urls_jardinagem')),
     path('', include('calendario.urls_limpeza_predial')),

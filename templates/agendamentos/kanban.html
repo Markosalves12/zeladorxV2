@@ -88,14 +88,16 @@
                                 <div class="card card-info card-outline">
                                   <div class="card-header">
                                     <h5 class="card-title">
-                                      <strong>{{ event.DescricaoDoServico }}</strong>
-                                    </h5>
-                                    <div class="card-tools">
-                                      <!-- Botão para abrir o modal do serviço agendado -->
-                                      <a href="#" class="btn btn-tool" data-toggle="modal" data-target="#modal-agendado-{{ event.id }}">
-                                        <i class="fas fa-pen"></i>
+                                      <a data-toggle="modal" data-target="#modal-agendado-{{ event.id }}">
+                                        <strong>{{ event.DescricaoDoServico }}</strong>
                                       </a>
-                                    </div>
+                                    </h5>
+<!--                                    <div class="card-tools">-->
+<!--                                      &lt;!&ndash; Botão para abrir o modal do serviço agendado &ndash;&gt;-->
+<!--                                      <a href="#" class="btn btn-tool" data-toggle="modal" data-target="#modal-agendado-{{ event.id }}">-->
+<!--                                        <i class="fas fa-pen"></i>-->
+<!--                                      </a>-->
+<!--                                    </div>-->
                                   </div>
                                   <div class="card-body">
                                     <p>
@@ -181,14 +183,16 @@
                                 <div class="card card-warning card-outline">
                                   <div class="card-header">
                                     <h5 class="card-title">
-                                      <strong>{{ event.DescricaoDoServico }}</strong>
-                                    </h5>
-                                    <div class="card-tools">
-                                      <!-- Botão para abrir o modal do serviço próximo -->
-                                      <a href="#" class="btn btn-tool" data-toggle="modal" data-target="#modal-proximo-{{ event.id }}">
-                                        <i class="fas fa-pen"></i>
+                                      <a data-toggle="modal" data-target="#modal-proximo-{{ event.id }}">
+                                        <strong>{{ event.DescricaoDoServico }}</strong>
                                       </a>
-                                    </div>
+                                    </h5>
+<!--                                    <div class="card-tools">-->
+<!--                                      &lt;!&ndash; Botão para abrir o modal do serviço próximo &ndash;&gt;-->
+<!--                                      <a href="#" class="btn btn-tool" data-toggle="modal" data-target="#modal-proximo-{{ event.id }}">-->
+<!--                                        <i class="fas fa-pen"></i>-->
+<!--                                      </a>-->
+<!--                                    </div>-->
                                   </div>
                                   <div class="card-body">
                                     <p>
@@ -272,13 +276,15 @@
                               {% if event.status == "Em andamento" %}
                                 <div class="card card-success card-outline">
                                   <div class="card-header">
-                                    <h5 class="card-title"><strong>{{ event.DescricaoDoServico }}</strong></h5>
-                                    <div class="card-tools">
-                                      <!-- Botão com identificador dinâmico -->
-                                      <a href="#" class="btn btn-tool" data-toggle="modal" data-target="#modal-em-andamento-{{ event.id }}">
-                                        <i class="fas fa-pen"></i>
-                                      </a>
-                                    </div>
+                                    <a data-toggle="modal" data-target="#modal-em-andamento-{{ event.id }}">
+                                      <h5 class="card-title"><strong>{{ event.DescricaoDoServico }}</strong></h5>
+                                    </a>
+<!--                                    <div class="card-tools">-->
+<!--                                      &lt;!&ndash; Botão com identificador dinâmico &ndash;&gt;-->
+<!--                                      <a href="#" class="btn btn-tool" data-toggle="modal" data-target="#modal-em-andamento-{{ event.id }}">-->
+<!--                                        <i class="fas fa-pen"></i>-->
+<!--                                      </a>-->
+<!--                                    </div>-->
                                   </div>
                                   <div class="card-body">
                                     <p>
@@ -366,13 +372,15 @@
                               {% if event.status_agendamento < 0 and event.status == "Agendado" %}
                                 <div class="card card-danger card-outline">
                                   <div class="card-header">
-                                    <h5 class="card-title"><strong>{{ event.DescricaoDoServico }}</strong></h5>
-                                    <div class="card-tools">
-                                      <!-- Botão para abrir o modal do evento -->
-                                      <a href="#" class="btn btn-tool" data-toggle="modal" data-target="#modal-atrasado-{{ event.id }}">
-                                        <i class="fas fa-pen"></i>
-                                      </a>
-                                    </div>
+                                    <a data-toggle="modal" data-target="#modal-atrasado-{{ event.id }}">
+                                      <h5 class="card-title"><strong>{{ event.DescricaoDoServico }}</strong></h5>
+                                    </a>
+<!--                                    <div class="card-tools">-->
+<!--                                      &lt;!&ndash; Botão para abrir o modal do evento &ndash;&gt;-->
+<!--                                      <a href="#" class="btn btn-tool" data-toggle="modal" data-target="#modal-atrasado-{{ event.id }}">-->
+<!--                                        <i class="fas fa-pen"></i>-->
+<!--                                      </a>-->
+<!--                                    </div>-->
                                   </div>
                                   <div class="card-body">
                                     <p>

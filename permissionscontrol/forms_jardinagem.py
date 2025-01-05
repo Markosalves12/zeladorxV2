@@ -3,7 +3,7 @@ from permissionscontrol.models import PermissionsAccessJardinagem, PermissionsJa
 from empresasecundario.utils import define_empresas
 
 class PermissionsAccessJardinagemForms(forms.ModelForm):
-    def __init__(self, *args, request, userid=str,type = 'creat/edit', **kwargs):
+    def __init__(self, *args, request, userid=str, type='creat/edit', **kwargs):
         super(PermissionsAccessJardinagemForms, self).__init__(*args, **kwargs)
         empresas = define_empresas(request=request, userid=userid)
         empresas_primarias_ids = empresas['empresas_primarias_ids']
