@@ -5,6 +5,11 @@ from settings.utils import define_setting
 from permissionscontrol.utils import configurate_permissions, verify_login
 from django.contrib import messages
 
+from empresaprimaria.models import EmpresaPrimaria
+from unidade.forms import UnidadeForms
+from unidade.models import Unidade
+from empresasecundario.utils import define_empresas
+
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
                  text_button_open_modal, text_button_save,  header_model,
                  redirect_url, form_search, filtro_mapeamento, sform_search=False, userid=False,
@@ -35,6 +40,31 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
 
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES, request=request, userid=userid)
+
+        # Adicionando a validação para o caso de 'UnidadeForms'
+        if issubclass(form_class, UnidadeForms):
+            # Pega os parâmetros de usuário
+            empresas = define_empresas(request=request, userid=userid)
+            empresas_primarias_ids = empresas['empresas_primarias_ids']
+
+            # Identifica a empresa primária do usuário
+            empresa_associada = EmpresaPrimaria.objects.get(id_random=empresas_primarias_ids[0])
+
+            # Verifica a quantidade de unidades criadas associadas a essa empresa primária
+            n_unidades_criadas = Unidade.objects.filter(
+                empresasecundaria__empresaprimaria=empresa_associada
+            ).distinct().count()  # Ajustei o filtro para ser mais direto, sem 'distinct'
+
+            print(n_unidades_criadas)
+            print(empresa_associada.N_unidades)
+
+            # Valida se a quantidade de unidades criadas ultrapassou o limite
+            if n_unidades_criadas >= empresa_associada.N_unidades:
+                messages.error(
+                    request=request,
+                    message=f'{empresa_associada.nome} atingiu o número máximo de unidades permitidas ({empresa_associada.N_unidades}).'
+                )
+                return redirect(redirect_url, request.session.get('userid', ''))
 
         if form.is_valid():
             if configurate_gerente:
