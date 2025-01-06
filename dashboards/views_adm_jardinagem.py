@@ -36,7 +36,7 @@ def dashboard_administrativo_jardinagem(request, userid):
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['380: Pode visualizar o dashboard gerencial']
+        permission_to_access=['381: Pode visualizar o dashboard administrativo']
     )
 
     dados = AreasJardins.objects.distinct().filter(

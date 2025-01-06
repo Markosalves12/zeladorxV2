@@ -35,8 +35,8 @@ def dashboard_administrativo_limpeza_predial(request, userid):
     permission_view = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
-        permission_to_access=['380: Pode visualizar o dashboard gerencial']
+        permission_type='limpeza_predial',
+        permission_to_access=['381: Pode visualizar o dashboard administrativo']
     )
 
     dados = AreaLimpezaPredial.objects.distinct().filter(

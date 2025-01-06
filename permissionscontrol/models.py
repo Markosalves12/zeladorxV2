@@ -98,6 +98,7 @@ class PermissionsJardinagem(models.Model):
         ('375: Pode reabilitar serviços configurados', '375: Pode reabilitar serviços configurados'),
 
         ('380: Pode visualizar o dashboard gerencial', '380: Pode visualizar o dashboard gerencial'),
+        ('381: Pode visualizar o dashboard administrativo', '381: Pode visualizar o dashboard administrativo'),
 
         ('390: Pode visualizar o detalhamento de serviços', '390: Pode visualizar o detalhamento de serviços'),
         ('391: Pode editar o acompanhamento de servicos', '391: Pode editar o acompanhamento de servicos'),
@@ -231,6 +232,7 @@ class PermissionsLimpezaPredial(models.Model):
         ('375: Pode reabilitar serviços configurados', '375: Pode reabilitar serviços configurados'),
 
         ('380: Pode visualizar o dashboard gerencial', '380: Pode visualizar o dashboard gerencial'),
+        ('381: Pode visualizar o dashboard administrativo', '381: Pode visualizar o dashboard administrativo'),
 
         ('390: Pode visualizar o detalhamento de serviços', '390: Pode visualizar o detalhamento de serviços'),
         ('391: Pode editar o acompanhamento de servicos', '391: Pode editar o acompanhamento de servicos'),
