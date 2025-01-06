@@ -225,7 +225,7 @@ def editar_servico_limpeza_predial_agendado(request, userid, id_random):
         userid=userid,
     )
 
-def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
+def realizar_servico_limpeza_predial_agendado(request, type, userid, id_random):
     block = verify_login(request=request, userid=userid)
 
     if block == True:
@@ -260,12 +260,18 @@ def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
                 request=request,
                 message=f'serviço, {objeto}, realizado'
             )
-            return redirect('calendario_limpeza_predial', userid)
+            return redirect('realizar_servico_limpeza_predial_agendado', type, userid, id_random)
 
         messages.error(
             request=request,
             message=f'Algo de errado'
         )
+
+    redirect_close_button_map = {
+        "calendario": reverse('calendario_limpeza_predial', kwargs={'userid': userid}),
+        "kanban": reverse('kanban_limpeza_predial', kwargs={'userid': userid}),
+    }
+    redirect_close_button = redirect_close_button_map.get(type, None)
 
     return render(
         request=request,
@@ -273,9 +279,14 @@ def realizar_servico_limpeza_predial_agendado(request, userid, id_random):
         context={
             'forms': forms,
             'app_name': 'Realizar serviço',
-            'redirect_url_name': 'realizar_servico_limpeza_predial_agendado',
+            'redirect_url_name': reverse(
+                'realizar_servico_limpeza_predial_agendado',
+                kwargs={
+                    'type': type, 'userid': userid, 'id_random': id_random
+                }
+            ),
             'id_random': id_random,
-            'redirect_close_button': reverse('calendario_limpeza_predial', kwargs={'userid': userid}),
+            'redirect_close_button': redirect_close_button,
             'text_button': 'Salvar',
             'permission_accompany': permission_accompany
         }

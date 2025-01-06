@@ -73,7 +73,7 @@ def calendario_limpeza_predial(request, userid):
     permission_acompleshed = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['326 Pode concluir serviços em andamento']
     )
 

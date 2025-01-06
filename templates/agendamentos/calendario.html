@@ -185,7 +185,7 @@
         var modalTitle = modal.find('.modal-title');
         var modalBody = modal.find('.modal-body');
         var editUrl = "{% url url_edicao userid '__id__' %}".replace('__id__', info.event.id);
-        var acompUrl = "{% url url_acompanhamento userid  '__id__' %}".replace('__id__', info.event.id);
+        var acompUrl = "{% url url_acompanhamento 'calendario' userid  '__id__' %}".replace('__id__', info.event.id);
         var cancelUrl = "{% url url_cancelamento userid '__id__' 'calendario' %}".replace('__id__', info.event.id);
         var concluirUrl = "{% url url_conclusao userid '__id__' 'calendario' %}".replace('__id__', info.event.id);
         var detailingUrl = "{% url url_detalhamento userid '__id__' %}".replace('__id__', info.event.id);

@@ -152,7 +152,7 @@
                                           <p><a href="{% url url_edicao userid event.id_random %}">Editar evento</a></p>
                                         {% endif %}
                                         {% if permission_accompany %}
-                                          <p><a href="{% url url_acompanhamento userid event.id_random %}">Acompanhar evento</a></p>
+                                          <p><a href="{% url url_acompanhamento 'kanban' userid event.id_random %}">Acompanhar evento</a></p>
                                         {% endif %}
                                         <div class="modal-footer">
                                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -247,7 +247,7 @@
                                           <p><a href="{% url url_edicao userid event.id_random %}">Editar evento</a></p>
                                         {% endif %}
                                         {% if permission_accompany %}
-                                          <p><a href="{% url url_acompanhamento userid event.id_random %}">Acompanhar evento</a></p>
+                                          <p><a href="{% url url_acompanhamento 'kanban' userid event.id_random %}">Acompanhar evento</a></p>
                                         {% endif %}
                                         <div class="modal-footer">
                                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -339,7 +339,7 @@
                                           <p><a href="{% url url_edicao userid event.id_random %}">Editar evento</a></p>
                                         {% endif %}
                                         {% if permission_accompany %}
-                                          <p><a href="{% url url_acompanhamento userid event.id_random %}">Acompanhar evento</a></p>
+                                          <p><a href="{% url url_acompanhamento 'kanban' userid event.id_random %}">Acompanhar evento</a></p>
                                         {% endif %}
                                         <p>
                                           <a href="{% url url_detalhamento userid event.id_random %}">Detalhamento</a>
@@ -435,7 +435,7 @@
                                           <p><a href="{% url url_edicao userid event.id_random %}">Editar evento</a></p>
                                         {% endif %}
                                         {% if permission_accompany %}
-                                          <p><a href="{% url url_acompanhamento userid event.id_random %}">Acompanhar evento</a></p>
+                                          <p><a href="{% url url_acompanhamento 'kanban' userid event.id_random %}">Acompanhar evento</a></p>
                                         {% endif %}
                                         <div class="modal-footer">
                                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>

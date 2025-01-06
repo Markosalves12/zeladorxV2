@@ -22,7 +22,7 @@ urlpatterns = [
         name='editar_servico_limpeza_predial_agendado'
     ),
     path(
-        'realizar-servico-limpeza-predial-agendado/<str:userid>/<str:id_random>',
+        'realizar-servico-limpeza-predial-agendado/<str:type>/<str:userid>/<str:id_random>',
         realizar_servico_limpeza_predial_agendado,
         name='realizar_servico_limpeza_predial_agendado'
     ),

@@ -21,7 +21,7 @@ urlpatterns = [
         name='servicos_agendados_jardinagem'
     ),
     path(
-        'realizar-servico-jardinagem-agendado/<str:userid>/<str:id_random>',
+        'realizar-servico-jardinagem-agendado/<str:type>/<str:userid>/<str:id_random>',
         realizar_servico_jardinagem_agendado,
         name='realizar_servico_jardinagem_agendado'
     ),
