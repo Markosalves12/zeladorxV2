@@ -117,8 +117,12 @@ WSGI_APPLICATION = 'setup.wsgi.application'
 
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'zeladorx',  # Nome do seu banco de dados
+#         'USER': 'postgres',  # Nome do usuário
+#         'PASSWORD': 'zeladorx',  # Senha em branco se não houver senha
+#         'HOST': 'localhost',  # O banco de dados está na mesma máquina
+#         'PORT': '5432',  # Porta padrão do PostgreSQL
 #     }
 # }
 
