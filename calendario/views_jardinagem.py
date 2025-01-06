@@ -7,6 +7,7 @@ from calendario.utils import format_event
 from permissionscontrol.utils import validate_permissions, verify_login
 from utils.utils import aplicar_filtros_dinamicos
 from empresasecundario.utils import define_empresas
+from django.db import connection
 import datetime
 
 # Create your views here.
@@ -88,13 +89,20 @@ def calendario_jardinagem(request, userid):
         'DataDeConclusao': 'DataDeConclusao'
     }
 
+    is_postgresql = connection.vendor == 'postgresql'
+
+    # Queryset ajustado para PostgreSQL e SQLite
     agendado = ServicoJardinagemAgendado.objects.filter(
         Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
         Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
     ).annotate(
         data_atual=Now(),
         status_agendamento=ExpressionWrapper(
-            (F('DataDeInicio') - F('data_atual')) / datetime.timedelta(days=1),
+            F('DataDeInicio') - F('data_atual'),
+            output_field=IntegerField()
+        ) / (3600 * 24) if not is_postgresql else
+        ExpressionWrapper(
+            (F('DataDeInicio') - F('data_atual')).days,
             output_field=IntegerField()
         )
     ).distinct()
