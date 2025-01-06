@@ -25,12 +25,12 @@ def dashboard_administrativo_limpeza_predial(request, userid):
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
         tipos.insert(1, {'nome': 'Jardinagem',
                          'link': reverse('dashboard_administrativo_jardinagem', kwargs={'userid': userid})}, )
-    else:
-        return redirect('dashboard_produtividade_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial',
                          'link': reverse('dashboard_administrativo_limpeza_predial', kwargs={'userid': userid})}, )
+    else:
+        return redirect('dashboard_produtividade_jardinagem', userid)
 
     permission_view = validate_permissions(
         request=request,

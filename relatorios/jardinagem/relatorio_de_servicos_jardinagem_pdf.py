@@ -140,7 +140,7 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDe
                     y -= 7
                     p.drawString(x, y, "Na solicitção")
                     y -= 7
-                    image_path = os.path.join(settings.STATICFILES_DIRS[0], 'static/dist/img/not found.png')
+                    image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')
 
                 height1 = draw_image(image_path, x, y, p)
 
@@ -157,7 +157,7 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDe
                     y -= 7
                     p.drawString(x, y, "Na entrega")
                     y -= 7
-                    image_path = os.path.join(settings.STATICFILES_DIRS[0], 'static/dist/img/not found.png')
+                    image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')
 
                 draw_image(image_path, x, y, p)
 

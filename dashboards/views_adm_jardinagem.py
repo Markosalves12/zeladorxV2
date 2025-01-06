@@ -25,7 +25,7 @@ def dashboard_administrativo_jardinagem(request, userid):
         tipos.insert(1, {'nome': 'Jardinagem',
                          'link': reverse('dashboard_administrativo_jardinagem', kwargs={'userid': userid})}, )
     else:
-        return redirect('dashboard_produtividade_limpeza_predial', userid)
+        return redirect('dashboard_administrativo_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2, {'nome': 'Limpeza predial',

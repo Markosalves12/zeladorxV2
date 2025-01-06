@@ -51,7 +51,6 @@ def areas_limpeza_predial(request, userid):
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'nome', 'label': 'Nome'},
         {'nome': 'dimensao', 'label': 'Dimensão M²'},
-        {'nome': 'dimensao', 'label': 'Dimensão'},
         {'nome': 'servico', 'label': 'Serviço'},
         {'nome': 'localidade', 'label': 'Localidade'},
         {'nome': 'status', 'label': 'status'},
