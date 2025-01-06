@@ -7,6 +7,7 @@ from calendario.utils import format_event
 from permissionscontrol.utils import validate_permissions, verify_login
 from utils.utils import aplicar_filtros_dinamicos
 from empresasecundario.utils import define_empresas
+from django.db.models import Func
 
 def calendario_limpeza_predial(request, userid):
     if not request.user.is_authenticated:
@@ -85,15 +86,19 @@ def calendario_limpeza_predial(request, userid):
         'DataDeConclusao': 'DataDeConclusao'
     }
 
+    class DaysDifference(Func):
+        function = 'EXTRACT'
+        template = "%(function)s(DAY FROM %(expressions)s)"
+
     agendado = ServicoLimpezaPredialAgendado.objects.filter(
-            Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-            Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+        Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
     ).annotate(
         data_atual=Now(),
         status_agendamento=ExpressionWrapper(
-            F('DataDeInicio') - F('data_atual'),
+            DaysDifference(F('DataDeInicio') - F('data_atual')),
             output_field=IntegerField()
-        )/(3600*24*1000000)
+        )
     ).distinct()
 
     if request.method == 'GET':
