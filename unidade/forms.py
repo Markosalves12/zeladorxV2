@@ -42,14 +42,14 @@ class UnidadeForms(forms.ModelForm):
             )
 
         # Habilitar os campos se as condições forem verdadeiras
-        if setores['habilitar_jardinagem']:
+        if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
             self.fields['linkmapajardinagem'].widget = forms.TextInput(
                 attrs={'class': 'form-control'}
             )
         else:
             self.fields.pop('linkmapajardinagem')
 
-        if setores['habilitar_limpeza']:
+        if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
             self.fields['linkmapalimnpezapredial'].widget = forms.TextInput(
                 attrs={'class': 'form-control'}
             )
