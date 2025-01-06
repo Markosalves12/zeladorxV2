@@ -7,7 +7,7 @@ from calendario.utils import format_event
 from permissionscontrol.utils import validate_permissions, verify_login
 from utils.utils import aplicar_filtros_dinamicos
 from empresasecundario.utils import define_empresas
-from django.db import connection
+import datetime
 
 # Create your views here.
 def calendario_jardinagem(request, userid):
@@ -88,29 +88,16 @@ def calendario_jardinagem(request, userid):
         'DataDeConclusao': 'DataDeConclusao'
     }
 
-    # Identifica o banco de dados em uso
-    db_engine = connection.settings_dict['ENGINE']
-
-    if 'sqlite' in db_engine:
-        timedelta_to_days = lambda td: td.total_seconds() / (3600 * 24)
-    else:
-        timedelta_to_days = lambda td: td  # No PostgreSQL, já é um número em dias
-
-    # Query ajustada
     agendado = ServicoJardinagemAgendado.objects.filter(
         Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
         Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
     ).annotate(
         data_atual=Now(),
-        raw_status_agendamento=ExpressionWrapper(
-            F('DataDeInicio') - F('data_atual'),
-            output_field=IntegerField() if 'postgresql' in db_engine else None  # Só força o campo se for PostgreSQL
+        status_agendamento=ExpressionWrapper(
+            (F('DataDeInicio') - F('data_atual')) / datetime.timedelta(days=1),
+            output_field=IntegerField()
         )
     ).distinct()
-
-    # Converte os valores de status_agendamento para o formato correto
-    for servico in agendado:
-        servico.status_agendamento = timedelta_to_days(servico.raw_status_agendamento)
 
     if request.method == 'GET':
         get_data = request.GET.dict()
