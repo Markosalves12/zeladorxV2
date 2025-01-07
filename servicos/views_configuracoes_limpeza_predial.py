@@ -188,7 +188,7 @@ def editar_servico_limpezapredial_configurado(request, userid, id_random):
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar serviço',
-        redirect_url_name='editar_servico_limpezapredial_configurado',
+        redirect_url_name=reverse('editar_servico_limpezapredial_configurado', kwargs={'userid': userid, 'id_random': id_random}),
         redirect_close_button=reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=True,

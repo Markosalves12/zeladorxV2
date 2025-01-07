@@ -169,7 +169,7 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
                 message=f'alterações salvas'
             )
 
-            return redirect(reverse(redirect_url_name, kwargs={'userid': request.session.get('userid', ''), 'id_random':id_random}))
+            return redirect(redirect_url_name)
 
         messages.error(
             request=request,

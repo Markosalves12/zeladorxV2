@@ -123,7 +123,7 @@ def editar_unidade(request, userid, id_random):
         id_random=id_random,
         app_name='Editar unidade',
         redirect_close_button=reverse('unidades', kwargs={'userid': userid}),
-        redirect_url_name='editar_unidade',
+        redirect_url_name=reverse('editar_unidade', kwargs={'userid': userid, 'id_random': id_random}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
         permission_desmobilize=permission_desmobilize,

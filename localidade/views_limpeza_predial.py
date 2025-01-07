@@ -122,7 +122,7 @@ def editar_localidade_limpeza_predial(request, userid, id_random):
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar localidade',
-        redirect_url_name='editar_localidade_limpeza_predial',
+        redirect_url_name=reverse('editar_localidade_limpeza_predial', kwargs={'userid': userid, 'id_random': id_random}),
         redirect_close_button=reverse('localidades_limpeza_predial', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,

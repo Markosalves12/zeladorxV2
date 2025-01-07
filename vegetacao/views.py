@@ -112,7 +112,7 @@ def editar_vegetacao(request, userid, id_random):
         id_random=id_random,
         app_name='Editar vegetação',
         redirect_close_button=reverse('vegetacao', kwargs={'userid': userid}),
-        redirect_url_name='editar_vegetacao',
+        redirect_url_name=reverse('editar_vegetacao', kwargs={'userid': userid, 'id_random': id_random}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
         permission_desmobilize=permission_desmobilize,

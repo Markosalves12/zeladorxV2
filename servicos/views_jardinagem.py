@@ -211,7 +211,7 @@ def editar_servico_jardinagem_agendado(request, userid, id_random):
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar serviço',
-        redirect_url_name='editar_servico_jardinagem_agendado',
+        redirect_url_name=reverse('editar_servico_jardinagem_agendado', kwargs={'userid': userid, 'id_random': id_random}),
         redirect_close_button=reverse('servicos_agendados_jardinagem', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         url_rehabilitate=reverse(
@@ -241,6 +241,7 @@ def realizar_servico_jardinagem_agendado(request, type, userid, id_random):
         return redirect('logout')
 
     objeto = ServicoJardinagemAgendado.objects.get(id_random=id_random)
+
     forms = FatoServicoJardinagemForms(
         initial={
             'Servico': objeto
@@ -269,7 +270,7 @@ def realizar_servico_jardinagem_agendado(request, type, userid, id_random):
                 request=request,
                 message=f'serviço, {objeto}, realizado'
             )
-            return redirect('realizar_servico_jardinagem_agendado', type, userid, userid)
+            return redirect('realizar_servico_jardinagem_agendado', type, userid, id_random)
 
         messages.error(
             request=request,

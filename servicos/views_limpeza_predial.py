@@ -11,6 +11,7 @@ from django.db.models import Case, When, Value, CharField
 from utils.utils import define_range_time
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
 
+
 def agendar_servico_limpeza_predial(request, type, userid):
     block = verify_login(request=request, userid=userid)
 
@@ -97,6 +98,7 @@ def agendar_servico_limpeza_predial(request, type, userid):
         }
     )
 
+
 def servicos_agendados_limpeza_predial(request, userid):
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
@@ -108,10 +110,12 @@ def servicos_agendados_limpeza_predial(request, userid):
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_agendados_jardinagem', kwargs={'userid': userid})})
+        tipos.insert(1, {'nome': 'Jardinagem',
+                         'link': reverse('servicos_agendados_jardinagem', kwargs={'userid': userid})})
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})})
+        tipos.insert(2, {'nome': 'Limpeza predial',
+                         'link': reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid})})
     else:
         return redirect('servicos_agendados_jardinagem', userid)
 
@@ -188,6 +192,7 @@ def servicos_agendados_limpeza_predial(request, userid):
         userid=userid
     )
 
+
 def editar_servico_limpeza_predial_agendado(request, userid, id_random):
     permission_edit = validate_permissions(
         request=request,
@@ -203,7 +208,7 @@ def editar_servico_limpeza_predial_agendado(request, userid, id_random):
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar serviço',
-        redirect_url_name='editar_servico_limpeza_predial_agendado',
+        redirect_url_name=reverse('editar_servico_limpeza_predial_agendado', kwargs={'userid': userid, 'id_random': id_random}),
         redirect_close_button=reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         url_rehabilitate=reverse(
@@ -224,6 +229,7 @@ def editar_servico_limpeza_predial_agendado(request, userid, id_random):
         ),
         userid=userid,
     )
+
 
 def realizar_servico_limpeza_predial_agendado(request, type, userid, id_random):
     block = verify_login(request=request, userid=userid)
@@ -291,6 +297,7 @@ def realizar_servico_limpeza_predial_agendado(request, type, userid, id_random):
             'permission_accompany': permission_accompany
         }
     )
+
 
 def cancelar_servico_limpeza_predial(request, userid, id_random, type):
     block = verify_login(request=request, userid=userid)

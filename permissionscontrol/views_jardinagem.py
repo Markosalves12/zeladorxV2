@@ -55,7 +55,8 @@ def permissoes_jardinagem(request, userid):
         model=PermissionsAccessJardinagem.objects.filter(
             Gerente__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Gerente__empresasecundaria__id_random__in=empresas_secundarias_ids,
-            Gerente__empresasecundaria__setor__setor='Jardinagem'
+            Gerente__empresasecundaria__setor__setor='Jardinagem',
+            Gerente__status='Mobilizado'
         ).distinct(),
         form_class=PermissionsAccessJardinagemForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
@@ -149,7 +150,7 @@ def editar_permissoes_jardinagem(request, userid, id_random):
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name=f'Editar permissões jardinagem',
-        redirect_url_name='editar_permissoes_jardinagem',
+        redirect_url_name=reverse('editar_permissoes_jardinagem', kwargs={'userid': userid, 'id_random': id_random}),
         redirect_close_button=reverse('permissoes_jardinagem', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_edit=permission_edit,

@@ -52,6 +52,7 @@ def permissions_especials(request, userid):
         model=PermissionsAccessEspecials.objects.filter(
             Gerente__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             Gerente__empresasecundaria__id_random__in=empresas_secundarias_ids,
+            Gerente__status='Mobilizado'
         ).distinct(),
         form_class=PermissionsAccessEspecialForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
@@ -125,7 +126,7 @@ def editar_permissoes_especials(request, userid, id_random):
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name=f'Editar permissoes especiais {gerente.username}',
-        redirect_url_name='editar_permissoes_especials',
+        redirect_url_name=reverse('editar_permissoes_especials', kwargs={'userid': userid, 'id_random': id_random}),
         redirect_close_button=reverse('permissions_especials', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_edit=permission_edit,

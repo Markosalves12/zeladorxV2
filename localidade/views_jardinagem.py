@@ -124,7 +124,7 @@ def editar_localidade_jardinagem(request, userid, id_random):
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar localidade',
-        redirect_url_name='editar_localidade_jardinagem',
+        redirect_url_name=reverse('editar_localidade_jardinagem', kwargs={'userid': userid, 'id_random': id_random}),
         redirect_close_button=reverse('localidades_jardinagem', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,

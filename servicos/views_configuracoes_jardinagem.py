@@ -196,7 +196,7 @@ def editar_servico_jardinagem_configurado(request, userid, id_random):
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar serviço',
-        redirect_url_name='editar_servico_jardinagem_configurado',
+        redirect_url_name=reverse('editar_servico_jardinagem_configurado', kwargs={'userid': userid, 'id_random': id_random}),
         redirect_close_button=reverse('servicos_configurados_jardinagem', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=True,
