@@ -2,13 +2,14 @@ from django.shortcuts import render, reverse, redirect
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from django.db.models.functions import Now
-from django.db.models import F, ExpressionWrapper, IntegerField
+from django.db.models import F, ExpressionWrapper, IntegerField, Q
 from calendario.utils import format_event
 from permissionscontrol.utils import validate_permissions, verify_login
 from utils.utils import aplicar_filtros_dinamicos
 from empresasecundario.utils import define_empresas
 from django.db.models import Func
-import datetime
+from gerente.models import Gerente
+# import datetime
 
 # Create your views here.
 def calendario_jardinagem(request, userid):
@@ -89,14 +90,31 @@ def calendario_jardinagem(request, userid):
         'DataDeConclusao': 'DataDeConclusao'
     }
 
+
+    auto_acompleshed = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['361: Pode acompanhar serviços agendados para si próprio']
+    )
+
     class DaysDifference(Func):
         function = 'EXTRACT'
         template = "%(function)s(DAY FROM %(expressions)s)"
 
-    agendado = ServicoJardinagemAgendado.objects.filter(
+    # Base queryset
+    agendado_queryset = ServicoJardinagemAgendado.objects.filter(
         Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
         Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-    ).annotate(
+    )
+
+    # Verificação de permissões
+    gerente = Gerente.objects.get(id_random=userid)
+    if auto_acompleshed and not gerente.superuser:
+        agendado_queryset = agendado_queryset.filter(ColaboradoresEscalados__id_random=userid)
+
+    # Adicionando anotações e refinamento final
+    agendado = agendado_queryset.annotate(
         data_atual=Now(),
         status_agendamento=ExpressionWrapper(
             DaysDifference(F('DataDeInicio') - F('data_atual')),
