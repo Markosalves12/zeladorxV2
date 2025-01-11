@@ -2,11 +2,11 @@
 {% if sform_search %}
     <form action="{{ redirect_url_name }}" method="GET" enctype="multipart/form-data">
       <div class="card-body d-flex justify-content-end">
-        <div class="d-flex" style="gap: 15px;">
+        <div class="d-flex row g-3" style="gap: 15px;">
           <!-- Renderize apenas os campos específicos -->
           {% for field in form_search.visible_fields %}
             {% if field.name in allowed_fields %}
-              <div class="d-flex flex-column" style="margin-right: 10px; text-align: center;">
+              <div class="d-flex flex-column row g-3" style="margin-right: 10px; text-align: center;">
                 <label for="{{ field.id_for_label }}" style="margin-bottom: 5px;">{{ field.label }}</label>
                 {{ field }}
               </div>

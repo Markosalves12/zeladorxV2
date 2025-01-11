@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'zeladorx.apps.ZeladorxConfig',
     'background_task',
     'kanban.apps.KanbanConfig',
+    'chats.apps.ChatsConfig',
     'storages',
 ]
 

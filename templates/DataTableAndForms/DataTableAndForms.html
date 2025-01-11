@@ -43,7 +43,8 @@
               <div class="card-body">
                 {% if permission_view %}
                   {% include 'partials/_form_search.html' %}
-                    <table class="table table-bordered">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
                         <thead>
                             <tr>
                                 {% for coluna in colunas %}
@@ -200,6 +201,7 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    </div>
                 {% else %}
                     {% include 'partials/_access_rejected.html' %}
                 {% endif %}
