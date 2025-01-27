@@ -10,9 +10,11 @@ from unidade.forms import UnidadeForms
 from unidade.models import Unidade
 from empresasecundario.utils import define_empresas
 
+from utils.utils import paginate
+
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
                  text_button_open_modal, text_button_save,  header_model,
-                 redirect_url, form_search, filtro_mapeamento, sform_search=False, userid=False,
+                 redirect_url, form_search, filtro_mapeamento,  id_random=False, sform_search=False, userid=False,
                  button_export_tittle=False, button_export_link='exportar_relatorio_de_serivos_Jardinagem_excel',
                  status=['Mobilizado'],
                  link_tipos=None, modal_button=True, configurate_gerente=False, history_rout=False,
@@ -35,11 +37,15 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
         edition_rout=edition_rout,
         history_rout=history_rout,
         userid=userid,
+        id_random=id_random,
         filtro_mapeamento=filtro_mapeamento
     )
 
     if request.method == 'POST':
-        form = form_class(request.POST, request.FILES, request=request, userid=userid)
+        if id_random:
+            form = form_class(request.POST, request.FILES, request=request, userid=userid, id_random=id_random)
+        else:
+            form = form_class(request.POST, request.FILES, request=request, userid=userid)
 
         # Adicionando a validação para o caso de 'UnidadeForms'
         if issubclass(form_class, UnidadeForms):
@@ -64,7 +70,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                     request=request,
                     message=f'{empresa_associada.nome} atingiu o número máximo de unidades permitidas ({empresa_associada.N_unidades}).'
                 )
-                return redirect(redirect_url, request.session.get('userid', ''))
+                return redirect(redirect_url)
 
         if form.is_valid():
             if configurate_gerente:
@@ -89,7 +95,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                     message=f'alterações salvas'
                 )
 
-                return redirect(redirect_url, request.session.get('userid', ''))
+                return redirect(redirect_url)
 
             else:
                 form.save()
@@ -99,7 +105,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                     message=f'alterações salvas'
                 )
 
-                return redirect(redirect_url, request.session.get('userid', ''))
+                return redirect(redirect_url)
 
         messages.error(
             request=request,
@@ -108,7 +114,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
 
     forms, dados_paginados, get_data = dt_and_forms.get_data_and_forms()
 
-    url_action = reverse(redirect_url, kwargs={'userid': request.session.get('userid', '')})
+    url_action = redirect_url
 
     return render(
         request=request,
@@ -146,7 +152,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
 def edit_generic_view(request, model_class, form_class, template_name, id_random, app_name, redirect_url_name,
                       url_desmobilize, url_rehabilitate, userid,
                       redirect_close_button, link_tipos=None, permission_edit=False, permission_exclude=False,
-                      permission_desmobilize=False, permission_rehabilitate=False,
+                      permission_desmobilize=False, permission_rehabilitate=False, id_random_especial=False
                       ):
     if not request.user.is_authenticated:
         return redirect('logout')
@@ -158,10 +164,40 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
 
     objeto = get_object_or_404(model_class, id_random=id_random)
 
-    forms = form_class(instance=objeto, request=request, userid=request.session.get('userid', ''))
+    if id_random_especial:
+        forms = form_class(
+            instance=objeto,
+            request=request,
+            userid=request.session.get('userid', ''),
+            id_random=id_random_especial
+        )
+    else:
+        forms = form_class(
+            instance=objeto,
+            request=request,
+            userid=request.session.get('userid', ''),
+        )
 
     if request.method == 'POST':
-        form = form_class(request.POST, request.FILES, instance=objeto, request=request, userid=request.session.get('userid', ''))
+        if id_random_especial:
+            form = form_class(
+                request.POST,
+                request.FILES,
+                instance=objeto,
+                request=request,
+                userid=request.session.get('userid', ''),
+                id_random=id_random_especial
+            )
+
+        else:
+            form = form_class(
+                request.POST,
+                request.FILES,
+                instance=objeto,
+                request=request,
+                userid=request.session.get('userid', '')
+            )
+
         if form.is_valid():
             form.save()
             messages.info(
@@ -227,6 +263,7 @@ def gerneric_alter_status(request, model_class, redirect_url_name, id_random, ne
 
 def generic_view_history(request, userid, id_random, app_name, objeto, objetos, type_exibition, type_export, form_search,
                          sform_search, filtro_mapeamento, export_pdf, export_excel, redirect_close_button,
+                         url_detalhamento, url_checklist,
                          foto_objeto=None, Foto=False, permission_extract_pdf=False, permission_extract_xlsx=False):
     if not request.user.is_authenticated:
         return redirect('logout')
@@ -283,6 +320,24 @@ def generic_view_history(request, userid, id_random, app_name, objeto, objetos, 
                     'type': f'{type_export}',
                 }
             ),
-            'redirect_close_button': reverse(redirect_close_button, kwargs={'userid': userid})
+            'redirect_close_button': reverse(redirect_close_button, kwargs={'userid': userid}),
+            'url_detalhamento': url_detalhamento,
+            'url_checklist': url_checklist
         }
     )
+
+
+def generic_view_detailing_checklist(request, userid, id_random, model_class, app_name):
+    dados_paginados = paginate(request, model_class, per_page=5)
+
+    return render(
+        request=request,
+        template_name='checklists/checklists.html',
+        context={
+            'app_name': f'{app_name}',
+            'dados_paginados': dados_paginados,
+        }
+    )
+
+
+

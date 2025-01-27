@@ -83,7 +83,7 @@ def gerentes_jardinagem(request, userid):
         text_button_open_modal='Adicionar novo gerente',
         text_button_save='Salvar gerente',
         header_model='Novo gerente',
-        redirect_url='gerentes_jardinagem',
+        redirect_url=reverse('gerentes_jardinagem', kwargs={'userid': userid}),
         link_tipos=tipos,
         configurate_gerente=True,
         userid=userid,
@@ -225,5 +225,7 @@ def historico_de_servicos_gerente_jardinagem(request, userid, id_random):
         Foto=False,
         redirect_close_button='gerentes_jardinagem',
         permission_extract_pdf=permission_extract_pdf,
-        permission_extract_xlsx=permission_extract_xlsx
+        permission_extract_xlsx=permission_extract_xlsx,
+        url_detalhamento='view_detailing_jardinagem',
+        url_checklist='view_detailing_checklists_jardinagem'
     )

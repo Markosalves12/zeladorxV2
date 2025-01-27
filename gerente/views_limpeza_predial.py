@@ -83,7 +83,7 @@ def gerentes_limpeza_predial(request, userid):
         text_button_open_modal='Adicionar novo gerente',
         text_button_save='Salvar gerente',
         header_model='Novo gerente',
-        redirect_url='gerentes_limpeza_predial',
+        redirect_url=reverse('gerentes_limpeza_predial', kwargs={'userid': userid}),
         configurate_gerente=True,
         link_tipos=tipos,
         userid=userid,
@@ -225,5 +225,7 @@ def historico_de_servicos_gerente_limpeza_predial(request, userid, id_random):
         Foto=False,
         redirect_close_button='gerentes_limpeza_predial',
         permission_extract_pdf=permission_extract_pdf,
-        permission_extract_xlsx=permission_extract_xlsx
+        permission_extract_xlsx=permission_extract_xlsx,
+        url_detalhamento='view_detailing_limpeza_predial',
+        url_checklist='view_detailing_limpeza_predial'
     )

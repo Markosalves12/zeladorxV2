@@ -72,7 +72,7 @@ def empresas_limpeza_predial(request, userid):
         text_button_open_modal='Adicionar nova empresa',
         text_button_save='Salvar empresa',
         header_model='Nova empresa',
-        redirect_url='empresas_limpeza_predial',
+        redirect_url=reverse('empresas_limpeza_predial', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_view=permission_view,
         permission_edit=permission_edit,

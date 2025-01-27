@@ -140,7 +140,7 @@ def define_filters(request, isnull=True):
     return get_data
 
 class DataTableAndForms:
-    def __init__(self, request, model, modelforms, per_page, columns, edition_rout, filtro_mapeamento,
+    def __init__(self, request, model, modelforms, per_page, columns, edition_rout, filtro_mapeamento, id_random,
                  history_rout=False, userid=False):
         self.request = request
         self.model = model
@@ -149,6 +149,7 @@ class DataTableAndForms:
         self.columns = columns
         self.edition_rout = edition_rout
         self.filtro_mapeamento = filtro_mapeamento
+        self.id_random = id_random
         self.history_rout = history_rout
         self.userid = userid
 
@@ -177,7 +178,9 @@ class DataTableAndForms:
             get_data = define_filters(request=self.request, isnull=False)
 
         # Cria os formulários
-        if self.userid:
+        if self.userid and self.id_random:
+            forms = self.modelforms(request=self.request, userid=self.userid, id_random=self.id_random)
+        elif self.userid:
             forms = self.modelforms(request=self.request, userid=self.userid)
         else:
             forms = self.modelforms()

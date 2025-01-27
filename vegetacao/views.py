@@ -67,7 +67,7 @@ def vegetacao(request, userid):
         text_button_open_modal='Adicionar nova vegetação',
         text_button_save='Salvar vegetação',
         header_model='Nova vegetação',
-        redirect_url='vegetacao',
+        redirect_url=reverse('vegetacao', kwargs={'userid': userid}),
         permission_view=permission_view,
         permission_edit=permission_edit,
         permission_crate=permission_crate,

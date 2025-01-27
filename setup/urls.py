@@ -65,6 +65,9 @@ urlpatterns = [
     path('', include('kanban.urls_limpeza_predial')),
 
     path('', include('chats.urls')),
+
+    path('', include('checklists.urls_jardinagem')),
+    path('', include('checklists.urls_limpeza_predial')),
 ]+static(
     settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT

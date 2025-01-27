@@ -76,7 +76,7 @@ def catalogo_de_servicos_jardinagem(request, userid):
         text_button_open_modal='Adicionar novo serviço',
         text_button_save='Salvar serviço',
         header_model='Novo serviço',
-        redirect_url='catalogo_de_servicos_jardinagem',
+        redirect_url=reverse('catalogo_de_servicos_jardinagem', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_view=permission_view,
         permission_edit=permission_edit,

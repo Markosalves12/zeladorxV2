@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.db.models import Case, When, Value, CharField
 from utils.utils import define_range_time
 from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
+from gerente.models import Gerente
 
 
 # Create your views here.
@@ -149,26 +150,41 @@ def servicos_agendados_jardinagem(request, userid):
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'novo_status', 'label': 'Status'},
         {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Checklist'},
     ]
+
+    auto_acompleshed = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['361: Pode acompanhar serviços agendados para si próprio']
+    )
 
     one_day, seven_days = define_range_time()
 
+    agendado = ServicoJardinagemAgendado.objects.filter(
+        Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+        Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        status__in=['Agendado', 'Em andamento']
+    ).distinct().annotate(
+        novo_status=Case(
+            When(status='Em andamento', then=Value('Em andamento')),
+            When(DataDeInicio__gte=one_day, DataDeInicio__lt=seven_days, then=Value('Próximo')),
+            When(status='Agendado', DataDeInicio__gte=seven_days, then=Value('Agendado')),
+            When(DataDeInicio__lt=timezone.now(), then=Value('Atrasado')),
+            default=Value('Desconhecido'),
+            output_field=CharField()
+        )
+    )
+
+    # Verificação de permissões
+    gerente = Gerente.objects.get(id_random=userid)
+    if auto_acompleshed and not gerente.superuser:
+        agendado = agendado.filter(ColaboradoresEscalados__id_random__in=[userid, 'MuUe1D3pvT3v'])
+
     return generic_view(
         request=request,
-        model=ServicoJardinagemAgendado.objects.filter(
-            Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-            Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-            status__in=['Agendado', 'Em andamento']
-        ).distinct().annotate(
-            novo_status=Case(
-                When(status='Em andamento', then=Value('Em andamento')),
-                When(DataDeInicio__gte=one_day, DataDeInicio__lt=seven_days, then=Value('Próximo')),
-                When(status='Agendado', DataDeInicio__gte=seven_days, then=Value('Agendado')),
-                When(DataDeInicio__lt=timezone.now(), then=Value('Atrasado')),
-                default=Value('Desconhecido'),
-                output_field=CharField()
-            )
-        ),
+        model=agendado,
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -187,12 +203,13 @@ def servicos_agendados_jardinagem(request, userid):
         text_button_open_modal='agendar novo serviço',
         text_button_save='agendar serviço',
         header_model='solicitar serviço',
-        redirect_url='servicos_agendados_jardinagem',
+        redirect_url=reverse('servicos_agendados_jardinagem', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_crate=permission_crate,
         permission_view=permission_view,
         permission_edit=permission_edit,
-        userid=userid
+        userid=userid,
+        history_rout='checklists_jardinagem'
     )
 
 
@@ -372,7 +389,7 @@ def view_detailing_jardinagem(request, userid, id_random):
         {'nome': 'tempo_na_area', 'label': 'Tempo na área'},
         {'nome': 'localidade', 'label': 'Localidade'},
         {'nome': 'unidade', 'label': 'Unidade'},
-        {'nome': 'localidade', 'label': 'Localidade'},
+        {'nome': 'area_atendida', 'label': 'Área'},
         {'nome': 'colaborador_envolvido', 'label': 'Colaborador envolvido'},
         {'nome': 'data_hora_chegada', 'label': 'Data e hora de chagada'},
         {'nome': 'data_hora_retorno', 'label': 'Data e hora de retorno'},

@@ -3,7 +3,7 @@ from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from django.db.models.functions import Now
 from django.db.models import F, ExpressionWrapper, IntegerField
-# from calendario.utils import format_event
+from gerente.models import Gerente
 from permissionscontrol.utils import validate_permissions, verify_login
 from utils.utils import aplicar_filtros_dinamicos
 from empresasecundario.utils import define_empresas
@@ -88,15 +88,30 @@ def kanban_jardinagem(request, userid):
         'DataDeConclusao': 'DataDeConclusao'
     }
 
+    auto_acompleshed = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['361: Pode acompanhar serviços agendados para si próprio']
+    )
 
     class DaysDifference(Func):
         function = 'EXTRACT'
         template = "%(function)s(DAY FROM %(expressions)s)"
 
-    agendado = ServicoJardinagemAgendado.objects.filter(
+    # Base queryset
+    agendado_queryset = ServicoJardinagemAgendado.objects.filter(
         Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
         Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-    ).annotate(
+    )
+
+    # Verificação de permissões
+    gerente = Gerente.objects.get(id_random=userid)
+    if auto_acompleshed and not gerente.superuser:
+        agendado_queryset = agendado_queryset.filter(ColaboradoresEscalados__id_random__in=[userid, 'MuUe1D3pvT3v'])
+
+    # Adicionando anotações e refinamento final
+    agendado = agendado_queryset.annotate(
         data_atual=Now(),
         status_agendamento=ExpressionWrapper(
             DaysDifference(F('DataDeInicio') - F('data_atual')),
@@ -107,13 +122,6 @@ def kanban_jardinagem(request, userid):
     if request.method == 'GET':
         get_data = request.GET.dict()
         agendado = aplicar_filtros_dinamicos(agendado, get_data, filtro_mapeamento)
-
-    # formatted_events = [
-    #     format_event(
-    #         servico
-    #     )
-    #     for servico in agendado
-    # ]
 
     return render(
         request=request,
@@ -128,6 +136,7 @@ def kanban_jardinagem(request, userid):
             'url_cancelamento': 'cancelar_servico_jardinagem',
             'url_conclusao': 'concluir_servico_jardinagem',
             'url_detalhamento': 'view_detailing_jardinagem',
+            'url_checklist': 'checklists_jardinagem',
             'form_search': ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
             'sform_search': True,
             'allowed_fields': list(filtro_mapeamento.keys()),

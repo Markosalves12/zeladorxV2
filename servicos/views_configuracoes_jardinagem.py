@@ -22,12 +22,14 @@ def configurar_servico_jardinagem(request, userid):
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('configurar_servico_jardinagem', kwargs={'userid': userid})})
+        tipos.insert(1, {'nome': 'Jardinagem',
+                         'link': reverse('configurar_servico_jardinagem', kwargs={'userid': userid})})
     else:
         return redirect('configurar_servico_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('configurar_servico_limpeza_predial', kwargs={'userid': userid})},)
+        tipos.insert(2, {'nome': 'Limpeza predial',
+                         'link': reverse('configurar_servico_limpeza_predial', kwargs={'userid': userid})}, )
 
     permission_crate = validate_permissions(
         request=request,
@@ -87,12 +89,14 @@ def servicos_configurados_jardinagem(request, userid):
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('servicos_configurados_jardinagem', kwargs={'userid': userid})})
+        tipos.insert(1, {'nome': 'Jardinagem',
+                         'link': reverse('servicos_configurados_jardinagem', kwargs={'userid': userid})})
     else:
         return redirect('servicos_configurados_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid})})
+        tipos.insert(2, {'nome': 'Limpeza predial',
+                         'link': reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid})})
 
     permission_view = validate_permissions(
         request=request,
@@ -154,7 +158,7 @@ def servicos_configurados_jardinagem(request, userid):
         text_button_open_modal='configurar novo serviço',
         text_button_save='configurar serviço',
         header_model='solicitar serviço',
-        redirect_url='servicos_configurados_jardinagem',
+        redirect_url=reverse('servicos_configurados_jardinagem', kwargs={'userid': userid}),
         link_tipos=tipos,
         userid=userid,
         permission_edit=permission_edit,
@@ -196,7 +200,8 @@ def editar_servico_jardinagem_configurado(request, userid, id_random):
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
         app_name='Editar serviço',
-        redirect_url_name=reverse('editar_servico_jardinagem_configurado', kwargs={'userid': userid, 'id_random': id_random}),
+        redirect_url_name=reverse('editar_servico_jardinagem_configurado',
+                                  kwargs={'userid': userid, 'id_random': id_random}),
         redirect_close_button=reverse('servicos_configurados_jardinagem', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=True,
@@ -294,5 +299,7 @@ def historico_de_servicos_configurados_jardinagem(request, userid, id_random):
         Foto=False,
         redirect_close_button='servicos_configurados_jardinagem',
         permission_extract_pdf=permission_extract_pdf,
-        permission_extract_xlsx=permission_extract_xlsx
+        permission_extract_xlsx=permission_extract_xlsx,
+        url_detalhamento='view_detailing_jardinagem',
+        url_checklist='view_detailing_jardinagem'
     )

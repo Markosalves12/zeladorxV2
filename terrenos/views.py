@@ -71,7 +71,7 @@ def terrenos(request, userid):
         text_button_open_modal='Adicionar novo terreno',
         text_button_save='Salvar terreno',
         header_model='Novo terreno',
-        redirect_url='terrenos',
+        redirect_url=reverse('terrenos', kwargs={'userid': userid}),
         permission_view=permission_view,
         permission_edit=permission_edit,
         permission_crate=permission_crate,

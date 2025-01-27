@@ -56,7 +56,9 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
         Foto=True,
         redirect_close_button='areas_jardins',
         permission_extract_pdf=permission_extract_pdf,
-        permission_extract_xlsx=permission_extract_xlsx
+        permission_extract_xlsx=permission_extract_xlsx,
+        url_detalhamento='view_detailing_jardinagem',
+        url_checklist='view_detailing_checklists_jardinagem'
     )
 
 
@@ -109,5 +111,7 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
         Foto=False,
         redirect_close_button='catalogo_de_servicos_jardinagem',
         permission_extract_pdf=permission_extract_pdf,
-        permission_extract_xlsx=permission_extract_xlsx
+        permission_extract_xlsx=permission_extract_xlsx,
+        url_detalhamento='view_detailing_jardinagem',
+        url_checklist='view_detailing_checklists_jardinagem'
     )

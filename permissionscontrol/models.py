@@ -25,16 +25,7 @@ class PermissionsJardinagem(models.Model):
         ('263: Pode excluir serviços do catálogo', '263: Pode excluir serviços do catálogo'),
         ('264: Pode desmobilizar serviços do catálogo', '264: Pode desmobilizar serviços do catálogo'),
         ('265: Pode reabilitar serviços do catálogo', '265: Pode reabilitar serviços do catálogo'),
-        # rever as empresas, se os setores serao unificados no cadastro, ou se vai ser separado
 
-        # ('270: Pode criar novas empresas', '270: Pode criar novas empresas'),
-        # ('271: Pode editar empresas', '271: Pode editar empresas'),
-        # ('272: Pode visualizar empresas', '272: Pode visualizar empresas'),
-        # ('273: Pode excluir empresas', '273: Pode excluir empresas'),
-        # ('274: Pode desmobilizar empresas', '274: Pode desmobilizar empresas'),
-        # ('275: Pode reabilitar empresas', '275: Pode reabilitar empresas'),
-
-        # rever as empresas, se os setores serao unificados no cadastro, ou se vai ser separado
         ('280: Pode criar novos colaboradores', '280: Pode criar novos colaboradores'),
         ('281: Pode editar colaboradores', '281: Pode editar colaboradores'),
         ('282: Pode visualizar colaboradores', '282: Pode visualizar colaboradores'),
@@ -51,7 +42,7 @@ class PermissionsJardinagem(models.Model):
 
         ('300: Pode editar permissões de jardinagem', '300: Pode editar permissões de jardinagem'),
         ('301: Pode visualizar permissões de jardinagem', '301: Pode visualizar permissões de jardinagem'),
-        # configurar essa permissão de extração de relatórios
+
         ('310: Pode extrair relatórios XLSX de jardinagem', '310: Pode extrair relatórios XLSX de jardinagem'),
         ('311: Pode extrair relatórios PDF de jardinagem', '311: Pode extrair relatórios PDF de jardinagem'),
 
@@ -72,20 +63,13 @@ class PermissionsJardinagem(models.Model):
         ('334: Pode desmobilizar terrenos', '334: Pode desmobilizar terrenos'),
         ('335: Pode reabilitar terrenos', '335: Pode reabilitar terrenos'),
 
-        # ('340: Pode criar novas unidades', '340: Pode criar novas unidades'),
-        # ('341: Pode editar unidades', '341: Pode editar unidades'),
-        # ('342: Pode visualizar unidades', '342: Pode visualizar unidades'),
-        # ('343: Pode excluir unidades', '343: Pode excluir unidades'),
-        # ('344: Pode desmobilizar unidades', '344: Pode desmobilizar unidades'),
-        # ('345: Pode reabilitar unidades', '345: Pode reabilitar unidades'),
-
         ('350: Pode criar novas vegetações', '350: Pode criar novas vegetações'),
         ('351: Pode editar vegetações', '351: Pode editar vegetações'),
         ('352: Pode visualizar vegetações', '352: Pode visualizar vegetações'),
         ('353: Pode excluir vegetações', '353: Pode excluir vegetações'),
         ('354: Pode desmobilizar vegetações', '354: Pode desmobilizar vegetações'),
         ('355: Pode reabilitar vegetações', '355: Pode reabilitar vegetações'),
-        # configurar essa permissão nos agendamentos
+
         ('360: Recebe serviços de jardinagem', '360: Recebe serviços de jardinagem'),
         ('361: Pode acompanhar serviços agendados para si próprio',
          '361: Pode acompanhar serviços agendados para si próprio'),
@@ -102,6 +86,11 @@ class PermissionsJardinagem(models.Model):
 
         ('390: Pode visualizar o detalhamento de serviços', '390: Pode visualizar o detalhamento de serviços'),
         ('391: Pode editar o acompanhamento de servicos', '391: Pode editar o acompanhamento de servicos'),
+
+        ('400: Pode criar novos checklists', '400: Pode criar novos checklists'),
+        ('401: Pode editar checklists', '401: Pode editar checklists'),
+        ('402: Pode visualizar checklists', '402: Pode visualizar checklists'),
+        ('403: Pode excluir checklists', '403: Pode excluir checklists'),
     ]
 
     Permissions = models.CharField(
@@ -161,15 +150,6 @@ class PermissionsLimpezaPredial(models.Model):
         ('264: Pode desmobilizar serviços do catálogo', '264: Pode desmobilizar serviços do catálogo'),
         ('265: Pode reabilitar serviços do catálogo', '265: Pode reabilitar serviços do catálogo'),
 
-        # rever as empresas, se os setores serao unificados no cadastro, ou se vai ser separado
-        # ('270: Pode criar novas empresas', '270: Pode criar novas empresas'),
-        # ('271: Pode editar empresas', '271: Pode editar empresas'),
-        # ('272: Pode visualizar empresas', '272: Pode visualizar empresas'),
-        # ('273: Pode excluir empresas', '273: Pode excluir empresas'),
-        # ('274: Pode desmobilizar empresas', '274: Pode desmobilizar empresas'),
-        # ('275: Pode reabilitar empresas', '275: Pode reabilitar empresas'),
-
-        # rever as empresas, se os setores serao unificados no cadastro, ou se vai ser separado
         ('280: Pode criar novos colaboradores', '280: Pode criar novos colaboradores'),
         ('281: Pode editar colaboradores', '281: Pode editar colaboradores'),
         ('282: Pode visualizar colaboradores', '282: Pode visualizar colaboradores'),
@@ -186,7 +166,7 @@ class PermissionsLimpezaPredial(models.Model):
 
         ('300: Pode editar permissões de limpeza predial', '300: Pode editar permissões de limpeza predial'),
         ('301: Pode visualizar permissões de limpeza predial', '301: Pode visualizar permissões de limpeza predial'),
-        # configurar essa permissão de extração de relatórios
+
         ('310: Pode extrair relatórios XLSX de limpeza predial', '310: Pode extrair relatórios XLSX de limpeza predial'),
         ('311: Pode extrair relatórios PDF de limpeza predial', '311: Pode extrair relatórios PDF de limpeza predial'),
 
@@ -200,27 +180,6 @@ class PermissionsLimpezaPredial(models.Model):
         ('327 Pode excluir serviços concluidos', '327: Pode excluir serviços concluidos'),
         ('328: Pode cancelar serviços agendados', '328: Pode cancelar serviços agendados'),
 
-        # ('330: Pode criar novos terrenos', '330: Pode criar novos terrenos'),
-        # ('331: Pode editar terrenos', '331: Pode editar terrenos'),
-        # ('332: Pode visualizar terrenos', '332: Pode visualizar terrenos'),
-        # ('333: Pode excluir terrenos', '333: Pode excluir terrenos'),
-        # ('334: Pode desmobilizar terrenos', '334: Pode desmobilizar terrenos'),
-        # ('335: Pode reabilitar terrenos', '335: Pode reabilitar terrenos'),
-
-        # ('340: Pode criar novas unidades', '340: Pode criar novas unidades'),
-        # ('341: Pode editar unidades', '341: Pode editar unidades'),
-        # ('342: Pode visualizar unidades', '342: Pode visualizar unidades'),
-        # ('343: Pode excluir unidades', '343: Pode excluir unidades'),
-        # ('344: Pode desmobilizar unidades', '344: Pode desmobilizar unidades'),
-        # ('345: Pode reabilitar unidades', '345: Pode reabilitar unidades'),
-
-        # ('350: Pode criar novas vegetações', '350: Pode criar novas vegetações'),
-        # ('351: Pode editar vegetações', '351: Pode editar vegetações'),
-        # ('352: Pode visualizar vegetações', '352: Pode visualizar vegetações'),
-        # ('353: Pode excluir vegetações', '353: Pode excluir vegetações'),
-        # ('354: Pode desmobilizar vegetações', '354: Pode desmobilizar vegetações'),
-        # ('355: Pode reabilitar vegetações', '355: Pode reabilitar vegetações'),
-        # configurar essa permissão nos agendamentos
         ('360: Recebe serviços de limpeza predial', '360: Recebe serviços de limpeza predial'),
         ('361: Pode acompanhar serviços agendados para si próprio', '361: Pode acompanhar serviços agendados para si próprio'),
 
@@ -236,6 +195,11 @@ class PermissionsLimpezaPredial(models.Model):
 
         ('390: Pode visualizar o detalhamento de serviços', '390: Pode visualizar o detalhamento de serviços'),
         ('391: Pode editar o acompanhamento de servicos', '391: Pode editar o acompanhamento de servicos'),
+
+        ('400: Pode criar novos checklists', '400: Pode criar novos checklists'),
+        ('401: Pode editar checklists', '401: Pode editar checklists'),
+        ('402: Pode visualizar checklists', '402: Pode visualizar checklists'),
+        ('403: Pode excluir checklists', '403: Pode excluir checklists'),
     ]
 
     Permissions = models.CharField(

@@ -92,12 +92,6 @@
                                         <strong>{{ event.DescricaoDoServico }}</strong>
                                       </a>
                                     </h5>
-<!--                                    <div class="card-tools">-->
-<!--                                      &lt;!&ndash; Botão para abrir o modal do serviço agendado &ndash;&gt;-->
-<!--                                      <a href="#" class="btn btn-tool" data-toggle="modal" data-target="#modal-agendado-{{ event.id }}">-->
-<!--                                        <i class="fas fa-pen"></i>-->
-<!--                                      </a>-->
-<!--                                    </div>-->
                                   </div>
                                   <div class="card-body">
                                     <p>
@@ -154,6 +148,9 @@
                                         {% if permission_accompany %}
                                           <p><a href="{% url url_acompanhamento 'kanban' userid event.id_random %}">Acompanhar evento</a></p>
                                         {% endif %}
+                                        <p>
+                                          <a href="{% url url_checklist userid event.id_random %}">Checklist</a>
+                                        </p>
                                         <div class="modal-footer">
                                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                                           {% if permission_cancel %}
@@ -249,6 +246,9 @@
                                         {% if permission_accompany %}
                                           <p><a href="{% url url_acompanhamento 'kanban' userid event.id_random %}">Acompanhar evento</a></p>
                                         {% endif %}
+                                        <p>
+                                          <a href="{% url url_checklist userid event.id_random %}">Checklist</a>
+                                        </p>
                                         <div class="modal-footer">
                                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                                           {% if permission_cancel %}
@@ -279,12 +279,6 @@
                                     <a data-toggle="modal" data-target="#modal-em-andamento-{{ event.id }}">
                                       <h5 class="card-title"><strong>{{ event.DescricaoDoServico }}</strong></h5>
                                     </a>
-<!--                                    <div class="card-tools">-->
-<!--                                      &lt;!&ndash; Botão com identificador dinâmico &ndash;&gt;-->
-<!--                                      <a href="#" class="btn btn-tool" data-toggle="modal" data-target="#modal-em-andamento-{{ event.id }}">-->
-<!--                                        <i class="fas fa-pen"></i>-->
-<!--                                      </a>-->
-<!--                                    </div>-->
                                   </div>
                                   <div class="card-body">
                                     <p>
@@ -342,6 +336,9 @@
                                           <p><a href="{% url url_acompanhamento 'kanban' userid event.id_random %}">Acompanhar evento</a></p>
                                         {% endif %}
                                         <p>
+                                          <a href="{% url url_checklist userid event.id_random %}">Checklist</a>
+                                        </p>
+                                        <p>
                                           <a href="{% url url_detalhamento userid event.id_random %}">Detalhamento</a>
                                         </p>
                                         <div class="modal-footer">
@@ -375,12 +372,6 @@
                                     <a data-toggle="modal" data-target="#modal-atrasado-{{ event.id }}">
                                       <h5 class="card-title"><strong>{{ event.DescricaoDoServico }}</strong></h5>
                                     </a>
-<!--                                    <div class="card-tools">-->
-<!--                                      &lt;!&ndash; Botão para abrir o modal do evento &ndash;&gt;-->
-<!--                                      <a href="#" class="btn btn-tool" data-toggle="modal" data-target="#modal-atrasado-{{ event.id }}">-->
-<!--                                        <i class="fas fa-pen"></i>-->
-<!--                                      </a>-->
-<!--                                    </div>-->
                                   </div>
                                   <div class="card-body">
                                     <p>
@@ -437,6 +428,9 @@
                                         {% if permission_accompany %}
                                           <p><a href="{% url url_acompanhamento 'kanban' userid event.id_random %}">Acompanhar evento</a></p>
                                         {% endif %}
+                                        <p>
+                                          <a href="{% url url_checklist userid event.id_random %}">Checklist</a>
+                                        </p>
                                         <div class="modal-footer">
                                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                                           {% if permission_cancel %}

@@ -150,7 +150,7 @@ def servicos_configurados_limpeza_predial(request, userid):
         text_button_open_modal='configurar novo serviço',
         text_button_save='configurar serviço',
         header_model='solicitar serviço',
-        redirect_url='servicos_configurados_limpeza_predial',
+        redirect_url=reverse('servicos_configurados_limpeza_predial', kwargs={'userid': userid}),
         link_tipos=tipos,
         userid=userid,
         permission_edit=permission_edit,
@@ -287,5 +287,8 @@ def historico_de_servicos_configurados_limpeza_predial(request, userid, id_rando
         Foto=False,
         redirect_close_button='servicos_configurados_limpeza_predial',
         permission_extract_pdf=permission_extract_pdf,
-        permission_extract_xlsx=permission_extract_xlsx
+        permission_extract_xlsx=permission_extract_xlsx,
+        url_detalhamento='view_detailing_limpeza_predial',
+        url_checklist='view_detailing_limpeza_predial'
     )
+

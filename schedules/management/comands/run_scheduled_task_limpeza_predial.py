@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.utils.timezone import make_aware
 from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado, ServicoLimpezaPredialConfigurado
 from areas.models_limpeza_predial import AreaLimpezaPredial
@@ -7,13 +7,12 @@ from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpeza
 
 def agendar_servicos_limpeza_predial_configurados():
     objects = ServicoLimpezaPredialConfigurado.objects.filter(
-        status__in=['Mobilizado'],
-        Areas__status__in=['Mobilizado'],
-        Areas__localidade__status__in=['Mobilizado'],
-        Areas__localidade__unidade__status__in=['Mobilizado']
+        status='Mobilizado',
+        Areas__status='Mobilizado',
+        Areas__localidade__status='Mobilizado',
+        Areas__localidade__unidade__status='Mobilizado'
     )
 
-    # Mapeamento para dias em português
     dias_semana_portugues = {
         'Monday': 'Segunda-Feira',
         'Tuesday': 'Terça-Feira',
@@ -24,57 +23,55 @@ def agendar_servicos_limpeza_predial_configurados():
         'Sunday': 'Domingo',
     }
 
-    for obj in objects:
-        # Obter a área correspondente
-        area = AreaLimpezaPredial.objects.get(id_random=obj.Areas.id_random)
+    dia_atual_semana = datetime.now().strftime('%A')
 
-        # Filtrar apenas os serviços escalados que estão mobilizados
+    for obj in objects:
+        try:
+            area = AreaLimpezaPredial.objects.get(id_random=obj.Areas.id_random)
+        except AreaLimpezaPredial.DoesNotExist:
+            print(f"Área com id_random {obj.Areas.id_random} não encontrada. Pulando...")
+            continue
+
         ServicosEscalados = CatalogodeServicoLimpezaPredial.objects.filter(
             id_random__in=[servico.id_random for servico in obj.ServicosEscalados.all()],
-            status='Mobilizado'  # Filtrar serviços apenas com status 'Mobilizado'
+            status='Mobilizado'
         )
 
-        # Se não houver serviços escalados mobilizados, ignorar o agendamento
         if not ServicosEscalados.exists():
-            continue  # Pula para o próximo objeto, já que não há serviços aplicáveis
+            print(f"Objeto {obj.id_random} não possui serviços escalados mobilizados. Pulando...")
+            continue
 
         idconfigurate = obj.id_random
         diasaseremrealizado = obj.diasaseremrealizado.all()
-        tempomedioplanejado = obj.tempomedioplanejado
-        horarios = [
-            obj.horario_1, obj.horario_2, obj.horario_3, obj.horario_4,
-            obj.horario_5, obj.horario_6, obj.horario_7,
-        ]
+        tempomedioplanejado = obj.tempomedioplanejado or timedelta(minutes=30)  # Se None, usa 30 min como padrão
 
-        # Obtém o dia da semana atual
-        dia_atual_semana = datetime.now().strftime('%A')
+        horarios = [h for h in [
+            obj.horario_1, obj.horario_2, obj.horario_3,
+            obj.horario_4, obj.horario_5, obj.horario_6, obj.horario_7
+        ] if h]
 
-        # Validação se o dia atual está na lista de dias para realizar o serviço
-        if dias_semana_portugues.get(dia_atual_semana) in [dia.diasdasemana for dia in diasaseremrealizado]:
-            for horario in horarios:
-                if horario:
-                    # Combina a data atual com o horário especificado
-                    data_atual = datetime.now().date()
-                    data_inicio = make_aware(datetime.combine(data_atual, horario))
+        if not horarios:
+            print(f"Objeto {obj.id_random} não possui horários válidos. Pulando...")
+            continue
 
-                    # Calcula a data de conclusão
-                    data_conclusao = data_inicio + tempomedioplanejado
+        if dias_semana_portugues.get(dia_atual_semana) not in [dia.diasdasemana for dia in diasaseremrealizado]:
+            continue  # Ignora se não está programado para hoje
 
-                    # Criação do novo objeto agendado
-                    new_service_scheduled = ServicoLimpezaPredialAgendado(
-                        id_configuracao=idconfigurate,
-                        DescricaoDoServico=", ".join(
-                            servicoescalado.nome
-                            for servicoescalado in ServicosEscalados
-                        )[:199],
-                        Areas=area,
-                        DataDeInicio=data_inicio,
-                        DataDeConclusao=data_conclusao,
-                        TipoServico='Automático'
-                    )
+        for horario in horarios:
+            data_atual = datetime.now().date()
+            data_inicio = make_aware(datetime.combine(data_atual, horario))
+            data_conclusao = data_inicio + tempomedioplanejado
 
-                    # Salva o objeto de agendamento
-                    new_service_scheduled.save()
+            new_service_scheduled = ServicoLimpezaPredialAgendado(
+                id_configuracao=idconfigurate,
+                DescricaoDoServico=", ".join(servicoescalado.nome for servicoescalado in ServicosEscalados)[:199],
+                Areas=area,
+                DataDeInicio=data_inicio,
+                DataDeConclusao=data_conclusao,
+                TipoServico='Automático',
+            )
 
-                    # Adiciona todos os serviços escalados ao campo ManyToMany
-                    new_service_scheduled.ServicosEscalados.set(ServicosEscalados)
+            new_service_scheduled.save()
+            new_service_scheduled.ServicosEscalados.set(ServicosEscalados)
+
+            print(f"Serviço de limpeza predial agendado para {data_inicio} na área {area.id_random}")

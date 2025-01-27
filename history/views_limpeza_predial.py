@@ -64,7 +64,9 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
         Foto=True,
         redirect_close_button='areas_limpeza_predial',
         permission_extract_pdf=permission_extract_pdf,
-        permission_extract_xlsx=permission_extract_xlsx
+        permission_extract_xlsx=permission_extract_xlsx,
+        url_detalhamento='view_detailing_limpeza_predial',
+        url_checklist='view_detailing_checklists_limpeza_predial'
     )
 
 
@@ -125,5 +127,7 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
         Foto=False,
         redirect_close_button='catalogo_de_servicos_limpeza_predial',
         permission_extract_pdf=permission_extract_pdf,
-        permission_extract_xlsx=permission_extract_xlsx
+        permission_extract_xlsx=permission_extract_xlsx,
+        url_detalhamento='view_detailing_limpeza_predial',
+        url_checklist='view_detailing_checklists_limpeza_predial'
     )

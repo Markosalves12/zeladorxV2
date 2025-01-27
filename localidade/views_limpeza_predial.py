@@ -77,7 +77,7 @@ def localidades_limpeza_predial(request, userid):
         text_button_open_modal='Adicionar nova localidade',
         text_button_save='Salvar localidade',
         header_model='Nova localidade',
-        redirect_url='localidades_limpeza_predial',
+        redirect_url=reverse('localidades_limpeza_predial', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_view=permission_view,
         permission_edit=permission_edit,

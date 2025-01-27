@@ -1,7 +1,7 @@
-{% load static %}
+  {% load static %}
 {% load custom_filters %}
 <!DOCTYPE html>
-<html lang="en">
+  <html lang="en" xmlns="http://www.w3.org/1999/html">
 {% include 'partials/_header.html' %}
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->
@@ -73,12 +73,9 @@
                   <span class="bg-green">Concluido {{ dado.data_de_conclusao }}</span>
                 {% endif %}
               </div>
-              <!-- /.timeline-label -->
-              <!-- timeline item -->
               <div>
                 <i class="fas fa-message bg-blue"></i>
                 <div class="timeline-item">
-<!--                  <span class="time"><i class="fas fa-clock"></i> 12:05</span>-->
                   <h3 class="timeline-header"><a href="#"></a> Descrição </h3>
                   {% if type_exibition == 'jardinagem_agendado' %}
                     <div class="timeline-body">
@@ -117,10 +114,34 @@
                     </div>
                   {% endif %}
 
-<!--                  <div class="timeline-footer">-->
-<!--                    <a class="btn btn-primary btn-sm">Detalhamento da execução</a>-->
-<!--                    <a class="btn btn-danger btn-sm">Deletar</a>-->
-<!--                  </div>-->
+
+                  {% if type_exibition == 'fato_limpeza_predial' or type_exibition == 'fato_jardinagem'%}
+                    <div class="timeline-footer">
+                      <a href="{% url url_detalhamento userid dado.id_random_agendamento %}">
+                        <button type="button" class="btn btn-primary btn-sm">
+                          Detalhamento da execução
+                        </button>
+                      </a>
+                      <a href="{% url url_checklist userid dado.id_random_agendamento %}">
+                        <button type="button" class="btn btn-primary btn-sm">
+                          Checklists
+                        </button>
+                      </a>
+                    </div>
+                  {% else %}
+                    <div class="timeline-footer">
+                      <a href="{% url url_detalhamento userid dado.id_random %}">
+                        <button type="button" class="btn btn-primary btn-sm">
+                          Detalhamento da execução
+                        </button>
+                      </a>
+                      <a href="{% url url_checklist userid dado.id_random %}">
+                        <button type="button" class="btn btn-primary btn-sm">
+                          Checklists
+                        </button>
+                      </a>
+                    </div>
+                  {% endif %}
                 </div>
               </div>
               <!-- END timeline item -->
@@ -128,7 +149,6 @@
               <div>
                 <i class="fa fa-camera bg-purple"></i>
                 <div class="timeline-item">
-<!--                  <span class="time"><i class="fas fa-clock"></i> 2 days ago</span>-->
                   <h3 class="timeline-header"><a href="#"></a> Fotos</h3>
                   <div class="timeline-body">
                     {% if type_exibition == 'jardinagem_agendado' %}
@@ -189,7 +209,6 @@
           </div>
         </div>
           {% include 'partials/_paginate.html' %}
-
       </div>
       <!-- /.timeline -->
     </section>

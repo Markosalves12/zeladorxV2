@@ -68,7 +68,7 @@ def permissions_especials(request, userid):
         text_button_open_modal='Adicionar novo gestor',
         text_button_save='Salvar permissões',
         header_model='Novo gestor',
-        redirect_url='permissions_especials',
+        redirect_url=reverse('permissions_especials', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_view=permission_view,
         permission_edit=permission_edit,
@@ -89,8 +89,8 @@ def editar_permissoes_especials(request, userid, id_random):
         Gerente__id_random=userid
     ).first()
 
-    gerente = Gerente.objects.get(
-        id_random=userid
+    gerente = PermissionsAccessEspecials.objects.get(
+        id_random=id_random
     )
 
     permission_edit = validate_permissions(
@@ -105,19 +105,47 @@ def editar_permissoes_especials(request, userid, id_random):
 
     tipos = [
         {'nome': 'Editar permissões', 'link': ''},
-        {'nome': 'Especiais', 'link': reverse('editar_permissoes_especials', kwargs={'userid': userid,
-                                                                                     'id_random': permissions_instance_especials.id_random})},
+        {
+            'nome': 'Especiais',
+            'link': reverse(
+                'editar_permissoes_especials',
+                kwargs={
+                    'userid': userid,
+                    'id_random': permissions_instance_especials.id_random
+                }
+            )
+        },
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('editar_permissoes_jardinagem',
-                                               kwargs={'userid': userid,
-                                                       'id_random': permissions_instance_jardinagem.id_random})},)
+        tipos.insert(
+            1,
+            {
+                'nome': 'Jardinagem',
+                'link': reverse(
+                    'editar_permissoes_jardinagem',
+                    kwargs={
+                        'userid': userid,
+                        'id_random': permissions_instance_jardinagem.id_random
+                    }
+                )
+            },
+        )
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2, {'nome': 'Limpeza predial', 'link': reverse('editar_permissoes_limpeza_predial',
-                                                    kwargs={'userid': userid,
-                                                            'id_random': permissions_instance_limpeza_predial.id_random})})
+        tipos.insert(
+            2,
+            {
+                'nome': 'Limpeza predial',
+                'link': reverse(
+                    'editar_permissoes_limpeza_predial',
+                    kwargs={
+                        'userid': userid,
+                        'id_random': permissions_instance_limpeza_predial.id_random
+                    }
+                )
+            }
+        )
 
     return edit_generic_view(
         request=request,
@@ -125,12 +153,12 @@ def editar_permissoes_especials(request, userid, id_random):
         form_class=PermissionsAccessEspecialForms,
         template_name='DataTableAndForms/EditObject.html',
         id_random=id_random,
-        app_name=f'Editar permissoes especiais {gerente.username}',
+        app_name=f'Editar permissoes especiais',
         redirect_url_name=reverse('editar_permissoes_especials', kwargs={'userid': userid, 'id_random': id_random}),
         redirect_close_button=reverse('permissions_especials', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_edit=permission_edit,
         url_desmobilize=None,
         url_rehabilitate=None,
-        userid=userid
+        userid=userid,
     )

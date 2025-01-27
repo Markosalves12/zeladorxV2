@@ -147,6 +147,7 @@ def servicos_agendados_limpeza_predial(request, userid):
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'novo_status', 'label': 'Status'},
         {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'historico', 'label': 'Checklist'},
     ]
 
     one_day, seven_days = define_range_time()
@@ -184,12 +185,13 @@ def servicos_agendados_limpeza_predial(request, userid):
         text_button_open_modal='agendar novo serviço',
         text_button_save='agendar serviço',
         header_model='solicitar serviço',
-        redirect_url='servicos_agendados_limpeza_predial',
+        redirect_url=reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_view=permission_view,
         permission_edit=permission_edit,
         permission_crate=permission_crate,
-        userid=userid
+        userid=userid,
+        history_rout='checklists_limpeza_predial'
     )
 
 
@@ -361,7 +363,7 @@ def view_detailing_limpeza_predial(request, userid, id_random):
         {'nome': 'tempo_na_area', 'label': 'Tempo na área'},
         {'nome': 'localidade', 'label': 'Localidade'},
         {'nome': 'unidade', 'label': 'Unidade'},
-        {'nome': 'localidade', 'label': 'Localidade'},
+        {'nome': 'area_atendida', 'label': 'Área'},
         {'nome': 'colaborador_envolvido', 'label': 'Colaborador envolvido'},
         {'nome': 'data_hora_chegada', 'label': 'Data e hora de chagada'},
         {'nome': 'data_hora_retorno', 'label': 'Data e hora de retorno'},

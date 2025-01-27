@@ -72,7 +72,7 @@ def permissoes_jardinagem(request, userid):
         text_button_open_modal='Adicionar novo gestor',
         text_button_save='Salvar permissões',
         header_model='Novo gestor',
-        redirect_url='permissoes_jardinagem',
+        redirect_url=reverse('permissoes_jardinagem', kwargs={'userid': userid}),
         link_tipos=tipos,
         permission_view=permission_view,
         permission_edit=permission_edit,
@@ -96,9 +96,9 @@ def editar_permissoes_jardinagem(request, userid, id_random):
         Gerente__id_random=userid
     ).first()
 
-    # gerente = Gerente.objects.get(
-    #     id_random=userid
-    # )
+    gerente = PermissionsAccessJardinagem.objects.get(
+        id_random=id_random
+    )
 
     tipos = [
         {'nome': 'Editar permissões', 'link': ''},
@@ -115,26 +115,36 @@ def editar_permissoes_jardinagem(request, userid, id_random):
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1,         {
-            'nome': 'Jardinagem',
-            'link': reverse(
-                'editar_permissoes_jardinagem',
-                kwargs={'userid': userid, 'id_random': permissions_instance_jardinagem.id_random})
-        },)
+        tipos.insert(
+            1,
+            {
+                'nome': 'Jardinagem',
+                'link': reverse(
+                    'editar_permissoes_jardinagem',
+                    kwargs={
+                        'userid': userid,
+                        'id_random': permissions_instance_jardinagem.id_random
+                    }
+                )
+            }
+        )
     else:
         return redirect('permissoes_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
-        tipos.insert(2,{
-            'nome': 'Limpeza predial',
-            'link': reverse(
-                'editar_permissoes_limpeza_predial',
-                kwargs={
-                    'userid': userid,
-                    'id_random': permissions_instance_limpeza_predial.id_random
-                }
-            )
-        })
+        tipos.insert(
+            2,
+            {
+                'nome': 'Limpeza predial',
+                'link': reverse(
+                    'editar_permissoes_limpeza_predial',
+                    kwargs={
+                        'userid': userid,
+                        'id_random': permissions_instance_limpeza_predial.id_random
+                    }
+                )
+            }
+        )
 
     permission_edit = validate_permissions(
         request=request,
@@ -156,5 +166,5 @@ def editar_permissoes_jardinagem(request, userid, id_random):
         permission_edit=permission_edit,
         url_desmobilize=None,
         url_rehabilitate=None,
-        userid=userid
+        userid=userid,
     )

@@ -9,7 +9,6 @@ from utils.utils import aplicar_filtros_dinamicos
 from empresasecundario.utils import define_empresas
 from django.db.models import Func
 from gerente.models import Gerente
-# import datetime
 
 # Create your views here.
 def calendario_jardinagem(request, userid):
@@ -111,7 +110,7 @@ def calendario_jardinagem(request, userid):
     # Verificação de permissões
     gerente = Gerente.objects.get(id_random=userid)
     if auto_acompleshed and not gerente.superuser:
-        agendado_queryset = agendado_queryset.filter(ColaboradoresEscalados__id_random=userid)
+        agendado_queryset = agendado_queryset.filter(ColaboradoresEscalados__id_random__in=[userid, 'MuUe1D3pvT3v'])
 
     # Adicionando anotações e refinamento final
     agendado = agendado_queryset.annotate(
@@ -146,6 +145,7 @@ def calendario_jardinagem(request, userid):
             'url_cancelamento': 'cancelar_servico_jardinagem',
             'url_conclusao': 'concluir_servico_jardinagem',
             'url_detalhamento': 'view_detailing_jardinagem',
+            'url_checklist': 'checklists_jardinagem',
             'form_search': ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
             'sform_search': True,
             'allowed_fields': list(filtro_mapeamento.keys()),
