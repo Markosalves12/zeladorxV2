@@ -10,7 +10,8 @@ def agendar_servicos_limpeza_predial_configurados():
         status='Mobilizado',
         Areas__status='Mobilizado',
         Areas__localidade__status='Mobilizado',
-        Areas__localidade__unidade__status='Mobilizado'
+        Areas__localidade__unidade__status='Mobilizado',
+        ServicosEscalados__status='Mobilizado'
     )
 
     dias_semana_portugues = {
@@ -24,6 +25,9 @@ def agendar_servicos_limpeza_predial_configurados():
     }
 
     dia_atual_semana = datetime.now().strftime('%A')
+
+    # Filtrar apenas os serviços programados para o dia atual
+    objects = objects.filter(diasaseremrealizado__diasdasemana=dias_semana_portugues[dia_atual_semana])
 
     for obj in objects:
         try:
@@ -42,8 +46,7 @@ def agendar_servicos_limpeza_predial_configurados():
             continue
 
         idconfigurate = obj.id_random
-        diasaseremrealizado = obj.diasaseremrealizado.all()
-        tempomedioplanejado = obj.tempomedioplanejado or timedelta(minutes=30)  # Se None, usa 30 min como padrão
+        tempomedioplanejado = obj.tempomedioplanejado or timedelta(minutes=30)
 
         horarios = [h for h in [
             obj.horario_1, obj.horario_2, obj.horario_3,
@@ -53,9 +56,6 @@ def agendar_servicos_limpeza_predial_configurados():
         if not horarios:
             print(f"Objeto {obj.id_random} não possui horários válidos. Pulando...")
             continue
-
-        if dias_semana_portugues.get(dia_atual_semana) not in [dia.diasdasemana for dia in diasaseremrealizado]:
-            continue  # Ignora se não está programado para hoje
 
         for horario in horarios:
             data_atual = datetime.now().date()

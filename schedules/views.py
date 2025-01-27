@@ -7,8 +7,8 @@ import threading
 
 def iniciar_schedule():
     # Adiciona os agendamentos
-    schedule.every().day.at('00:10').do(agendar_servicos_limpeza_predial_configurados)
-    schedule.every().day.at('00:10').do(agendar_servicos_jardinagem_configurados)
+    schedule.every().day.at('00:15').do(agendar_servicos_limpeza_predial_configurados)
+    schedule.every().day.at('00:15').do(agendar_servicos_jardinagem_configurados)
 
     while True:
         schedule.run_pending()
