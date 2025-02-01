@@ -34,13 +34,13 @@ def agendar_servicos_jardinagem_configurados():
         try:
             area = AreasJardins.objects.get(id_random=obj.Areas.id_random)
         except AreasJardins.DoesNotExist:
-            print(f"Área {obj.Areas.id_random} não encontrada. Pulando...")
+            # print(f"Área {obj.Areas.id_random} não encontrada. Pulando...")
             continue
 
         ServicosEscalados = obj.ServicosEscalados.filter(status='Mobilizado')
 
         if not ServicosEscalados.exists():
-            print(f"Configuração {obj.id_random} não tem serviços mobilizados. Pulando...")
+            # print(f"Configuração {obj.id_random} não tem serviços mobilizados. Pulando...")
             continue
 
         idconfigurate = obj.id_random
@@ -49,7 +49,7 @@ def agendar_servicos_jardinagem_configurados():
 
         # Aplica o filtro para garantir que só agende se for para hoje
         if dia_atual_portugues not in diasaseremrealizado:
-            print(f"Configuração {obj.id_random} não é para hoje. Pulando...")
+            # print(f"Configuração {obj.id_random} não é para hoje. Pulando...")
             continue
 
         horarios = [h for h in [
@@ -58,7 +58,7 @@ def agendar_servicos_jardinagem_configurados():
         ] if h]
 
         if not horarios:
-            print(f"Configuração {obj.id_random} não tem horários válidos. Pulando...")
+            # print(f"Configuração {obj.id_random} não tem horários válidos. Pulando...")
             continue
 
         for horario in horarios:
@@ -81,4 +81,4 @@ def agendar_servicos_jardinagem_configurados():
             if gerente_padrao:
                 new_service_scheduled.ColaboradoresEscalados.set([gerente_padrao])
 
-            print(f"Serviço agendado para {data_inicio} na área {area.id_random}")
+            # print(f"Serviço agendado para {data_inicio} na área {area.id_random}")

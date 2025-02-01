@@ -12,7 +12,7 @@ def agendar_servicos_limpeza_predial_configurados():
         Areas__localidade__status='Mobilizado',
         Areas__localidade__unidade__status='Mobilizado',
         ServicosEscalados__status='Mobilizado'
-    )
+    ).distinct()
 
     dias_semana_portugues = {
         'Monday': 'Segunda-Feira',
@@ -33,7 +33,7 @@ def agendar_servicos_limpeza_predial_configurados():
         try:
             area = AreaLimpezaPredial.objects.get(id_random=obj.Areas.id_random)
         except AreaLimpezaPredial.DoesNotExist:
-            print(f"Área com id_random {obj.Areas.id_random} não encontrada. Pulando...")
+            # print(f"Área com id_random {obj.Areas.id_random} não encontrada. Pulando...")
             continue
 
         ServicosEscalados = CatalogodeServicoLimpezaPredial.objects.filter(
@@ -42,7 +42,7 @@ def agendar_servicos_limpeza_predial_configurados():
         )
 
         if not ServicosEscalados.exists():
-            print(f"Objeto {obj.id_random} não possui serviços escalados mobilizados. Pulando...")
+            # print(f"Objeto {obj.id_random} não possui serviços escalados mobilizados. Pulando...")
             continue
 
         idconfigurate = obj.id_random
@@ -54,7 +54,7 @@ def agendar_servicos_limpeza_predial_configurados():
         ] if h]
 
         if not horarios:
-            print(f"Objeto {obj.id_random} não possui horários válidos. Pulando...")
+            # print(f"Objeto {obj.id_random} não possui horários válidos. Pulando...")
             continue
 
         for horario in horarios:
@@ -74,4 +74,4 @@ def agendar_servicos_limpeza_predial_configurados():
             new_service_scheduled.save()
             new_service_scheduled.ServicosEscalados.set(ServicosEscalados)
 
-            print(f"Serviço de limpeza predial agendado para {data_inicio} na área {area.id_random}")
+            # print(f"Serviço de limpeza predial agendado para {data_inicio} na área {area.id_random}")
