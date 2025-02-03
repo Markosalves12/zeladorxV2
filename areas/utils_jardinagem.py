@@ -5,63 +5,6 @@ from dashboards.data_visualization_jardinagem import data_visualization_jardinag
 from django.db.models import Sum
 
 
-# def collect_dados_areas_jardinagem(request, userid):
-#     empresas = define_empresas(request=request, userid=userid)
-#     empresas_primarias_ids = empresas['empresas_primarias_ids']
-#     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
-#
-#     dados = AreasJardins.objects.all().annotate(
-#         nome_area=ExpressionWrapper(
-#             F('nome'),
-#             output_field=CharField()
-#         ),
-#         area_total=ExpressionWrapper(
-#             F('dimensao'),
-#             output_field=CharField()
-#         ),
-#         terrenos=ExpressionWrapper(
-#             F('Terreno__nome'),
-#             output_field=CharField()
-#         ),
-#         Vegetacao=ExpressionWrapper(
-#             F('vegetacao__nome'),
-#             output_field=CharField()
-#         ),
-#         Periodicidade=ExpressionWrapper(
-#             F('periodicidade'),
-#             output_field=CharField()
-#         ),
-#         Foto=ExpressionWrapper(
-#             F('foto'),
-#             output_field=CharField()
-#         ),
-#         Localidade=ExpressionWrapper(
-#             F('localidade__nome'),
-#             output_field=CharField()
-#         ),
-#         latitude_media=ExpressionWrapper(
-#             F('localidade__lat_med'),
-#             output_field=FloatField()
-#         ),
-#         longitude_media=ExpressionWrapper(
-#             F('localidade__long_med'),
-#             output_field=FloatField()
-#         ),
-#         Unidade=ExpressionWrapper(
-#             F('localidade__unidade__nome'),
-#             output_field=CharField()
-#         ),
-#         Status=ExpressionWrapper(
-#             F('status'),
-#             output_field=CharField()
-#         ),
-#     ).distinct().filter(
-#         localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-#         localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-#     )
-#
-#     return dados
-
 def data_visualization_jardinagem_indicadores(request, userid, dados):
     # Obter as unidades distintas
     unidades = dados.values_list('localidade__unidade__nome', flat=True).distinct().count()

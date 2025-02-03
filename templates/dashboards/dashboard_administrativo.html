@@ -165,10 +165,10 @@
                 <div class="card-body">
                   <div class="tab-content p-0">
                     <!-- Morris chart - Sales -->
-                    <div class="chart tab-pane active" id="servicolocalidade-agendado" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane active" id="servicolocalidade-agendado" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                         {{ fig_area_localidades_mobilizadas | safe }}
                      </div>
-                    <div class="chart tab-pane" id="servicolocalidade-emandamento" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="servicolocalidade-emandamento" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_localidades_desmobilizadas | safe }}
                     </div>
                   </div>
@@ -197,10 +197,10 @@
                 <div class="card-body">
                   <div class="tab-content p-0">
                     <!-- Morris chart - Sales -->
-                    <div class="chart tab-pane active" id="servicoarea-agendado" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane active" id="servicoarea-agendado" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                         {{ fig_area_terrenos_mobilizados | safe }}
                      </div>
-                    <div class="chart tab-pane" id="servicoarea-emandamento" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="servicoarea-emandamento" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_terrenos_desmobilizados | safe }}
                     </div>
                   </div>
@@ -232,10 +232,10 @@
                   <div class="card-body">
                     <div class="tab-content p-0">
                       <!-- Morris chart - Sales -->
-                      <div class="chart tab-pane active" id="servicocolaborador-agendado" style="position: relative; height: 300px;">
+                      <div class="chart tab-pane active" id="servicocolaborador-agendado" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                           {{ fig_area_vegetacao_mobilizadas | safe }}
                        </div>
-                      <div class="chart tab-pane" id="servicocolaborador-emandamento" style="position: relative; height: 300px;">
+                      <div class="chart tab-pane" id="servicocolaborador-emandamento" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                         {{ fig_area_vegetacao_desmobilizadas | safe }}
                       </div>
                     </div>
@@ -257,7 +257,7 @@
                 <div class="card-body">
                   <div class="tab-content p-0">
                     <!-- Morris chart - Sales -->
-                    <div >
+                    <div style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_periodicidade | safe }}
                     </div>
                   </div>

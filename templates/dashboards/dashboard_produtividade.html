@@ -139,17 +139,16 @@
                 <div class="card-body">
                   <div class="tab-content p-0">
                     <!-- Morris chart - Sales -->
-                    <div class="chart tab-pane active" id="revenue-chart"
-                         style="position: relative; height: 300px;">
+                    <div class="chart tab-pane active" id="revenue-chart" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                         {{ fig_area_terreno_agendados | safe }}
                      </div>
-                    <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="sales-chart" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_terreno_em_andamento | safe }}
                     </div>
-                    <div class="chart tab-pane" id="sales-chart2" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="sales-chart2" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_terreno_proximo | safe }}
                     </div>
-                    <div class="chart tab-pane" id="sales-chart3" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="sales-chart3" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_terreno_atrasado | safe }}
                     </div>
                   </div>
@@ -184,16 +183,16 @@
                 <div class="card-body">
                   <div class="tab-content p-0">
                     <!-- Morris chart - Sales -->
-                    <div class="chart tab-pane active" id="servicolocalidade-agendado" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane active" id="servicolocalidade-agendado" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                         {{ fig_area_localidade_agendados | safe }}
                      </div>
-                    <div class="chart tab-pane" id="servicolocalidade-emandamento" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="servicolocalidade-emandamento" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_localidade_em_andamento | safe }}
                     </div>
-                    <div class="chart tab-pane" id="servicolocalidade-proximo" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="servicolocalidade-proximo" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_localidade_proximo | safe }}
                     </div>
-                    <div class="chart tab-pane" id="servicolocalidade-atrasado" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="servicolocalidade-atrasado" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_localidade_atrasado | safe }}
                     </div>
                   </div>
@@ -228,16 +227,16 @@
                 <div class="card-body">
                   <div class="tab-content p-0">
                     <!-- Morris chart - Sales -->
-                    <div class="chart tab-pane active" id="servicoarea-agendado" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane active" id="servicoarea-agendado" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                         {{ fig_area_area_agendados | safe }}
                      </div>
-                    <div class="chart tab-pane" id="servicoarea-emandamento" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="servicoarea-emandamento" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_area_em_andamento | safe }}
                     </div>
-                    <div class="chart tab-pane" id="servicoarea-proximo" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="servicoarea-proximo" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_area_proximo | safe }}
                     </div>
-                    <div class="chart tab-pane" id="servicoarea-atrasado" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="servicoarea-atrasado" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_area_atrasado | safe }}
                     </div>
                   </div>
@@ -275,16 +274,16 @@
                 <div class="card-body">
                   <div class="tab-content p-0">
                     <!-- Morris chart - Sales -->
-                    <div class="chart tab-pane active" id="servicocolaborador-agendado" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane active" id="servicocolaborador-agendado" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                         {{ fig_area_colaborador_agendados | safe }}
                      </div>
-                    <div class="chart tab-pane" id="servicocolaborador-emandamento" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="servicocolaborador-emandamento" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_colaborador_em_andamento | safe }}
                     </div>
-                    <div class="chart tab-pane" id="servicocolaborador-proximo" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="servicocolaborador-proximo" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_colaborador_proximo | safe }}
                     </div>
-                    <div class="chart tab-pane" id="servicocolaborador-atrasado" style="position: relative; height: 300px;">
+                    <div class="chart tab-pane" id="servicocolaborador-atrasado" style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_area_colaborador_atrasado | safe }}
                     </div>
                   </div>
@@ -306,7 +305,7 @@
                 <div class="card-body">
                   <div class="tab-content p-0">
                     <!-- Morris chart - Sales -->
-                    <div >
+                    <div style="position: relative; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
                       {{ fig_mes_html | safe }}
                     </div>
                   </div>
