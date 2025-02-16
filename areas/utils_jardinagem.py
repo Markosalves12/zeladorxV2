@@ -1,6 +1,3 @@
-# from areas.models_jardinagem import AreasJardins
-# from django.db.models import F, ExpressionWrapper, CharField, FloatField
-# from empresasecundario.utils import define_empresas
 from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_graphs
 from django.db.models import Sum
 

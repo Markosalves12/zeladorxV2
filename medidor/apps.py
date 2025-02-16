@@ -1,8 +1,6 @@
 from django.apps import AppConfig
 
-def ready(self):
-    import chats.signals
 
-class ChatsConfig(AppConfig):
+class MedidorConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'chats'
+    name = 'medidor'

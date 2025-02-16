@@ -68,6 +68,8 @@ urlpatterns = [
 
     path('', include('checklists.urls_jardinagem')),
     path('', include('checklists.urls_limpeza_predial')),
+
+    path('', include('medidor.urls')),
 ]+static(
     settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT

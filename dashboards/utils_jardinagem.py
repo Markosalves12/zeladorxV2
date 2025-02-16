@@ -4,11 +4,20 @@ from django.db.models.functions import Now
 from empresasecundario.utils import define_empresas
 from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_graphs
 from utils.utils import define_range_time
+from permissionscontrol.utils import validate_permissions
+from gerente.models import Gerente
 
 def colect_dados_jardinagem(request, userid):
     empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+    auto_acompleshed = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['361: Pode acompanhar serviços agendados para si próprio']
+    )
 
     dados = ServicoJardinagemAgendado.objects.all().annotate(
         data_atual=Now(),
@@ -21,6 +30,10 @@ def colect_dados_jardinagem(request, userid):
         Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
         status__in=['Agendado', 'Em andamento']
     )
+
+    gerente = Gerente.objects.get(id_random=userid)
+    if auto_acompleshed and not gerente.superuser:
+        dados = dados.filter(ColaboradoresEscalados__id_random__in=[userid, 'MuUe1D3pvT3v'])
 
     return dados
 
@@ -233,5 +246,3 @@ def graphs_jardinagem_to_html(request, userid, agendado):
             fig_area_localidade_agendados, fig_area_area_agendados, fig_area_colaborador_agendados,
             fig_area_terreno_em_andamento, fig_area_localidade_em_andamento, fig_area_area_em_andamento,
             fig_area_colaborador_em_andamento, fig_mes_html)
-
-

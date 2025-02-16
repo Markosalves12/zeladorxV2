@@ -3,7 +3,8 @@ import plotly.graph_objs as go
 from django.db.models.functions import TruncMonth
 import calendar
 from django.db.models import F
-
+import pandas as pd
+import plotly.express as px
 
 def get_total_area(queryset, area_field='Areas__dimensao'):
     aggregate_result = queryset.aggregate(total_area=Sum(area_field))
@@ -209,3 +210,109 @@ def generate_chart(dados_servicos, filters, field_name, title, label_type, color
     """
     area, counts = get_total_area_by_category(dados_servicos.filter(**filters), field_name, sum_by, count_by)
     return plot_horizontal_bar_chart(area, title, 'Área Total', label_type, counts, color)
+
+
+def plot_map(paginated_queryset, color="#FF0000", scale_factor=2):
+    """
+    Gera um mapa interativo com bolhas proporcionais à área total de cada localidade usando px.scatter_mapbox.
+
+    Args:
+        paginated_queryset: Um queryset paginado contendo 'lat_localidade', 'long_localidade', 'area_total', 'unidade_nome' e 'localidade_nome'.
+        color: Cor das bolhas no mapa (padrão: vermelho).
+        scale_factor: Fator de escala para ajustar o tamanho das bolhas (padrão: 2).
+
+    Returns:
+        Uma figura Plotly do mapa interativo.
+    """
+    all_data = []
+
+    # Coleta os dados do queryset paginado
+    for page in paginated_queryset.paginator.page_range:
+        current_page = paginated_queryset.paginator.page(page)
+        for obj in current_page.object_list:
+            all_data.append({
+                'lat_localidade': float(obj['lat_localidade']),
+                'long_localidade': float(obj['long_localidade']),
+                'unidade_nome': obj['unidade_nome'],
+                'area_total': float(obj['area_total']),
+                'localidade_nome': obj['localidade_nome'],
+            })
+
+    # Criando o DataFrame
+    df = pd.DataFrame(all_data)
+
+    # Definição da centralização padrão do mapa (Brasília)
+    map_center = {"lat": -15.797483, "lon": -47.935315}
+
+    # Se não houver dados, retorna o mapa base com um marcador de "Nenhum dado disponível"
+    if df.empty or len(df) == 0:
+        fig = go.Figure()
+
+        fig.add_trace(go.Scattermapbox(
+            lat=[map_center["lat"]],
+            lon=[map_center["lon"]],
+            mode="markers+text",
+            marker=dict(size=10, color="gray"),
+            text=["Nenhum dado disponível"],
+            textposition="top center",
+        ))
+
+        fig.update_layout(
+            mapbox_style="open-street-map",
+            mapbox_center=map_center,
+            mapbox_zoom=5,
+            margin=dict(l=0, r=0, t=50, b=0),
+            height=700,
+            title="<b>Nenhum dado disponível</b>"
+        )
+
+        return fig
+
+    # Agrupando os dados por localidade
+    grouped_df = df.groupby(["lat_localidade", "long_localidade", "unidade_nome", "localidade_nome"]).agg(
+        area_total=("area_total", "sum"),
+        area_media=("area_total", "mean"),
+        num_areas=("area_total", "count")
+    ).reset_index()
+
+    # Criando o texto do tooltip
+    grouped_df["hover_text"] = grouped_df.apply(
+        lambda row: (
+            f"{row['localidade_nome']}<br>"
+            f"Unidade: {row['unidade_nome']}"
+            f"<br>Total de Áreas: {row['num_areas']}"
+            f"<br>Área Média: {row['area_media']:.2f} m²"
+            f"<br>Área Total: {row['area_total']:.2f} m²"
+        ), axis=1
+    )
+
+    # Definindo o tamanho das bolhas proporcional à área total, limitando o tamanho máximo em 25
+    grouped_df["bubble_size"] = (grouped_df["area_total"] / grouped_df["area_total"].max()) * 30 * scale_factor
+    grouped_df["bubble_size"] = grouped_df["bubble_size"].clip(lower=5, upper=25)
+
+    # Criando o mapa com scatter_mapbox
+    fig = px.scatter_mapbox(
+        grouped_df,
+        lat="lat_localidade",
+        lon="long_localidade",
+        size="bubble_size",
+        hover_name="unidade_nome",
+        hover_data={"area_total": True, "area_media": True, "num_areas": True},
+        color_discrete_sequence=[color],
+        text="hover_text",
+        opacity=0.7,
+        zoom=5,
+    )
+
+    fig.update_traces(marker=dict(sizemin=5))  # Define um tamanho mínimo para os pontos
+
+    # Ajustando layout final
+    fig.update_layout(
+        mapbox_style="open-street-map",
+        margin=dict(l=0, r=0, t=50, b=0),
+        height=700,
+        font=dict(size=18),
+        mapbox_center=map_center,
+    )
+
+    return fig

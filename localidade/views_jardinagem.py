@@ -1,10 +1,13 @@
 from django.shortcuts import reverse, redirect
 from localidade.models_Jardinagem import LocalidadeJardiangem
 from localidade.forms_jardinagem import LocalidadeJardinagemForms
-from utils.views import generic_view, edit_generic_view, gerneric_alter_status
+from utils.views import generic_view, edit_generic_view, gerneric_alter_status, generic_view_maps
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
-
+from areas.models_jardinagem import AreasJardins
+from django.db.models import (ExpressionWrapper, F, CharField,
+                              IntegerField, DurationField, DateTimeField, FloatField
+                              )
 
 # Create your views here.
 def localidades_jardinagem(request, userid):
@@ -84,7 +87,9 @@ def localidades_jardinagem(request, userid):
         permission_view=permission_view,
         permission_edit=permission_edit,
         permission_crate=permission_crate,
-        userid=userid
+        userid=userid,
+        views_on_maps=True,
+        views_on_maps_url=reverse('mapa_localidades_jardinagem', kwargs={'userid': userid}),
     )
 
 
@@ -160,4 +165,78 @@ def alterar_status_localidade_jardinagem(request, userid, id_random, new_status)
         new_status=new_status,
         userid=userid,
         message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
+    )
+
+
+def mapa_localidades_jardinagem(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    setores = empresas['setores']
+
+    tipos = [
+        {'nome': 'Tipo de localidade', 'link': ''},
+    ]
+
+    if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
+        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('mapa_localidades_jardinagem', kwargs={'userid': userid})})
+    else:
+        return redirect('mapa_localidades_limpeza_predial', userid)
+
+    if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
+        tipos.insert(2, {'nome': 'Limpeza predial',
+                         'link': reverse('mapa_localidades_limpeza_predial', kwargs={'userid': userid})})
+
+    permission_view = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['292: Pode visualizar localidades']
+    )
+
+    return generic_view_maps(
+        request=request,
+        model=AreasJardins.objects.filter(
+            localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        ).annotate(
+            unidade_nome=ExpressionWrapper(
+                F('localidade__unidade__nome'),
+                output_field=CharField()
+            ),
+            localidade_nome=ExpressionWrapper(
+                F('localidade__nome'),
+                output_field=CharField()
+            ),
+            lat_localidade=ExpressionWrapper(
+                F('localidade__lat_med'),
+                output_field=FloatField()
+            ),
+            long_localidade=ExpressionWrapper(
+                F('localidade__long_med'),
+                output_field=FloatField()
+            ),
+            area_total=ExpressionWrapper(
+                F('dimensao'),
+                output_field=FloatField()
+            ),
+        ),
+        form_class=LocalidadeJardinagemForms,
+        template_name='DataTableAndForms/ViewsLocalities.html',
+        app_name='distribuição de áreas de jardinagem por localidade',
+        form_search=LocalidadeJardinagemForms(request=request, userid=userid, type='search'),
+        sform_search=True,
+        filtro_mapeamento={
+            'unidade': 'localidade__unidade__id',
+            'nome': 'nome',
+        },
+        text_button_open_modal='Adicionar nova localidade',
+        text_button_save='Salvar localidade',
+        header_model='Nova localidade',
+        redirect_url=reverse('localidades_jardinagem', kwargs={'userid': userid}),
+        link_tipos=tipos,
+        permission_view=permission_view,
+        userid=userid,
+        color='#008000',
+        redirect_close_button = reverse('localidades_jardinagem', kwargs={'userid': userid}),
     )

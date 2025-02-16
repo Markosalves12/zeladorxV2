@@ -78,7 +78,9 @@ INSTALLED_APPS = [
     'kanban.apps.KanbanConfig',
     'chats.apps.ChatsConfig',
     'checklists.apps.ChecklistsConfig',
+    'medidor.apps.MedidorConfig',
     'storages',
+    "channels",
 ]
 
 MIDDLEWARE = [
@@ -111,6 +113,13 @@ TEMPLATES = [
         },
     },
 ]
+
+# Configuração do Channels (Backend para WebSockets)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",  # Para desenvolvimento, depois podemos usar Redis
+    },
+}
 
 WSGI_APPLICATION = 'setup.wsgi.application'
 

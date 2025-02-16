@@ -1,6 +1,5 @@
-from django.db.models import Q
 from django.utils import timezone
-from dashboards.data_visualization import calculate_areas_and_counts, generate_chart, generate_grouped_chart
+from dashboards.data_visualization import generate_chart, generate_grouped_chart, plot_map
 from utils.utils import define_range_time
 
 def data_visualization_jardinagem_indicadores(request, userid, agendado):
@@ -29,20 +28,20 @@ class data_visualization_jardinagem_graphs:
     def __init__(self, request, userid, agendado, filter_time=False):
         self.request = request
         self.userid = userid
-        self.agendados = agendado
+        self.agendado = agendado
 
     one_day, seven_days = define_range_time()
 
     def create_fig(self, name_fig, filters, field_name, title, label_type, color, sum_by, count_by,
                    filter_time=False):
         if filter_time:
-            self.agendados  = self.agendados.filter(
+            self.agendado = self.agendado.filter(
                 **filter_time
             )
 
         fig_charts = {
             f'{name_fig}': generate_chart(
-                dados_servicos=self.agendados,
+                dados_servicos=self.agendado,
                 filters=filters,
                 field_name=field_name,
                 title=title,
@@ -58,13 +57,13 @@ class data_visualization_jardinagem_graphs:
     def define_figs_by_months(self, name_fig, filters, field_name, title, label_type, color,
                               sum_by, count_by, date_column, filter_time=False):
         if filter_time:
-            self.agendados  = self.agendados.filter(
+            self.agendado  = self.agendado.filter(
                 **filter_time
             )
 
         fig_charts = {
             f'{name_fig}': generate_grouped_chart(
-                self.agendados,
+                self.agendado,
                 filters=filters,
                 field_name=field_name,
                 title=title,
@@ -80,13 +79,13 @@ class data_visualization_jardinagem_graphs:
     def create_fig_report(self, name_fig, filters, field_name, title, label_type, color, sum_by, count_by,
                    filter_time=False):
         if filter_time:
-            self.agendados  = self.agendados.filter(
+            self.agendado  = self.agendado.filter(
                 **filter_time
             )
 
         fig_charts = {
             f'{name_fig}': generate_chart(
-                dados_servicos=self.agendados,
+                dados_servicos=self.agendado,
                 filters=filters,
                 field_name=field_name,
                 title=title,
@@ -95,6 +94,16 @@ class data_visualization_jardinagem_graphs:
                 sum_by=sum_by,
                 count_by=count_by
             ),
+        }
+
+        return fig_charts
+
+    def create_fig_maps(self, name_fig, color):
+        fig_charts = {
+            f'{name_fig}': plot_map(
+                paginated_queryset=self.agendado,
+                color=color,
+            ).to_html(full_html=True),
         }
 
         return fig_charts

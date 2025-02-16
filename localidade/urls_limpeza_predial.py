@@ -1,6 +1,6 @@
 from django.urls import path
 from localidade.views_limpeza_predial import (localidades_limpeza_predial, editar_localidade_limpeza_predial,
-                                              alterar_status_localidade_limpeza_predial)
+                                              alterar_status_localidade_limpeza_predial, mapa_localidades_limpeza_predial)
 
 
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
         alterar_status_localidade_limpeza_predial,
         name='alterar_status_localidade_limpeza_predial'
     ),
+    path('mapa_localidades_limpeza_predial/<str:userid>', mapa_localidades_limpeza_predial, name='mapa_localidades_limpeza_predial'),
 ]

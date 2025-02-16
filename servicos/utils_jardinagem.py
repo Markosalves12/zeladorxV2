@@ -1,6 +1,6 @@
 from servicos.models_jardinagem import FatoServicoJardinagem, ServicoJardinagemAgendado
 from django.db.models import (ExpressionWrapper, F, CharField,
-                              IntegerField, DurationField, DateTimeField
+                              IntegerField, DurationField, DateTimeField, FloatField
                               )
 from empresasecundario.utils import define_empresas
 

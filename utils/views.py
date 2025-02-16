@@ -4,7 +4,7 @@ from django.urls import reverse
 from settings.utils import define_setting
 from permissionscontrol.utils import configurate_permissions, verify_login
 from django.contrib import messages
-
+from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_graphs
 from empresaprimaria.models import EmpresaPrimaria
 from unidade.forms import UnidadeForms
 from unidade.models import Unidade
@@ -12,14 +12,15 @@ from empresasecundario.utils import define_empresas
 
 from utils.utils import paginate
 
+
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
-                 text_button_open_modal, text_button_save,  header_model,
-                 redirect_url, form_search, filtro_mapeamento,  id_random=False, sform_search=False, userid=False,
+                 text_button_open_modal, text_button_save, header_model,
+                 redirect_url, form_search, filtro_mapeamento, id_random=False, sform_search=False, userid=False,
                  button_export_tittle=False, button_export_link='exportar_relatorio_de_serivos_Jardinagem_excel',
                  status=['Mobilizado'],
                  link_tipos=None, modal_button=True, configurate_gerente=False, history_rout=False,
                  permission_view=True, permission_edit=False, permission_crate=False,
-                 permission_accompany=False):
+                 permission_accompany=False, views_on_maps=False, views_on_maps_url=None):
     if not request.user.is_authenticated:
         return redirect('logout')
 
@@ -146,8 +147,11 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
             'permission_edit': permission_edit,
             'permission_crate': permission_crate,
             'permission_accompany': permission_accompany,
+            'views_on_maps': views_on_maps,
+            'views_on_maps_url': views_on_maps_url
         }
     )
+
 
 def edit_generic_view(request, model_class, form_class, template_name, id_random, app_name, redirect_url_name,
                       url_desmobilize, url_rehabilitate, userid,
@@ -261,7 +265,8 @@ def gerneric_alter_status(request, model_class, redirect_url_name, id_random, ne
     return redirect(redirect_url_name)
 
 
-def generic_view_history(request, userid, id_random, app_name, objeto, objetos, type_exibition, type_export, form_search,
+def generic_view_history(request, userid, id_random, app_name, objeto, objetos, type_exibition, type_export,
+                         form_search,
                          sform_search, filtro_mapeamento, export_pdf, export_excel, redirect_close_button,
                          url_detalhamento, url_checklist,
                          foto_objeto=None, Foto=False, permission_extract_pdf=False, permission_extract_xlsx=False):
@@ -340,4 +345,89 @@ def generic_view_detailing_checklist(request, userid, id_random, model_class, ap
     )
 
 
+def generic_view_maps(request, model, form_class, template_name, app_name,
+                      text_button_open_modal, text_button_save, header_model,
+                      redirect_url, form_search, filtro_mapeamento, color,
+                        redirect_close_button,
+                      id_random=False, sform_search=False, userid=False,
+                      link_tipos=None, modal_button=True,
+                      permission_view=True, permission_crate=False):
+    if not request.user.is_authenticated:
+        return redirect('logout')
 
+    block = verify_login(request=request, userid=userid)
+
+    if block == True:
+        return redirect('logout')
+
+    dt_and_forms = DataTableAndForms(
+        request=request,
+        model=model,
+        modelforms=form_class,
+        per_page=15,
+        columns=[
+            {'nome': 'id', 'label': '#', 'largura': '10px'},
+            {'nome': 'unidade_nome', 'label': 'Nome'},
+            {'nome': 'lat_localidade', 'label': 'Lat. média'},
+            {'nome': 'long_localidade', 'label': 'Long. média'},
+            {'nome': 'area_total', 'label': 'Área'},
+            {'nome': 'localidade_nome', 'label': 'Nome localidade'},
+        ],
+        edition_rout='editar_localidade_jardinagem',
+        history_rout=False,
+        userid=userid,
+        id_random=id_random,
+        filtro_mapeamento=filtro_mapeamento
+    )
+
+    if request.method == 'POST':
+        if id_random:
+            form = form_class(request.POST, request.FILES, request=request, userid=userid, id_random=id_random)
+        else:
+            form = form_class(request.POST, request.FILES, request=request, userid=userid)
+
+        if form.is_valid():
+            form.save()
+
+            messages.info(
+                request=request,
+                message=f'alterações salvas'
+            )
+
+            return redirect(redirect_url)
+
+        messages.error(
+            request=request,
+            message=f'Algo de errado'
+        )
+
+    forms, dados_paginados, get_data = dt_and_forms.get_data_and_forms()
+
+    url_action = redirect_url
+
+    fig_mapa_localidades = data_visualization_jardinagem_graphs(request, userid, dados_paginados).create_fig_maps(
+        name_fig='fig_mapa_localidades',
+        color=color,
+    )
+
+    return render(
+        request=request,
+        template_name=template_name,
+        context={
+            'forms': forms,
+            'app_name': f'{app_name.capitalize()}',
+            'text_button_open_modal': f'{text_button_open_modal.lower()}',
+            'text_button_save': f'{text_button_save.lower()}',
+            'header_model': f'{header_model.lower()}',
+            'url_action': url_action,
+            'form_search': form_search,
+            'sform_search': sform_search,
+            'allowed_fields': list(filtro_mapeamento.keys()),
+            'link_tipos': link_tipos,
+            'modal_button': modal_button,
+            'permission_view': permission_view,
+            'permission_crate': permission_crate,
+            'redirect_close_button': redirect_close_button,
+            **fig_mapa_localidades,
+        }
+    )

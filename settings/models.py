@@ -1,8 +1,7 @@
 from django.db import models
 from utils.utils import generate_id_random
-# from gestor.models import Gestor
 from gerente.models import Gerente
-# from colaborador.models import Colaborador
+
 
 # Create your models here.
 # class SettingServicosGestor(models.Model):

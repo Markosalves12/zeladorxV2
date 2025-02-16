@@ -1,6 +1,6 @@
 from django.urls import path
 from localidade.views_jardinagem import (localidades_jardinagem, editar_localidade_jardinagem,
-                                         alterar_status_localidade_jardinagem)
+                                         alterar_status_localidade_jardinagem, mapa_localidades_jardinagem)
 
 
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
         alterar_status_localidade_jardinagem,
         name='alterar_status_localidade_jardinagem'
     ),
+    path('mapa_localidades_jardinagem/<str:userid>', mapa_localidades_jardinagem, name='mapa_localidades_jardinagem'),
 ]
