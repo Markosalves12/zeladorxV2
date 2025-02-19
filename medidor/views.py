@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from shapely import wkt
 from shapely.geometry import Polygon
 from openpyxl import Workbook
-from openpyxl.drawing.image import Image
 from django.core.files.storage import default_storage
 from io import BytesIO
 import base64
