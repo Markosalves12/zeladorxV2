@@ -31,20 +31,21 @@ def processar_poligonos(request, id_random):
     for coluna in df.drop(columns=['WKT', 'nome', 'descrição'], errors='ignore').columns:
         df[coluna] = df[coluna].astype(str).str.strip().str.capitalize()
         valores_unicos = sorted(df[coluna].dropna().unique())
+
         if len(valores_unicos) <= 30:
-            plt.figure(figsize=(8, 6))
+            plt.figure(figsize=(10, 8))  # Aumentado o tamanho
             cores = plt.cm.get_cmap('tab20', len(valores_unicos))
-            legend_labels = set()
             for valor, cor in zip(valores_unicos, cores.colors):
                 subset = df[df[coluna] == valor]
-                for wkt_str in subset['WKT']:
+                for wkt_str, nome in zip(subset['WKT'], subset.get('nome', ['']*len(subset))):
                     polygon = wkt.loads(wkt_str)
                     if isinstance(polygon, Polygon):
                         x, y = polygon.exterior.xy
                         plt.fill(x, y, color=cor, alpha=0.5)
-                if valor not in legend_labels:
-                    plt.plot([], [], color=cor, label=str(valor))
-                    legend_labels.add(valor)
+                        centroid = polygon.centroid
+                        plt.text(centroid.x, centroid.y, nome, fontsize=5, ha='center')  # Fonte reduzida
+                plt.plot([], [], color=cor, label=f"{valor}")
+
             plt.legend(title=coluna)
             plt.title(f"Polígonos por {coluna}")
             plt.xlabel("Longitude")

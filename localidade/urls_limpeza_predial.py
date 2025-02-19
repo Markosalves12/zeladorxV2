@@ -15,5 +15,5 @@ urlpatterns = [
         alterar_status_localidade_limpeza_predial,
         name='alterar_status_localidade_limpeza_predial'
     ),
-    path('mapa_localidades_limpeza_predial/<str:userid>', mapa_localidades_limpeza_predial, name='mapa_localidades_limpeza_predial'),
+    path('mapa-localidades-limpeza-predial/<str:userid>', mapa_localidades_limpeza_predial, name='mapa_localidades_limpeza_predial'),
 ]

@@ -15,5 +15,5 @@ urlpatterns = [
         alterar_status_localidade_jardinagem,
         name='alterar_status_localidade_jardinagem'
     ),
-    path('mapa_localidades_jardinagem/<str:userid>', mapa_localidades_jardinagem, name='mapa_localidades_jardinagem'),
+    path('mapa-localidades-jardinagem/<str:userid>', mapa_localidades_jardinagem, name='mapa_localidades_jardinagem'),
 ]

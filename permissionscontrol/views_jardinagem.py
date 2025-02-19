@@ -162,7 +162,7 @@ def editar_permissoes_jardinagem(request, userid, id_random):
         app_name=f'Editar permissões jardinagem',
         redirect_url_name=reverse('editar_permissoes_jardinagem', kwargs={'userid': userid, 'id_random': id_random}),
         redirect_close_button=reverse('permissoes_jardinagem', kwargs={'userid': userid}),
-        link_tipos=tipos,
+        link_tipos=None,
         permission_edit=permission_edit,
         url_desmobilize=None,
         url_rehabilitate=None,
