@@ -2,15 +2,18 @@ from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from utils.views import generic_view
 from django.urls import reverse
-from permissionscontrol.utils import validate_permissions, verify_login
+from permissionscontrol.utils import validate_permissions
 from django.utils import timezone
-from datetime import timedelta
 from django.db.models import Case, When, Value, CharField, F
 from empresasecundario.utils import define_empresas
 from django.shortcuts import redirect
 from django.db.models.functions import ExtractDay
 
 def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -58,6 +61,8 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
     return generic_view(
         request=request,
         model=ServicoJardinagemAgendado.objects.filter(
+            Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
             status__in=['Concluido']
         ).distinct(),
         form_class=ServicoJaridinagemAgendadoForms,
@@ -91,6 +96,10 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
 
 
 def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
     permission_view = validate_permissions(
         request=request,
         userid=userid,
@@ -135,8 +144,6 @@ def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
             )
         })
 
-    one_day = timezone.now().date() + timedelta(days=1)
-    seven_days = timezone.now().date() + timedelta(days=7)
 
     return generic_view(
         request=request,

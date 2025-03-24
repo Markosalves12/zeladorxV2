@@ -6,11 +6,11 @@ from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
 from django.utils import timezone
-from django.db.models import Case, When, Value, CharField
+from django.db.models import Case, When, Value, CharField, F
 from utils.utils import define_range_time
 from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
 from gerente.models import Gerente
-
+from django.db.models.functions import ExtractDay
 
 # Create your views here.
 def agendar_servico_jardinagem(request, type, userid):
@@ -160,18 +160,17 @@ def servicos_agendados_jardinagem(request, userid):
         permission_to_access=['361: Pode acompanhar serviços agendados para si próprio']
     )
 
-    one_day, seven_days = define_range_time()
-
     agendado = ServicoJardinagemAgendado.objects.filter(
         Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
         Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
         status__in=['Agendado', 'Em andamento']
     ).distinct().annotate(
+        dias_diferenca=ExtractDay(F('DataDeInicio') - timezone.now()),
         novo_status=Case(
             When(status='Em andamento', then=Value('Em andamento')),
-            When(DataDeInicio__gte=one_day, DataDeInicio__lt=seven_days, then=Value('Próximo')),
-            When(status='Agendado', DataDeInicio__gte=seven_days, then=Value('Agendado')),
-            When(DataDeInicio__lt=timezone.now(), then=Value('Atrasado')),
+            When(dias_diferenca__lt=0, then=Value('Atrasado')),
+            When(dias_diferenca__gte=0, dias_diferenca__lte=7, then=Value('Próximo')),
+            When(dias_diferenca__gt=7, then=Value('Agendado')),
             default=Value('Desconhecido'),
             output_field=CharField()
         )

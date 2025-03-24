@@ -53,3 +53,9 @@ class SettingServicosGerenteJardinagem(models.Model):
         null=True,
         default=False
     )
+
+    NotificationReportAgendamentos = models.BooleanField(
+        blank=True,
+        null=True,
+        default=False
+    )

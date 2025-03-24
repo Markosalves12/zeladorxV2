@@ -7,8 +7,9 @@ from servicos.models_jardinagem import ServicoJardinagemAgendado
 from empresasecundario.utils import define_empresas
 from django.utils import timezone
 from datetime import timedelta
-from django.db.models import Case, When, Value, CharField
+from django.db.models import Case, When, Value, CharField, F
 from django.shortcuts import redirect
+from django.db.models.functions import ExtractDay
 
 # Create your views here.
 def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
@@ -154,9 +155,6 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
             )
         })
 
-    one_day = timezone.now().date() + timedelta(days=1)
-    seven_days = timezone.now().date() + timedelta(days=7)
-
     return generic_view(
         request=request,
         model=ServicoJardinagemAgendado.objects.filter(
@@ -164,11 +162,12 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
             Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
             status__in=['Agendado', 'Em andamento']
         ).distinct().annotate(
+            dias_diferenca=ExtractDay(F('DataDeInicio') - timezone.now()),
             novo_status=Case(
                 When(status='Em andamento', then=Value('Em andamento')),
-                When(DataDeInicio__gte=one_day, DataDeInicio__lt=seven_days, then=Value('Próximo')),
-                When(status='Agendado', DataDeInicio__gte=seven_days, then=Value('Agendado')),
-                When(DataDeInicio__lt=timezone.now(), then=Value('Atrasado')),
+                When(dias_diferenca__lt=0, then=Value('Atrasado')),
+                When(dias_diferenca__gte=0, dias_diferenca__lte=7, then=Value('Próximo')),
+                When(dias_diferenca__gt=7, then=Value('Agendado')),
                 default=Value('Desconhecido'),
                 output_field=CharField()
             )
