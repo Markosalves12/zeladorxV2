@@ -18,6 +18,17 @@ from relatorios.jardinagem.relatorio_de_servicos_na_area_jardinagem_xlsx import 
     exportar_relatorio_de_serivos_na_area_Jardinagem_excel
 )
 
+from relatorios.jardinagem.relatorio_de_servicos_jardinagem_pdf_with_checklist import (
+    exportar_relatorio_de_serivos_Jardinagem_pdf_with_checklist)
+
+from relatorios.jardinagem.relatorio_de_servicos_na_area_jardinagem_pdf_with_checklist import (
+    exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist)
+
+from relatorios.jardinagem.relatorio_de_servicos_jardinagem_xlsx_with_checklist import (
+    exportar_relatorio_de_serivos_Jardinagem_excel_with_checklist)
+
+from relatorios.jardinagem.relatorio_de_servicos_na_area_jardinagem_xlsx_with_checklist import (
+    exportar_relatorio_de_serivos_na_area_Jardinagem_excel_with_checklist)
 
 urlpatterns = [
     path(
@@ -65,5 +76,31 @@ urlpatterns = [
         '<str:type>',
         exportar_relatorio_de_serivos_na_area_Jardinagem_excel,
         name='exportar_relatorio_de_serivos_na_area_Jardinagem_excel'
+    ),
+    path(
+        'exportar-relatorio-de-serivos-Jardinagem-pdf-with-checklist/<str:userid>/<str:status>/<str:DataDeInicio>/'
+        '<str:DataDeConclusao>/<str:Areas>/<str:TipoServico>/<str:ServicosEscalados>/<str:ColaboradoresEscalados>',
+        exportar_relatorio_de_serivos_Jardinagem_pdf_with_checklist,
+        name='exportar_relatorio_de_serivos_Jardinagem_pdf_with_checklist'
+    ),
+    path(
+        'exportar-relatorio-de-serivos-na-area-jardinagem-pdf-with-checklist/<str:userid>/<str:id_random>/<str:DataDeInicio>/'
+        '<str:DataDeConclusao>/<str:Areas>/<str:TipoServico>/<str:ServicosEscalados>/<str:ColaboradoresEscalados>/'
+        '<str:type>',
+        exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist,
+        name='exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist'
+    ),
+    path(
+        'exportar-relatorio-de-serivos-Jardinagem-excel-with-checklist/<str:userid>/<str:status>/<str:DataDeInicio>/'
+        '<str:DataDeConclusao>/<str:Areas>/<str:TipoServico>/<str:ServicosEscalados>/<str:ColaboradoresEscalados>',
+        exportar_relatorio_de_serivos_Jardinagem_excel_with_checklist,
+        name='exportar_relatorio_de_serivos_Jardinagem_excel_with_checklist'
+    ),
+    path(
+        'exportar-relatorio-de-serivos-na-area-Jardinagem-excel-with-checklist/<str:userid>/<str:id_random>/<str:DataDeInicio>/'
+        '<str:DataDeConclusao>/<str:Areas>/<str:TipoServico>/<str:ServicosEscalados>/<str:ColaboradoresEscalados>/'
+        '<str:type>',
+        exportar_relatorio_de_serivos_na_area_Jardinagem_excel_with_checklist,
+        name='exportar_relatorio_de_serivos_na_area_Jardinagem_excel_with_checklist'
     ),
 ]

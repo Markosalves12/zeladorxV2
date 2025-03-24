@@ -282,7 +282,9 @@ def historico_de_servicos_configurados_limpeza_predial(request, userid, id_rando
             'diasaseremrealizado': 'diasaseremrealizado'
         },
         export_pdf='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
+        export_pdf_with_checklist='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf_with_checklist',
         export_excel='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel',
+        export_excel_with_checklist='exportar_relatorio_de_serivos_na_area_limpeza_predial_excel_with_checklist',
         foto_objeto=None,
         Foto=False,
         redirect_close_button='servicos_configurados_limpeza_predial',

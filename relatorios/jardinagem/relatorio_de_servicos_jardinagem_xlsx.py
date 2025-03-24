@@ -19,6 +19,7 @@ def exportar_relatorio_de_serivos_Jardinagem_excel(
     # Configuração inicial do workbook
     wb = openpyxl.Workbook()
     ws = wb.active
+    ws.title = "Relatório de execucao jardinagem"
 
     # Converte os parâmetros de entrada
     DataDeInicio = (

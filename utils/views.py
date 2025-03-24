@@ -17,6 +17,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                  text_button_open_modal, text_button_save, header_model,
                  redirect_url, form_search, filtro_mapeamento, id_random=False, sform_search=False, userid=False,
                  button_export_tittle=False, button_export_link='exportar_relatorio_de_serivos_Jardinagem_excel',
+                 button_export_link_with_checklists='exportar_relatorio_de_serivos_Jardinagem_pdf_with_checklist',
                  status=['Mobilizado'],
                  link_tipos=None, modal_button=True, configurate_gerente=False, history_rout=False,
                  permission_view=True, permission_edit=False, permission_crate=False,
@@ -135,6 +136,14 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
             'button_export_tittle': button_export_tittle,
             'button_export_link': reverse(
                 f'{button_export_link}',
+                kwargs={
+                    'userid': userid,
+                    'status': ','.join(status),
+                    **get_data
+                }
+            ),
+            'button_export_link_with_checklists': reverse(
+                f'{button_export_link_with_checklists}',
                 kwargs={
                     'userid': userid,
                     'status': ','.join(status),
@@ -267,7 +276,8 @@ def gerneric_alter_status(request, model_class, redirect_url_name, id_random, ne
 
 def generic_view_history(request, userid, id_random, app_name, objeto, objetos, type_exibition, type_export,
                          form_search,
-                         sform_search, filtro_mapeamento, export_pdf, export_excel, redirect_close_button,
+                         sform_search, filtro_mapeamento, export_pdf, export_pdf_with_checklist,
+                         export_excel, export_excel_with_checklist, redirect_close_button,
                          url_detalhamento, url_checklist,
                          foto_objeto=None, Foto=False, permission_extract_pdf=False, permission_extract_xlsx=False):
     if not request.user.is_authenticated:
@@ -315,9 +325,27 @@ def generic_view_history(request, userid, id_random, app_name, objeto, objetos, 
                     'type': f'{type_export}',
                 }
             ),
+            'export_pdf_with_checklist': reverse(
+                f'{export_pdf_with_checklist}',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random,
+                    **get_data,
+                    'type': f'{type_export}',
+                }
+            ),
             'permission_extract_xlsx': permission_extract_xlsx,
             'export_excel': reverse(
                 viewname=f'{export_excel}',
+                kwargs={
+                    'userid': userid,
+                    'id_random': id_random,
+                    **get_data,
+                    'type': f'{type_export}',
+                }
+            ),
+            'export_excel_with_checklist': reverse(
+                viewname=f'{export_excel_with_checklist}',
                 kwargs={
                     'userid': userid,
                     'id_random': id_random,

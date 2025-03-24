@@ -7,10 +7,10 @@ from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
 from django.utils import timezone
-from django.db.models import Case, When, Value, CharField
+from django.db.models import Case, When, Value, CharField, F
 from utils.utils import define_range_time
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
-
+from django.db.models.functions import ExtractDay
 
 def agendar_servico_limpeza_predial(request, type, userid):
     block = verify_login(request=request, userid=userid)
@@ -159,11 +159,12 @@ def servicos_agendados_limpeza_predial(request, userid):
             Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
             status__in=['Agendado', 'Em andamento']
         ).distinct().annotate(
+            dias_diferenca=ExtractDay(F('DataDeInicio') - timezone.now()),
             novo_status=Case(
                 When(status='Em andamento', then=Value('Em andamento')),
-                When(DataDeInicio__gte=one_day, DataDeInicio__lt=seven_days, then=Value('Próximo')),
-                When(status='Agendado', DataDeInicio__gte=seven_days, then=Value('Agendado')),
-                When(DataDeInicio__lt=timezone.now(), then=Value('Atrasado')),
+                When(dias_diferenca__lt=0, then=Value('Atrasado')),
+                When(dias_diferenca__gte=0, dias_diferenca__lte=7, then=Value('Próximo')),
+                When(dias_diferenca__gt=7, then=Value('Agendado')),
                 default=Value('Desconhecido'),
                 output_field=CharField()
             )
@@ -278,6 +279,7 @@ def realizar_servico_limpeza_predial_agendado(request, type, userid, id_random):
     redirect_close_button_map = {
         "calendario": reverse('calendario_limpeza_predial', kwargs={'userid': userid}),
         "kanban": reverse('kanban_limpeza_predial', kwargs={'userid': userid}),
+        "gantt": reverse('gantt_limpeza_predial', kwargs={'userid': userid}),
     }
     redirect_close_button = redirect_close_button_map.get(type, None)
 
@@ -322,6 +324,9 @@ def cancelar_servico_limpeza_predial(request, userid, id_random, type):
     elif type == 'kanban':
         return redirect('kanban_limpeza_predial', userid)
 
+    elif type == 'gantt':
+        return redirect('gantt_limpeza_predial', userid)
+
 
 def concluir_servico_limpeza_predial(request, userid, id_random, type):
     block = verify_login(request=request, userid=userid)
@@ -343,6 +348,9 @@ def concluir_servico_limpeza_predial(request, userid, id_random, type):
 
     elif type == 'kanban':
         return redirect('kanban_limpeza_predial', userid)
+
+    elif type == 'gantt':
+        return redirect('gantt_limpeza_predial', userid)
 
 
 def view_detailing_limpeza_predial(request, userid, id_random):

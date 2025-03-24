@@ -221,6 +221,10 @@ def colect_dados_agendamentos_jardinagem(request, userid, DataDeInicio, DataDeCo
             F('id'),
             output_field=IntegerField()
         ),
+        id_random_agendamento=ExpressionWrapper(
+            F('id_random'),
+            output_field=CharField()
+        ),
         tipo_agendamento=ExpressionWrapper(
             F('TipoServico'),
             output_field=CharField()

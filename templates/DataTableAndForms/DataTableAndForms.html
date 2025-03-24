@@ -228,7 +228,7 @@
                       {% endif %}
                   {% endif %}
                   {% if views_on_maps %}
-                      <a href={{ views_on_maps_url }}>
+                      <a href="{{ views_on_maps_url }}">
                         <button type="button" class="btn btn-default">
                             Ver no mapa
                         </button>
@@ -236,11 +236,22 @@
                   {% endif %}
                   {% if button_export_tittle != False %}
                     {% if  permission_view %}
-                      <a href={{ button_export_link }}>
-                        <button type="button" class="btn btn-primary">
-                            {{ button_export_tittle }}
-                        </button>
-                      </a>
+<!--                      <a href={{ button_export_link }}>-->
+<!--                        <button type="button" class="btn btn-primary">-->
+<!--                            {{ button_export_tittle }}-->
+<!--                        </button>-->
+<!--                      </a>-->
+                          <div class="btn-group">
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-primary dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                  {{ button_export_tittle }}
+                              </button>
+                              <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{{ button_export_link }}">Relatório simples</a>
+                                <a class="dropdown-item" href="{{ button_export_link_with_checklists }}">Relatório com checklist</a>
+                              </div>
+                            </div>
+                          </div>
                     {% endif %}
                   {% endif %}
               </div>

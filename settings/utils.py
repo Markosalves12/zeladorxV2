@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from gerente.forms_jardinagem import GerenteJardinagemForms
-from settings.models import SettingServicosGerente
+from settings.models import SettingServicosGerenteJardinagem
 
 
 def define_setting(request, model_class, form_class, email):

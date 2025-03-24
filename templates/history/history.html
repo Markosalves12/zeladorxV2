@@ -193,18 +193,30 @@
           <!-- Botões agrupados à direita -->
           <div class="ml-auto">
             {% if permission_extract_pdf %}
-              <a href="{{ export_excel }}">
-                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default">
-                  Exportar Excel
-                </button>
-              </a>
+                  <div class="btn-group">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-primary dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                          Exportar PDF
+                      </button>
+                      <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{{ export_pdf }}">Relatório simples</a>
+                        <a class="dropdown-item" href="{{ export_pdf_with_checklist }}">Relatório com checklist</a>
+                      </div>
+                    </div>
+                  </div>
             {% endif %}
             {% if permission_extract_xlsx %}
-              <a href="{{ export_pdf }}">
-                <button type="button" class="btn btn-primary">
-                  Exportar PDF
-                </button>
-              </a>
+              <div class="btn-group">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-primary dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                      Exportar XLSX
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{{ export_excel }}">Relatório simples</a>
+                    <a class="dropdown-item" href="{{ export_excel_with_checklist }}">Relatório com checklist</a>
+                  </div>
+                </div>
+              </div>
             {% endif %}
           </div>
         </div>

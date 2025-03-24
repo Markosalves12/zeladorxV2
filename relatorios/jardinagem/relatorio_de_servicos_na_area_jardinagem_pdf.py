@@ -6,19 +6,18 @@ from reportlab.pdfgen import canvas
 from io import BytesIO
 import os
 from django.conf import settings
-from utils.utils import formatar_atributos
+from utils.utils import formatar_atributos, generate_id_random
 from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
-from utils.utils import generate_id_random
 from datetime import datetime
 from relatorios.jardinagem.utils import graphs_jardinagem_concluido_to_reports
 from django.shortcuts import redirect
 from permissionscontrol.utils import verify_login
 
 def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_random, DataDeInicio, DataDeConclusao, Areas,
-                                                   TipoServico, ServicosEscalados, ColaboradoresEscalados, type):
+                                                        TipoServico, ServicosEscalados, ColaboradoresEscalados, type):
     block = verify_login(request=request, userid=userid)
 
-    if block == True:
+    if block:
         return redirect('logout')
 
     DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M') if DataDeInicio and DataDeInicio != "None" else 'None'
@@ -30,205 +29,140 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
 
     if DataDeInicio and DataDeInicio != "None":
         filters['DataDeInicio__gte'] = DataDeInicio
-
     if DataDeConclusao and DataDeConclusao != "None":
         filters['DataDeConclusao__lte'] = DataDeConclusao
-
     if Areas and Areas != "None":
         filters['Areas__id__in'] = Areas
-
     if TipoServico and TipoServico != "None":
         filters['TipoServico'] = TipoServico
-
     if ServicosEscalados and ServicosEscalados != ["None"]:
         filters['ServicosEscalados__id__in'] = ServicosEscalados
-
     if ColaboradoresEscalados and ColaboradoresEscalados != ["None"]:
         filters['ColaboradoresEscalados__id__in'] = ColaboradoresEscalados
 
     if type == 'catalogo_de_servicos':
-        dados = ServicoJardinagemAgendado.objects.filter(
-            **filters,
-            status__in=['Concluido']
-        )
-
+        dados = ServicoJardinagemAgendado.objects.filter(**filters, status__in=['Concluido'])
     elif type == 'configuracao':
-        dados = ServicoJardinagemAgendado.objects.filter(
-            **filters,
-            id_configuracao=id_random,
-            status__in=['Concluido']
-        )
-
+        dados = ServicoJardinagemAgendado.objects.filter(**filters, id_configuracao=id_random, status__in=['Concluido'])
     elif type == 'areas':
-        object = AreasJardins.objects.get(
-            id_random=id_random
-        )
-
-        dados = ServicoJardinagemAgendado.objects.filter(
-            **filters,
-            Areas__id_random=id_random,
-            status__in=['Concluido']
-        )
-
+        object = AreasJardins.objects.get(id_random=id_random)
+        dados = ServicoJardinagemAgendado.objects.filter(**filters, Areas__id_random=id_random, status__in=['Concluido'])
     elif type == 'gerente':
-        dados = ServicoJardinagemAgendado.objects.filter(
-            **filters,
-            status__in=['Concluido']
-        )
+        dados = ServicoJardinagemAgendado.objects.filter(**filters, status__in=['Concluido'])
 
-    # cria um buffer para inserir os dados no pdf
+    # Create PDF buffer
     buffer = BytesIO()
-
-    # cria um objeto pdf usando o buffer anterior
-    p = canvas.Canvas(
-        buffer,
-        pagesize=letter
-    )
+    p = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
-
-    # defini a posição inicial do cursor
     x = 50
 
+    # Draw header
     header_image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/logo alt.png')
-
-    # função que cria o cabeçalho propriamente falado
     draw_header(c=p, header_image_path=header_image_path, width=width, height=height)
 
-    # draw_footer
-    # Draw the header for the first page
-
-    y = height - 100  # Adjust starting position for content after the header
+    y = height - 100  # Starting position after header
     page_number = 1
     p.setFont("Helvetica", 10)
 
-    # calculate_new_dimensions
-    # draw_image
-    # Draw the first image
-
-    if type == 'areas':
-        if object.foto:
-            y -= 7
-            p.drawString(x, y, "Área")
-            y -= 7
-            # image_path = os.path.join(settings.MEDIA_ROOT, object.foto.name)
-            image_path = object.foto.url
-        else:
-            y -= 7
-            p.drawString(x, y, "Área")
-            y -= 7
-            # image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
-            image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')
-
-        height1 = draw_image(image_path, x, y, p)
-
-        # Update y position for the next image
-        y -= height1 + 10  # 10 is the space between images
-        y -= 20
-
     if len(dados) > 0:
         for dado in dados:
-            # Add the data_inicio
             p.setFont('Helvetica-Bold', 10)
             p.drawString(x, y, f"Descrição: {dado.DescricaoDoServico}")
             y -= 20
 
             p.setFont("Helvetica", 10)
-            p.drawString(x, y, f'Data de Início: {dado.DataDeInicio.strftime("%d/%m/%Y %H:%M")}',)
-
+            p.drawString(x, y, f'Data de Início: {dado.DataDeInicio.strftime("%d/%m/%Y %H:%M")}')
+            y -= 20
+            p.drawString(x, y, f'Data de Conclusão: {dado.DataDeConclusao.strftime("%d/%m/%Y %H:%M")}')
+            y -= 20
+            p.drawString(x, y, f"Área Atendida: {dado.Areas}")
+            y -= 20
+            p.drawString(x, y, f"Tamanho da Área Atendida: {dado.Areas.dimensao} M²")
             y -= 20
 
-            p.drawString(x, y, f'Data de conclusão: {dado.DataDeConclusao.strftime("%d/%m/%Y %H:%M")}')
-            y -= 20
-
-            p.drawString(x, y, f"área atendida: {dado.Areas}")
-            y -= 20
-
-            p.drawString(x, y, f"Tamanho da área atendida: {dado.Areas.dimensao} M²")
-            y -= 20
-
-            # Add the servicos_escalados
+            # Serviços Escalados
             p.drawString(x, y, "Serviços Escalados:")
             y -= 10
-
-            servicos = formatar_atributos(
-                queryset=dado.ServicosEscalados.all(),
-                atributo='nome'
-            )
-            p.drawString(x + 20, y, f"- {servicos}")  # Ajuste conforme o campo do modelo Servicos
+            servicos = formatar_atributos(queryset=dado.ServicosEscalados.all(), atributo='nome')
+            p.drawString(x + 20, y, f"- {servicos}")
             y -= 20
 
-            # Add the colaboradores_escalados
+            # Colaboradores Escalados
             p.drawString(x, y, "Colaboradores Escalados:")
             y -= 10
-
-            colaborador = formatar_atributos(
-                queryset=dado.ColaboradoresEscalados.all(),
-                atributo='username'
-            )
-            p.drawString(x + 20, y, f"- {colaborador}")  # Ajuste conforme o campo do modelo Colaboradores
+            colaborador = formatar_atributos(queryset=dado.ColaboradoresEscalados.all(), atributo='username')
+            p.drawString(x + 20, y, f"- {colaborador}")
             y -= 20
 
-            def add_images_to_canvas(p, dado, x, y):
-                #calculate_new_dimensions
-                #draw_image
-                # Draw the first image (foto_inicio)
+            def add_images_to_canvas(p, dado, x, y, type, area_object=None):
+                def calculate_new_dimensions(img_width, img_height):
+                    new_width = img_width / 2.4
+                    new_height = img_height / 2.4
+                    return new_width, new_height
+
+                # Lista de imagens a serem exibidas: área (se aplicável), solicitação e entrega
+                images = []
+
+                # Adiciona a imagem da área se type == 'areas'
+                if type == 'areas' and area_object:
+                    image_path = area_object.foto.url if area_object.foto else os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')
+                    images.append(("Área", image_path))
+
+                # Adiciona a imagem da solicitação
                 if dado.foto_solicitacao:
-                    y -= 7
-                    p.drawString(x, y, "Na solicitação")
-                    y -= 7
-                    # image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_solicitacao.name)
-                    image_path = dado.foto_solicitacao.url
+                    images.append(("Na solicitação", dado.foto_solicitacao.url))
                 else:
-                    y -= 7
-                    p.drawString(x, y, "Na solicitação")
-                    y -= 7
-                    # image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
-                    image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')
+                    images.append(("Na solicitação", os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')))
 
-                height1 = draw_image(image_path, x, y, p)
-
-                # Update y position for the next image
-                y -= height1 + 10  # 10 is the space between images
-
-                # Draw the second image (foto)
+                # Adiciona a imagem da entrega
                 if dado.foto_entrega:
-                    y -= 7
-                    p.drawString(x, y, "Na entrega")
-                    y -= 7
-                    # image_path = os.path.join(settings.MEDIA_ROOT, dado.foto_entrega.name)
-                    image_path = dado.foto_entrega.url
+                    images.append(("Na entrega", dado.foto_entrega.url))
                 else:
-                    y -= 7
-                    p.drawString(x, y, "Na entrega")
-                    y -= 7
-                    # image_path = os.path.join(settings.MEDIA_ROOT, 'static/dist/img/not found.png')
-                    image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')
+                    images.append(("Na entrega", os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')))
 
-                draw_image(image_path, x, y, p)
+                # Processa as imagens duas por página
+                for i in range(0, len(images), 2):
+                    if i > 0:  # Nova página após a primeira combinação
+                        draw_footer(p, width)
+                        p.showPage()
+                        draw_header(c=p, header_image_path=header_image_path, width=width, height=height)
+                        y = height - 120
 
+                    # Primeira imagem da página
+                    title1, path1 = images[i]
+                    p.setFont("Helvetica", 10)
+                    p.drawString(x, y, title1)
+                    y -= 12
+                    height1 = draw_image(path1, x, y, p)
+                    y -= height1 + 10
 
-            add_images_to_canvas(p, dado, x, y)
+                    # Segunda imagem da página (se existir)
+                    if i + 1 < len(images):
+                        title2, path2 = images[i + 1]
+                        p.setFont("Helvetica", 10)
+                        p.drawString(x, y, title2)
+                        y -= 12
+                        height2 = draw_image(path2, x, y, p)
+                        y -= height2 + 10
 
+            # Passar o objeto da área se type == 'areas'
+            area_object = object if type == 'areas' else None
+            add_images_to_canvas(p, dado, x, y, type, area_object)
 
-            # Draw the footer on the current page
+            # Draw footer and start new page
             draw_footer(p, width)
-
-            # Show the current page and prepare for the next record
             p.showPage()
             page_number += 1
-
-            p.setFont("Helvetica", 10)  # Reset font size to 12 for new page content
+            p.setFont("Helvetica", 10)
             y = height - 70
 
     else:
-        # Show the current page and prepare for the next record
         p.showPage()
         page_number += 1
-
-        p.setFont("Helvetica", 10)  # Reset font size to 12 for new page content
+        p.setFont("Helvetica", 10)
         y = height - 70
 
-    start_y = height - 100  # Posição inicial para o conteúdo após o cabeçalho
+    start_y = height - 100
     p.setFont('Helvetica-Bold', 12)
 
     if len(dados) > 0:
@@ -236,17 +170,13 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
          figs_concluidos_area, figs_concluidos_colaborador,
          figs_concluidos_servico) = graphs_jardinagem_concluido_to_reports(request, userid, dados)
 
-        p.drawString(50, start_y, f"Volume de servicos prestados")
+        p.drawString(50, start_y, "Volume de serviços prestados")
         start_y -= 20
         start_y, end_page = add_figures_to_pdf(
             p,
             {
-                **figs_concluidos_terreno,
-                **figs_concluidos_vegetacao,
-                **figs_concluidos_localidade,
-                **figs_concluidos_area,
-                **figs_concluidos_colaborador,
-                **figs_concluidos_servico
+                **figs_concluidos_terreno, **figs_concluidos_vegetacao, **figs_concluidos_localidade,
+                **figs_concluidos_area, **figs_concluidos_colaborador, **figs_concluidos_servico
             },
             start_y,
             start_y + 1,
@@ -255,22 +185,11 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf(request, userid, id_ran
             height=height
         )
 
-        start_y = height - 100  # Posição inicial para o conteúdo após o cabeçalho
-
-    draw_footer(
-        p,
-        width,
-        is_last_page=True
-    )
-
-    # Close the PDF object cleanly, and we're done.
+    draw_footer(p, width, is_last_page=True)
     p.showPage()
     p.save()
 
-    # Get the value of the BytesIO buffer and write it to the response.
     buffer.seek(0)
-
-    # Create the HttpResponse object with the appropriate PDF headers.
     response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="relatorio de servicos {generate_id_random()}.pdf"'
 

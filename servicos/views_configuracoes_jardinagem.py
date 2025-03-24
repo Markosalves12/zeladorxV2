@@ -294,7 +294,9 @@ def historico_de_servicos_configurados_jardinagem(request, userid, id_random):
             'diasaseremrealizado': 'diasaseremrealizado'
         },
         export_pdf='exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
+        export_pdf_with_checklist='exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist',
         export_excel='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
+        export_excel_with_checklist='exportar_relatorio_de_serivos_na_area_Jardinagem_excel_with_checklist',
         foto_objeto=None,
         Foto=False,
         redirect_close_button='servicos_configurados_jardinagem',

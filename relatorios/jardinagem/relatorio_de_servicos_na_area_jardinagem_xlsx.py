@@ -16,6 +16,7 @@ def exportar_relatorio_de_serivos_na_area_Jardinagem_excel(request, userid, id_r
 
     wb = openpyxl.Workbook()
     ws = wb.active
+    ws.title = "Relatório de execucao jardinagem"
 
     DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M') if DataDeInicio and DataDeInicio != "None" else 'None'
     DataDeConclusao = datetime.strptime(DataDeConclusao, '%Y-%m-%dT%H:%M') if DataDeConclusao and DataDeConclusao != "None" else 'None'

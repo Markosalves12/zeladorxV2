@@ -297,6 +297,7 @@ def realizar_servico_jardinagem_agendado(request, type, userid, id_random):
     redirect_close_button_map = {
         "calendario": reverse('calendario_jardinagem', kwargs={'userid': userid}),
         "kanban": reverse('kanban_jardinagem', kwargs={'userid': userid}),
+        "gantt": reverse('gantt_jardinagem', kwargs={'userid': userid}),
     }
     redirect_close_button = redirect_close_button_map.get(type, None)
 
@@ -341,6 +342,9 @@ def cancelar_servico_jardinagem(request, userid, id_random, type):
     elif type == 'kanban':
         return redirect('kanban_jardinagem', userid)
 
+    elif type == 'gantt':
+        return redirect('gantt_jardinagem', userid)
+
 
 def concluir_servico_jardinagem(request, userid, id_random, type):
     block = verify_login(request=request, userid=userid)
@@ -362,6 +366,9 @@ def concluir_servico_jardinagem(request, userid, id_random, type):
 
     elif type == 'kanban':
         return redirect('kanban_jardinagem', userid)
+
+    elif type == 'gantt':
+        return redirect('gantt_jardinagem', userid)
 
 
 def view_detailing_jardinagem(request, userid, id_random):
