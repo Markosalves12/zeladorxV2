@@ -192,6 +192,10 @@ def colect_dados_agendamentos_limpeza_predial(request, userid, DataDeInicio, Dat
             F('id'),
             output_field=CharField()
         ),
+        id_random_agendamento=ExpressionWrapper(
+            F('id_random'),
+            output_field=CharField()
+        ),
         tipo_agendamento=ExpressionWrapper(
             F('TipoServico'),
             output_field=CharField()
