@@ -5,7 +5,7 @@ import schedule
 import time
 import threading
 from threading import Event
-from datetime import datetime, timedelta
+from datetime import datetime
 
 # Evento para sinalizar parada da thread
 stop_event = Event()

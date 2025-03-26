@@ -340,6 +340,35 @@
         </ul>
       </li>
 
+            <!--Serviços agendados-->
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-edit"></i>
+          <p>
+            Conf. notificações
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          {% if habilitar_jardinagem %}
+            <li class="nav-item">
+              <a href="{% url 'configurar_notificacoes_jardinagem' userid %}" class="nav-link active">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Jardinagem</p>
+              </a>
+            </li>
+          {% endif %}
+          {% if habilitar_limpeza %}
+            <li class="nav-item">
+              <a href="{% url 'configurar_notificacoes_limpeza_predial' userid %}" class="nav-link active">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Limpeza predial</p>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </li>
+
       <li class="nav-header">Visualizações</li>
       <li class="nav-item">
         <a href="#" class="nav-link active">

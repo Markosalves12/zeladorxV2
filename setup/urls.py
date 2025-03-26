@@ -53,7 +53,10 @@ urlpatterns = [
     path('', include('dashboards.urls_limpeza_predial')),
 
     path('', include('processos.urls')),
-    path('', include('settings.urls')),
+
+    path('', include('settings.urls_jardinagem')),
+    path('', include('settings.urls_limpeza_predial')),
+
     path('', include('permissionscontrol.urls_jardinagem')),
     path('', include('permissionscontrol.urls_limpeza_predial')),
     path('', include('permissionscontrol.urls_especials')),

@@ -1,23 +1,63 @@
-# from django.contrib import admin
-# from settings.models import  SettingServicosGerente
+from django.contrib import admin
+from settings.models import  SettingServicosGerenteLimpezaPredial, SettingServicosGerenteJardinagem
 
-# # Register your models here.
-# class SettingServicosGestorAdmin(admin.ModelAdmin):
-#     list_display = ('id', 'Gestor', 'ServicoCompunsivo', 'NotificationToColaboborador', 'NotificationAceptReject', 'NotificationEndService', 'NotificationCancelService', 'NotificationNewService',)
-#     list_display_links = ('id', 'Gestor', 'ServicoCompunsivo', 'NotificationToColaboborador', 'NotificationAceptReject', 'NotificationEndService', 'NotificationCancelService', 'NotificationNewService',)
-#     search_fields = ('id', 'Gestor', 'ServicoCompunsivo', 'NotificationToColaboborador', 'NotificationAceptReject', 'NotificationEndService', 'NotificationCancelService', 'NotificationNewService',)
-#     list_filter = ('id', 'Gestor', 'ServicoCompunsivo', 'NotificationToColaboborador', 'NotificationAceptReject', 'NotificationEndService', 'NotificationCancelService', 'NotificationNewService',)
-#
-#     list_per_page = 20
-#
-#
-# class SettingServicosGerenteAdmin(admin.ModelAdmin):
-#     list_display = ('id', 'Gerente', 'ServicoCompunsivo', 'NotificationToColaboborador', 'NotificationAceptReject', 'NotificationEndService', 'NotificationCancelService', 'NotificationNewService',)
-#     list_display_links = ('id', 'Gerente', 'ServicoCompunsivo', 'NotificationToColaboborador', 'NotificationAceptReject', 'NotificationEndService', 'NotificationCancelService', 'NotificationNewService',)
-#     search_fields = ('id', 'Gerente', 'ServicoCompunsivo', 'NotificationToColaboborador', 'NotificationAceptReject', 'NotificationEndService', 'NotificationCancelService', 'NotificationNewService',)
-#     list_filter = ('id', 'Gerente', 'ServicoCompunsivo', 'NotificationToColaboborador', 'NotificationAceptReject', 'NotificationEndService', 'NotificationCancelService', 'NotificationNewService',)
-#
-#     list_per_page = 20
-# #
-# # admin.site.register(SettingServicosGestor, SettingServicosGestorAdmin)
-# admin.site.register(SettingServicosGerente, SettingServicosGerenteAdmin)
+
+# Register your models here.
+class SettingServicosGerenteLimpezaPredialAdmin(admin.ModelAdmin):
+    list_display = ('id', 'Gerente','NotificationsServicosAtrasados', 'NotificationsServicosProximos',
+                    'NotificationsServicosEmAndamento','NotificationsServicosCancelados',
+                    'NotificationsServicosAgendados', 'NotificationReportProductivity',
+                    'NotificationReportServicosAtrasados', 'NotificationReportServicosProximos',
+                    'NotificationReportServicosEmAndamento','NotificationReportServicosCancelados')
+
+    list_display_links = ('id', 'Gerente','NotificationsServicosAtrasados', 'NotificationsServicosProximos',
+                    'NotificationsServicosEmAndamento','NotificationsServicosCancelados',
+                    'NotificationsServicosAgendados', 'NotificationReportProductivity',
+                    'NotificationReportServicosAtrasados', 'NotificationReportServicosProximos',
+                    'NotificationReportServicosEmAndamento','NotificationReportServicosCancelados')
+
+    search_fields = ('id', 'Gerente','NotificationsServicosAtrasados', 'NotificationsServicosProximos',
+                    'NotificationsServicosEmAndamento','NotificationsServicosCancelados',
+                    'NotificationsServicosAgendados', 'NotificationReportProductivity',
+                    'NotificationReportServicosAtrasados', 'NotificationReportServicosProximos',
+                    'NotificationReportServicosEmAndamento','NotificationReportServicosCancelados')
+
+    list_filter = ('id', 'Gerente','NotificationsServicosAtrasados', 'NotificationsServicosProximos',
+                    'NotificationsServicosEmAndamento','NotificationsServicosCancelados',
+                    'NotificationsServicosAgendados', 'NotificationReportProductivity',
+                    'NotificationReportServicosAtrasados', 'NotificationReportServicosProximos',
+                    'NotificationReportServicosEmAndamento','NotificationReportServicosCancelados')
+
+    list_per_page = 20
+
+
+class SettingServicosGerenteJardinagemAdmin(admin.ModelAdmin):
+    list_display = ('id', 'Gerente', 'NotificationsServicosAtrasados', 'NotificationsServicosProximos',
+                    'NotificationsServicosEmAndamento', 'NotificationsServicosCancelados',
+                    'NotificationsServicosAgendados', 'NotificationReportProductivity',
+                    'NotificationReportServicosAtrasados', 'NotificationReportServicosProximos',
+                    'NotificationReportServicosEmAndamento', 'NotificationReportServicosCancelados')
+
+    list_display_links = ('id', 'Gerente', 'NotificationsServicosAtrasados', 'NotificationsServicosProximos',
+                          'NotificationsServicosEmAndamento', 'NotificationsServicosCancelados',
+                          'NotificationsServicosAgendados', 'NotificationReportProductivity',
+                          'NotificationReportServicosAtrasados', 'NotificationReportServicosProximos',
+                          'NotificationReportServicosEmAndamento', 'NotificationReportServicosCancelados')
+
+    search_fields = ('id', 'Gerente', 'NotificationsServicosAtrasados', 'NotificationsServicosProximos',
+                     'NotificationsServicosEmAndamento', 'NotificationsServicosCancelados',
+                     'NotificationsServicosAgendados', 'NotificationReportProductivity',
+                     'NotificationReportServicosAtrasados', 'NotificationReportServicosProximos',
+                     'NotificationReportServicosEmAndamento', 'NotificationReportServicosCancelados')
+
+    list_filter = ('id', 'Gerente', 'NotificationsServicosAtrasados', 'NotificationsServicosProximos',
+                   'NotificationsServicosEmAndamento', 'NotificationsServicosCancelados',
+                   'NotificationsServicosAgendados', 'NotificationReportProductivity',
+                   'NotificationReportServicosAtrasados', 'NotificationReportServicosProximos',
+                   'NotificationReportServicosEmAndamento', 'NotificationReportServicosCancelados')
+
+    list_per_page = 20
+
+
+admin.site.register(SettingServicosGerenteLimpezaPredial, SettingServicosGerenteLimpezaPredialAdmin)
+admin.site.register(SettingServicosGerenteJardinagem, SettingServicosGerenteJardinagemAdmin)
