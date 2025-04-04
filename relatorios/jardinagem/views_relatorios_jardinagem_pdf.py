@@ -19,12 +19,12 @@ def relatorios_de_servicos_jardinagem_pdf_concluidos(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'Areas', 'label': 'Área atendidada'},
+        {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'DataDeConclusao', 'label': 'Data de conclusão'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
         {'nome': 'TipoServico', 'label': 'Tipo de agendamento'},
-        {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'status', 'label': 'Status'},
     ]
 
@@ -104,12 +104,12 @@ def relatorios_de_servicos_jardinagem_pdf_agendados(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'Areas', 'label': 'Área atendidada'},
+        {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'DataDeConclusao', 'label': 'Data de conclusão'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
         {'nome': 'TipoServico', 'label': 'Tipo de agendamento'},
-        {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'novo_status', 'label': 'Status'},
     ]
 

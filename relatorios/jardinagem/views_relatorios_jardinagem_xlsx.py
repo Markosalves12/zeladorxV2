@@ -106,12 +106,10 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'DataDeConclusao', 'label': 'Data de conclusão'},
-        {'nome': 'Areas', 'label': 'Área atendida'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
         {'nome': 'TipoServico', 'label': 'Tipo de agendamento'},
         {'nome': 'novo_status', 'label': 'Status'},
-        {'nome': 'acoes', 'label': 'Ações'},
     ]
 
     empresas = define_empresas(request=request, userid=userid)
