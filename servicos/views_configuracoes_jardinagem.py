@@ -6,7 +6,7 @@ from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
 from servicos.models_jardinagem import ServicoJardinagemAgendado
-
+from django.db.models import Case, When, Value, IntegerField
 
 def configurar_servico_jardinagem(request, userid):
     block = verify_login(request=request, userid=userid)
@@ -276,6 +276,18 @@ def historico_de_servicos_configurados_jardinagem(request, userid, id_random):
     objetos = ServicoJardinagemAgendado.objects.filter(
         id_configuracao=id_random,
         status__in=['Concluido']
+    ).annotate(
+        diasaseremrealizado=Case(
+            When(DataDeInicio__week_day=1, then=Value(7)),
+            When(DataDeInicio__week_day=2, then=Value(1)),
+            When(DataDeInicio__week_day=3, then=Value(2)),
+            When(DataDeInicio__week_day=4, then=Value(3)),
+            When(DataDeInicio__week_day=5, then=Value(4)),
+            When(DataDeInicio__week_day=6, then=Value(5)),
+            When(DataDeInicio__week_day=7, then=Value(6)),
+            default=Value(8),
+            output_field=IntegerField()
+        )
     )
 
     return generic_view_history(

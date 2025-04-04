@@ -25,7 +25,7 @@ def data_visualization_jardinagem_indicadores(request, userid, dados):
 def graphs_jardinagem_to_html(request, userid, dados):
     fig_area_unidades_mobilizadas = data_visualization_jardinagem_graphs(request, userid, dados).create_fig(
         name_fig='fig_area_unidades_mobilizadas',
-        filters={'status': 'Mobilizado'},
+        filters={'localidade__unidade__status': 'Mobilizado'},
         field_name='localidade__unidade__nome',
         title='Área Total por unidade (Mobilizadas)',
         label_type='Unidade',
@@ -37,7 +37,7 @@ def graphs_jardinagem_to_html(request, userid, dados):
 
     fig_area_unidades_desmobilizadas = data_visualization_jardinagem_graphs(request, userid, dados).create_fig(
         name_fig='fig_area_unidades_desmobilizadas',
-        filters={'status': 'Desmobilizado'},
+        filters={'localidade__unidade__status': 'Desmobilizado'},
         field_name='localidade__unidade__nome',
         title='Área Total por unidade (Desmobilizado)',
         label_type='Unidade',
@@ -49,7 +49,7 @@ def graphs_jardinagem_to_html(request, userid, dados):
 
     fig_area_localidades_mobilizadas = data_visualization_jardinagem_graphs(request, userid, dados).create_fig(
         name_fig='fig_area_localidades_mobilizadas',
-        filters={'status': 'Mobilizado'},
+        filters={'localidade__status': 'Mobilizado'},
         field_name='localidade__nome',
         title='Área Total por localidade (Mobilizadas)',
         label_type='Localidade',
@@ -61,7 +61,7 @@ def graphs_jardinagem_to_html(request, userid, dados):
 
     fig_area_localidades_desmobilizadas = data_visualization_jardinagem_graphs(request, userid, dados).create_fig(
         name_fig='fig_area_localidades_desmobilizadas',
-        filters={'status': 'Desmobilizado'},
+        filters={'localidade__status': 'Desmobilizado'},
         field_name='localidade__nome',
         title='Área Total por localidade (Desmobilzadas)',
         label_type='Localidade',
@@ -73,7 +73,7 @@ def graphs_jardinagem_to_html(request, userid, dados):
 
     fig_area_terrenos_mobilizados = data_visualization_jardinagem_graphs(request, userid, dados).create_fig(
         name_fig='fig_area_terrenos_mobilizados',
-        filters={'status': 'Mobilizado'},
+        filters={'Terreno__status': 'Mobilizado'},
         field_name='Terreno__nome',
         title='Área Total por terreno (Mobilizadas)',
         label_type='Terreno',
@@ -85,7 +85,7 @@ def graphs_jardinagem_to_html(request, userid, dados):
 
     fig_area_terrenos_desmobilizados = data_visualization_jardinagem_graphs(request, userid, dados).create_fig(
         name_fig='fig_area_terrenos_desmobilizados',
-        filters={'status': 'Desmobilizado'},
+        filters={'Terreno__status': 'Desmobilizado'},
         field_name='Terreno__nome',
         title='Área Total por terreno (Desmobilzadas)',
         label_type='Terreno',
@@ -97,7 +97,7 @@ def graphs_jardinagem_to_html(request, userid, dados):
 
     fig_area_vegetacao_mobilizadas = data_visualization_jardinagem_graphs(request, userid, dados).create_fig(
         name_fig='fig_area_vegetacao_mobilizadas',
-        filters={'status': 'Mobilizado'},
+        filters={'vegetacao__status': 'Mobilizado'},
         field_name='vegetacao__nome',
         title='Área Total por vegetação (Mobilizadas)',
         label_type='Vegetação',
@@ -109,7 +109,7 @@ def graphs_jardinagem_to_html(request, userid, dados):
 
     fig_area_vegetacao_desmobilizadas = data_visualization_jardinagem_graphs(request, userid, dados).create_fig(
         name_fig='fig_area_vegetacao_desmobilizadas',
-        filters={'status': 'Desmobilizado'},
+        filters={'vegetacao__status': 'Desmobilizado'},
         field_name='vegetacao__nome',
         title='Área Total por vegetação (Desmobilzadas)',
         label_type='Vegetação',

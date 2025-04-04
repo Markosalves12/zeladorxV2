@@ -6,6 +6,7 @@ from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
+from django.db.models import Case, When, Value, IntegerField
 
 def configurar_servico_limpeza_predial(request, userid):
     block = verify_login(request=request, userid=userid)
@@ -263,7 +264,19 @@ def historico_de_servicos_configurados_limpeza_predial(request, userid, id_rando
         userid=userid,
         status=['Concluido']
     ).filter(
-        id_random_configuracao=id_random
+        Servico__id_configuracao=id_random
+    ).annotate(
+        diasaseremrealizado=Case(
+            When(Servico__DataDeInicio__week_day=1, then=Value(7)),
+            When(Servico__DataDeInicio__week_day=2, then=Value(1)),
+            When(Servico__DataDeInicio__week_day=3, then=Value(2)),
+            When(Servico__DataDeInicio__week_day=4, then=Value(3)),
+            When(Servico__DataDeInicio__week_day=5, then=Value(4)),
+            When(Servico__DataDeInicio__week_day=6, then=Value(5)),
+            When(Servico__DataDeInicio__week_day=7, then=Value(6)),
+            default=Value(8),
+            output_field=IntegerField()
+        )
     )
 
     return generic_view_history(
@@ -278,7 +291,7 @@ def historico_de_servicos_configurados_limpeza_predial(request, userid, id_rando
         form_search=ServicoLimpezaPredialConfiguradoForms(request=request, userid=userid, type='search'),
         sform_search=True,
         filtro_mapeamento={
-            'Areas': 'Areas__id',
+            'Areas': 'Servico__Areas__id',
             'diasaseremrealizado': 'diasaseremrealizado'
         },
         export_pdf='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',

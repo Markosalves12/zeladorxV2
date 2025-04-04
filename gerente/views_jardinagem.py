@@ -198,7 +198,7 @@ def historico_de_servicos_gerente_jardinagem(request, userid, id_random):
         ColaboradoresEscalados=['None'],
         status=['Concluido'],
     ).filter(
-        colaborador_envolvido_id_random=id_random
+        colaboradores_chamados_id_random=id_random
     )
 
     return generic_view_history(
@@ -213,14 +213,16 @@ def historico_de_servicos_gerente_jardinagem(request, userid, id_random):
         form_search=ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
         sform_search=True,
         filtro_mapeamento={
-            'TipoServico': 'tipo_de_servico',
-            'ServicosEscalados': 'servicos_solicitados_id',
-            'DataDeInicio': 'data_de_inicio',
-            'DataDeConclusao': 'data_de_conclusao',
-            'Areas': 'area_atendid_id'
+            'TipoServico': 'Servico__TipoServico',
+            'ServicosEscalados': 'Servico__ServicosEscalados__id',
+            'DataDeInicio': 'Servico__DataDeInicio',
+            'DataDeConclusao': 'Servico__DataDeConclusao',
+            'Areas': 'Servico__Areas__id'
         },
         export_pdf='exportar_relatorio_de_serivos_na_area_jardinagem_pdf',
+        export_pdf_with_checklist='exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist',
         export_excel='exportar_relatorio_de_serivos_na_area_Jardinagem_excel',
+        export_excel_with_checklist='exportar_relatorio_de_serivos_na_area_Jardinagem_excel_with_checklist',
         foto_objeto=None,
         Foto=False,
         redirect_close_button='gerentes_jardinagem',

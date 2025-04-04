@@ -3,6 +3,8 @@ from settings.models import SettingServicosGerenteJardinagem
 from settings.forms_jardinagem import SettingServicosGerenteJardinagemForms
 from utils.views import edit_generic_view
 from empresasecundario.utils import define_empresas
+from permissionscontrol.utils import validate_permissions
+
 
 def configurar_notificacoes_jardinagem(request, userid):
     objeto = SettingServicosGerenteJardinagem.objects.get(
@@ -19,14 +21,22 @@ def configurar_notificacoes_jardinagem(request, userid):
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
-        tipos.insert(1, {'nome': 'Jardinagem', 'link': reverse('configurar_notificacoes_jardinagem', kwargs={'userid': userid})})
+        tipos.insert(1, {'nome': 'Jardinagem',
+                         'link': reverse('configurar_notificacoes_jardinagem', kwargs={'userid': userid})})
     else:
-        return redirect('areas_limpeza_predial', userid)
+        return redirect('configurar_notificacoes_limpeza_predial', userid)
 
     if setores['habilitar_limpeza_secundaria'] and setores['habilitar_limpeza']:
         tipos.insert(2,
-                     {'nome': 'Limpeza predial', 'link': reverse('configurar_notificacoes_limpeza_predial', kwargs={'userid': userid})})
+                     {'nome': 'Limpeza predial',
+                      'link': reverse('configurar_notificacoes_limpeza_predial', kwargs={'userid': userid})})
 
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['410: Pode editar o recebimento de notificações gerais']
+    )
 
     return edit_generic_view(
         request=request,
@@ -38,8 +48,8 @@ def configurar_notificacoes_jardinagem(request, userid):
         redirect_url_name=reverse('configurar_notificacoes_jardinagem', kwargs={'userid': userid}),
         redirect_close_button=reverse('calendario_jardinagem', kwargs={'userid': userid}),
         link_tipos=tipos,
-        permission_edit=True,
-        url_desmobilize=None,
-        url_rehabilitate=None,
+        permission_edit=permission_edit,
+        url_desmobilize=False,
+        url_rehabilitate=False,
         userid=userid,
     )

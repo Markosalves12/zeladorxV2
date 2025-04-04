@@ -1,8 +1,6 @@
 from django import forms
-from servicos.models_limpeza_predial import (ServicoLimpezaPredialAgendado, ServicoLimpezaPredialConfigurado,
-                                             FatoServicoLimpezaPredial)
+from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado, FatoServicoLimpezaPredial
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
-from semana.models import DiasDaSemana
 from empresasecundario.utils import define_empresas
 
 
@@ -72,10 +70,10 @@ class ServicoLimpezaPredialAgendadoForms(forms.ModelForm):
 
     class Meta:
         model = ServicoLimpezaPredialAgendado
-        fields = ['Areas', 'TipoServico', 'DescricaoDoServico', 'TipoServico', 'ServicosEscalados', 'DataDeInicio',
+        fields = ['Areas', 'TipoServico', 'DescricaoDoServico', 'ServicosEscalados', 'DataDeInicio',
                   'DataDeConclusao',]
         labels = {
-            'Areas': 'Área',
+            'Areas': 'Área para ser atendida',
             'TipoServico': 'Tipo de agendamento',
             'ServicosEscalados': 'Serviços Escalados',
             'DescricaoDoServico': 'Descrição do serviço',

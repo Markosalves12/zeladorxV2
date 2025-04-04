@@ -6,11 +6,8 @@ from utils.views import generic_view, edit_generic_view
 from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
-from django.utils import timezone
-from django.db.models import Case, When, Value, CharField, F
-from utils.utils import define_range_time
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
-from django.db.models.functions import ExtractDay
+from servicos.utils_limpeza_predial import query_servicos_limpeza_predial_agendados_anotados
 
 def agendar_servico_limpeza_predial(request, type, userid):
     block = verify_login(request=request, userid=userid)
@@ -101,8 +98,6 @@ def agendar_servico_limpeza_predial(request, type, userid):
 
 def servicos_agendados_limpeza_predial(request, userid):
     empresas = define_empresas(request=request, userid=userid)
-    empresas_primarias_ids = empresas['empresas_primarias_ids']
-    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
     setores = empresas['setores']
 
     tipos = [
@@ -144,31 +139,22 @@ def servicos_agendados_limpeza_predial(request, userid):
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
+        {'nome': 'TipoServico', 'label': 'Tipo de agendamento'},
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'novo_status', 'label': 'Status'},
         {'nome': 'acoes', 'label': 'Ações'},
         {'nome': 'historico', 'label': 'Checklist'},
     ]
 
-    one_day, seven_days = define_range_time()
+    agendado = query_servicos_limpeza_predial_agendados_anotados(
+        request,
+        userid,
+        status_list=['Agendado', 'Em andamento']
+    )
 
     return generic_view(
         request=request,
-        model=ServicoLimpezaPredialAgendado.objects.filter(
-            Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-            Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-            status__in=['Agendado', 'Em andamento']
-        ).distinct().annotate(
-            dias_diferenca=ExtractDay(F('DataDeInicio') - timezone.now()),
-            novo_status=Case(
-                When(status='Em andamento', then=Value('Em andamento')),
-                When(dias_diferenca__lt=0, then=Value('Atrasado')),
-                When(dias_diferenca__gte=0, dias_diferenca__lte=7, then=Value('Próximo')),
-                When(dias_diferenca__gt=7, then=Value('Agendado')),
-                default=Value('Desconhecido'),
-                output_field=CharField()
-            )
-        ),
+        model=agendado,
         form_class=ServicoLimpezaPredialAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -363,19 +349,10 @@ def view_detailing_limpeza_predial(request, userid, id_random):
 
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
-        {'nome': 'tipo_agendamento', 'label': 'Tipo de agendamento'},
-        {'nome': 'descricao_do_servico', 'label': 'Descrição do Serviço'},
-        {'nome': 'servicos_solicitados', 'label': 'Serviços Solicitados'},
-        {'nome': 'data_de_inicio', 'label': 'Data de Início'},
-        {'nome': 'data_de_conclusao', 'label': 'Data de conclusao'},
-        {'nome': 'tempo_na_area', 'label': 'Tempo na área'},
-        {'nome': 'localidade', 'label': 'Localidade'},
-        {'nome': 'unidade', 'label': 'Unidade'},
-        {'nome': 'area_atendida', 'label': 'Área'},
-        {'nome': 'colaborador_envolvido', 'label': 'Colaborador envolvido'},
+        {'nome': 'colaboradores_chamados', 'label': 'Colaborador envolvido'},
         {'nome': 'data_hora_chegada', 'label': 'Data e hora de chagada'},
         {'nome': 'data_hora_retorno', 'label': 'Data e hora de retorno'},
-        {'nome': 'acoes', 'label': 'Ações'},
+        {'nome': 'tempo_na_area', 'label': 'Tempo na área'},
     ]
 
     objeto = ServicoLimpezaPredialAgendado.objects.get(id_random=id_random)
@@ -412,9 +389,6 @@ def view_detailing_limpeza_predial(request, userid, id_random):
         header_model='solicitar serviço',
         redirect_url='servicos_agendados_limpeza_predial',
         link_tipos=None,
-        # button_export_tittle='Exportar Excel',
-        # status=['Concluido', 'Agendado', 'Em andamento'],
-        # button_export_link='exportar_relatorio_de_serivos_limpeza_predial_excel',
         permission_view=permission_view,
         userid=userid
     )

@@ -63,9 +63,6 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                 empresasecundaria__empresaprimaria=empresa_associada
             ).distinct().count()  # Ajustei o filtro para ser mais direto, sem 'distinct'
 
-            print(n_unidades_criadas)
-            print(empresa_associada.N_unidades)
-
             # Valida se a quantidade de unidades criadas ultrapassou o limite
             if n_unidades_criadas >= empresa_associada.N_unidades:
                 messages.error(
@@ -82,7 +79,6 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                 define_setting(
                     request=request,
                     model_class=model,
-                    form_class=form_class,
                     email=email
                 )
 

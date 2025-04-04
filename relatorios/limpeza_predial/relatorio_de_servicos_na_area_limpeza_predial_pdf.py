@@ -1,4 +1,4 @@
-from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
+from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial, query_servicos_limpeza_predial_agendados_anotados
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -6,12 +6,14 @@ from io import BytesIO
 import os
 from django.conf import settings
 from utils.utils import generate_id_random
-from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
+from relatorios.utils_pdf import (draw_footer, draw_header, add_figures_to_pdf, draw_status_with_background,
+                                  draw_request_and_delivery_images, draw_execution_table)
 from relatorios.limpeza_predial.utils import graphs_limpeza_predial_concluido_to_reports
 from areas.models_limpeza_predial import AreaLimpezaPredial
 from datetime import datetime
 from django.shortcuts import redirect
 from permissionscontrol.utils import verify_login
+from relatorios.utils import define_filters
 
 def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, id_random, DataDeInicio,
                                                               DataDeConclusao, Areas, TipoServico, ServicosEscalados,
@@ -26,24 +28,53 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, i
     ServicosEscalados = ServicosEscalados.split(',')
     ColaboradoresEscalados = ColaboradoresEscalados.split(',')
 
-    dados = colect_dados_fato_servico_limpeza_predial(
-        request=request,
-        userid=userid,
+    filters = define_filters(
         DataDeInicio=DataDeInicio,
         DataDeConclusao=DataDeConclusao,
-        ServicosEscalados=ServicosEscalados,
         TipoServico=TipoServico,
         Areas=Areas,
-        ColaboradoresEscalados=ColaboradoresEscalados,
-        status=['Concluido']
+        ServicosEscalados=ServicosEscalados,
+        ColaboradoresEscalados=ColaboradoresEscalados
     )
 
-    if type == 'configuracao':
-        dados = dados.filter(id_random_configuracao=id_random)
+    dados = query_servicos_limpeza_predial_agendados_anotados(
+        request,
+        userid,
+        ['Agendado', 'Em andamento', 'Concluido']
+    ).filter(
+        status__in=['Concluido'],
+        **filters
+    )
+
+    if type == 'catalogo_de_servicos':
+        dados = dados.filter(ServicosEscalados__id_random=id_random)
+
+    elif type == 'configuracao':
+        dados = dados.filter(id_configuracao=id_random)
+
     elif type == 'areas':
-        object = AreaLimpezaPredial.objects.get(id_random=id_random)
+        dados = dados.filter(Areas__id_random=id_random)
+
     elif type == 'gerente':
-        dados = dados.filter(colaborador_envolvido_id_random=id_random)
+        execucao_dados = colect_dados_fato_servico_limpeza_predial(
+            request=request,
+            userid=userid,
+            DataDeInicio=DataDeInicio,
+            DataDeConclusao=DataDeConclusao,
+            ServicosEscalados=ServicosEscalados,
+            ColaboradoresEscalados=ColaboradoresEscalados,
+            TipoServico=TipoServico,
+            Areas=Areas,
+            status=['Concluido']
+        ).filter(
+            colaboradores_chamados_id_random=id_random
+        )
+
+        # Obter todos os IDs únicos de uma vez
+        ids_random_agendamentos = {dado.id_random_agendamento for dado in execucao_dados}
+
+        # Filtrar todos os dados de uma vez
+        dados = dados.filter(id_random__in=ids_random_agendamentos)
 
     # Create PDF buffer
     buffer = BytesIO()
@@ -54,84 +85,42 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, i
     # Draw header
     header_image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/logo alt.png')
     draw_header(c=p, header_image_path=header_image_path, width=width, height=height)
+
     y = height - 120  # Starting position after header
     page_number = 1
     p.setFont("Helvetica", 10)
 
     if len(dados) > 0:
         for dado in dados:
-            p.setFont('Helvetica-Bold', 10)
-            p.drawString(x, y, f"Descrição: {dado.descricao_do_servico}")
-            y -= 20
+            y = draw_status_with_background(p, x, y, dado, dado.dias_diferenca)
 
-            p.setFont("Helvetica", 10)
-            p.drawString(x, y, f'Data de Início: {dado.data_de_inicio.strftime("%d/%m/%Y %H:%M")}')
-            y -= 20
-            p.drawString(x, y, f'Data de Conclusão: {dado.data_de_conclusao.strftime("%d/%m/%Y %H:%M")}')
-            y -= 20
-            p.drawString(x, y, f"Área Atendida: {dado.area_atendida}")
-            y -= 20
-            p.drawString(x, y, f"Tamanho da Área Atendida: {dado.area_total} M²")
-            y -= 20
-            p.drawString(x, y, f"Serviços Escalados: {dado.servicos_solicitados}")
-            y -= 20
-            p.drawString(x, y, f"Colaboradores Escalados: {dado.colaborador_envolvido}")
-            y -= 20
+            # Adicionar dados de execução como tabela após as imagens
+            execucao_dados = colect_dados_fato_servico_limpeza_predial(
+                request=request,
+                userid=userid,
+                DataDeInicio=DataDeInicio,
+                DataDeConclusao=DataDeConclusao,
+                ServicosEscalados=ServicosEscalados,
+                ColaboradoresEscalados=ColaboradoresEscalados,
+                TipoServico=TipoServico,
+                Areas=Areas,
+                status=['Concluido']
+            ).filter(id_agendamento=dado.id)
 
-            def add_images_to_canvas(p, dado, x, y, type, area_object=None):
-                def calculate_new_dimensions(img_width, img_height):
-                    new_width = img_width / 2.4
-                    new_height = img_height / 2.4
-                    return new_width, new_height
+            for execucao_dado in execucao_dados:
+                y = draw_request_and_delivery_images(p, x, y, width, height, execucao_dado, header_image_path)
 
-                # Lista de imagens a serem exibidas: área (se aplicável), solicitação e entrega
-                images = []
-
-                # Adiciona a imagem da área se type == 'areas'
-                if type == 'areas' and area_object:
-                    image_path = area_object.foto.url if area_object.foto else os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')
-                    images.append(("Área", image_path))
-
-                # Adiciona a imagem da solicitação (assumindo que pode existir)
-                if hasattr(dado, 'foto_solicitacao') and dado.foto_solicitacao:
-                    images.append(("Na solicitação", dado.foto_solicitacao.url))
-                else:
-                    images.append(("Na solicitação", os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')))
-
-                # Adiciona a imagem da entrega
-                if dado.foto_conclusao:
-                    images.append(("Na entrega", dado.foto_conclusao.url))
-                else:
-                    images.append(("Na entrega", os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')))
-
-                # Processa as imagens duas por página
-                for i in range(0, len(images), 2):
-                    if i > 0:  # Nova página após a primeira combinação
-                        draw_footer(p, width)
-                        p.showPage()
-                        draw_header(c=p, header_image_path=header_image_path, width=width, height=height)
-                        y = height - 120
-
-                    # Primeira imagem da página
-                    title1, path1 = images[i]
-                    p.setFont("Helvetica", 10)
-                    p.drawString(x, y, title1)
-                    y -= 12
-                    height1 = draw_image(path1, x, y, p)
-                    y -= height1 + 10
-
-                    # Segunda imagem da página (se existir)
-                    if i + 1 < len(images):
-                        title2, path2 = images[i + 1]
-                        p.setFont("Helvetica", 10)
-                        p.drawString(x, y, title2)
-                        y -= 12
-                        height2 = draw_image(path2, x, y, p)
-                        y -= height2 + 10
-
-            # Passar o objeto da área se type == 'areas'
-            area_object = object if type == 'areas' else None
-            add_images_to_canvas(p, dado, x, y, type, area_object)
+            # Desenhar a tabela de execução
+            y, page_number = draw_execution_table(
+                p=p,
+                x=x,
+                y=y,
+                width=width,
+                height=height,
+                execucao_dados=execucao_dados,
+                header_image_path=header_image_path,
+                page_number=page_number
+            )
 
             # Draw footer and start new page
             draw_footer(p, width)

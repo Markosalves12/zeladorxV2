@@ -350,22 +350,18 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
-          {% if habilitar_jardinagem %}
             <li class="nav-item">
               <a href="{% url 'configurar_notificacoes_jardinagem' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Jardinagem</p>
+                <p>Gerais</p>
               </a>
             </li>
-          {% endif %}
-          {% if habilitar_limpeza %}
-            <li class="nav-item">
-              <a href="{% url 'configurar_notificacoes_limpeza_predial' userid %}" class="nav-link active">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Limpeza predial</p>
-              </a>
-            </li>
-          {% endif %}
+<!--            <li class="nav-item">-->
+<!--              <a href="{% url 'configurar_notificacoes_limpeza_predial' userid %}" class="nav-link active">-->
+<!--                <i class="far fa-circle nav-icon"></i>-->
+<!--                <p>Limpeza predial</p>-->
+<!--              </a>-->
+<!--            </li>-->
         </ul>
       </li>
 

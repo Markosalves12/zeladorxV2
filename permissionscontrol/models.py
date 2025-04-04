@@ -91,6 +91,11 @@ class PermissionsJardinagem(models.Model):
         ('401: Pode editar checklists', '401: Pode editar checklists'),
         ('402: Pode visualizar checklists', '402: Pode visualizar checklists'),
         ('403: Pode excluir checklists', '403: Pode excluir checklists'),
+
+        ('410: Pode editar o recebimento de notificações gerais',
+         '410: Pode editar o recebimento de notificações gerais'),
+        ('411: Pode editar o recebimento de notificações individuais',
+         '411: Pode editar o recebimento de notificações individuais'),
     ]
 
     Permissions = models.CharField(
@@ -200,6 +205,11 @@ class PermissionsLimpezaPredial(models.Model):
         ('401: Pode editar checklists', '401: Pode editar checklists'),
         ('402: Pode visualizar checklists', '402: Pode visualizar checklists'),
         ('403: Pode excluir checklists', '403: Pode excluir checklists'),
+
+        ('410: Pode editar o recebimento de notificações gerais',
+         '410: Pode editar o recebimento de notificações gerais'),
+        ('411: Pode editar o recebimento de notificações individuais',
+         '411: Pode editar o recebimento de notificações individuais'),
     ]
 
     Permissions = models.CharField(

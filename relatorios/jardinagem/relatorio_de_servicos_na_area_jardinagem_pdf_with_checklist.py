@@ -1,19 +1,20 @@
-from servicos.models_jardinagem import ServicoJardinagemAgendado
 from areas.models_jardinagem import AreasJardins
 from checklists.models import CheckListJardinagem
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-from reportlab.lib.colors import HexColor
 from io import BytesIO
 import os
 from django.conf import settings
-from utils.utils import formatar_atributos, generate_id_random
-from relatorios.utils import draw_image, draw_footer, draw_header, add_figures_to_pdf
+from utils.utils import generate_id_random
+from relatorios.utils_pdf import (draw_footer, draw_header, add_figures_to_pdf, draw_status_with_background,
+                                  draw_checklist_table, draw_execution_table, draw_all_images_intercalated)
 from datetime import datetime
 from relatorios.jardinagem.utils import graphs_jardinagem_concluido_to_reports
 from django.shortcuts import redirect
 from permissionscontrol.utils import verify_login
+from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem, query_servicos_jardinagem_agendados_anotados
+from relatorios.utils import define_filters
 
 def exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist(request, userid, id_random, DataDeInicio, DataDeConclusao, Areas,
                                                                        TipoServico, ServicosEscalados, ColaboradoresEscalados, type):
@@ -28,30 +29,36 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist(request,
     ColaboradoresEscalados = ColaboradoresEscalados.split(',')
 
     # Build filters
-    filters = {}
-    if DataDeInicio and DataDeInicio != "None":
-        filters['DataDeInicio__gte'] = DataDeInicio
-    if DataDeConclusao and DataDeConclusao != "None":
-        filters['DataDeConclusao__lte'] = DataDeConclusao
-    if Areas and Areas != "None":
-        filters['Areas__id__in'] = Areas
-    if TipoServico and TipoServico != "None":
-        filters['TipoServico'] = TipoServico
-    if ServicosEscalados and ServicosEscalados != ["None"]:
-        filters['ServicosEscalados__id__in'] = ServicosEscalados
-    if ColaboradoresEscalados and ColaboradoresEscalados != ["None"]:
-        filters['ColaboradoresEscalados__id__in'] = ColaboradoresEscalados
+    filters = define_filters(
+        DataDeInicio=DataDeInicio,
+        DataDeConclusao=DataDeConclusao,
+        TipoServico=TipoServico,
+        Areas=Areas,
+        ServicosEscalados=ServicosEscalados,
+        ColaboradoresEscalados=ColaboradoresEscalados
+    )
+
+    dados = query_servicos_jardinagem_agendados_anotados(
+        request,
+        userid,
+        ['Agendado', 'Em andamento', 'Concluido']
+    ).filter(
+        status__in=['Concluido'],
+        **filters
+    )
 
     # Query data based on type
     if type == 'catalogo_de_servicos':
-        dados = ServicoJardinagemAgendado.objects.filter(**filters, status__in=['Concluido'])
+        dados = dados.filter(ServicosEscalados__id_random=id_random)
+
     elif type == 'configuracao':
-        dados = ServicoJardinagemAgendado.objects.filter(**filters, id_configuracao=id_random, status__in=['Concluido'])
+        dados = dados.filter(**filters, id_configuracao=id_random)
+
     elif type == 'areas':
-        object = AreasJardins.objects.get(id_random=id_random)
-        dados = ServicoJardinagemAgendado.objects.filter(**filters, Areas__id_random=id_random, status__in=['Concluido'])
+        dados = dados.filter(**filters, Areas__id_random=id_random)
+
     elif type == 'gerente':
-        dados = ServicoJardinagemAgendado.objects.filter(**filters, status__in=['Concluido'])
+        dados = dados.filter(ColaboradoresEscalados__id_random=id_random)
 
     # Create PDF buffer
     buffer = BytesIO()
@@ -59,159 +66,67 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist(request,
     width, height = letter
     x = 50
 
-    # Draw header
+    # função que cria o cabeçalho propriamente falado
+    # Draw the header for the first page
     header_image_path = os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/logo alt.png')
     draw_header(c=p, header_image_path=header_image_path, width=width, height=height)
 
-    y = height - 100  # Starting position after header
+    y = height - 120  # Starting position after header
     page_number = 1
     p.setFont("Helvetica", 10)
 
     # Process each service entry
     if len(dados) > 0:
         for dado in dados:
-            p.setFont('Helvetica-Bold', 10)
-            p.drawString(x, y, f"Descrição: {dado.DescricaoDoServico}")
-            y -= 20
+            y = draw_status_with_background(p, x, y, dado, dado.dias_diferenca, permission_type="jardinagem")
 
-            p.setFont("Helvetica", 10)
-            p.drawString(x, y, f'Data de Início: {dado.DataDeInicio.strftime("%d/%m/%Y %H:%M")}')
-            y -= 20
-            p.drawString(x, y, f'Data de Conclusão: {dado.DataDeConclusao.strftime("%d/%m/%Y %H:%M")}')
-            y -= 20
-            p.drawString(x, y, f"Área Atendida: {dado.Areas}")
-            y -= 20
-            p.drawString(x, y, f"Tamanho da Área Atendida: {dado.Areas.dimensao} M²")
-            y -= 20
+            y = draw_all_images_intercalated(
+                p,
+                x,
+                y,
+                width,
+                height,
+                dado,
+                header_image_path,
+                checklist_model=CheckListJardinagem
+            )
 
-            # Serviços Escalados
-            p.drawString(x, y, "Serviços Escalados:")
-            y -= 10
-            servicos = formatar_atributos(queryset=dado.ServicosEscalados.all(), atributo='nome')
-            p.drawString(x + 20, y, f"- {servicos}")
-            y -= 20
+            # Adicionar dados de execução como tabela após as imagens
+            execucao_dados = colect_dados_fato_servico_jardinagem(
+                request=request,
+                userid=userid,
+                DataDeInicio=DataDeInicio,
+                DataDeConclusao=DataDeConclusao,
+                ServicosEscalados=ServicosEscalados,
+                ColaboradoresEscalados=ColaboradoresEscalados,
+                TipoServico=TipoServico,
+                Areas=Areas,
+                status=['Concluido']
+            ).filter(id_agendamento=dado.id)
 
-            # Colaboradores Escalados
-            p.drawString(x, y, "Colaboradores Escalados:")
-            y -= 10
-            colaborador = formatar_atributos(queryset=dado.ColaboradoresEscalados.all(), atributo='username')
-            p.drawString(x + 20, y, f"- {colaborador}")
-            y -= 20
+            # Desenhar a tabela de execução
+            y, page_number = draw_execution_table(
+                p=p,
+                x=x,
+                y=y,
+                width=width,
+                height=height,
+                execucao_dados=execucao_dados,
+                header_image_path=header_image_path,
+                page_number=page_number
+            )
 
-            # Checklist Section (text only, images handled separately)
-            p.drawString(x, y, "Checklist:")
-            y -= 10
-            checklists = CheckListJardinagem.objects.filter(servico_agendado__id_random=dado.id_random)
-            if checklists.exists():
-                for checklist in checklists:
-                    p.setFont("Helvetica", 8)
-                    p.drawString(x + 20, y, f"{checklist.descricao}")
-                    y -= 10
-            else:
-                p.drawString(x + 20, y, "- Nenhum checklist associado")
-                y -= 15
-
-            # Add images (área, solicitação, checklists, entrega)
-            def add_images_to_canvas(p, dado, x, y, type, area_object=None):
-                def calculate_new_dimensions(img_width, img_height):
-                    new_width = img_width / 2.4
-                    new_height = img_height / 2.4
-                    return new_width, new_height
-
-                # Lista de imagens a serem exibidas: área (se aplicável), solicitação, checklists e entrega
-                images = []
-
-                # Adiciona a imagem da área se type == 'areas'
-                if type == 'areas' and area_object:
-                    image_path = area_object.foto.url if area_object.foto else os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')
-                    images.append(("Área", image_path, False))
-
-                # Adiciona a imagem da solicitação
-                if dado.foto_solicitacao:
-                    images.append(("Na solicitação", dado.foto_solicitacao.url, False))
-                else:
-                    images.append(("Na solicitação", os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png'), False))
-
-                # Adiciona as imagens do checklist
-                dados_checklist = CheckListJardinagem.objects.filter(servico_agendado__id_random=dado.id_random)
-                for checklist in dados_checklist:
-                    if checklist.foto_comprovacao:
-                        images.append((checklist.descricao, checklist.foto_comprovacao.url, True, checklist.status))
-                    else:
-                        images.append((checklist.descricao, os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png'), True, checklist.status))
-
-                # Adiciona a imagem da entrega
-                if dado.foto_entrega:
-                    images.append(("Na entrega", dado.foto_entrega.url, False))
-                else:
-                    images.append(("Na entrega", os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png'), False))
-
-                # Processa as imagens duas por página
-                for i in range(0, len(images), 2):
-                    if i > 0:  # Nova página após a primeira combinação
-                        draw_footer(p, width)
-                        p.showPage()
-                        draw_header(c=p, header_image_path=header_image_path, width=width, height=height)
-                        y = height - 120
-
-                    # Primeira imagem da página
-                    title1, path1, is_checklist1 = images[i][0], images[i][1], images[i][2]
-                    status1 = images[i][3] if is_checklist1 else None
-
-                    if is_checklist1:
-                        p.setFont("Helvetica", 8)  # Fonte menor para checklist
-                        p.drawString(x + 40, y, f"Descrição: {title1}")  # Tabulação maior
-                        y -= 12
-                        p.setFont("Helvetica-Bold", 8)  # Fonte menor e negrito para status
-                        status_text = f"Status: {status1}"
-                        if status1 == "Pendente":
-                            p.setFillColor(HexColor("#f6be04"))  # Amarelo
-                            p.rect(x + 40, y - 2, 100, 10, fill=1, stroke=0)
-                        elif status1 == "Concluído":
-                            p.setFillColor(HexColor("#008000"))  # Verde
-                            p.rect(x + 40, y - 2, 100, 10, fill=1, stroke=0)
-                        p.setFillColor(HexColor("#000000"))
-                        p.drawString(x + 40, y, status_text)
-                        y -= 12
-                        height1 = draw_image(path1, x + 40, y, p)  # Tabulação maior
-                    else:
-                        p.setFont("Helvetica", 10)
-                        p.drawString(x, y, title1)
-                        y -= 12
-                        height1 = draw_image(path1, x, y, p)
-                    y -= height1 + 10
-
-                    # Segunda imagem da página (se existir)
-                    if i + 1 < len(images):
-                        title2, path2, is_checklist2 = images[i + 1][0], images[i + 1][1], images[i + 1][2]
-                        status2 = images[i + 1][3] if is_checklist2 else None
-
-                        if is_checklist2:
-                            p.setFont("Helvetica", 8)  # Fonte menor para checklist
-                            p.drawString(x + 40, y, f"Descrição: {title2}")  # Tabulação maior
-                            y -= 12
-                            p.setFont("Helvetica-Bold", 8)  # Fonte menor e negrito para status
-                            status_text = f"Status: {status2}"
-                            if status2 == "Pendente":
-                                p.setFillColor(HexColor("#f6be04"))  # Amarelo
-                                p.rect(x + 40, y - 2, 100, 10, fill=1, stroke=0)
-                            elif status2 == "Concluído":
-                                p.setFillColor(HexColor("#008000"))  # Verde
-                                p.rect(x + 40, y - 2, 100, 10, fill=1, stroke=0)
-                            p.setFillColor(HexColor("#000000"))
-                            p.drawString(x + 40, y, status_text)
-                            y -= 12
-                            height2 = draw_image(path2, x + 40, y, p)  # Tabulação maior
-                        else:
-                            p.setFont("Helvetica", 10)
-                            p.drawString(x, y, title2)
-                            y -= 12
-                            height2 = draw_image(path2, x, y, p)
-                        y -= height2 + 10
-
-            # Passar o objeto da área se type == 'areas'
-            area_object = object if type == 'areas' else None
-            add_images_to_canvas(p, dado, x, y, type, area_object)
+            # Adicionar tabela de checklist após a tabela de execução
+            y = draw_checklist_table(
+                p,
+                x,
+                y,
+                width,
+                height,
+                dado,
+                CheckListJardinagem,
+                header_image_path
+            )
 
             # Draw footer and start new page
             draw_footer(p, width)
@@ -219,6 +134,12 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist(request,
             page_number += 1
             p.setFont("Helvetica", 10)
             y = height - 70
+
+    else:
+        p.showPage()
+        page_number += 1
+        p.setFont("Helvetica", 10)
+        y = height - 70
 
     # Graphs section
     start_y = height - 100
@@ -233,8 +154,12 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist(request,
         start_y, end_page = add_figures_to_pdf(
             p,
             {
-                **figs_concluidos_terreno, **figs_concluidos_vegetacao, **figs_concluidos_localidade,
-                **figs_concluidos_area, **figs_concluidos_colaborador, **figs_concluidos_servico
+                **figs_concluidos_terreno,
+                **figs_concluidos_vegetacao,
+                **figs_concluidos_localidade,
+                **figs_concluidos_area,
+                **figs_concluidos_colaborador,
+                **figs_concluidos_servico
             },
             start_y,
             start_y + 1,

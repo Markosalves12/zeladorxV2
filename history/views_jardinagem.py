@@ -30,7 +30,7 @@ def historico_de_servicos_areas_jardinagem(request, userid, id_random):
     objetos = ServicoJardinagemAgendado.objects.filter(
         Areas__id_random=id_random,
         status__in=['Concluido']
-    ).distinct()
+    )
 
     return generic_view_history(
         request=request,
@@ -86,7 +86,7 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
     objetos = ServicoJardinagemAgendado.objects.filter(
         ServicosEscalados__id_random=id_random,
         status__in=['Concluido']
-    ).distinct()
+    )
 
     return generic_view_history(
         request=request,
@@ -102,7 +102,6 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
         filtro_mapeamento={
             'Areas': 'Areas__id',
             'TipoServico': 'TipoServico',
-            'ServicosEscalados': 'ServicosEscalados__id',
             'ColaboradoresEscalados': 'ColaboradoresEscalados__id',
             'DataDeInicio': 'DataDeInicio',
             'DataDeConclusao': 'DataDeConclusao'

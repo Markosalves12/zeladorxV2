@@ -25,7 +25,7 @@ def data_visualization_limpeza_predial_indicadores(request, userid, dados):
 def graphs_limpeza_predial_to_html(request, userid, dados):
     fig_area_unidades_mobilizadas = data_visualization_limpeza_predial_graphs(request, userid, dados).create_fig(
         name_fig='fig_area_unidades_mobilizadas',
-        filters={'status': 'Mobilizado'},
+        filters={'localidade__unidade__status': 'Mobilizado'},
         field_name='localidade__unidade__nome',
         title='Área Total por unidade (Mobilizadas)',
         label_type='Unidade',
@@ -37,7 +37,7 @@ def graphs_limpeza_predial_to_html(request, userid, dados):
 
     fig_area_unidades_desmobilizadas = data_visualization_limpeza_predial_graphs(request, userid, dados).create_fig(
         name_fig='fig_area_unidades_desmobilizadas',
-        filters={'status': 'Desmobilizado'},
+        filters={'localidade__unidade__status': 'Desmobilizado'},
         field_name='localidade__unidade__nome',
         title='Área Total por unidade (Desmobilizado)',
         label_type='Unidade',
@@ -49,7 +49,7 @@ def graphs_limpeza_predial_to_html(request, userid, dados):
 
     fig_area_localidades_mobilizadas = data_visualization_limpeza_predial_graphs(request, userid, dados).create_fig(
         name_fig='fig_area_localidades_mobilizadas',
-        filters={'status': 'Mobilizado'},
+        filters={'localidade__status': 'Mobilizado'},
         field_name='localidade__nome',
         title='Área Total por localidade (Mobilizadas)',
         label_type='Localidade',
@@ -61,7 +61,7 @@ def graphs_limpeza_predial_to_html(request, userid, dados):
 
     fig_area_localidades_desmobilizadas = data_visualization_limpeza_predial_graphs(request, userid, dados).create_fig(
         name_fig='fig_area_localidades_desmobilizadas',
-        filters={'status': 'Desmobilizado'},
+        filters={'localidade__status': 'Desmobilizado'},
         field_name='localidade__nome',
         title='Área Total por localidade (Desmobilzadas)',
         label_type='Localidade',

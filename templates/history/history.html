@@ -76,41 +76,67 @@
               <div>
                 <i class="fas fa-message bg-blue"></i>
                 <div class="timeline-item">
-                  <h3 class="timeline-header"><a href="#"></a> Descrição </h3>
+                  {% if type_exibition == 'jardinagem_agendado' %}
+                    <h3 class="timeline-header"><a href="#"></a> Agendamento.Id: {{ dado.id }}</h3>
+                  {% elif type_exibition == 'fato_jardinagem' or  type_exibition == 'fato_limpeza_predial' %}
+                    <h3 class="timeline-header"><a href="#"></a> Agendamento.Id: {{ dado.Servico.id }}</h3>
+                  {% endif %}
+
                   {% if type_exibition == 'jardinagem_agendado' %}
                     <div class="timeline-body">
-                      {{ dado.DescricaoDoServico }}</br>
+                      Descrição: {{ dado.DescricaoDoServico }} </br>
                       </br>
-                      Área atendida: {{ dado.Areas }}</br>
-                      Serviços escalados:
-                      {% for servico in  dado.ServicosEscalados.all %}
-                        {{ servico }},
-                      {% endfor %}
+                        Data de início: {{ dado.DataDeInicio }}
                       </br>
-                      Colaborador escalados:
-                      {% for colaborador in  dado.ColaboradoresEscalados.all %}
-                        {{ colaborador }},
-                      {% endfor %}
+                        Data de conclusão: {{ dado.DataDeConclusao }}
+                      </br>
+                        Área atendida: {{ dado.Areas }}</br>
+                        Serviços escalados:
+                        {% for servico in  dado.ServicosEscalados.all %}
+                          {{ servico }},
+                        {% endfor %}
+                      </br>
+                        Colaborador escalados:
+                        {% for colaborador in  dado.ColaboradoresEscalados.all %}
+                          {{ colaborador }},
+                        {% endfor %}
                     </div>
                   {% elif type_exibition == 'fato_limpeza_predial' %}
                     <div class="timeline-body">
-                      {{ dado.descricao_do_servico }}</br>
+                        {{ dado.Servico.DescricaoDoServico }}</br>
                       </br>
-                      Área atendida: {{ dado.area_atendida }}</br>
-                      Serviços escalados: {{ dado.servicos_solicitados }}</br>
-                      Colaborador escalados: {{ dado.colaborador_envolvido }}</br>
-                      Horário de chegada: {{ dado.data_de_inicio }}</br>
-                      Horário de saída: {{ dado.data_de_conclusao }}</br>
+                        Data de início: {{ dado.Servico.DataDeInicio }}
+                      </br>
+                        Data de conclusão: {{ dado.Servico.DataDeConclusao }}
+                      </br>
+                        Área atendida: {{ dado.Servico.Areas.nome }}</br>
+                        Serviços escalados:
+                        {% for servico in dado.Servico.ServicosEscalados.all %}
+                          {{ servico }},
+                        {% endfor %}</br>
+                        Colaborador escalados: {{ dado.colaboradores_chamados }}</br>
+                        Horário de chegada: {{ dado.Servico.DataDeInicio }}</br>
+                        Horário de saída: {{ dado.Servico.DataDeConclusao }}</br>
                     </div>
                   {% elif type_exibition == 'fato_jardinagem' %}
                     <div class="timeline-body">
-                      {{ dado.descricao_do_servico }}</br>
+                      {{ dado.Servico.DescricaoDoServico }}</br>
                       </br>
-                      Área atendida: {{ dado.area_atendida }}</br>
-                      Serviços escalados: {{ dado.servicos_solicitados }}</br>
-                      Colaborador escalados: {{ dado.colaborador_envolvido }}</br>
-                      Horário de chegada: {{ dado.data_de_inicio }}</br>
-                      Horário de saída: {{ dado.data_de_conclusao }}</br>
+                      Data de início: {{ dado.Servico.DataDeInicio }}
+                      </br>
+                      Data de conclusão: {{ dado.Servico.DataDeConclusao }}
+                      </br>
+                      Área atendida: {{ dado.Servico.Areas.nome }}</br>
+                      Serviços escalados:
+                      {% for servico in dado.Servico.ServicosEscalados.all %}
+                        {{ servico }},
+                      {% endfor %}</br>
+                      Colaborador escalados:
+                      {% for colaborador in dado.Servico.ColaboradoresEscalados.all %}
+                        {{ colaborador }},
+                      {% endfor %}</br>
+                      Horário de chegada: {{ dado.Servico.DataDeInicio }}</br>
+                      Horário de saída: {{ dado.Servico.DataDeConclusao }}</br>
                     </div>
                   {% endif %}
 
@@ -160,6 +186,19 @@
 
                       {% if dado.foto_entrega %}
                         <img src="{{ dado.foto_entrega.url }}" alt="Imagem do Objeto" class="img-fluid">
+                      {% else %}
+                        <img src="{% static 'dist/img/not found.png' %}" alt="Not found imagem" class="img-fluid">
+                      {% endif %}
+
+                    {% elif type_exibition == 'fato_jardinagem' %}
+                      {% if dado.foto_solicitacao %}
+                        <img src="{{ dado.Servico.foto_solicitacao.url }}" alt="Imagem do Objeto" class="img-fluid">
+                      {% else %}
+                        <img src="{% static 'dist/img/not found.png' %}" alt="Not found imagem" class="img-fluid">
+                      {% endif %}
+
+                      {% if dado.foto_entrega %}
+                        <img src="{{ dado.Servico.foto_entrega.url }}" alt="Imagem do Objeto" class="img-fluid">
                       {% else %}
                         <img src="{% static 'dist/img/not found.png' %}" alt="Not found imagem" class="img-fluid">
                       {% endif %}

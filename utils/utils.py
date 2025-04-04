@@ -77,7 +77,6 @@ def aplicar_filtros_dinamicos(queryset, get_data, filtro_mapeamento):
     for field, value in get_data.items():
         if value:  # Apenas aplica o filtro se houver um valor válido
             # Verifica se o campo está no mapeamento de filtros personalizados
-            print(type(value))
             if field in filtro_mapeamento:
                 filtro_especifico = filtro_mapeamento[field]
 

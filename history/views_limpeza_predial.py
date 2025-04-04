@@ -38,7 +38,7 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
         ColaboradoresEscalados=['None'],
         status=['Concluido']
     ).filter(
-        id_random_area=id_random
+        Servico__Areas__id_random=id_random
     ).distinct()
 
     return generic_view_history(
@@ -53,10 +53,10 @@ def historico_de_servicos_areas_limpeza_predial(request, userid, id_random):
         form_search=ServicoLimpezaPredialAgendadoForms(request=request, userid=userid, type='search'),
         sform_search=True,
         filtro_mapeamento={
-            'TipoServico': 'tipo_de_servico',
-            'ServicosEscalados': 'servicos_solicitados_id',
-            'DataDeInicio': 'data_de_inicio',
-            'DataDeConclusao': 'data_de_conclusao',
+            'TipoServico': 'Servico__TipoServico',
+            'ServicosEscalados': 'Servico__ServicosEscalados__id',
+            'DataDeInicio': 'Servico__DataDeInicio',
+            'DataDeConclusao': 'Servico__DataDeConclusao',
         },
         export_pdf='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
         export_pdf_with_checklist='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf_with_checklist',
@@ -102,7 +102,7 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
         ColaboradoresEscalados=['None'],
         status=['Concluido']
     ).filter(
-        id_random_servico=id_random
+        Servico__ServicosEscalados__id_random=id_random
     ).distinct()
 
     return generic_view_history(
@@ -117,11 +117,11 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
         form_search=ServicoLimpezaPredialAgendadoForms(request=request, userid=userid, type='search'),
         sform_search=True,
         filtro_mapeamento={
-            'TipoServico': 'tipo_de_servico',
-            'ServicosEscalados': 'servicos_solicitados_id',
-            'DataDeInicio': 'data_de_inicio',
-            'DataDeConclusao': 'data_de_conclusao',
-            'Areas': 'area_atendid_id'
+            'Areas': 'Servico__Areas__id',
+            'TipoServico': 'Servico__TipoServico',
+            'ColaboradoresEscalados': 'Servico__ColaboradoresEscalados__id',
+            'DataDeInicio': 'Servico__DataDeInicio',
+            'DataDeConclusao': 'Servico__DataDeConclusao'
         },
         export_pdf='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf',
         export_pdf_with_checklist='exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf_with_checklist',

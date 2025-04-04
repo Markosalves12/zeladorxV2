@@ -6,6 +6,7 @@ from utils.utils import generate_id_random
 from datetime import datetime
 from permissionscontrol.utils import verify_login
 from django.shortcuts import redirect
+from relatorios.utils_xlsx import adicionar_cabecalhos, adicionar_dados
 
 def exportar_relatorio_de_serivos_Jardinagem_excel(
     request, userid, status, DataDeInicio, DataDeConclusao, Areas,
@@ -18,95 +19,104 @@ def exportar_relatorio_de_serivos_Jardinagem_excel(
 
     # Configuração inicial do workbook
     wb = openpyxl.Workbook()
-    ws = wb.active
-    ws.title = "Relatório de execucao jardinagem"
+    ws_agendadamentos = wb.active
+    ws_agendadamentos.title = "Relatório de agendamentos jardinagem"
+    ws_acompanhamento = wb.create_sheet(title="Relatório de acompanhamento")  # Cria a segunda aba
 
     # Converte os parâmetros de entrada
-    DataDeInicio = (
-        datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M').replace(tzinfo=None)
-        if DataDeInicio and DataDeInicio != "None" else None
-    )
-    DataDeConclusao = (
-        datetime.strptime(DataDeConclusao, '%Y-%m-%dT%H:%M').replace(tzinfo=None)
-        if DataDeConclusao and DataDeConclusao != "None" else None
-    )
+    DataDeInicio = datetime.strptime(DataDeInicio, '%Y-%m-%dT%H:%M').replace(tzinfo=None) if DataDeInicio and DataDeInicio != "None" else None
+    DataDeConclusao = datetime.strptime(DataDeConclusao, '%Y-%m-%dT%H:%M').replace(tzinfo=None) if DataDeConclusao and DataDeConclusao != "None" else None
     ServicosEscalados = ServicosEscalados.split(',')
     ColaboradoresEscalados = ColaboradoresEscalados.split(',')
 
+    # Dados de agendamento
     # Seleciona cabeçalhos e coleta dados
-    if 'Concluido' in status.split(','):
-        headers = headers_report_services
-        dados = colect_dados_fato_servico_jardinagem(
-            request=request,
-            userid=userid,
-            DataDeInicio=DataDeInicio,
-            DataDeConclusao=DataDeConclusao,
-            ServicosEscalados=ServicosEscalados,
-            ColaboradoresEscalados=ColaboradoresEscalados,
-            TipoServico=TipoServico,
-            Areas=Areas,
-            status=status.split(',')
-        )
-    else:
-        headers = headers_report_schedules
-        dados = colect_dados_agendamentos_jardinagem(
-            request=request,
-            userid=userid,
-            DataDeInicio=DataDeInicio,
-            DataDeConclusao=DataDeConclusao,
-            ServicosEscalados=ServicosEscalados,
-            ColaboradoresEscalados=ColaboradoresEscalados,
-            TipoServico=TipoServico,
-            Areas=Areas,
-            status=status.split(',')
-        )
+    dados = colect_dados_agendamentos_jardinagem(
+        request=request,
+        userid=userid,
+        DataDeInicio=DataDeInicio,
+        DataDeConclusao=DataDeConclusao,
+        ServicosEscalados=ServicosEscalados,
+        ColaboradoresEscalados=ColaboradoresEscalados,
+        TipoServico=TipoServico,
+        Areas=Areas,
+        status=status.split(',')
+    )
 
-    # Adiciona os cabeçalhos ao Excel
-    for col_num, header_title in enumerate(headers, 1):
-        cell = ws.cell(row=1, column=col_num)
-        cell.value = header_title
+    # Definindo as colunas com seus tipos, conforme o código original
+    colunas = [
+        ('tipodeempresa', None),
+        ('empresaprestadora', None),
+        ('id_agendamento', None),
+        ('id_random_agendamento', None),
+        ('id_config', None),
+        ('tipo_agendamento', None),
+        ('descricao_do_servico', None),
+        ('colaboradores_chamados', None),
+        ('colaboradores_chamados_id', None),
+        ('colaboradores_chamados_id_random', None),
+        ('servicos_solicitados', None),
+        ('servicos_solicitados_id', None),
+        ('servicos_solicitados_id_random', None),
+        ('data_de_inicio', 'data'),  # Tratamento especial para data
+        ('data_de_conclusao', 'data'),  # Tratamento especial para data
+        ('antes', None),
+        ('depois', None),
+        ('status_servico', None),
+        ('area_atendida', None),
+        ('area_atendida_id', None),
+        ('id_random_area', None),
+        ('periodicidade_de_retorno', None),
+        ('area_total', None),
+        ('tipo_vegetacao', None),
+        ('tipo_terreno', None),
+        ('localidade', None),
+        ('lat', None),
+        ('long', None),
+        ('unidade', None)
+    ]
 
-    # Adiciona os dados ao Excel
-    if 'Concluido' in status.split(','):
-        for row_num, row in enumerate(dados, start=2):
-            row_data = [
-                row.tipodeempresa, row.empresaprestadora,
-                row.id_agendamento, row.tipo_agendamento,
-                row.descricao_do_servico, row.colaboradores_chamados,
-                row.servicos_solicitados,
-                row.data_de_inicio.replace(tzinfo=None) if row.data_de_inicio else None,
-                row.data_de_conclusao.replace(tzinfo=None) if row.data_de_conclusao else None,
-                row.antes, row.depois, row.status_servico, row.area_atendida,
-                row.id_random_area, row.periodicidade_de_retorno, row.area_total,
-                row.tipo_vegetacao, row.tipo_terreno, row.localidade, row.unidade,
-                row.id_servico, row.tempo_na_area, row.colaborador_envolvido,
-                row.colaborador_envolvido_id_random,
-                row.data_hora_chegada.replace(tzinfo=None) if row.data_hora_chegada else None,
-                row.data_hora_retorno.replace(tzinfo=None) if row.data_hora_retorno else None
-            ]
-            for col_num, value in enumerate(row_data, start=1):
-                cell = ws.cell(row=row_num, column=col_num)
-                cell.value = value
+    # Chamando as funções
+    adicionar_cabecalhos(ws_agendadamentos, headers_report_schedules)
+    adicionar_dados(ws_agendadamentos, dados, colunas, headers_report_schedules)
 
-    else:
-        for row_num, row in enumerate(dados, start=2):
-            row_data = [
-                row.tipodeempresa, row.empresaprestadora,
-                row.id_agendamento, row.tipo_agendamento,
-                row.descricao_do_servico, row.colaboradores_chamados,
-                row.servicos_solicitados,
-                row.data_de_inicio.replace(tzinfo=None) if row.data_de_inicio else None,
-                row.data_de_conclusao.replace(tzinfo=None) if row.data_de_inicio else None,
-                row.antes, row.depois, row.status_servico, row.area_atendida,
-                row.periodicidade_de_retorno, row.area_total, row.tipo_vegetacao, row.tipo_terreno,
-                row.localidade, row.unidade, row.id_random_area
-            ]
-            for col_num, value in enumerate(row_data, start=1):
-                cell = ws.cell(
-                    row=row_num,
-                    column=col_num
-                )
-                cell.value = value
+    # Dados de acompanhamento
+    dados = colect_dados_fato_servico_jardinagem(
+        request=request,
+        userid=userid,
+        DataDeInicio=DataDeInicio,
+        DataDeConclusao=DataDeConclusao,
+        ServicosEscalados=ServicosEscalados,
+        ColaboradoresEscalados=ColaboradoresEscalados,
+        TipoServico=TipoServico,
+        Areas=Areas,
+        status=status.split(',')
+    )
+
+    # Obter todos os IDs únicos de uma vez
+    ids_random_agendamentos = {dado.id_random_agendamento for dado in dados}
+
+    # Filtrar todos os dados de uma vez
+    dados_acompanhamento = dados.filter(id_random_agendamento__in=ids_random_agendamentos)
+
+
+    # Definindo as colunas com seus tipos, conforme o código original
+    colunas = [
+        ('id_acompanhamento', None),
+        ('id_random_acompanhamento', None),
+        ('id_agendamento', None),
+        ('id_random_agendamento', None),
+        ('colaboradores_chamados_id', None),
+        ('colaboradores_chamados_id_random', None),
+        ('colaboradores_chamados', None),
+        ('data_hora_chegada', 'data'),  # Tratamento especial para data
+        ('data_hora_retorno', 'data'),  # Tratamento especial para data
+        ('tempo_na_area', None),
+    ]
+
+    # Chamando as funções
+    adicionar_cabecalhos(ws_acompanhamento, headers_report_services)
+    adicionar_dados(ws_acompanhamento, dados_acompanhamento, colunas, headers_report_services)
 
     # Configura a resposta HTTP
     response = HttpResponse(

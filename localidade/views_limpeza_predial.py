@@ -205,6 +205,7 @@ def mapa_localidades_limpeza_predial(request, userid):
         model=AreaLimpezaPredial.objects.filter(
             localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
             localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+            localidade__status='Mobilizado'
         ).annotate(
             unidade_nome=ExpressionWrapper(
                 F('localidade__unidade__nome'),

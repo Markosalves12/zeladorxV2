@@ -1,6 +1,5 @@
-from django.db.models import Q
 from django.utils import timezone
-from dashboards.data_visualization import calculate_areas_and_counts, generate_chart, generate_grouped_chart
+from dashboards.data_visualization import generate_chart, generate_grouped_chart, plot_map
 from utils.utils import define_range_time
 
 def data_visualization_limpeza_predial_indicadores(request, userid, agendado):
@@ -96,6 +95,16 @@ class data_visualization_limpeza_predial_graphs:
                 sum_by=sum_by,
                 count_by=count_by
             ),
+        }
+
+        return fig_charts
+
+    def create_fig_maps(self, name_fig, color):
+        fig_charts = {
+            f'{name_fig}': plot_map(
+                paginated_queryset=self.agendado,
+                color=color,
+            ).to_html(full_html=True),
         }
 
         return fig_charts

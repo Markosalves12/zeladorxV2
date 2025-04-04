@@ -104,17 +104,17 @@ class ServicoJaridinagemAgendadoForms(forms.ModelForm):
 
     class Meta:
         model = ServicoJardinagemAgendado
-        fields = ['DataDeInicio', 'DataDeConclusao', 'ServicosEscalados', 'ColaboradoresEscalados',
-                  'DescricaoDoServico', 'Areas', 'TipoServico', 'foto_solicitacao', 'foto_entrega',]
+        fields = ['Areas', 'TipoServico', 'DescricaoDoServico', 'ServicosEscalados', 'DataDeInicio', 'DataDeConclusao', 'ColaboradoresEscalados',
+                  'foto_solicitacao', 'foto_entrega',]
 
         labels = {
+            'Areas': 'Área para ser atendida',
+            'TipoServico': 'Tipo de agendamento',
+            'ServicosEscalados': 'Serviços Escalados',
+            'DescricaoDoServico': 'Descrição do serviço',
             'DataDeInicio': 'Data marcada para inicio',
             'DataDeConclusao': 'Data prevista para conclusao',
-            'ServicosEscalados': 'Serviços Escalados',
-            'TipoServico': 'Tipo de agendamento',
             'ColaboradoresEscalados': 'Colaboradores escalados',
-            'DescricaoDoServico': 'Descrição do serviço',
-            'Areas': 'Area para ser atendida',
             'foto_solicitacao': 'Foto da área na solicitação',
             'foto_entrega': 'Foto da área na entrega',
         }
@@ -191,7 +191,7 @@ class FatoServicoJardinagemForms(forms.ModelForm):
             'Servico': 'Serviço agendado',
             'data_hora_chegada_na_area': 'Chegada na área',
             'data_hora_retorno_area': 'Retorno da área',
-            'Colaborador': 'Colaborador',
+            'Gerente': 'Colaborador',
         }
 
         widgets = {

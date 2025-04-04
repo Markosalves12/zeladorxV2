@@ -3,6 +3,7 @@ from settings.models import SettingServicosGerenteLimpezaPredial
 from settings.forms_limpeza_predial import SettingServicosGerenteLimpezaPredialForms
 from utils.views import edit_generic_view
 from empresasecundario.utils import define_empresas
+from permissionscontrol.utils import validate_permissions
 
 def configurar_notificacoes_limpeza_predial(request, userid):
     objeto = SettingServicosGerenteLimpezaPredial.objects.get(
@@ -25,7 +26,14 @@ def configurar_notificacoes_limpeza_predial(request, userid):
         tipos.insert(2,
                      {'nome': 'Limpeza predial', 'link': reverse('configurar_notificacoes_limpeza_predial', kwargs={'userid': userid})})
     else:
-        return redirect('areas_jardins', userid)
+        return redirect('configurar_notificacoes_jardinagem', userid)
+
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['410: Pode editar o recebimento de notificações gerais']
+    )
 
     return edit_generic_view(
         request=request,
@@ -37,8 +45,8 @@ def configurar_notificacoes_limpeza_predial(request, userid):
         redirect_url_name=reverse('configurar_notificacoes_limpeza_predial', kwargs={'userid': userid}),
         redirect_close_button=reverse('calendario_limpeza_predial', kwargs={'userid': userid}),
         link_tipos=tipos,
-        permission_edit=True,
-        url_desmobilize=None,
-        url_rehabilitate=None,
+        permission_edit=permission_edit,
+        url_desmobilize=False,
+        url_rehabilitate=False,
         userid=userid,
     )

@@ -1,15 +1,10 @@
-from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem
+from servicos.utils_jardinagem import query_servicos_jardinagem_agendados_anotados
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 from django.urls import reverse
 from utils.views import generic_view
-from permissionscontrol.utils import validate_permissions, verify_login
-from servicos.models_jardinagem import ServicoJardinagemAgendado
+from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
-from django.utils import timezone
-from datetime import timedelta
-from django.db.models import Case, When, Value, CharField, F
 from django.shortcuts import redirect
-from django.db.models.functions import ExtractDay
 
 # Create your views here.
 def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
@@ -20,30 +15,16 @@ def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
         permission_to_access=['310: Pode extrair relatórios XLSX de jardinagem']
     )
 
-    dados = colect_dados_fato_servico_jardinagem(
-        request=request,
-        userid=userid,
-        DataDeInicio='None',
-        DataDeConclusao='None',
-        TipoServico='None',
-        Areas='None',
-        ServicosEscalados=['None'],
-        ColaboradoresEscalados=['None'],
-        status=['Concluido']
-    )
-
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
-        {'nome': 'tipodeempresa', 'label': 'Tipo de empresa'},
-        {'nome': 'empresaprestadora', 'label': 'Empresa'},
-        {'nome': 'data_de_inicio', 'label': 'Data de inicio'},
-        {'nome': 'area_atendida', 'label': 'Área atendida'},
-        {'nome': 'id_agendamento', 'label': 'id agendamento'},
-        {'nome': 'tipo_agendamento', 'label': 'Tipo de agendamento'},
-        {'nome': 'descricao_do_servico', 'label': 'Descrição serviço'},
-        {'nome': 'colaboradores_chamados', 'label': 'Colaboradores'},
-        {'nome': 'servicos_solicitados', 'label': 'Servicos solicitados'},
-        {'nome': 'status_servico', 'label': 'Status'},
+        {'nome': 'Areas', 'label': 'Área atendidada'},
+        {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
+        {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
+        {'nome': 'DataDeConclusao', 'label': 'Data de conclusão'},
+        {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
+        {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
+        {'nome': 'TipoServico', 'label': 'Tipo de agendamento'},
+        {'nome': 'status', 'label': 'Status'},
     ]
 
     empresas = define_empresas(request=request, userid=userid)
@@ -75,7 +56,11 @@ def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
 
     return generic_view(
         request=request,
-        model=dados,
+        model=query_servicos_jardinagem_agendados_anotados(
+            request,
+            userid,
+            status_list=['Concluido']
+        ),
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',
         columns=colunas,
@@ -84,12 +69,12 @@ def relatorios_de_servicos_jardinagem_xlsx_concluidos(request, userid):
         form_search=ServicoJaridinagemAgendadoForms(request=request, userid=userid, type='search'),
         sform_search=True,
         filtro_mapeamento={
-            'Areas': 'area_atendid_id',
-            'TipoServico': 'tipo_de_servico',
-            'ServicosEscalados': 'servicos_solicitados_id',
-            'ColaboradoresEscalados': 'colaboradores_chamados_id',
-            'DataDeInicio': 'data_de_inicio',
-            'DataDeConclusao': 'data_de_conclusao'
+            'Areas': 'Areas__id',
+            'TipoServico': 'TipoServico',
+            'ServicosEscalados': 'ServicosEscalados__id',
+            'ColaboradoresEscalados': 'ColaboradoresEscalados__id',
+            'DataDeInicio': 'DataDeInicio',
+            'DataDeConclusao': 'DataDeConclusao'
         },
         text_button_open_modal='Adicionar nova manutenção',
         text_button_save='Salvar manutenção',
@@ -117,18 +102,19 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
 
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
+        {'nome': 'Areas', 'label': 'Área atendidada'},
+        {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
+        {'nome': 'DataDeConclusao', 'label': 'Data de conclusão'},
         {'nome': 'Areas', 'label': 'Área atendida'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
         {'nome': 'ColaboradoresEscalados', 'label': 'Colaboradores escalados'},
-        {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
+        {'nome': 'TipoServico', 'label': 'Tipo de agendamento'},
         {'nome': 'novo_status', 'label': 'Status'},
         {'nome': 'acoes', 'label': 'Ações'},
     ]
 
     empresas = define_empresas(request=request, userid=userid)
-    empresas_primarias_ids = empresas['empresas_primarias_ids']
-    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
     setores = empresas['setores']
 
     tipos = [
@@ -157,20 +143,10 @@ def relatorios_de_servicos_jardinagem_xlsx_agendados(request, userid):
 
     return generic_view(
         request=request,
-        model=ServicoJardinagemAgendado.objects.filter(
-            Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-            Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-            status__in=['Agendado', 'Em andamento']
-        ).distinct().annotate(
-            dias_diferenca=ExtractDay(F('DataDeInicio') - timezone.now()),
-            novo_status=Case(
-                When(status='Em andamento', then=Value('Em andamento')),
-                When(dias_diferenca__lt=0, then=Value('Atrasado')),
-                When(dias_diferenca__gte=0, dias_diferenca__lte=7, then=Value('Próximo')),
-                When(dias_diferenca__gt=7, then=Value('Agendado')),
-                default=Value('Desconhecido'),
-                output_field=CharField()
-            )
+        model=query_servicos_jardinagem_agendados_anotados(
+            request,
+            userid,
+            status_list=['Agendado', 'Em andamento']
         ),
         form_class=ServicoJaridinagemAgendadoForms,
         template_name='DataTableAndForms/DataTableAndForms.html',

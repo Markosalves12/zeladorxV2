@@ -1,9 +1,11 @@
 from servicos.models_jardinagem import FatoServicoJardinagem, ServicoJardinagemAgendado
 from django.db.models import (ExpressionWrapper, F, CharField,
-                              IntegerField, DurationField, DateTimeField, FloatField
+                              IntegerField, DurationField, DateTimeField, FloatField, Value,
+                              Case, When
                               )
 from empresasecundario.utils import define_empresas
-
+from django.utils import timezone
+from django.db.models.functions import ExtractDay
 
 def colect_dados_fato_servico_jardinagem(request, userid, DataDeInicio, DataDeConclusao, ServicosEscalados,
                                          ColaboradoresEscalados, TipoServico, Areas, status=list):
@@ -13,36 +15,36 @@ def colect_dados_fato_servico_jardinagem(request, userid, DataDeInicio, DataDeCo
 
     # Adicione os dados do relatório ao arquivo Excel
     filters = {
-        'status_servico__in': status,
-        'tipodeempresa': 'Jardinagem',
+        'Servico__status__in': status,
+        'Servico__ColaboradoresEscalados__empresasecundaria__setor__setor': 'Jardinagem',
     }
 
     if DataDeInicio and DataDeInicio != "None":
-        filters['data_de_inicio__gte'] = DataDeInicio
+        filters['Servico__DataDeInicio__gte'] = DataDeInicio
 
     if DataDeConclusao and DataDeConclusao != "None":
-        filters['data_de_conclusao__lte'] = DataDeConclusao
+        filters['Servico__DataDeConclusao__lte'] = DataDeConclusao
 
     if TipoServico and TipoServico != "None":
-        filters['tipo_de_servico'] = TipoServico
+        filters['Servico__TipoServico'] = TipoServico
 
     if Areas and Areas != "None":
-        filters['area_atendid_id'] = Areas
+        filters['Servico__Areas__id'] = Areas
 
     if ServicosEscalados and ServicosEscalados != ["None"]:
-        filters['servicos_solicitados_id__in'] = ServicosEscalados
+        filters['Servico__ServicosEscalados__id__in'] = ServicosEscalados
 
     if ColaboradoresEscalados and ColaboradoresEscalados != ["None"]:
-        filters['colaboradores_chamados_id__in'] = ColaboradoresEscalados
+        filters['Servico__ColaboradoresEscalados__id__in'] = ColaboradoresEscalados
 
 
     dados = FatoServicoJardinagem.objects.annotate(
-        tipodeempresa=ExpressionWrapper(
-            F('Servico__ColaboradoresEscalados__empresasecundaria__setor__setor'),
-            output_field=CharField()
+        id_acompanhamento=ExpressionWrapper(
+            F('id'),
+            output_field=IntegerField()
         ),
-        empresaprestadora=ExpressionWrapper(
-            F('Servico__ServicosEscalados__EmpresaSecundaria__nome'),
+        id_random_acompanhamento=ExpressionWrapper(
+            F('id_random'),
             output_field=CharField()
         ),
         id_agendamento=ExpressionWrapper(
@@ -53,96 +55,16 @@ def colect_dados_fato_servico_jardinagem(request, userid, DataDeInicio, DataDeCo
             F('Servico__id_random'),
             output_field=CharField()
         ),
-        tipo_agendamento=ExpressionWrapper(
-            F('Servico__TipoServico'),
-            output_field=CharField()
+        colaboradores_chamados_id=ExpressionWrapper(
+            F('Gerente__id'),
+            output_field=IntegerField()
         ),
-        descricao_do_servico=ExpressionWrapper(
-            F('Servico__DescricaoDoServico'),
+        colaboradores_chamados_id_random=ExpressionWrapper(
+            F('Gerente__id_random'),
             output_field=CharField()
         ),
         colaboradores_chamados=ExpressionWrapper(
-            F('Servico__ColaboradoresEscalados__username'),
-            output_field=CharField()
-        ),
-        colaboradores_chamados_id=ExpressionWrapper(
-            F('Servico__ColaboradoresEscalados__id'),
-            output_field=IntegerField()
-        ),
-        servicos_solicitados=ExpressionWrapper(
-            F('Servico__ServicosEscalados__nome'),
-            output_field=CharField()
-        ),
-        servicos_solicitados_id=ExpressionWrapper(
-            F('Servico__ServicosEscalados__id'),
-            output_field=IntegerField()
-        ),
-        data_de_inicio=ExpressionWrapper(
-            F('Servico__DataDeInicio'),
-            output_field=DateTimeField()
-        ),
-        data_de_conclusao=ExpressionWrapper(
-            F('Servico__DataDeConclusao'),
-            output_field=DateTimeField()
-        ),
-        antes=ExpressionWrapper(
-            F('Servico__foto_solicitacao'),
-            output_field=CharField()
-        ),
-        depois=ExpressionWrapper(
-            F('Servico__foto_entrega'),
-            output_field=CharField()
-        ),
-        status_servico=ExpressionWrapper(
-            F('Servico__status'),
-            output_field=CharField()
-        ),
-        area_atendida=ExpressionWrapper(
-            F('Servico__Areas__nome'),
-            output_field=CharField()
-        ),
-        area_atendid_id=ExpressionWrapper(
-            F('Servico__Areas__id'),
-            output_field=IntegerField()
-        ),
-        periodicidade_de_retorno=ExpressionWrapper(
-            F('Servico__Areas__periodicidade'),
-            output_field=CharField()
-        ),
-        area_total=ExpressionWrapper(
-            F('Servico__Areas__dimensao'),
-            output_field=CharField()
-        ),
-        tipo_vegetacao=ExpressionWrapper(
-            F('Servico__Areas__vegetacao__nome'),
-            output_field=CharField()
-        ),
-        tipo_terreno=ExpressionWrapper(
-            F('Servico__Areas__Terreno__nome'),
-            output_field=CharField()
-        ),
-        localidade=ExpressionWrapper(
-            F('Servico__Areas__localidade__nome'),
-            output_field=CharField()
-        ),
-        unidade=ExpressionWrapper(
-            F('Servico__Areas__localidade__unidade__nome'),
-            output_field=CharField()
-        ),
-        id_servico=ExpressionWrapper(
-            F('id'),
-            output_field=IntegerField()
-        ),
-        tempo_na_area=ExpressionWrapper(
-            F('data_hora_retorno_area') - F('data_hora_chegada_na_area'),
-            output_field=DurationField()
-        ),
-        colaborador_envolvido=ExpressionWrapper(
             F('Gerente__username'),
-            output_field=CharField()
-        ),
-        colaborador_envolvido_id_random=ExpressionWrapper(
-            F('Gerente__id_random'),
             output_field=CharField()
         ),
         data_hora_chegada=ExpressionWrapper(
@@ -153,21 +75,9 @@ def colect_dados_fato_servico_jardinagem(request, userid, DataDeInicio, DataDeCo
             F('data_hora_retorno_area'),
             output_field=DateTimeField()
         ),
-        id_random_area=ExpressionWrapper(
-            F('Servico__Areas__id_random'),
-            output_field=CharField()
-        ),
-        id_random_servico=ExpressionWrapper(
-            F('Servico__ServicosEscalados__id_random'),
-            output_field=CharField()
-        ),
-        id_random_configuracao=ExpressionWrapper(
-            F('Servico__id_configuracao'),
-            output_field=CharField()
-        ),
-        tipo_de_servico=ExpressionWrapper(
-            F('Servico__TipoServico'),
-            output_field=CharField()
+        tempo_na_area=ExpressionWrapper(
+            F('data_hora_retorno_area') - F('data_hora_chegada_na_area'),
+            output_field=DurationField()
         ),
     ).distinct().filter(
         **filters,
@@ -200,7 +110,7 @@ def colect_dados_agendamentos_jardinagem(request, userid, DataDeInicio, DataDeCo
         filters['tipo_agendamento'] = TipoServico
 
     if Areas and Areas != "None":
-        filters['area_atendid_id'] = Areas
+        filters['area_atendida_id'] = Areas
 
     if ServicosEscalados and ServicosEscalados != ["None"]:
         filters['servicos_solicitados_id__in'] = ServicosEscalados
@@ -209,14 +119,13 @@ def colect_dados_agendamentos_jardinagem(request, userid, DataDeInicio, DataDeCo
         filters['colaboradores_chamados_id__in'] = ColaboradoresEscalados
 
     dados = ServicoJardinagemAgendado.objects.annotate(
-        tipodeempresa=ExpressionWrapper(
-            F('ColaboradoresEscalados__empresasecundaria__setor__setor'),
-            output_field=CharField()
-        ),
+        # tipo de empresa
+        tipodeempresa=Value('Jardinagem', output_field=CharField()),
         empresaprestadora=ExpressionWrapper(
             F('ServicosEscalados__EmpresaSecundaria__nome'),
             output_field=CharField()
         ),
+        # id de agendamento --> id_random
         id_agendamento=ExpressionWrapper(
             F('id'),
             output_field=IntegerField()
@@ -225,14 +134,22 @@ def colect_dados_agendamentos_jardinagem(request, userid, DataDeInicio, DataDeCo
             F('id_random'),
             output_field=CharField()
         ),
+        #id config --> id_configuracao
+        id_config=ExpressionWrapper(
+            F('id_configuracao'),
+            output_field=CharField()
+        ),
+        # tipo de agendamento --> TipoServico
         tipo_agendamento=ExpressionWrapper(
             F('TipoServico'),
             output_field=CharField()
         ),
+        # descricao do serviço --> DescricaoDoServico
         descricao_do_servico=ExpressionWrapper(
             F('DescricaoDoServico'),
             output_field=CharField()
         ),
+        # colaboradores chamados --> ColaboradoresEscalados
         colaboradores_chamados=ExpressionWrapper(
             F('ColaboradoresEscalados__username'),
             output_field=CharField()
@@ -245,6 +162,7 @@ def colect_dados_agendamentos_jardinagem(request, userid, DataDeInicio, DataDeCo
             F('ColaboradoresEscalados__id_random'),
             output_field=CharField()
         ),
+        # serviços solicitados --> ServicosEscalados
         servicos_solicitados=ExpressionWrapper(
             F('ServicosEscalados__nome'),
             output_field=CharField()
@@ -253,33 +171,47 @@ def colect_dados_agendamentos_jardinagem(request, userid, DataDeInicio, DataDeCo
             F('ServicosEscalados__id'),
             output_field=IntegerField()
         ),
+        servicos_solicitados_id_random=ExpressionWrapper(
+            F('ServicosEscalados__id_random'),
+            output_field=CharField()
+        ),
+        # data/hora de inicio --> DataDeInicio
         data_de_inicio=ExpressionWrapper(
             F('DataDeInicio'),
             output_field=DateTimeField()
         ),
+        # data/hora de conclusao --> DataDeConclusao
         data_de_conclusao=ExpressionWrapper(
             F('DataDeConclusao'),
             output_field=DateTimeField()
         ),
+        # foto antes --> foto_solicitacao
         antes=ExpressionWrapper(
             F('foto_solicitacao'),
             output_field=CharField()
         ),
+        # foto final --> foto_entrega
         depois=ExpressionWrapper(
             F('foto_entrega'),
             output_field=CharField()
         ),
+        # status do serviços --> status
         status_servico=ExpressionWrapper(
             F('status'),
             output_field=CharField()
         ),
+        # Dadaos da área a ser atentida --> Areas
         area_atendida=ExpressionWrapper(
             F('Areas__nome'),
             output_field=CharField()
         ),
-        area_atendid_id=ExpressionWrapper(
+        area_atendida_id=ExpressionWrapper(
             F('Areas__id'),
             output_field=IntegerField()
+        ),
+        id_random_area=ExpressionWrapper(
+            F('Areas__id_random'),
+            output_field=CharField()
         ),
         periodicidade_de_retorno=ExpressionWrapper(
             F('Areas__periodicidade'),
@@ -297,20 +229,23 @@ def colect_dados_agendamentos_jardinagem(request, userid, DataDeInicio, DataDeCo
             F('Areas__Terreno__nome'),
             output_field=CharField()
         ),
+        # dados da localidade da área
         localidade=ExpressionWrapper(
             F('Areas__localidade__nome'),
             output_field=CharField()
         ),
+        # dados da localidade da área
+        lat=ExpressionWrapper(
+            F('Areas__localidade__lat_med'),
+            output_field=FloatField()
+        ),
+        long=ExpressionWrapper(
+            F('Areas__localidade__long_med'),
+            output_field=FloatField()
+        ),
+        # dados da unidade
         unidade=ExpressionWrapper(
             F('Areas__localidade__unidade__nome'),
-            output_field=CharField()
-        ),
-        id_random_area=ExpressionWrapper(
-            F('Areas__id_random'),
-            output_field=CharField()
-        ),
-        id_random_servico=ExpressionWrapper(
-            F('id_random'),
             output_field=CharField()
         ),
     ).distinct().filter(
@@ -320,3 +255,36 @@ def colect_dados_agendamentos_jardinagem(request, userid, DataDeInicio, DataDeCo
     )
 
     return dados
+
+def query_servicos_jardinagem_agendados_anotados(request, userid, status_list):
+    empresas = define_empresas(request=request, userid=userid)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+    """
+    Função genérica para filtrar serviços agendados com anotações de status calculado
+
+    Args:
+        empresas_primarias_ids: Lista de IDs de empresas primárias
+        empresas_secundarias_ids: Lista de IDs de empresas secundárias
+        status_list: Lista de status para filtrar
+        userid: Id de usuario na url
+    Returns:
+        QuerySet com os resultados filtrados e anotados
+    """
+
+    return ServicoJardinagemAgendado.objects.filter(
+        Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+        Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        status__in=status_list
+    ).annotate(
+        dias_diferenca=ExtractDay(F('DataDeInicio') - timezone.now()),
+        novo_status=Case(
+            When(status='Em andamento', then=Value('Em andamento')),
+            When(dias_diferenca__lt=0, then=Value('Atrasado')),
+            When(dias_diferenca__gte=0, dias_diferenca__lte=7, then=Value('Próximo')),
+            When(dias_diferenca__gt=7, then=Value('Agendado')),
+            default=Value('Desconhecido'),
+            output_field=CharField()
+        )
+    )
