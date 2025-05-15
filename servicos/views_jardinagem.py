@@ -139,6 +139,7 @@ def servicos_agendados_jardinagem(request, userid):
 
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
+        {'nome': 'Areas', 'label': 'Área atendidada'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'DataDeConclusao', 'label': 'Data de conclusão'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},

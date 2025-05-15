@@ -76,6 +76,9 @@ urlpatterns = [
 
     path('', include('gantt.urls_jardinagem')),
     path('', include('gantt.urls_limpeza_predial')),
+
+    path('', include('notifications.urls_jardinagem')),
+    path('', include('notifications.urls_limpeza_predial')),
 ]+static(
     settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT

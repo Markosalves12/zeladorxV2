@@ -137,6 +137,7 @@ def servicos_agendados_limpeza_predial(request, userid):
 
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
+        {'nome': 'Areas', 'label': 'Área atendidada'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'DataDeConclusao', 'label': 'Data de conclusão'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},

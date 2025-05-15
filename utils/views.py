@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from utils.utils import DataTableAndForms, aplicar_filtros_dinamicos, define_filters, paginate
+from utils.utils import DataTableAndForms, aplicar_filtros_dinamicos, define_filters
 from django.urls import reverse
 from settings.utils import define_setting
 from permissionscontrol.utils import configurate_permissions, verify_login
