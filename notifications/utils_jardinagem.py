@@ -2,7 +2,7 @@ from notifications.utils import enviar_notificacao
 from utils.utils import DataTableAndForms
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 
-def send_notification_jardinagem(request, userid, email, username, dados, colunas, assunto, cabecalho):
+def send_notification_jardinagem(request, userid, email, username, dados, colunas, assunto, cabecalho, rodape):
     dt_and_forms = DataTableAndForms(
         request=request,
         model=dados,
@@ -33,7 +33,9 @@ def send_notification_jardinagem(request, userid, email, username, dados, coluna
             'email': email,
             'colunas': colunas,
             'dados_paginados': dados_paginados,
-            'cabecalho': cabecalho
+            'cabecalho': cabecalho,
+            'rodape': rodape,
+            'n_dados': len(dados),
         },
         template='notifications/notification_services.html'
     )

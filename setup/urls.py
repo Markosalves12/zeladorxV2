@@ -79,6 +79,9 @@ urlpatterns = [
 
     path('', include('notifications.urls_jardinagem')),
     path('', include('notifications.urls_limpeza_predial')),
+
+    path('', include('mapas.urls_jardinagem')),
+    path('', include('mapas.urls_limpeza_predial')),
 ]+static(
     settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT

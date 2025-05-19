@@ -1,5 +1,6 @@
 from django.utils import timezone
-from dashboards.data_visualization import generate_chart, generate_grouped_chart, plot_map
+from dashboards.data_visualization import (generate_chart, generate_grouped_chart, plot_map,
+                                           plot_map_distribution_services_by_status)
 from utils.utils import define_range_time
 
 def data_visualization_jardinagem_indicadores(request, userid, agendado):
@@ -107,3 +108,13 @@ class data_visualization_jardinagem_graphs:
         }
 
         return fig_charts
+
+    def create_fig_maps_distrubuiton_services_by_status(self, name_fig):
+        fig_charts = {
+            f'{name_fig}': plot_map_distribution_services_by_status(
+                paginated_queryset=self.agendado,
+            ).to_html(full_html=True),
+        }
+
+        return fig_charts
+

@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     'checklists.apps.ChecklistsConfig',
     'medidor.apps.MedidorConfig',
     'gantt.apps.GanttConfig',
+    'mapas.apps.MapasConfig',
     'storages',
     "channels",
 ]

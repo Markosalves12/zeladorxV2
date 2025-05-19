@@ -35,6 +35,11 @@ def send_notification_servicos_atrasados_limpeza_predial(request):
                     Serviço(s) atrasado(s), sua organização possui {len(atrasados)} serviço(s) em atraso, considere inicia-lo(s) ou cancela-los</br>
                 </div>"""
 
+                rodape = f"""<div>
+                    Ola! {Gerente.username}, tudo bem? </br>
+                    Sua organização não possui serviço(s) em atraso</br>
+                </div>"""
+
                 send_notification_limpeza_predial(
                     request=request,
                     userid=Gerente.id_random,
@@ -43,7 +48,8 @@ def send_notification_servicos_atrasados_limpeza_predial(request):
                     dados=atrasados,
                     colunas=colunas_limpeza_predial,
                     assunto="Limpeza predial | Serviços atrasados",
-                    cabecalho=cabecalho
+                    cabecalho=cabecalho,
+                    rodape=rodape
                 )
 
 
@@ -83,6 +89,11 @@ def send_notification_servicos_proximos_limpeza_predial(request):
                     Serviço(s) se aproximando, sua organização possui {len(proximos)} serviço(s) próximo, prepare-se para inicia-lo(s)</br>
                 </div>"""
 
+                rodape = f"""<div>
+                    Ola! {Gerente.username}, tudo bem? </br>
+                    Sua organização não possui serviço(s) se aproximando</br>
+                </div>"""
+
                 send_notification_limpeza_predial(
                     request=request,
                     userid=Gerente.id_random,
@@ -91,7 +102,8 @@ def send_notification_servicos_proximos_limpeza_predial(request):
                     dados=proximos,
                     colunas=colunas_limpeza_predial,
                     assunto="Limpeza predial | Serviços próximos",
-                    cabecalho=cabecalho
+                    cabecalho=cabecalho,
+                    rodape=rodape
                 )
 
     return render(
@@ -130,6 +142,11 @@ def send_notification_servicos_em_andamento_limpeza_predial(request):
                     Serviços atrasados, sua organização possui {len(em_andamento)} serviços em andamento, considere conclui-los</br>
                 </div>"""
 
+                rodape = f"""<div>
+                    Ola! {Gerente.username}, tudo bem? </br>
+                    Sua organização não possui serviço(s) em andamento</br>
+                </div>"""
+
                 send_notification_limpeza_predial(
                     request=request,
                     userid=Gerente.id_random,
@@ -138,7 +155,8 @@ def send_notification_servicos_em_andamento_limpeza_predial(request):
                     dados=em_andamento,
                     colunas=colunas_limpeza_predial,
                     assunto="Limpeza predial | Serviços em andamento",
-                    cabecalho=cabecalho
+                    cabecalho=cabecalho,
+                    rodape=rodape
                 )
 
     return render(

@@ -5,6 +5,8 @@ import calendar
 from django.db.models import F
 import pandas as pd
 import plotly.express as px
+import numpy as np
+
 
 def get_total_area(queryset, area_field='Areas__dimensao'):
     aggregate_result = queryset.aggregate(total_area=Sum(area_field))
@@ -19,6 +21,7 @@ def calculate_areas_and_counts(dados_servicos, status, date_filter=None):
     if date_filter:
         queryset = queryset.filter(date_filter)
     return get_total_area(queryset)
+
 
 def get_total_area_by_category(queryset, category_field, sum_by, count_by):
     """
@@ -59,7 +62,6 @@ def plot_horizontal_bar_chart(data, title, x_axis_title, y_axis_title, counts, m
     categories = list(data.keys())
     values = list(data.values())
     hovertexts = [f'Área Total: {v}<br>Servicos: {counts[c]}' for c, v in data.items()]
-
 
     # Calcula a altura dinamicamente com base no número de categorias
     base_height = 300  # Altura base mínima
@@ -203,7 +205,6 @@ def generate_grouped_chart(dados_servicos, filters, field_name, title, label_typ
     return plot_grouped_bar_chart(area, title, 'Mês', 'Área Total', counts, categories, label_type)
 
 
-
 def generate_chart(dados_servicos, filters, field_name, title, label_type, color, sum_by, count_by):
     """
     Gera um gráfico de barras horizontais para um conjunto de dados filtrados.
@@ -313,6 +314,158 @@ def plot_map(paginated_queryset, color="#FF0000", scale_factor=2):
         height=700,
         font=dict(size=18),
         mapbox_center=map_center,
+    )
+
+    return fig
+
+
+def plot_map_distribution_services_by_status(paginated_queryset, scale_factor=5):
+    color_mapping = {
+        'Em andamento': '#008000',
+        'Atrasado': '#FF0000',
+        'Agendado': '#14A0B6',
+        'Próximo': '#FFFF00',
+    }
+
+    all_data = []
+    id_random_counts = {}
+
+    for page in paginated_queryset.paginator.page_range:
+        current_page = paginated_queryset.paginator.page(page)
+        for obj in current_page.object_list:
+            try:
+                key = (obj.Areas.localidade.nome, obj.novo_status)
+                id_random_counts[key] = id_random_counts.get(key, 0) + 1
+
+                all_data.append({
+                    'lat_localidade': float(obj.Areas.localidade.lat_med),
+                    'long_localidade': float(obj.Areas.localidade.long_med),
+                    'unidade_nome': obj.Areas.localidade.unidade.nome,
+                    'localidade_nome': obj.Areas.localidade.nome,
+                    'area_total': float(obj.Areas.dimensao),
+                    'status': obj.novo_status,
+                    'id_random': getattr(obj, 'id_random', None)
+                })
+            except (AttributeError, TypeError) as e:
+                print(f"Erro ao processar objeto: {e}")
+                continue
+
+    df = pd.DataFrame(all_data)
+    map_center = {"lat": -15.797483, "lon": -47.935315}
+
+    if df.empty:
+        fig = go.Figure()
+        fig.add_trace(go.Scattermapbox(
+            lat=[map_center["lat"]],
+            lon=[map_center["lon"]],
+            mode="markers+text",
+            marker=dict(size=10, color="gray"),
+            text=["Nenhum dado disponível"],
+            textposition="top center",
+        ))
+        fig.update_layout(
+            mapbox_style="open-street-map",
+            mapbox_center=map_center,
+            mapbox_zoom=5,
+            margin=dict(l=0, r=0, t=50, b=0),
+            height=700,
+            title="<b>Nenhum dado disponível</b>"
+        )
+        return fig
+
+    def apply_circular_offset(group):
+        if len(group) > 1:
+            radius = 0.002
+            angles = np.linspace(0, 10 * np.pi, len(group), endpoint=False)
+            group['lat_localidade'] = group['lat_localidade'] + radius * np.sin(angles)
+            group['long_localidade'] = group['long_localidade'] + radius * np.cos(angles)
+        return group
+
+    grouped_df = df.groupby([
+        "lat_localidade", "long_localidade", "unidade_nome", "localidade_nome", "status"
+    ]).agg(
+        area_total=("area_total", "sum"),
+        num_agendamentos=("id_random", "nunique")
+    ).reset_index()
+
+    grouped_df = grouped_df.groupby(['lat_localidade', 'long_localidade'], group_keys=False).apply(
+        apply_circular_offset)
+
+    grouped_df["color"] = grouped_df["status"].map(color_mapping)
+
+    grouped_df["visible_text"] = grouped_df.apply(
+        lambda row: f"Localidade: {row['localidade_nome']} \n"
+                    f"Unidade: {row['unidade_nome']} \n"
+                    f"Status: {row['status']} \n"
+                    f"Agendamentos: {row['num_agendamentos']}\n"
+                    f"Área total: {row['area_total']} m²", axis=1
+    )
+
+    grouped_df["hover_text"] = grouped_df.apply(
+        lambda row: (
+            f"<b>Localidade:</b> {row['localidade_nome']}<br>"
+            f"<b>Unidade:</b> {row['unidade_nome']}<br>"
+            f"<b>Status:</b> {row['status']}<br>"
+            f"<b>Agendamentos:</b> {row['num_agendamentos']}<br>"
+            f"<b>Área total:</b> {row['area_total']:.2f} m²"
+        ), axis=1
+    )
+
+    max_area = grouped_df["area_total"].max()
+    bubble_size = (grouped_df["area_total"] / max_area * 30 * scale_factor if max_area > 0
+                   else 10 * scale_factor)
+    grouped_df["bubble_size"] = bubble_size.clip(lower=10, upper=30)
+
+    fig = go.Figure()
+
+    for status, color in color_mapping.items():
+        status_df = grouped_df[grouped_df["status"] == status]
+        if not status_df.empty:
+            fig.add_trace(go.Scattermapbox(
+                lat=status_df["lat_localidade"],
+                lon=status_df["long_localidade"],
+                mode="markers+text",
+                marker=dict(
+                    size=status_df["bubble_size"],
+                    color=color,
+                    opacity=0.8,
+                    sizemode='diameter'
+                ),
+                text=status_df["visible_text"],
+                textposition="top center",
+                textfont=dict(
+                    size=18,  # Aumentado para 18
+                    color='black'
+                ),
+                name=status,
+                hovertext=status_df["hover_text"],
+                hoverinfo="text",
+                showlegend=True
+            ))
+
+    fig.update_layout(
+        mapbox_style="open-street-map",
+        mapbox=dict(
+            center=map_center,
+            zoom=5
+        ),
+        margin=dict(l=0, r=0, t=50, b=0),
+        height=700,
+        legend=dict(
+            title="<b>Status dos Serviços</b>",
+            orientation="h",
+            yanchor="top",
+            y=1.1,
+            xanchor="left",
+            x=0,
+            bgcolor='rgba(255,255,255,0.5)'
+        ),
+        hovermode='closest',
+        hoverlabel=dict(
+            bgcolor="white",
+            font_size=18,  # Aumentado para 18
+            font_family="Arial"
+        )
     )
 
     return fig
