@@ -82,6 +82,9 @@ urlpatterns = [
 
     path('', include('mapas.urls_jardinagem')),
     path('', include('mapas.urls_limpeza_predial')),
+
+    path('', include('retornos.urls_jardinagem')),
+    path('', include('retornos.urls_limpeza_predial')),
 ]+static(
     settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT
