@@ -1,4 +1,26 @@
 from datetime import timedelta
+from django.utils import timezone
+
+PERIODICIDADE_DIAS = {
+    'Semanal': 7,
+    'Quinzenal': 15,
+    'Mensal': 30,
+    'Bimestral': 61,     # 30.5 * 2
+    'Trimestral': 91,    # 30.5 * 3
+    'Semestral': 183,    # 30.5 * 6
+    'Anual': 365
+}
+
+def calcular_data_retorno_formatada(data_conclusao, periodicidade):
+    dias_periodo = PERIODICIDADE_DIAS.get(periodicidade)
+    if not data_conclusao or not dias_periodo:
+        return "Indefinido"
+
+    data_retorno = data_conclusao + timedelta(days=dias_periodo)
+    dias_restantes = (data_retorno - timezone.now().date()).days
+
+    data_formatada = data_retorno.strftime('%d/%m/%Y')
+    return f"{data_formatada} -- {dias_restantes} dias restantes"
 
 def formatar_tempo_desde(duracao: timedelta):
     if not duracao:

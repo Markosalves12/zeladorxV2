@@ -38,6 +38,13 @@ def mapas_limpeza_predial(request, userid):
         permission_to_access=['322: Pode visualizar serviços agendados']
     )
 
+    permission_crate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['320: Pode agendar novos serviços']
+    )
+
     filtro_mapeamento = {
         'Areas': 'Areas__id',
         'TipoServico': 'TipoServico',
@@ -80,6 +87,7 @@ def mapas_limpeza_predial(request, userid):
             'sform_search': True,
             'allowed_fields': list(filtro_mapeamento.keys()),
             'permission_view': permission_view,
+            'permission_crate': permission_crate,
             **fig_mapa_localidades,
         }
     )

@@ -82,6 +82,8 @@ def agendar_servico_jardinagem(request, type, userid):
         redirect_close_button = reverse('calendario_jardinagem', kwargs={'userid': userid})
     elif type == 'kanban':
         redirect_close_button = reverse('kanban_jardinagem', kwargs={'userid': userid})
+    elif type == 'mapas':
+        redirect_close_button = reverse('mapas_jardinagem', kwargs={'userid': userid})
 
     return render(
         request=request,

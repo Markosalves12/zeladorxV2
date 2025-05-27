@@ -80,6 +80,8 @@ def agendar_servico_limpeza_predial(request, type, userid):
         redirect_close_button = reverse('calendario_limpeza_predial', kwargs={'userid': userid})
     elif type == 'kanban':
         redirect_close_button = reverse('kanban_limpeza_predial', kwargs={'userid': userid})
+    elif type == 'mapas':
+        redirect_close_button = reverse('mapas_limpeza_predial', kwargs={'userid': userid})
 
     return render(
         request=request,

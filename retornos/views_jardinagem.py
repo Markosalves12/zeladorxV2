@@ -5,7 +5,7 @@ from servicos.models_jardinagem import ServicoJardinagemAgendado
 from django.db.models import F, Value, CharField, Case, When, IntegerField
 from django.db.models import ExpressionWrapper, DurationField
 from django.utils import timezone
-from retornos.utils import formatar_tempo_desde
+from retornos.utils import formatar_tempo_desde, calcular_data_retorno_formatada
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 
 # Create your views here.
@@ -18,6 +18,7 @@ def tempo_desde_ultimo_atendimento_jardinagem(request, userid):
     colunas = [
         {'nome': 'id', 'label': '#', 'largura': '10px'},
         {'nome': 'Areas', 'label': 'Área atendidada'},
+        {'nome': 'Periodicidade', 'label': 'Periodicidade'},
         {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
         {'nome': 'DataDeConclusao', 'label': 'Data de conclusão'},
         {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
@@ -25,6 +26,7 @@ def tempo_desde_ultimo_atendimento_jardinagem(request, userid):
         {'nome': 'TipoServico', 'label': 'Tipo de agendamento'},
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'tempo_desde_ultimo_atendimento', 'label': 'Tempo'},
+        {'nome': 'data_retorno_formatada', 'label': 'Data de retorno prevista'},
     ]
 
     tipos = [
@@ -50,11 +52,16 @@ def tempo_desde_ultimo_atendimento_jardinagem(request, userid):
         dias_diferenca=ExpressionWrapper(
             timezone.now() - F('DataDeConclusao'),
             output_field=DurationField()
+        ),
+        Periodicidade=ExpressionWrapper(
+            F('Areas__periodicidade'),
+            output_field=CharField()
         )
     )
 
     for obj in dados:
         obj.tempo_desde_ultimo_atendimento = formatar_tempo_desde(obj.dias_diferenca)
+        obj.data_retorno_formatada = calcular_data_retorno_formatada(obj.DataDeConclusao.date(), obj.Periodicidade)
 
 
     return generic_view(
