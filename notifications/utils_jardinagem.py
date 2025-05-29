@@ -52,3 +52,15 @@ colunas_jardinagem = [
     {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
     {'nome': 'novo_status', 'label': 'Status'},
 ]
+
+colunas_retorno_proximo = [
+    {'nome': 'id', 'label': '#', 'largura': '10px'},
+    {'nome': 'Areas', 'label': 'Área atendidada'},
+    {'nome': 'Periodicidade', 'label': 'Periodicidade'},
+    {'nome': 'DataDeInicio', 'label': 'Data de inicio'},
+    {'nome': 'DataDeConclusao', 'label': 'Data de conclusão'},
+    {'nome': 'ServicosEscalados', 'label': 'Serivos planejados'},
+    {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
+    {'nome': 'data_retorno_formatada', 'label': 'Data de retorno prevista'},
+    {'nome': 'dias_restantes', 'label': 'Dias restantes'},
+]

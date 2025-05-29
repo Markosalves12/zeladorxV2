@@ -14,13 +14,13 @@ PERIODICIDADE_DIAS = {
 def calcular_data_retorno_formatada(data_conclusao, periodicidade):
     dias_periodo = PERIODICIDADE_DIAS.get(periodicidade)
     if not data_conclusao or not dias_periodo:
-        return "Indefinido"
+        return ("Indefinido", None)
 
     data_retorno = data_conclusao + timedelta(days=dias_periodo)
     dias_restantes = (data_retorno - timezone.now().date()).days
-
     data_formatada = data_retorno.strftime('%d/%m/%Y')
-    return f"{data_formatada} -- {dias_restantes} dias restantes"
+
+    return data_formatada, dias_restantes
 
 def formatar_tempo_desde(duracao: timedelta):
     if not duracao:

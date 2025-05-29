@@ -60,6 +60,26 @@
                                             {{ dado|get_item:coluna.nome }}
                                         </td>
                                     {% endif %}
+                                {% elif coluna.nome == 'dias_restantes' %}
+                                    {% if dado.Periodicidade == "Quinzenal" and dado.dias_restantes > 3 or dado.Periodicidade == "Mensal" and dado.dias_restantes > 7 or dado.Periodicidade == "Bimestral" and dado.dias_restantes > 15 or dado.Periodicidade == "Trimestral" and dado.dias_restantes > 15 or dado.Periodicidade == "Semestral" and dado.dias_restantes > 20 or dado.Periodicidade == "Anual" and dado.dias_restantes > 30 %}
+                                        <td style="padding: 6px; border: 1px solid #ccc; background-color: #5bc0de; color: #fff;">
+                                            {{ dado.dias_restantes }}
+                                        </td>
+                                    {% elif dado.Periodicidade == "Quinzenal" and dado.dias_restantes <= 3 and dado.dias_restantes >= 0 or dado.Periodicidade == "Mensal" and dado.dias_restantes <= 7 and dado.dias_restantes >= 0 or dado.Periodicidade == "Bimestral" and dado.dias_restantes <= 15 and dado.dias_restantes >= 0 or dado.Periodicidade == "Trimestral" and dado.dias_restantes <= 15 and dado.dias_restantes >= 0 or dado.Periodicidade == "Semestral" and dado.dias_restantes <= 20 and dado.dias_restantes >= 0 or dado.Periodicidade == "Anual" and dado.dias_restantes <= 30 and dado.dias_restantes >= 0 %}
+                                        <td style="padding: 6px; border: 1px solid #ccc; background-color: #ffd700; color: #333;">
+                                            {{ dado.dias_restantes }}
+                                        </td>
+                                    {% elif dado.dias_restantes < 0 %}
+                                        <td style="padding: 6px; border: 1px solid #ccc; background-color: #d9534f; color: #fff;">
+                                            {{ dado.dias_restantes }}
+                                        </td>
+                                    {% else %}
+                                        <td>
+                                            <span>
+                                                {{ dado.Periodicidade }}
+                                            </span>
+                                        </td>
+                                    {% endif %}
                                 {% else %}
                                     <td style="padding: 6px; border: 1px solid #ccc;">
                                         {{ dado|get_item:coluna.nome }}

@@ -205,6 +205,33 @@
                                                     </span>
                                                 </td>
                                             {% endif %}
+                                        {% elif coluna.nome == 'dias_restantes' %}
+                                            {% if dado.Periodicidade == "Quinzenal" and dado.dias_restantes > 3 or dado.Periodicidade == "Mensal" and dado.dias_restantes > 7 or dado.Periodicidade == "Bimestral" and dado.dias_restantes > 15 or dado.Periodicidade == "Trimestral" and dado.dias_restantes > 15 or dado.Periodicidade == "Semestral" and dado.dias_restantes > 20 or dado.Periodicidade == "Anual" and dado.dias_restantes > 30 %}
+                                                <td>
+                                                    <span class="badge bg-info">
+                                                        {{ dado.dias_restantes }}
+                                                    </span>
+                                                </td>
+                                            {% elif dado.Periodicidade == "Quinzenal" and dado.dias_restantes <= 3 and dado.dias_restantes >= 0 or dado.Periodicidade == "Mensal" and dado.dias_restantes <= 7 and dado.dias_restantes >= 0 or dado.Periodicidade == "Bimestral" and dado.dias_restantes <= 15 and dado.dias_restantes >= 0 or dado.Periodicidade == "Trimestral" and dado.dias_restantes <= 15 and dado.dias_restantes >= 0 or dado.Periodicidade == "Semestral" and dado.dias_restantes <= 20 and dado.dias_restantes >= 0 or dado.Periodicidade == "Anual" and dado.dias_restantes <= 30 and dado.dias_restantes >= 0 %}
+                                                <td>
+                                                    <span class="badge bg-warning">
+                                                        {{ dado.dias_restantes }}
+                                                    </span>
+                                                </td>
+
+                                            {% elif dado.dias_restantes < 0 %}
+                                                <td>
+                                                    <span class="badge bg-danger">
+                                                        {{ dado.dias_restantes }}
+                                                    </span>
+                                                </td>
+                                            {% else %}
+                                                <td>
+                                                    <span>
+                                                        {{ dado.Periodicidade }}
+                                                    </span>
+                                                </td>
+                                            {% endif %}
                                         {% else %}
                                             <td>{{ dado|get_item:coluna.nome }}</td>
                                         {% endif %}

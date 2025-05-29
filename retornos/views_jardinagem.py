@@ -27,6 +27,7 @@ def tempo_desde_ultimo_atendimento_jardinagem(request, userid):
         {'nome': 'DescricaoDoServico', 'label': 'Descrição'},
         {'nome': 'tempo_desde_ultimo_atendimento', 'label': 'Tempo'},
         {'nome': 'data_retorno_formatada', 'label': 'Data de retorno prevista'},
+        {'nome': 'dias_restantes', 'label': 'Dias restantes'},
     ]
 
     tipos = [
@@ -47,6 +48,7 @@ def tempo_desde_ultimo_atendimento_jardinagem(request, userid):
     dados = ServicoJardinagemAgendado.objects.filter(
         Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
         Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        Areas__status='Mobilizado',
         status='Concluido'
     ).distinct('Areas__id_random').order_by('Areas__id_random', '-DataDeConclusao').annotate(
         dias_diferenca=ExpressionWrapper(
@@ -61,7 +63,7 @@ def tempo_desde_ultimo_atendimento_jardinagem(request, userid):
 
     for obj in dados:
         obj.tempo_desde_ultimo_atendimento = formatar_tempo_desde(obj.dias_diferenca)
-        obj.data_retorno_formatada = calcular_data_retorno_formatada(obj.DataDeConclusao.date(), obj.Periodicidade)
+        obj.data_retorno_formatada, obj.dias_restantes = calcular_data_retorno_formatada(obj.DataDeConclusao.date(), obj.Periodicidade)
 
 
     return generic_view(
@@ -93,4 +95,3 @@ def tempo_desde_ultimo_atendimento_jardinagem(request, userid):
         permission_crate=False,
         userid=userid,
     )
-

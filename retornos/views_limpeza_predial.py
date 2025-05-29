@@ -44,6 +44,7 @@ def tempo_desde_ultimo_atendimento_limpeza_predial(request, userid):
     dados = ServicoLimpezaPredialAgendado.objects.filter(
         Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
         Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        Areas__status='Mobilizado',
         status='Concluido'
     ).distinct('Areas__id_random').order_by('Areas__id_random', '-DataDeConclusao').annotate(
         dias_diferenca=ExpressionWrapper(
