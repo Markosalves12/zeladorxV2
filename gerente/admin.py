@@ -1,13 +1,16 @@
+# admin.py
 from django.contrib import admin
-from gerente.models import Gerente
+from .models import Gerente
 
-# Register your models here.
-class GerentesAdmin(admin.ModelAdmin):
-    list_display = ('id', 'username', 'email', 'password', 'status', 'superuser', )
-    list_display_links = ('id', 'username', 'email', 'password', 'status', 'superuser', )
-    search_fields = ('Nome', 'email', )
-    list_filter = ('email', )
-
-    list_per_page = 20
-
-admin.site.register(Gerente, GerentesAdmin)
+@admin.register(Gerente)
+class GerenteAdmin(admin.ModelAdmin):
+    list_display = ('email', 'username', 'status', 'is_staff', 'is_superuser')
+    search_fields = ('email', 'username')
+    list_filter = ('status', 'is_staff', 'is_superuser', 'is_active')
+    ordering = ('email',)
+    filter_horizontal = ()  # Removido uso de 'groups' e 'user_permissions'
+    fieldsets = (
+        (None, {'fields': ('email', 'username', 'password')}),
+        ('Status e empresa', {'fields': ('status', 'empresasecundaria')}),
+        ('Permissões', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+    )

@@ -34,7 +34,7 @@ def configurate_permissions(request, model_class, email):
 
 
 def validate_permissions(request, userid, permission_type, permission_to_access):
-    if Gerente.objects.get(id_random=userid).superuser == True:
+    if Gerente.objects.get(id_random=userid).is_superuser == True:
         return True
 
     try:

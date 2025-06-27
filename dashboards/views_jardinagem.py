@@ -7,6 +7,11 @@ from dashboards.utils_jardinagem import graphs_jardinagem_to_html
 from empresasecundario.utils import define_empresas
 from permissionscontrol.utils import verify_login, validate_permissions
 
+
+from django.core.serializers.json import DjangoJSONEncoder
+import json
+
+
 # Create your views here.
 def dashboard_produtividade_jardinagem(request, userid):
     block = verify_login(request=request, userid=userid)

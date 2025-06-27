@@ -1,48 +1,39 @@
 from django.shortcuts import render, redirect
 from authenticate.forms import LoginForms, EmailReset, UpdatePassword
 from gerente.models import Gerente
-from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.contrib import auth
-from django.contrib.auth.models import User
-from dotenv import load_dotenv
 from notifications.utils import enviar_notificacao
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 from datetime import timedelta, datetime
-import os
+from django.contrib.auth import authenticate, login as django_login
 
-load_dotenv()
 
 
 # Create your views here.
 def login(request):
     forms = LoginForms()
+
     if request.method == "POST":
         forms = LoginForms(request.POST)
         if forms.is_valid():
+            email = forms.cleaned_data.get('email')
+            senha = forms.cleaned_data.get('senha')
 
-            email = forms['email'].value()
-            senha = forms['senha'].value()
+            user = authenticate(request, email=email, password=senha)
 
-            try:
-                gerente = Gerente.objects.get(
-                    email=email
-                )
+            if user:
+                if getattr(user, 'status', '') == "Mobilizado":
+                    request.session['login_nome'] = user.username
+                    request.session['userid'] = getattr(user, 'id_random', user.id)
 
-                usuario = User.objects.get(
-                    email=email
-                )
-
-                if check_password(senha, gerente.password) and gerente.status == "Mobilizado":
-                    request.session['login_nome'] = gerente.username
-                    request.session['userid'] = gerente.id_random
-
-                    auth.login(request, usuario)
-
-                    return redirect('calendario_jardinagem', gerente.id_random)
-            except:
-                pass
+                    django_login(request, user)
+                    return redirect('calendario_jardinagem', user.id_random)
+                else:
+                    messages.error(request, "Acesso negado. Usuário desmobilizado.")
+            else:
+                messages.error(request, "Email ou senha incorretos.")
 
     return render(
         request=request,
@@ -51,6 +42,7 @@ def login(request):
             'forms': forms
         }
     )
+
 
 
 def logout(request):

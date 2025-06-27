@@ -8,7 +8,7 @@ class GerenteLimpezaPredialForms(forms.ModelForm):
         super(GerenteLimpezaPredialForms, self).__init__(*args, **kwargs)
         empresas = define_empresas(request=request, userid=userid)
         empresas_primarias_ids = empresas['empresas_primarias_ids']
-        is_super_user = Gerente.objects.get(id_random=userid).superuser
+        is_super_user = Gerente.objects.get(id_random=userid).is_superuser
 
         if userid and type=='creat/edit':
             self.fields['empresasecundaria'].queryset = self.fields['empresasecundaria'].queryset.filter(
@@ -18,7 +18,7 @@ class GerenteLimpezaPredialForms(forms.ModelForm):
             )
 
         if is_super_user:
-            self.fields['superuser'] = forms.BooleanField(
+            self.fields['is_superuser'] = forms.BooleanField(
                 required=False,
                 widget=forms.CheckboxInput(
                     attrs={
@@ -27,8 +27,8 @@ class GerenteLimpezaPredialForms(forms.ModelForm):
                 )
             )
         else:
-            # Remove o campo 'superuser' se o usuário não for superuser
-            self.fields.pop('superuser', None)
+            # Remove o campo 'is_superuser' se o usuário não for is_superuser
+            self.fields.pop('is_superuser', None)
 
         if type == 'search':
             for field_name, field in self.fields.items():
@@ -63,12 +63,12 @@ class GerenteLimpezaPredialForms(forms.ModelForm):
 
     class Meta:
         model = Gerente
-        fields = ['username', 'email', 'empresasecundaria', 'superuser', ]
+        fields = ['username', 'email', 'empresasecundaria', 'is_superuser', ]
         labels = {
             'username': 'Nome do gerente',
             'email': 'Email de contato',
             'empresasecundaria': 'Empresa Secundaria',
-            'superuser': 'É super usuário'
+            'is_superuser': 'É super usuário'
         }
 
         widgets = {
@@ -82,7 +82,7 @@ class GerenteLimpezaPredialForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
-            'superuser': forms.Select(
+            'is_superuser': forms.Select(
                 attrs={
                     'class': 'form-control'
                 }

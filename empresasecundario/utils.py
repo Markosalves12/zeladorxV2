@@ -14,7 +14,7 @@ def define_empresas(request, userid):
     ]
 
     # Caso o gerente seja superusuário, retorna todas as empresas secundárias associadas à empresa primária
-    if gerente.superuser:
+    if gerente.is_superuser:
         empresas_secundarias_ids = [
             empresa.id_random
             for empresa in EmpresaSecundaria.objects.filter(empresaprimaria__id_random__in=empresas_primarias_ids)
@@ -42,14 +42,14 @@ def define_empresas(request, userid):
     for objeto in TypeZeladoria.objects.filter(id__in=setores_primaria):
         if 'Jardinagem' in objeto.setor:
             habilitar_jardinagem = True
-            # Definir permissão secundária se superuser for True
-            if gerente.superuser:
+            # Definir permissão secundária se is_superuser for True
+            if gerente.is_superuser:
                 habilitar_jardinagem_secundaria = True
 
         if 'Limpeza predial' in objeto.setor:
             habilitar_limpeza = True
-            # Definir permissão secundária se superuser for True
-            if gerente.superuser:
+            # Definir permissão secundária se is_superuser for True
+            if gerente.is_superuser:
                 habilitar_limpeza_secundaria = True
 
     # Setores das empresas secundárias e IDs das unidades atendidas
@@ -57,7 +57,7 @@ def define_empresas(request, userid):
     unidades_secundarias_ids = []
 
     # Buscar todas as unidades que estão associadas às empresas secundárias
-    if gerente.superuser:
+    if gerente.is_superuser:
         # Se superusuário, retornar todas as unidades associadas às empresas secundárias
         unidades_secundarias = Unidade.objects.filter(empresasecundaria__id_random__in=empresas_secundarias_ids)
     else:

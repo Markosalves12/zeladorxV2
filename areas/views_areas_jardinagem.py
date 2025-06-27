@@ -246,12 +246,12 @@ def areas_associadas_localidades_jardinagem(request, userid, id_random):
         text_button_open_modal='Adicionar nova área',
         text_button_save='Salvar área',
         header_model='Nova área',
-        redirect_url='areas_jardins',
+        redirect_url=reverse(areas_associadas_localidades_jardinagem, kwargs={'userid': userid, 'id_random': id_random}),
         link_tipos=tipos,
         permission_view=permission_view,
         permission_edit=permission_edit,
         permission_crate=permission_crate,
-        userid=userid
+        userid=userid,
     )
 
 

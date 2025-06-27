@@ -1,19 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils.crypto import get_random_string
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group, Permission
-from utils.utils import generate_id_random
-from django.contrib.auth.hashers import check_password
-from django.contrib.auth.hashers import make_password
 from empresasecundario.models import EmpresaSecundaria
 from notifications.utils import enviar_notificacao
-from django.contrib.auth.models import User
-from dotenv import load_dotenv
-import os
+from utils.utils import generate_id_random
 
-load_dotenv()
 
-# Create your models here.
 class GerenteManager(BaseUserManager):
     def create_user(self, email, username, password=None, status='Mobilizado'):
         if not email:
@@ -21,179 +13,83 @@ class GerenteManager(BaseUserManager):
         if not username:
             raise ValueError('O campo nome deve ser preenchido')
 
-        email = self.normalize_email(email)
-        user = self.model(
-            email=email,
-            username=username,
-            status=status,
-            id_random=generate_id_random()
-        )
+        email = self.normalize_email(email.strip().lower())
+        username = username.strip().capitalize()
 
-        if password:
-            user.set_password(password)
-        else:
-            random_password = get_random_string(length=20)
-
+        # Gera senha aleatória se não for fornecida
+        if not password:
+            password = get_random_string(length=12)
             enviar_notificacao(
-                destinatario=[self.email],
+                destinatario=[email],
                 assunto="Novo gerente",
                 contexto={
-                    'username': self.username,
-                    'email': self.email,
+                    'username': username,
+                    'email': email,
                     'cargo': 'gerente',
-                    'empresa': self.EmpresaSecundaria,
-                    'senha': random_password
+                    'empresa': '',
+                    'senha': password
                 },
                 template='notifications/adicao_gestor.html'
             )
 
-            self.password = make_password(random_password)
-
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, username, funcao, password):
-        user = self.create_user(
+        user = self.model(
             email=email,
             username=username,
-            password=password,
-            status='Mobilizado'
+            status=status
         )
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, username, password):
+        user = self.create_user(email, username, password, status='Mobilizado')
         user.is_admin = True
         user.is_superuser = True
+        user.is_staff = True
         user.save(using=self._db)
         return user
 
 
-class Gerente(AbstractBaseUser, PermissionsMixin):
+class Gerente(AbstractBaseUser):
+    STATUS_OPCOES = [
+        ('Mobilizado', 'Mobilizado'),
+        ('Desmobilizado', 'Desmobilizado'),
+    ]
+
     id_random = models.CharField(
         unique=True,
         default=generate_id_random,
         max_length=20
     )
 
-    username = models.CharField(
-        max_length=100,
-        blank=False,
-        null=False
-    )
+    email = models.EmailField(max_length=100, unique=True)
+    username = models.CharField(max_length=100)
+    status = models.CharField(max_length=20, choices=STATUS_OPCOES, default='Mobilizado')
 
-    email = models.EmailField(
-        max_length=100,
-        blank=False,
-        null=False,
-        unique=True
-    )
-
-    password = models.CharField(
-        max_length=600,  # Alterado para suportar hashes de senha
-        blank=True,
-        null=True
-    )
-
-    status_options = [
-        ('Mobilizado', 'Mobilizado'),
-        ('Desmobilizado', 'Desmobilizado'),
-    ]
-
-    status = models.CharField(
-        max_length=60,
-        blank=False,
-        null=False,
-        choices=status_options,
-        default='Mobilizado'
-    )
-
-    is_active = models.BooleanField(
-        default=True
-    )
-
-    is_admin = models.BooleanField(
-        default=False
-    )
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     empresasecundaria = models.ManyToManyField(
-        to=EmpresaSecundaria,
-        # on_delete=models.CASCADE,
-        blank=False,
-        null=False,
-        related_name='REmpresaSecundariagerente'
-    )
-
-    superuser = models.BooleanField(
-        blank=False,
-        null=False,
-        default=False
-    )
-
-    groups = models.ManyToManyField(
-        Group,
-        related_name='gerente_set',  # Renomeia o acessor reverso
-        blank=True,
-    )
-
-    user_permissions = models.ManyToManyField(
-        Permission,
-        related_name='gerente_permissions_set',  # Renomeia o acessor reverso
-        blank=True,
+        EmpresaSecundaria,
+        related_name='gerentes',
     )
 
     objects = GerenteManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'email']
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self):
-        return f'{self.username}'
-
-    def save(self, *args, **kwargs):
-        if self.email:
-            self.email = self.email.strip().lower()
-
-        if self.username:
-            self.username = self.username.strip().capitalize()
-
-        super(Gerente, self).save(*args, **kwargs)
-
-    def save(self, *args, **kwargs):
-        if not self.pk and not self.password:
-            random_password = get_random_string(
-                length=12
-            )
-            enviar_notificacao(
-                destinatario=[self.email],
-                assunto="Novo gerente",
-                contexto={
-                    'username': self.username,
-                    'email': self.email,
-                    'cargo': 'gerente',
-                    'empresa': '',
-                    'senha': random_password
-                },
-                template='notifications/adicao_gestor.html'
-            )
-
-            self.password = make_password(random_password)
-
-        else:
-            self.password = make_password(self.password)
-
-        if User.objects.filter(username=self.username).exists():
-            pass
-        else:
-            usuario = User.objects.create_user(
-                username=self.username,
-                email=self.email,
-                password=str(os.getenv('DEFAULT_PASSWORD')),
-            )
-            usuario.save()
-
-        super().save(*args, **kwargs)
+        return self.username
 
 
-    def check_password(self, raw_password):
-        return check_password(raw_password, self.password)
+    # For checking permissions. to keep it simple all admin have ALL permissons
+    def has_perm(self, perm, obj=None):
+        return self.is_admin
 
-    @property
-    def is_staff(self):
-        return self.is_active
+
+    # Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
+    def has_module_perms(self, app_label):
+        return True

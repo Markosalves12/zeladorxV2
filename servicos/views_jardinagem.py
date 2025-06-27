@@ -168,7 +168,7 @@ def servicos_agendados_jardinagem(request, userid):
 
     # Verificação de permissões
     gerente = Gerente.objects.get(id_random=userid)
-    if auto_acompleshed and not gerente.superuser:
+    if auto_acompleshed and not gerente.is_superuser:
         agendado = agendado.filter(ColaboradoresEscalados__id_random__in=[userid, 'MuUe1D3pvT3v'])
 
     return generic_view(
