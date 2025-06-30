@@ -217,7 +217,7 @@ STORAGES = {
 GS_PROJECT_ID = "bucketzeladorx"
 
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, "bucketzeladorx.json")
+    os.path.join(BASE_DIR, "bucketzeladorx-047b955782da.json")
 )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
