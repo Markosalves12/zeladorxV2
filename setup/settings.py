@@ -135,20 +135,20 @@ WSGI_APPLICATION = 'setup.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'zeladorxv2',  # Nome do seu banco de dados
-#         'USER': 'postgresv2',  # Nome do usuário
-#         'PASSWORD': 'zeladorxv2',  # Senha em branco se não houver senha
-#         'HOST': 'localhost',  # O banco de dados está na mesma máquina
-#         'PORT': '5432',  # Porta padrão do PostgreSQL
-#     }
-# }
-
 DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'zeladorxv2',  # Nome do seu banco de dados
+        'USER': 'postgresv2',  # Nome do usuário
+        'PASSWORD': 'zeladorxv2',  # Senha em branco se não houver senha
+        'HOST': 'localhost',  # O banco de dados está na mesma máquina
+        'PORT': '5432',  # Porta padrão do PostgreSQL
+    }
 }
+#
+# DATABASES = {
+#     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
