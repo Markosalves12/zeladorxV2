@@ -19,28 +19,28 @@ class AreasJardinsForms(forms.ModelForm):
                 unidade__empresasecundaria__status__in=['Mobilizado'],
                 status__in=['Mobilizado'],
                 unidade__status__in=['Mobilizado'],
-            )
+            ).distinct()
 
             self.fields['servico'].queryset = self.fields['servico'].queryset.filter(
                 EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
                 EmpresaSecundaria__status__in=['Mobilizado'],
                 status__in=['Mobilizado']
-            )
+            ).distinct()
 
             self.fields['vegetacao'].queryset = self.fields['vegetacao'].queryset.filter(
                 EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
                 EmpresaSecundaria__status__in=['Mobilizado'],
                 status__in=['Mobilizado']
-            )
+            ).distinct()
 
             self.fields['Terreno'].queryset = self.fields['Terreno'].queryset.filter(
                 EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
                 EmpresaSecundaria__status__in=['Mobilizado'],
                 status__in=['Mobilizado']
-            )
+            ).distinct()
 
         if type == 'search':
             for field_name, field in self.fields.items():
@@ -49,22 +49,22 @@ class AreasJardinsForms(forms.ModelForm):
             self.fields['localidade'].queryset = self.fields['localidade'].queryset.filter(
                 unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-            )
+            ).distinct()
 
             self.fields['servico'].queryset = self.fields['servico'].queryset.filter(
                 EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
-            )
+            ).distinct()
 
             self.fields['vegetacao'].queryset = self.fields['vegetacao'].queryset.filter(
                 EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
-            )
+            ).distinct()
 
             self.fields['Terreno'].queryset = self.fields['Terreno'].queryset.filter(
                 EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
-            )
+            ).distinct()
 
     class Meta:
         model = AreasJardins

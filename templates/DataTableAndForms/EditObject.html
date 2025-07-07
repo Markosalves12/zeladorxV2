@@ -65,6 +65,19 @@
                                     <button type="button" id="next-page" onclick="nextPage()" class="btn btn-info">Proximo</button>
                                   </div>
                                 </div>
+
+                              {% elif field.name == "foto" or field.name == "foto_solicitacao" or field.name == "foto_entrega" or field.name == "foto_comprovacao" %}
+                                <div class="form-group">
+                                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+
+                                  {{ field }}
+
+                                  {% if field.value %}
+                                    <div style="margin-top: 10px;">
+                                      <img src="{{ field.value.url }}" alt="{{ field.label }}" class="img-fluid">
+                                    </div>
+                                  {% endif %}
+                                </div>
                               {% else %}
                                 <!-- Renderização normal para outros campos -->
                                 <div class="form-group">

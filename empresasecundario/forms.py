@@ -24,7 +24,7 @@ class EmpresaSecundariaForms(forms.ModelForm):
             self.fields['empresaprimaria'].queryset = self.fields['empresaprimaria'].queryset.filter(
                 id_random__in=empresas_primarias_ids,
                 status__in=['Mobilizado']
-            )
+            ).distinct()
 
         if type == 'search':
             for field_name, field in self.fields.items():
@@ -32,7 +32,7 @@ class EmpresaSecundariaForms(forms.ModelForm):
 
             self.fields['empresaprimaria'].queryset = self.fields['empresaprimaria'].queryset.filter(
                 id_random__in=empresas_primarias_ids,
-            )
+            ).distinct()
 
     setor = forms.ModelMultipleChoiceField(
         queryset=TypeZeladoria.objects.all(),

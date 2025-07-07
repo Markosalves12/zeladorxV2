@@ -15,7 +15,7 @@ class GerenteLimpezaPredialForms(forms.ModelForm):
                 empresaprimaria__id_random__in=empresas_primarias_ids,
                 setor__setor='Limpeza predial',
                 status__in=['Mobilizado']
-            )
+            ).distinct()
 
         if is_super_user:
             self.fields['is_superuser'] = forms.BooleanField(
@@ -38,7 +38,7 @@ class GerenteLimpezaPredialForms(forms.ModelForm):
                 queryset=EmpresaSecundaria.objects.filter(
                     empresaprimaria__id_random__in=empresas_primarias_ids,
                     setor__setor='Limpeza predial',
-                ),
+                ).distinct(),
                 widget=forms.SelectMultiple(
                     attrs={
                         'class': 'form-control',  # Modifique a classe se necessário
@@ -51,7 +51,7 @@ class GerenteLimpezaPredialForms(forms.ModelForm):
             )
 
     empresasecundaria = forms.ModelMultipleChoiceField(
-        queryset=EmpresaSecundaria.objects.all(),
+        queryset=EmpresaSecundaria.objects.distinct(),
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'

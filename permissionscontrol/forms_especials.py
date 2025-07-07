@@ -13,7 +13,7 @@ class PermissionsAccessEspecialForms(forms.ModelForm):
             self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
                 empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 empresasecundaria__id_random__in=empresas_secundarias_ids,
-            )
+            ).distinct()
 
         if type == 'search':
             for field_name, field in self.fields.items():
@@ -22,11 +22,11 @@ class PermissionsAccessEspecialForms(forms.ModelForm):
             self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
                 empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 empresasecundaria__id_random__in=empresas_secundarias_ids,
-            )
+            ).distinct()
 
             # Alterando o widget dos campos de seleção múltipla para SelectMultiple
             self.fields['Permissions'] = forms.ModelMultipleChoiceField(
-                queryset=PermissionsEspecials.objects.all(),
+                queryset=PermissionsEspecials.objects.distinct(),
                 widget=forms.SelectMultiple(
                     attrs={
                         'class': 'form-control',  # Modifique a classe se necessário
@@ -38,7 +38,7 @@ class PermissionsAccessEspecialForms(forms.ModelForm):
             )
 
     Permissions = forms.ModelMultipleChoiceField(
-        queryset=PermissionsEspecials.objects.all().order_by('Permissions'),
+        queryset=PermissionsEspecials.objects.distinct().order_by('Permissions'),
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'

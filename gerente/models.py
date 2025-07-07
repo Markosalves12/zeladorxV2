@@ -5,19 +5,22 @@ from empresasecundario.models import EmpresaSecundaria
 from notifications.utils import enviar_notificacao
 from utils.utils import generate_id_random
 
-
 class GerenteManager(BaseUserManager):
-    def create_user(self, email, username, password=None, status='Mobilizado'):
+    def create_user(self, email, username, password=None):
         if not email:
             raise ValueError('O campo email deve ser preenchido')
         if not username:
             raise ValueError('O campo nome deve ser preenchido')
 
-        email = self.normalize_email(email.strip().lower())
-        username = username.strip().capitalize()
+        user = self.model(
+            email=self.normalize_email(email),
+            username=username,
+        )
 
         # Gera senha aleatória se não for fornecida
-        if not password:
+        if password:
+            user.set_password(password)
+        else:
             password = get_random_string(length=12)
             enviar_notificacao(
                 destinatario=[email],
@@ -26,23 +29,22 @@ class GerenteManager(BaseUserManager):
                     'username': username,
                     'email': email,
                     'cargo': 'gerente',
-                    'empresa': '',
                     'senha': password
                 },
                 template='notifications/adicao_gestor.html'
             )
 
-        user = self.model(
-            email=email,
-            username=username,
-            status=status
-        )
-        user.set_password(password)
+            user.set_password(get_random_string(length=12))
+
         user.save(using=self._db)
         return user
 
     def create_superuser(self, email, username, password):
-        user = self.create_user(email, username, password, status='Mobilizado')
+        user = self.create_user(
+            email=self.normalize_email(email),
+            password=password,
+            username=username,
+        )
         user.is_admin = True
         user.is_superuser = True
         user.is_staff = True
@@ -76,10 +78,10 @@ class Gerente(AbstractBaseUser):
         related_name='gerentes',
     )
 
-    objects = GerenteManager()
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
+
+    objects = GerenteManager()
 
     def __str__(self):
         return self.username
@@ -93,3 +95,24 @@ class Gerente(AbstractBaseUser):
     # Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
     def has_module_perms(self, app_label):
         return True
+
+
+    def save(self, *args, **kwargs):
+        if not self.pk and not self.password:
+            self.password = get_random_string(length=12)
+            enviar_notificacao(
+                destinatario=[self.email],
+                assunto="Novo gerente",
+                contexto={
+                    'username': self.username,
+                    'email': self.email,
+                    'cargo': 'gerente',
+                    'senha': self.password
+                },
+                template='notifications/adicao_gestor.html'
+            )
+
+        if self.pk is None or not Gerente.objects.filter(pk=self.pk, password=self.password).exists():
+            # A senha foi alterada ou é nova
+            self.set_password(self.password)
+        super().save(*args, **kwargs)

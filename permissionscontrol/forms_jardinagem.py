@@ -13,7 +13,7 @@ class PermissionsAccessJardinagemForms(forms.ModelForm):
             self.fields['Gerente'].queryset = self.fields['Gerente'].queryset.filter(
                 empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 empresasecundaria__id_random__in=empresas_secundarias_ids,
-            )
+            ).distinct()
 
         if type == 'search':
             for field_name, field in self.fields.items():
@@ -23,11 +23,11 @@ class PermissionsAccessJardinagemForms(forms.ModelForm):
                 empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 empresasecundaria__id_random__in=empresas_secundarias_ids,
                 empresasecundaria__setor__setor='Jardinagem'
-            )
+            ).distinct()
 
             # Alterando o widget dos campos de seleção múltipla para SelectMultiple
             self.fields['Permissions'] = forms.ModelMultipleChoiceField(
-                queryset=PermissionsJardinagem.objects.all(),
+                queryset=PermissionsJardinagem.objects.distinct(),
                 widget=forms.SelectMultiple(
                     attrs={
                         'class': 'form-control',  # Modifique a classe se necessário
@@ -39,7 +39,7 @@ class PermissionsAccessJardinagemForms(forms.ModelForm):
             )
 
     Permissions = forms.ModelMultipleChoiceField(
-        queryset=PermissionsJardinagem.objects.all().order_by('Permissions'),
+        queryset=PermissionsJardinagem.objects.distinct().order_by('Permissions'),
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'

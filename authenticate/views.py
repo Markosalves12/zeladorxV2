@@ -2,51 +2,53 @@ from django.shortcuts import render, redirect
 from authenticate.forms import LoginForms, EmailReset, UpdatePassword
 from gerente.models import Gerente
 from django.contrib import messages
-from django.contrib import auth
 from notifications.utils import enviar_notificacao
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
 from datetime import timedelta, datetime
-from django.contrib.auth import authenticate, login as django_login
+from django.contrib.auth import authenticate, login, logout
 
 
 
 # Create your views here.
-def login(request):
-    forms = LoginForms()
+def login_view(request):
+    context = {}
 
-    if request.method == "POST":
-        forms = LoginForms(request.POST)
-        if forms.is_valid():
-            email = forms.cleaned_data.get('email')
-            senha = forms.cleaned_data.get('senha')
+    user = request.user
+    if user.is_authenticated:
+        return redirect('calendario_jardinagem', user.id_random)
 
-            user = authenticate(request, email=email, password=senha)
+    if request.POST:
+        form = LoginForms(request.POST)
+        if form.is_valid():
+            email = request.POST['email']
+            password = request.POST['senha']
+            user = authenticate(email=email, password=password)
+
+            print(user)
 
             if user:
-                if getattr(user, 'status', '') == "Mobilizado":
-                    request.session['login_nome'] = user.username
-                    request.session['userid'] = getattr(user, 'id_random', user.id)
+                login(request, user)
+                request.session['login_nome'] = user.username
+                request.session['userid'] = user.id_random
+                return redirect('calendario_jardinagem', user.id_random)
 
-                    django_login(request, user)
-                    return redirect('calendario_jardinagem', user.id_random)
-                else:
-                    messages.error(request, "Acesso negado. Usuário desmobilizado.")
-            else:
-                messages.error(request, "Email ou senha incorretos.")
+    else:
+        form = LoginForms()
 
+    context['login_form'] = form
     return render(
-        request=request,
-        template_name='authenticate/login.html',
+        request,
+        'authenticate/login.html',
         context={
-            'forms': forms
+            'forms': LoginForms
         }
     )
 
 
 
-def logout(request):
-    auth.logout(request)
+def logout_view(request):
+    logout(request)
     messages.success(request, "Logout efetuado com sucesso")
 
     return redirect('login')
@@ -135,9 +137,6 @@ def update_password(request, token):
                 gerente = Gerente.objects.get(
                     email=email
                 )
-                usuario = User.objects.get(
-                    email=email
-                )
 
                 if new_password != confirm_password:
                     messages.error(request, "Senhas devem ser iguais")
@@ -145,10 +144,10 @@ def update_password(request, token):
 
                 else:
                     # Atualizar as senhas
-                    usuario.password = new_password
-                    usuario.reset_token = None  # Invalida o token após o uso
-                    usuario.token_expiration = None
-                    usuario.save()
+                    gerente.password = new_password
+                    gerente.reset_token = None  # Invalida o token após o uso
+                    gerente.token_expiration = None
+                    gerente.save()
 
                     gerente.password = new_password
                     gerente.save()

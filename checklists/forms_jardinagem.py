@@ -18,7 +18,7 @@ class CheckListJardinagemForms(forms.ModelForm):
                 Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
                 status__in=['Agendado', 'Em andamento'],
                 id_random=id_random
-            )
+            ).distinct()
 
         if type == 'search':
             for field_name, field in self.fields.items():
@@ -27,7 +27,7 @@ class CheckListJardinagemForms(forms.ModelForm):
             self.fields['servico_agendado'].queryset = self.fields['servico_agendado'].queryset.filter(
                 Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
                 Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-            )
+            ).distinct()
 
     class Meta:
         model = CheckListJardinagem

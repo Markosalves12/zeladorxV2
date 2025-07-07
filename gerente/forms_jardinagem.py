@@ -15,10 +15,10 @@ class GerenteJardinagemForms(forms.ModelForm):
                 empresaprimaria__id_random__in=empresas_primarias_ids,
                 setor__setor='Jardinagem',
                 status__in=['Mobilizado']
-            )
+            ).distinct()
 
         if is_super_user:
-            self.fields['superuser'] = forms.BooleanField(
+            self.fields['is_superuser'] = forms.BooleanField(
                 required=False,
                 widget=forms.CheckboxInput(
                     attrs={
@@ -38,7 +38,7 @@ class GerenteJardinagemForms(forms.ModelForm):
                 queryset=EmpresaSecundaria.objects.filter(
                     empresaprimaria__id_random__in=empresas_primarias_ids,
                     setor__setor='Jardinagem',
-                ),
+                ).distinct(),
                 widget=forms.SelectMultiple(
                     attrs={
                         'class': 'form-control',  # Modifique a classe se necessário
@@ -51,7 +51,7 @@ class GerenteJardinagemForms(forms.ModelForm):
             )
 
     empresasecundaria = forms.ModelMultipleChoiceField(
-        queryset=EmpresaSecundaria.objects.all(),
+        queryset=EmpresaSecundaria.objects.distinct(),
         widget=forms.CheckboxSelectMultiple(
             attrs={
                 'class': 'checkbox'
