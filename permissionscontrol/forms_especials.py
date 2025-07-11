@@ -54,7 +54,7 @@ class PermissionsAccessEspecialForms(forms.ModelForm):
                     }
                 ),
                 label='Gerente',
-                required=True  # ou False, conforme sua lógica
+                required=False  # ou False, conforme sua lógica
             )
 
             # Alterando o widget dos campos de seleção múltipla para SelectMultiple
