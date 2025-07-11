@@ -11,11 +11,26 @@ class GerenteLimpezaPredialForms(forms.ModelForm):
         is_super_user = Gerente.objects.get(id_random=userid).is_superuser
 
         if userid and type=='creat/edit':
-            self.fields['empresasecundaria'].queryset = self.fields['empresasecundaria'].queryset.filter(
-                empresaprimaria__id_random__in=empresas_primarias_ids,
-                setor__setor='Limpeza predial',
-                status__in=['Mobilizado']
-            ).distinct()
+            # self.fields['empresasecundaria'].queryset = self.fields['empresasecundaria'].queryset.filter(
+            #     empresaprimaria__id_random__in=empresas_primarias_ids,
+            #     setor__setor='Limpeza predial',
+            #     status__in=['Mobilizado']
+            # ).distinct()
+
+            self.fields['empresasecundaria'] = forms.ModelMultipleChoiceField(
+                queryset=EmpresaSecundaria.objects.filter(
+                    empresaprimaria__id_random__in=empresas_primarias_ids,
+                    setor__setor='Limpeza predial',
+                    status__in=['Mobilizado']
+                ).distinct(),
+                widget=forms.CheckboxSelectMultiple(
+                    attrs={
+                        'class': 'checkbox'
+                    }
+                ),
+                label='Empresa Secundaria',
+                required=True  # ou False, conforme sua lógica
+            )
 
         if is_super_user:
             self.fields['is_superuser'] = forms.BooleanField(
@@ -42,7 +57,10 @@ class GerenteLimpezaPredialForms(forms.ModelForm):
                 widget=forms.SelectMultiple(
                     attrs={
                         'class': 'form-control',  # Modifique a classe se necessário
-                        'style': 'max-height: 40px; overflow-y: auto;'
+                        'style': (
+                            'max-height: 40px; overflow-y: auto; max-width: 400px; '
+                            'white-space: normal; word-wrap: break-word; overflow-wrap: break-word;'
+                        )
                     }
                 ),
                 label='Empresas que atende',

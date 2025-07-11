@@ -63,7 +63,7 @@ def checklists_limpeza_predial(request, userid, id_random):
         filtro_mapeamento={
             'status': 'status',
         },
-        text_button_open_modal='Adicionar nova check',
+        text_button_open_modal='Adicionar novo check',
         text_button_save='Salvar check',
         header_model='Novo check',
         redirect_url=reverse('checklists_limpeza_predial',  kwargs={'userid': userid, 'id_random': id_random}),

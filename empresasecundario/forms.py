@@ -21,18 +21,49 @@ class EmpresaSecundariaForms(forms.ModelForm):
 
         if userid and type=='creat/edit':
             # Ajustar o queryset do campo 'empresaprimaria'
-            self.fields['empresaprimaria'].queryset = self.fields['empresaprimaria'].queryset.filter(
-                id_random__in=empresas_primarias_ids,
-                status__in=['Mobilizado']
-            ).distinct()
+            # self.fields['empresaprimaria'].queryset = self.fields['empresaprimaria'].queryset.filter(
+            #     id_random__in=empresas_primarias_ids,
+            #     status__in=['Mobilizado']
+            # ).distinct()
+
+            self.fields['empresaprimaria'] = forms.ModelChoiceField(
+                queryset=EmpresaPrimaria.objects.filter(
+                    id_random__in=empresas_primarias_ids,
+                    status__in=['Mobilizado']
+                ).distinct(),
+                widget=forms.Select(
+                    attrs={
+                        'class': 'form-control',
+                    }
+                ),
+                label='Empresa operadora',
+                required=True  # ou False, conforme sua lógica
+            )
 
         if type == 'search':
             for field_name, field in self.fields.items():
                 field.required = False
 
-            self.fields['empresaprimaria'].queryset = self.fields['empresaprimaria'].queryset.filter(
-                id_random__in=empresas_primarias_ids,
-            ).distinct()
+            # self.fields['empresaprimaria'].queryset = self.fields['empresaprimaria'].queryset.filter(
+            #     id_random__in=empresas_primarias_ids,
+            # ).distinct()
+
+            self.fields['servico_agendado'] = forms.ModelChoiceField(
+                queryset=EmpresaPrimaria.objects.filter(
+                    id_random__in=empresas_primarias_ids,
+                ).distinct(),
+                widget=forms.Select(
+                    attrs={
+                        'class': 'form-control',
+                        'style': (
+                            'max-height: 40px; overflow-y: auto; max-width: 600px; '
+                            'white-space: normal; word-wrap: break-word; overflow-wrap: break-word;'
+                        )
+                    }
+                ),
+                label='Empresa operadora',
+                required=True  # ou False, conforme sua lógica
+            )
 
     setor = forms.ModelMultipleChoiceField(
         queryset=TypeZeladoria.objects.all(),
@@ -84,9 +115,9 @@ class EmpresaSecundariaForms(forms.ModelForm):
                     'class': 'form-control'
                 }
             ),
-            'empresaprimaria': forms.Select(
-                attrs={
-                    'class': 'form-control'
-                }
-            )
+            # 'empresaprimaria': forms.Select(
+            #     attrs={
+            #         'class': 'form-control'
+            #     }
+            # )
         }

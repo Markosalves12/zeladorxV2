@@ -1,6 +1,7 @@
 from django import forms
 from checklists.models import CheckListLimpezaPredial
 from empresasecundario.utils import define_empresas
+from servicos.models_limpeza_predial import ServicoLimpezaPredialAgendado
 
 
 class CheckListLimpezaPredialForms(forms.ModelForm):
@@ -13,21 +14,55 @@ class CheckListLimpezaPredialForms(forms.ModelForm):
         empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
         if userid and type=='creat/edit':
-            self.fields['servico_agendado'].queryset = self.fields['servico_agendado'].queryset.filter(
-                Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-                Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-                status__in=['Agendado', 'Em andamento'],
-                id_random=id_random
-            ).distinct()
+            # self.fields['servico_agendado'].queryset = self.fields['servico_agendado'].queryset.filter(
+            #     Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            #     Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+            #     status__in=['Agendado', 'Em andamento'],
+            #     id_random=id_random
+            # ).distinct()
+
+            self.fields['servico_agendado'] = forms.ModelChoiceField(
+                queryset=ServicoLimpezaPredialAgendado.objects.filter(
+                    Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                    Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+                    status__in=['Agendado', 'Em andamento'],
+                    id_random=id_random
+                ).distinct(),
+                widget=forms.Select(
+                    attrs={
+                        'class': 'form-control',
+                    }
+                ),
+                label='Serviço agendado',
+                required=True  # ou False, conforme sua lógica
+            )
 
         if type == 'search':
             for field_name, field in self.fields.items():
                 field.required = False
 
-            self.fields['servico_agendado'].queryset = self.fields['servico_agendado'].queryset.filter(
-                Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-                Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-            ).distinct()
+            # self.fields['servico_agendado'].queryset = self.fields['servico_agendado'].queryset.filter(
+            #     Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            #     Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+            # ).distinct()
+
+            self.fields['servico_agendado'] = forms.ModelChoiceField(
+                queryset=ServicoLimpezaPredialAgendado.objects.filter(
+                    Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                    Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+                ).distinct(),
+                widget=forms.Select(
+                    attrs={
+                        'class': 'form-control',
+                        'style': (
+                            'max-height: 40px; overflow-y: auto; max-width: 600px; '
+                            'white-space: normal; word-wrap: break-word; overflow-wrap: break-word;'
+                        )
+                    }
+                ),
+                label='Serviço agendado',
+                required=True  # ou False, conforme sua lógica
+            )
 
     class Meta:
         model = CheckListLimpezaPredial
@@ -41,11 +76,11 @@ class CheckListLimpezaPredialForms(forms.ModelForm):
         }
 
         widgets = {
-            'servico_agendado': forms.Select(
-                attrs={
-                    'class': 'form-control'
-                }
-            ),
+            # 'servico_agendado': forms.Select(
+            #     attrs={
+            #         'class': 'form-control'
+            #     }
+            # ),
             'descricao': forms.TextInput(
                 attrs={
                     'class': 'form-control'

@@ -77,7 +77,7 @@ def localidades_jardinagem(request, userid):
         sform_search=True,
         filtro_mapeamento={
             'unidade': 'unidade__id',
-            'nome': 'nome',
+            'nome': 'nome__icontains',
         },
         text_button_open_modal='Adicionar nova localidade',
         text_button_save='Salvar localidade',

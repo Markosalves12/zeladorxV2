@@ -68,7 +68,7 @@ def unidades(request, userid):
         form_search=UnidadeForms(request=request, userid=userid, type='search'),
         sform_search=True,
         filtro_mapeamento={
-            'nome': 'nome',
+            'nome': 'nome__icontains',
             'empresasecundaria': 'empresasecundaria__id'
         },
         text_button_open_modal='Adicionar nova unidade',

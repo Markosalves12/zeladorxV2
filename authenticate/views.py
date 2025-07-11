@@ -16,6 +16,8 @@ def login_view(request):
 
     user = request.user
     if user.is_authenticated:
+        request.session['login_nome'] = user.username
+        request.session['userid'] = user.id_random
         return redirect('calendario_jardinagem', user.id_random)
 
     if request.POST:

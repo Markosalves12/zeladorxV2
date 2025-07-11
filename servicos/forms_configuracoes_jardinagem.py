@@ -3,45 +3,116 @@ from servicos.models_jardinagem import ServicoJardinagemConfigurado
 from catalogo_de_servicos.models_jardinagem import CatalogodeServicoJardinagem
 from semana.models import DiasDaSemana
 from empresasecundario.utils import define_empresas
-
+from areas.models_jardinagem import AreasJardins
 
 class ServicoJardinagemConfiguradoForms(forms.ModelForm):
-    def __init__(self, *args, request, userid=str, type = 'creat/edit', **kwargs):
+    def __init__(self, *args, request, userid=str, type='creat/edit', **kwargs):
         super(ServicoJardinagemConfiguradoForms, self).__init__(*args, **kwargs)
         empresas = define_empresas(request=request, userid=userid)
         empresas_primarias_ids = empresas['empresas_primarias_ids']
         empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
         if userid and type=='creat/edit':
-            self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
-                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-                EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
-                EmpresaSecundaria__status__in=['Mobilizado'],
-                status__in=['Mobilizado']
-            ).distinct()
+            # self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
+            #     EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            #     EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+            #     EmpresaSecundaria__status__in=['Mobilizado'],
+            #     status__in=['Mobilizado']
+            # ).distinct()
 
-            self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
-                localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-                localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-                localidade__unidade__empresasecundaria__status__in=['Mobilizado'],
-                status__in=['Mobilizado'],
-                localidade__status__in=['Mobilizado'],
-                localidade__unidade__status__in=['Mobilizado']
-            ).distinct()
+            self.fields['ServicosEscalados'] = forms.ModelMultipleChoiceField(
+                queryset=CatalogodeServicoJardinagem.objects.filter(
+                    EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                    EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+                    EmpresaSecundaria__status__in=['Mobilizado'],
+                    status__in=['Mobilizado']
+                ).distinct(),
+                widget=forms.CheckboxSelectMultiple(
+                    attrs={
+                        'class': 'checkbox'
+                    }
+                ),
+                label='Serviços Escalados',
+                required=True  # ou False, conforme sua lógica
+            )
+
+            # self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
+            #     localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            #     localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+            #     localidade__unidade__empresasecundaria__status__in=['Mobilizado'],
+            #     status__in=['Mobilizado'],
+            #     localidade__status__in=['Mobilizado'],
+            #     localidade__unidade__status__in=['Mobilizado']
+            # ).distinct()
+
+            self.fields['Areas'] = forms.ModelChoiceField(
+                queryset=AreasJardins.objects.filter(
+                    localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                    localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+                    localidade__unidade__empresasecundaria__status__in=['Mobilizado'],
+                    status__in=['Mobilizado'],
+                    localidade__status__in=['Mobilizado'],
+                    localidade__unidade__status__in=['Mobilizado']
+                ).distinct(),
+                widget=forms.Select(
+                    attrs={
+                        'class': 'form-control',
+                    }
+                ),
+                label='Área',
+                required=True  # ou False, conforme sua lógica
+            )
 
         if type == 'search':
             for field_name, field in self.fields.items():
                 field.required = False
 
-            self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
-                EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-                EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
-            ).distinct()
+            # self.fields['ServicosEscalados'].queryset = self.fields['ServicosEscalados'].queryset.filter(
+            #     EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            #     EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+            # ).distinct()
 
-            self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
-                localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-                localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
-            ).distinct()
+            self.fields['ServicosEscalados'] = forms.ModelMultipleChoiceField(
+                queryset=CatalogodeServicoJardinagem.objects.filter(
+                    EmpresaSecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                    EmpresaSecundaria__id_random__in=empresas_secundarias_ids,
+                ).distinct(),
+                widget=forms.SelectMultiple(
+                    attrs={
+                        'class': 'form-control',  # Modifique a classe se necessário
+                        'style': (
+                            'max-height: 40px; overflow-y: auto; max-width: 350px; '
+                            'white-space: normal; word-wrap: break-word; overflow-wrap: break-word;'
+                        )
+                    }
+                ),
+                label='Serviços Escalados',
+                required=False,
+                initial=None
+            )
+
+            # self.fields['Areas'].queryset = self.fields['Areas'].queryset.filter(
+            #     localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+            #     localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+            # ).distinct()
+
+            self.fields['Areas'] = forms.ModelChoiceField(
+                queryset=AreasJardins.objects.filter(
+                    localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
+                    localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+                ).distinct(),
+                widget=forms.Select(
+                    attrs={
+                        'class': 'form-control',
+                        'style': (
+                            'max-height: 40px; overflow-y: auto; max-width: 300px; '
+                            'white-space: normal; word-wrap: break-word; overflow-wrap: break-word;'
+                        )
+                    }
+                ),
+                label='Área',
+                required=False  # ou False, conforme sua lógica
+            )
 
             self.fields['diasaseremrealizado'] = forms.ModelMultipleChoiceField(
                 queryset=DiasDaSemana.objects.distinct(),
@@ -102,16 +173,12 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
         }
 
         widgets = {
-            'Areas': forms.Select(
-                attrs={
-                    'class': 'form-control'
-                }
-            ),
             'tempomedioplanejado': forms.TimeInput(
                 format='%H:%M',
                 attrs={
                     'type': 'time',
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'placeholder': 'HH:MM'
                 }
             ),
 
@@ -119,7 +186,8 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
                 format='%H:%M',
                 attrs={
                     'type': 'time',
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'placeholder': 'HH:MM'
                 }
             ),
 
@@ -127,7 +195,8 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
                 format='%H:%M',
                 attrs={
                     'type': 'time',
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'placeholder': 'HH:MM'
                 }
             ),
 
@@ -135,7 +204,8 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
                 format='%H:%M',
                 attrs={
                     'type': 'time',
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'placeholder': 'HH:MM'
                 }
             ),
 
@@ -143,7 +213,8 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
                 format='%H:%M',
                 attrs={
                     'type': 'time',
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'placeholder': 'HH:MM'
                 }
             ),
 
@@ -151,7 +222,8 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
                 format='%H:%M',
                 attrs={
                     'type': 'time',
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'placeholder': 'HH:MM'
                 }
             ),
 
@@ -159,7 +231,8 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
                 format='%H:%M',
                 attrs={
                     'type': 'time',
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'placeholder': 'HH:MM'
                 }
             ),
 
@@ -167,23 +240,8 @@ class ServicoJardinagemConfiguradoForms(forms.ModelForm):
                 format='%H:%M',
                 attrs={
                     'type': 'time',
-                    'class': 'form-control'
-                }
-            ),
-
-            'horario_8': forms.TimeInput(
-                format='%H:%M',
-                attrs={
-                    'type': 'time',
-                    'class': 'form-control'
-                }
-            ),
-
-            'horario_9': forms.TimeInput(
-                format='%H:%M',
-                attrs={
-                    'type': 'time',
-                    'class': 'form-control'
+                    'class': 'form-control',
+                    'placeholder': 'HH:MM'
                 }
             ),
         }

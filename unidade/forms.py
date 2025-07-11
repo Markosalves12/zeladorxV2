@@ -16,30 +16,64 @@ class UnidadeForms(forms.ModelForm):
 
         if userid and type=='creat/edit':
             # Ajustar o queryset do campo 'empresaprimaria'
-            self.fields['empresasecundaria'].queryset = self.fields['empresasecundaria'].queryset.filter(
-                empresaprimaria__id_random__in=empresas_primarias_ids,
-                id_random__in=empresas_secundarias_ids,
-                status__in=['Mobilizado']
-            ).distinct()
+            # self.fields['empresasecundaria'].queryset = self.fields['empresasecundaria'].queryset.filter(
+            #     empresaprimaria__id_random__in=empresas_primarias_ids,
+            #     id_random__in=empresas_secundarias_ids,
+            #     status__in=['Mobilizado']
+            # ).distinct()
+
+            self.fields['empresasecundaria'] = forms.ModelMultipleChoiceField(
+                queryset=EmpresaSecundaria.objects.filter(
+                    empresaprimaria__id_random__in=empresas_primarias_ids,
+                    id_random__in=empresas_secundarias_ids,
+                    status__in=['Mobilizado']
+                ).distinct(),
+                widget=forms.CheckboxSelectMultiple(
+                    attrs={
+                        'class': 'checkboxl',
+                    }
+                ),
+                label='Empresa operadora',
+                required=True  # ou False, conforme sua lógica
+            )
 
         if type == 'search':
             for field_name, field in self.fields.items():
                 field.required = False
 
-            self.fields['empresasecundaria'] = forms.ModelMultipleChoiceField(
+            # self.fields['empresasecundaria'] = forms.ModelMultipleChoiceField(
+            #     queryset=EmpresaSecundaria.objects.filter(
+            #         empresaprimaria__id_random__in=empresas_primarias_ids,
+            #     ).distinct(),
+            #     widget=forms.SelectMultiple(
+            #         attrs={
+            #             'class': 'form-control',  # Modifique a classe se necessário
+            #             'style': 'max-height: 40px; overflow-y: auto;'
+            #         }
+            #     ),
+            #     label='Empresas que atende',
+            #     required=False,
+            #     initial=None
+            # )
+
+            self.fields['empresasecundaria'] = forms.ModelChoiceField(
                 queryset=EmpresaSecundaria.objects.filter(
                     empresaprimaria__id_random__in=empresas_primarias_ids,
                 ).distinct(),
-                widget=forms.SelectMultiple(
+                widget=forms.Select(
                     attrs={
-                        'class': 'form-control',  # Modifique a classe se necessário
-                        'style': 'max-height: 40px; overflow-y: auto;'
+                        'class': 'form-control',
+                        'style': (
+                            'max-height: 40px; overflow-y: auto; max-width: 350px; '
+                            'white-space: normal; word-wrap: break-word; overflow-wrap: break-word;'
+                        )
                     }
                 ),
-                label='Empresas que atende',
-                required=False,
+                label='Empresa operadora',
+                required=False,  # ou False, conforme sua lógica
                 initial=None
             )
+
 
         # Habilitar os campos se as condições forem verdadeiras
         if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
