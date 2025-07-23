@@ -151,9 +151,6 @@ def update_password(request, token):
                     gerente.token_expiration = None
                     gerente.save()
 
-                    gerente.password = new_password
-                    gerente.save()
-
                     messages.success(request, "Senhas alterada com sucesso")
 
                     # Redirecionar para uma página de sucesso

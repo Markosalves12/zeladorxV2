@@ -14,3 +14,4 @@ class GerenteAdmin(admin.ModelAdmin):
         ('Status e empresa', {'fields': ('status', 'empresasecundaria')}),
         ('Permissões', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
     )
+    readonly_fields = ('password',)
