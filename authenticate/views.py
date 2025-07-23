@@ -146,7 +146,7 @@ def update_password(request, token):
 
                 else:
                     # Atualizar as senhas
-                    gerente.password = new_password
+                    gerente.set_password(new_password)
                     gerente.reset_token = None  # Invalida o token após o uso
                     gerente.token_expiration = None
                     gerente.save()
