@@ -104,20 +104,20 @@ class Gerente(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
-    def save(self, *args, **kwargs):
-        if not self.pk and not self.password:
-            senha_gerada = get_random_string(length=12)
-            self.set_password(senha_gerada)
-            enviar_notificacao(
-                destinatario=[self.email],
-                assunto="Novo gerente",
-                contexto={
-                    'username': self.username,
-                    'email': self.email,
-                    'cargo': 'gerente',
-                    'senha': senha_gerada
-                },
-                template='notifications/adicao_gestor.html'
-            )
-
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if not self.pk and not self.password:
+    #         senha_gerada = get_random_string(length=12)
+    #         self.set_password(senha_gerada)
+    #         enviar_notificacao(
+    #             destinatario=[self.email],
+    #             assunto="Novo gerente",
+    #             contexto={
+    #                 'username': self.username,
+    #                 'email': self.email,
+    #                 'cargo': 'gerente',
+    #                 'senha': senha_gerada
+    #             },
+    #             template='notifications/adicao_gestor.html'
+    #         )
+    #
+    #     super().save(*args, **kwargs)
