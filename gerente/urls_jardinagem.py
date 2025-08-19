@@ -1,7 +1,7 @@
 from django.urls import path
 from gerente.views_jardinagem import (gerentes_jardinagem, editar_gerente_jardinagem,
                                       alterar_status_gerente_jardinagem,
-                                      historico_de_servicos_gerente_jardinagem)
+                                      historico_de_servicos_gerente_jardinagem, IfDeleteGerenteJardinagem, DeleteGerenteJardinagem)
 
 
 urlpatterns = [
@@ -22,4 +22,8 @@ urlpatterns = [
         historico_de_servicos_gerente_jardinagem,
         name='historico_de_servicos_gerente_jardinagem'
     ),
+    path('delete-gerente-jardinagem/<str:userid>/<str:id_random>/', IfDeleteGerenteJardinagem,
+         name='IfDeleteGerenteJardinagem'),
+    path('DeleteGerenteJardinagem/<str:id_random>/', DeleteGerenteJardinagem,
+         name="DeleteGerenteJardinagem")
 ]

@@ -1,7 +1,7 @@
 from django.shortcuts import reverse
 from unidade.models import Unidade
 from unidade.forms import UnidadeForms
-from utils.views import generic_view, edit_generic_view, gerneric_alter_status
+from utils.views import generic_view, edit_generic_view, gerneric_alter_status, GenericIfDeleteView, GenericDeleteView
 from empresasecundario.utils import define_empresas
 from permissionscontrol.utils import validate_permissions
 from django.shortcuts import redirect
@@ -144,7 +144,14 @@ def editar_unidade(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
-        userid=userid
+        userid=userid,
+        url_if_delete=reverse(
+            'IfDeleteUnidade',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+            }
+        ),
     )
 
 
@@ -164,4 +171,57 @@ def alterar_status_unidade(request, userid, id_random, new_status):
         new_status=new_status,
         userid=userid,
         message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
+    )
+
+
+
+
+def IfDeleteUnidade(request, userid, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    unidades_secundarias_ids = empresas['unidades_secundarias_ids']
+
+    return GenericIfDeleteView(
+        request,
+        model=Unidade,
+        id_random=id_random,
+        permission_type='especials',
+        permission_to_access=['343: Pode excluir unidades'],
+        access_filters={
+            "empresasecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "empresasecundaria__id_random__in": empresas_secundarias_ids,
+            "id_random__in": unidades_secundarias_ids
+        },
+        template_name="DataTableAndForms/IfDelete.html",
+        app_name="Deletar unidade",
+        url_delete=reverse(
+            'DeleteUnidade',
+            kwargs={
+                'id_random': id_random,
+            }
+        ),
+        redirect_close_button=reverse('unidades', kwargs={'userid': request.user.id_random})
+    )
+
+
+
+def DeleteUnidade(request, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+    unidades_secundarias_ids = empresas['unidades_secundarias_ids']
+
+    return GenericDeleteView(
+        request,
+        model=Unidade,
+        id_random=id_random,
+        permission_type='especials',
+        permission_to_access=['343: Pode excluir unidades'],
+        access_filters={
+            "empresasecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "empresasecundaria__id_random__in": empresas_secundarias_ids,
+            "id_random__in": unidades_secundarias_ids
+        },
+        redirect_close_button=reverse('unidades', kwargs={'userid': request.user.id_random}),
     )

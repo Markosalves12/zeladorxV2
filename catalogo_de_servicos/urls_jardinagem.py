@@ -1,7 +1,8 @@
 from django.urls import path
 from catalogo_de_servicos.views_jardinagem import (catalogo_de_servicos_jardinagem,
                                                    editar_catalogo_de_servicos_jardinagem,
-                                                   alterar_status_catalogo_de_servicos_jardinagem)
+                                                   alterar_status_catalogo_de_servicos_jardinagem,
+                                                   IfDeleteServicoCatalogoJardinagem, DeleteServicoCatalogoJardinagem)
 
 urlpatterns = [
     # rota na raiz do sistema
@@ -19,4 +20,7 @@ urlpatterns = [
          alterar_status_catalogo_de_servicos_jardinagem,
          name='alterar_status_catalogo_de_servicos_jardinagem'
     ),
+    path('delete-catalogo-de-servicos-jardinagem/<str:userid>/<str:id_random>/', IfDeleteServicoCatalogoJardinagem,
+         name='IfDeleteServicoCatalogoJardinagem'),
+    path('DeleteServicoCatalogoJardinagem/<str:id_random>/', DeleteServicoCatalogoJardinagem, name="DeleteServicoCatalogoJardinagem")
 ]

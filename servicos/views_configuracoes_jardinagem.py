@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, reverse
 from servicos.models_jardinagem import ServicoJardinagemConfigurado
 from servicos.forms_configuracoes_jardinagem import ServicoJardinagemConfiguradoForms
-from utils.views import generic_view, edit_generic_view, gerneric_alter_status, generic_view_history
+from utils.views import (generic_view, edit_generic_view, gerneric_alter_status, generic_view_history,
+                         GenericIfDeleteView, GenericDeleteView)
 from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
@@ -223,7 +224,14 @@ def editar_servico_jardinagem_configurado(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
-        userid=userid
+        userid=userid,
+        url_if_delete=reverse(
+            'IfDeleteServicoJardinagemConfigurado',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+            }
+        ),
     )
 
 
@@ -316,4 +324,52 @@ def historico_de_servicos_configurados_jardinagem(request, userid, id_random):
         permission_extract_xlsx=permission_extract_xlsx,
         url_detalhamento='view_detailing_jardinagem',
         url_checklist='view_detailing_jardinagem'
+    )
+
+
+
+def IfDeleteServicoJardinagemConfigurado(request, userid, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+    return GenericIfDeleteView(
+        request,
+        model=ServicoJardinagemConfigurado,
+        id_random=id_random,
+        permission_type='jardinagem',
+        permission_to_access=['373: Pode excluir serviços configurados'],
+        access_filters={
+            "Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "Areas__localidade__unidade__empresasecundaria__id_random__in": empresas_secundarias_ids,
+        },
+        template_name="DataTableAndForms/IfDelete.html",
+        app_name="Deletar serviços configurados",
+        url_delete=reverse(
+            'DeleteServicoJardinagemConfigurado',
+            kwargs={
+                'id_random': id_random,
+            }
+        ),
+        redirect_close_button=reverse('servicos_configurados_jardinagem', kwargs={'userid': request.user.id_random})
+    )
+
+
+
+def DeleteServicoJardinagemConfigurado(request, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+    return GenericDeleteView(
+        request,
+        model=ServicoJardinagemConfigurado,
+        id_random=id_random,
+        permission_type='jardinagem',
+        permission_to_access=['373: Pode excluir serviços configurados'],
+        access_filters={
+            "Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "Areas__localidade__unidade__empresasecundaria__id_random__in": empresas_secundarias_ids,
+        },
+        redirect_close_button=reverse('servicos_configurados_jardinagem', kwargs={'userid': request.user.id_random}),
     )

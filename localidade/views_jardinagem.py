@@ -1,7 +1,8 @@
 from django.shortcuts import reverse, redirect
 from localidade.models_Jardinagem import LocalidadeJardiangem
 from localidade.forms_jardinagem import LocalidadeJardinagemForms
-from utils.views import generic_view, edit_generic_view, gerneric_alter_status, generic_view_maps
+from utils.views import (generic_view, edit_generic_view, gerneric_alter_status, generic_view_maps,
+                         GenericIfDeleteView, GenericDeleteView)
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from areas.models_jardinagem import AreasJardins
@@ -151,7 +152,14 @@ def editar_localidade_jardinagem(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
-        userid=userid
+        userid=userid,
+        url_if_delete=reverse(
+            'IfDeleteLocalidadeJardinagem',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+            }
+        ),
     )
 
 
@@ -240,4 +248,51 @@ def mapa_localidades_jardinagem(request, userid):
         userid=userid,
         color='#008000',
         redirect_close_button = reverse('localidades_jardinagem', kwargs={'userid': userid}),
+    )
+
+
+def IfDeleteLocalidadeJardinagem(request, userid, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+    return GenericIfDeleteView(
+        request,
+        model=LocalidadeJardiangem,
+        id_random=id_random,
+        permission_type='jardinagem',
+        permission_to_access=['293: Pode excluir localidades'],
+        access_filters={
+            "unidade__empresasecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "unidade__empresasecundaria__id_random__in": empresas_secundarias_ids,
+        },
+        template_name="DataTableAndForms/IfDelete.html",
+        app_name="Deletar localidades",
+        url_delete=reverse(
+            'DeleteLocalidadeJardinagem',
+            kwargs={
+                'id_random': id_random,
+            }
+        ),
+        redirect_close_button=reverse('localidades_jardinagem', kwargs={'userid': request.user.id_random})
+    )
+
+
+
+def DeleteLocalidadeJardinagem(request, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+    return GenericDeleteView(
+        request,
+        model=LocalidadeJardiangem,
+        id_random=id_random,
+        permission_type='jardinagem',
+        permission_to_access=['293: Pode excluir localidades'],
+        access_filters={
+            "unidade__empresasecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "unidade__empresasecundaria__id_random__in": empresas_secundarias_ids,
+        },
+        redirect_close_button=reverse('localidades_jardinagem', kwargs={'userid': request.user.id_random}),
     )

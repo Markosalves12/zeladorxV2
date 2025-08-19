@@ -1,5 +1,5 @@
 from django.urls import path
-from unidade.views import unidades, editar_unidade, alterar_status_unidade
+from unidade.views import unidades, editar_unidade, alterar_status_unidade, IfDeleteUnidade, DeleteUnidade
 from unidade.maps_jardinagem import visualizar_unidade_jardinagem
 from unidade.maps_limpeza_predial import visualizar_unidade_limpeza_predial
 
@@ -17,4 +17,14 @@ urlpatterns = [
         alterar_status_unidade,
         name='alterar_status_unidade'
     ),
+    path(
+        'delete-unidade/<str:userid>/<str:id_random>/',
+        IfDeleteUnidade,
+        name='IfDeleteUnidade'
+    ),
+    path(
+        'DeleteUnidade/<str:id_random>/',
+        DeleteUnidade,
+        name="DeleteUnidade"
+    )
 ]

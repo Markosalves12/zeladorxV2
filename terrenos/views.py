@@ -1,7 +1,7 @@
 from django.shortcuts import reverse
 from terrenos.models import Terreno
 from terrenos.forms import TerrenoForms
-from utils.views import generic_view, edit_generic_view, gerneric_alter_status
+from utils.views import generic_view, edit_generic_view, gerneric_alter_status, GenericIfDeleteView, GenericDeleteView
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from areas.models_jardinagem import AreasJardins
@@ -141,7 +141,14 @@ def editar_terreno(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
-        userid=userid
+        userid=userid,
+        url_if_delete=reverse(
+            'IfDeleteTerreno',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+            }
+        ),
     )
 
 
@@ -232,4 +239,53 @@ def areas_associadas_terrenos(request, userid, id_random):
         permission_edit=permission_edit,
         permission_crate=permission_crate,
         userid=userid
+    )
+
+
+
+
+def IfDeleteTerreno(request, userid, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+    return GenericIfDeleteView(
+        request,
+        model=Terreno,
+        id_random=id_random,
+        permission_type='jardinagem',
+        permission_to_access=['333: Pode excluir terrenos'],
+        access_filters={
+            "EmpresaSecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "EmpresaSecundaria__id_random__in": empresas_secundarias_ids
+        },
+        template_name="DataTableAndForms/IfDelete.html",
+        app_name="Deletar terreno",
+        url_delete=reverse(
+            'DeleteTerreno',
+            kwargs={
+                'id_random': id_random,
+            }
+        ),
+        redirect_close_button=reverse('terrenos', kwargs={'userid': request.user.id_random})
+    )
+
+
+
+def DeleteTerreno(request, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+    return GenericDeleteView(
+        request,
+        model=Terreno,
+        id_random=id_random,
+        permission_type='jardinagem',
+        permission_to_access=['333: Pode excluir terrenos'],
+        access_filters={
+            "EmpresaSecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "EmpresaSecundaria__id_random__in": empresas_secundarias_ids
+        },
+        redirect_close_button=reverse('terrenos', kwargs={'userid': request.user.id_random}),
     )

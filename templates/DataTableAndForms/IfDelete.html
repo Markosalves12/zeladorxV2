@@ -37,89 +37,90 @@
           <div class="col-md-12">
             <div class="card">
               <!-- /.card-header -->
-              {% if permission_edit or permission_accompany %}
-                <div class="card-body">
-                  <form action="{{ redirect_url_name }}" method="POST" enctype="multipart/form-data">
-                    <div class="card-body">
-                      <div class="form-group">
-                        {% csrf_token %}
-                          <div class="form-group">
-                            {% for field in forms.visible_fields %}
-                              <!-- Identifique o campo 'Permissions' para aplicar a lógica de paginação -->
-                              {% if field.name == 'Permissions' %}
-                                <div class="form-group">
-                                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-
-                                  <!-- Container com checkboxes paginados -->
-                                  <div id="checkbox-container">
-                                    {% for empresa in field %}
-                                      <div class="checkbox-item">
-                                        {{ empresa }}
-                                      </div>
-                                    {% endfor %}
-                                  </div>
-
-                                  <!-- Controles de paginação -->
-                                  <div id="pagination-controls">
-                                    <button type="button" id="prev-page" onclick="prevPage()" class="btn btn-info">Anterior</button>
-                                    <button type="button" id="next-page" onclick="nextPage()" class="btn btn-info">Proximo</button>
-                                  </div>
-                                </div>
-
-                              {% elif field.name == "foto" or field.name == "foto_solicitacao" or field.name == "foto_entrega" or field.name == "foto_comprovacao" %}
-                                <div class="form-group">
-                                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-
-                                  {{ field }}
-
-                                  {% if field.value %}
-                                    <div style="margin-top: 10px;">
-                                      <img src="{{ field.value.url }}" alt="{{ field.label }}" class="img-fluid">
-                                    </div>
-                                  {% endif %}
-                                </div>
-                              {% else %}
-                                <!-- Renderização normal para outros campos -->
-                                <div class="form-group">
-                                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                  {{ field }}
-                                </div>
-                              {% endif %}
-                            {% endfor %}
-                          </div>
-                      </div>
-                      <div class="modal-footer justify-content-between">
-                        <!-- Botão Fechar à esquerda -->
-                        <a href="{{ redirect_close_button }}">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-                        </a>
-
-                        <!-- Botões agrupados à direita -->
-                        <div class="ml-auto">
-                          <button type="POST" class="btn btn-primary">{{ text_button }}</button>
-                          {% if permission_desmobilize %}
-                            {% if objeto.status == "Mobilizado" %}
-                              <a href="{{ url_desmobilize }}">
-                                <button type="button" class="btn btn-warning">Desmobilizar</button>
-                              </a>
-                            {% endif %}
-                          {% endif %}
-                          {% if permission_rehabilitate %}
-                            {% if objeto.status == "Desmobilizado" %}
-                              <a href="{{ url_rehabilitate }}">
-                                <button type="button" class="btn btn-success">Reabilitar</button>
-                              </a>
-                            {% endif %}
-                          {% endif %}
-                          {% if permission_exclude %}
-                            <a href="{{ url_if_delete }}">
-                              <button type="button" class="btn btn-danger">Excluir</button>
-                            </a>
-                          {% endif %}
-                        </div>
-                      </div>
+              {% if permission_exclude %}
+                <div class="deletion-preview">
+                    <div class="deletion-header bg-danger text-white p-3 rounded-top">
+                        <h4 class="mb-0">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            Confirmação de Exclusão em Cascata
+                        </h4>
                     </div>
-                  </form>
+
+                    <div class="deletion-body p-4">
+                        <div class="deletion-summary mb-4 p-3 bg-light rounded">
+                            <h5 class="text-danger">
+                                <i class="fas fa-trash-alt mr-2"></i>
+                                Você está prestes a excluir: <strong>{{ objeto_principal }}</strong>
+                            </h5>
+
+                            <div class="impact-stats mt-3 d-flex flex-wrap">
+                                {% for model, count in resumo.items %}
+                                <div class="stat-item bg-white rounded p-2 m-1 shadow-sm">
+                                    <span class="stat-count badge badge-danger">{{ count }}</span>
+                                    <span class="stat-label">{{ model }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="deletion-tree">
+                            <h5 class="mb-3">
+                                <i class="fas fa-project-diagram mr-2"></i>
+                                Itens que serão afetados:
+                            </h5>
+
+                            <div class="tree-container">
+                                {% for item in objetos_em_cascata %}
+                                    {% if "- " in item|slice:":2" %}
+                                        <div class="tree-node level-1">
+                                            <div class="node-header" onclick="toggleNode(this)">
+                                                <i class="fas fa-chevron-right mr-2"></i>
+                                                <span class="node-title">{{ item|slice:"2:" }}</span>
+                                            </div>
+                                    {% elif "  - " in item|slice:":4" %}
+                                        <div class="tree-node level-2">
+                                            <div class="node-header" onclick="toggleNode(this)">
+                                                <i class="fas fa-chevron-right mr-2"></i>
+                                                <span class="node-title">{{ item|slice:"4:" }}</span>
+                                            </div>
+                                    {% elif "    - " in item|slice:":6" %}
+                                        <div class="tree-node level-3">
+                                            <div class="node-header" onclick="toggleNode(this)">
+                                                <i class="fas fa-circle mr-2"></i>
+                                                <span class="node-title">{{ item|slice:"6:" }}</span>
+                                            </div>
+                                    {% else %}
+                                        <div class="tree-node level-4">
+                                            <div class="node-header">
+                                                <i class="fas fa-minus mr-2"></i>
+                                                <span class="node-title">{{ item }}</span>
+                                            </div>
+                                    {% endif %}
+                                        </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="deletion-footer bg-light p-3 rounded-bottom border-top">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="text-muted">
+                                <small>Total de itens afetados: {{ total_items }}</small>
+                            </div>
+                            <div>
+                                <a href="{{ url_delete }}">
+                                    <button type="button" class="btn btn-danger">
+                                        <i class="fas fa-check mr-1"></i> Confirmar Exclusão
+                                    </button>
+                                </a>
+                                <a href="{{ redirect_close_button }}">
+                                    <button type="button" class="btn btn-default">
+                                        <i class="fas fa-times mr-1"></i> Cancelar
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
               {% else %}
                 {% include 'partials/_access_rejected.html' %}

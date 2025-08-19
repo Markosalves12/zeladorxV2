@@ -1,5 +1,6 @@
 from django.urls import path
-from vegetacao.views import vegetacao, editar_vegetacao, alterar_status_vegetacao, areas_associadas_vegetacao
+from vegetacao.views import (vegetacao, editar_vegetacao, alterar_status_vegetacao, areas_associadas_vegetacao,
+                             IfDeleteCatalogoVegetacao, DeleteCatalogoVegetacao)
 
 urlpatterns = [
     path('vegetacao/<str:userid>', vegetacao, name='vegetacao'),
@@ -14,4 +15,14 @@ urlpatterns = [
         areas_associadas_vegetacao,
         name='areas_associadas_vegetacao'
     ),
+    path(
+        'delete-vegetacao/<str:userid>/<str:id_random>/',
+        IfDeleteCatalogoVegetacao,
+        name='IfDeleteCatalogoVegetacao'
+    ),
+    path(
+        'DeleteUnidade/<str:id_random>/',
+        DeleteCatalogoVegetacao,
+        name="DeleteCatalogoVegetacao"
+    )
 ]

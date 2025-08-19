@@ -1,7 +1,8 @@
 from django.urls import path
 from gerente.views_limpeza_predial import (gerentes_limpeza_predial, editar_gerente_limpeza_predial,
                                            alterar_status_gerente_limpeza_predial,
-                                           historico_de_servicos_gerente_limpeza_predial)
+                                           historico_de_servicos_gerente_limpeza_predial,
+                                           IfDeleteGerenteLimpezaPredial, DeleteGerenteLimpezaPredial)
 
 
 urlpatterns = [
@@ -22,4 +23,8 @@ urlpatterns = [
         historico_de_servicos_gerente_limpeza_predial,
         name='historico_de_servicos_gerente_limpeza_predial'
     ),
+    path('delete-gerente-limpeza-predial/<str:userid>/<str:id_random>/', IfDeleteGerenteLimpezaPredial,
+         name='IfDeleteGerenteLimpezaPredial'),
+    path('DeleteGerenteLimpezaPredial/<str:id_random>/', DeleteGerenteLimpezaPredial,
+         name="DeleteGerenteLimpezaPredial")
 ]

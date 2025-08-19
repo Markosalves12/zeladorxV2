@@ -1,6 +1,6 @@
 from catalogo_de_servicos.models_limpeza_predial import CatalogodeServicoLimpezaPredial
 from catalogo_de_servicos.forms_limpeza_predial import CatalogoServicoLimpezaPredialForms
-from utils.views import generic_view, edit_generic_view, gerneric_alter_status
+from utils.views import generic_view, edit_generic_view, gerneric_alter_status, GenericIfDeleteView, GenericDeleteView
 from django.shortcuts import reverse, redirect
 from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
@@ -141,8 +141,17 @@ def editar_catalogo_de_servicos_limpeza_predial(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
-        userid=userid
+        userid=userid,
+        url_if_delete=reverse(
+            'IfDeleteServicoCatalogoLimpezaPredial',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+            }
+        ),
     )
+
+
 
 def alterar_status_catalogo_de_servicos_limpeza_predial(request, userid, id_random, new_status):
     objeto = CatalogodeServicoLimpezaPredial.objects.get(id_random=id_random)
@@ -154,4 +163,53 @@ def alterar_status_catalogo_de_servicos_limpeza_predial(request, userid, id_rand
         new_status=new_status,
         userid=userid,
         message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
+    )
+
+
+
+def IfDeleteServicoCatalogoLimpezaPredial(request, userid, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas["empresas_primarias_ids"]
+    empresas_secundarias_ids = empresas["empresas_secundarias_ids"]
+
+    return GenericIfDeleteView(
+        request,
+        model=CatalogodeServicoLimpezaPredial,
+        id_random=id_random,
+        permission_type='limpeza_predial',
+        permission_to_access=['263: Pode excluir serviços do catálogo'],
+        access_filters={
+            "EmpresaSecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "EmpresaSecundaria__id_random__in": empresas_secundarias_ids
+        },
+        template_name="DataTableAndForms/IfDelete.html",
+        app_name="Deletar serviços do catálogo",
+        url_delete=reverse(
+            'DeleteServicoCatalogoLimpezaPredial',
+            kwargs={
+                'id_random': id_random,
+            }
+        ),
+        redirect_close_button=reverse('catalogo_de_servicos_limpeza_predial', kwargs={'userid': request.user.id_random})
+    )
+
+
+
+
+def DeleteServicoCatalogoLimpezaPredial(request, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas["empresas_primarias_ids"]
+    empresas_secundarias_ids = empresas["empresas_secundarias_ids"]
+
+    return GenericDeleteView(
+        request,
+        model=CatalogodeServicoLimpezaPredial,
+        id_random=id_random,
+        permission_type='limpeza_predial',
+        permission_to_access=['263: Pode excluir serviços do catálogo'],
+        access_filters={
+            "EmpresaSecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "EmpresaSecundaria__id_random__in": empresas_secundarias_ids
+        },
+        redirect_close_button=reverse('catalogo_de_servicos_limpeza_predial', kwargs={'userid': request.user.id_random}),
     )

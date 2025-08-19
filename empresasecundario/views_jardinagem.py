@@ -1,7 +1,7 @@
 from django.shortcuts import reverse, redirect
 from empresasecundario.models import EmpresaSecundaria
 from empresasecundario.forms import EmpresaSecundariaForms
-from utils.views import generic_view, edit_generic_view, gerneric_alter_status
+from utils.views import generic_view, edit_generic_view, gerneric_alter_status, GenericIfDeleteView, GenericDeleteView
 from empresasecundario.utils import define_empresas
 from permissionscontrol.utils import validate_permissions
 
@@ -140,7 +140,14 @@ def editar_empresa_jardinagem(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
-        userid=userid
+        userid=userid,
+        url_if_delete=reverse(
+            'IfDeleteEmpresaSecundariaJardinagem',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+            }
+        ),
     )
 
 
@@ -154,4 +161,50 @@ def alterar_status_empresa_jardinagem(request, userid, id_random, new_status):
         new_status=new_status,
         userid=userid,
         message=f'{objeto.nome} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.nome} desmobilizado com sucesso'
+    )
+
+
+
+def IfDeleteEmpresaSecundariaJardinagem(request, userid, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas["empresas_primarias_ids"]
+
+    return GenericIfDeleteView(
+        request,
+        model=EmpresaSecundaria,
+        id_random=id_random,
+        permission_type='especials',
+        permission_to_access=['273: Pode excluir empresas'],
+        access_filters={
+            "empresaprimaria__id_random__in": empresas_primarias_ids,
+            "setor__setor__in": ['Jardinagem']
+        },
+        template_name="DataTableAndForms/IfDelete.html",
+        app_name="Deletar empresas",
+        url_delete=reverse(
+            'DeleteEmpresaSecundariaJardinagem',
+            kwargs={
+                'id_random': id_random,
+            }
+        ),
+        redirect_close_button=reverse('empresas_jardinagem', kwargs={'userid': request.user.id_random})
+    )
+
+
+
+def DeleteEmpresaSecundariaJardinagem(request, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas["empresas_primarias_ids"]
+
+    return GenericDeleteView(
+        request,
+        model=EmpresaSecundaria,
+        id_random=id_random,
+        permission_type='especials',
+        permission_to_access=['273: Pode excluir empresas'],
+        access_filters={
+            "empresaprimaria__id_random__in": empresas_primarias_ids,
+            "setor__setor__in": ['Jardinagem']
+        },
+        redirect_close_button=reverse('empresas_jardinagem', kwargs={'userid': request.user.id_random}),
     )

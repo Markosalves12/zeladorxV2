@@ -2,7 +2,9 @@ from django.urls import path
 from servicos.views_jardinagem import (agendar_servico_jardinagem, editar_servico_jardinagem_agendado,
                                        servicos_agendados_jardinagem,
                                        realizar_servico_jardinagem_agendado, cancelar_servico_jardinagem,
-                                       concluir_servico_jardinagem, view_detailing_jardinagem)
+                                       concluir_servico_jardinagem, view_detailing_jardinagem,
+                                       IfDeleteServicoAgendadoJardinagem,
+                                       DeleteServicoAgendadoJardinagem)
 
 urlpatterns = [
     path(
@@ -41,4 +43,16 @@ urlpatterns = [
         view_detailing_jardinagem,
         name='view_detailing_jardinagem'
     ),
+
+    path(
+        'delete-servico-jardinagem-agendado/<str:userid>/<str:id_random>/',
+        IfDeleteServicoAgendadoJardinagem,
+        name='IfDeleteServicoAgendadoJardinagem'
+    ),
+    path(
+        'DeleteServicoAgendadoJardinagem/<str:id_random>/',
+        DeleteServicoAgendadoJardinagem,
+        name="DeleteServicoAgendadoJardinagem"
+    )
+
 ]

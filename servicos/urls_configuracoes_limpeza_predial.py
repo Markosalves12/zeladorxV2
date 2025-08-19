@@ -3,7 +3,9 @@ from servicos.views_configuracoes_limpeza_predial import (configurar_servico_lim
                                                           servicos_configurados_limpeza_predial,
                                                           editar_servico_limpezapredial_configurado,
                                                           alterar_status_servico_limpezapredial_configurado,
-                                                          historico_de_servicos_configurados_limpeza_predial)
+                                                          historico_de_servicos_configurados_limpeza_predial,
+                                                          IfDeleteServicoLimpezaPredialConfigurado,
+                                                          DeleteServicoLimpezaPredialConfigurado)
 
 urlpatterns = [
     path(
@@ -30,4 +32,14 @@ urlpatterns = [
         historico_de_servicos_configurados_limpeza_predial,
         name='historico_de_servicos_configurados_limpeza_predial'
     ),
+    path(
+        'delete-servico-limpeza-predial-configurado/<str:userid>/<str:id_random>/',
+        IfDeleteServicoLimpezaPredialConfigurado,
+        name='IfDeleteServicoLimpezaPredialConfigurado'
+    ),
+    path(
+        'DeleteServicoLimpezaPredialConfigurado/<str:id_random>/',
+        DeleteServicoLimpezaPredialConfigurado,
+        name="DeleteServicoLimpezaPredialConfigurado"
+    )
 ]

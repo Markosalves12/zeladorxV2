@@ -1,5 +1,5 @@
 from django.shortcuts import reverse, redirect
-from utils.views import generic_view, edit_generic_view, generic_view_detailing_checklist
+from utils.views import generic_view, edit_generic_view, generic_view_detailing_checklist, GenericIfDeleteView, GenericDeleteView
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from checklists.models import CheckListLimpezaPredial
@@ -137,7 +137,14 @@ def editar_checklist_limpeza_predial(request, userid, id_random):
             }
         ),
         userid=userid,
-        id_random_especial=id_random_servio
+        id_random_especial=id_random_servio,
+        url_if_delete=reverse(
+            'IfDeleteCheckListLimpezaPredial',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+            }
+        ),
     )
 
 
@@ -162,4 +169,57 @@ def view_detailing_checklists_limpeza_predial(request, userid, id_random):
         id_random=id_random,
         model_class=model,
         app_name=f'Checklists: {objeto}'
+    )
+
+
+
+def IfDeleteCheckListLimpezaPredial(request, userid, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas["empresas_primarias_ids"]
+    empresas_secundarias_ids = empresas["empresas_secundarias_ids"]
+
+    id_random_servico = CheckListLimpezaPredial.objects.get(id_random=id_random).servico_agendado.id_random
+
+    return GenericIfDeleteView(
+        request,
+        model=CheckListLimpezaPredial,
+        id_random=id_random,
+        permission_type='limpeza_predial',
+        permission_to_access=['403: Pode excluir checklists'],
+        access_filters={
+            "servico_agendado__Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "servico_agendado__Areas__localidade__unidade__empresasecundaria__id_random__in": empresas_secundarias_ids,
+        },
+        template_name="DataTableAndForms/IfDelete.html",
+        app_name="Deletar checklist",
+        url_delete=reverse(
+            'DeleteCheckLimpezaPredial',
+            kwargs={
+                'id_random': id_random,
+            }
+        ),
+        redirect_close_button=reverse('checklists_limpeza_predial', kwargs={'userid': request.user.id_random, 'id_random': id_random_servico})
+    )
+
+
+
+
+def DeleteCheckLimpezaPredial(request, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas["empresas_primarias_ids"]
+    empresas_secundarias_ids = empresas["empresas_secundarias_ids"]
+
+    id_random_servico = CheckListLimpezaPredial.objects.get(id_random=id_random).servico_agendado.id_random
+
+    return GenericDeleteView(
+        request,
+        model=CheckListLimpezaPredial,
+        id_random=id_random,
+        permission_type='limpeza_predial',
+        permission_to_access=['403: Pode excluir checklists'],
+        access_filters={
+            "servico_agendado__Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "servico_agendado__Areas__localidade__unidade__empresasecundaria__id_random__in": empresas_secundarias_ids,
+        },
+        redirect_close_button=reverse('checklists_limpeza_predial', kwargs={'userid': request.user.id_random, 'id_random': id_random_servico}),
     )

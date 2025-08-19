@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms, FatoServicoJardinagemForms
-from utils.views import generic_view, edit_generic_view
+from utils.views import generic_view, edit_generic_view, GenericIfDeleteView, GenericDeleteView
 from permissionscontrol.utils import validate_permissions, verify_login
 from empresasecundario.utils import define_empresas
 from django.contrib import messages
@@ -210,6 +210,13 @@ def editar_servico_jardinagem_agendado(request, userid, id_random):
         permission_to_access=['321: Pode editar serviços agendados']
     )
 
+    permission_exclude = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['323: Pode excluir serviços agendados']
+    )
+
     return edit_generic_view(
         request=request,
         model_class=ServicoJardinagemAgendado,
@@ -220,6 +227,7 @@ def editar_servico_jardinagem_agendado(request, userid, id_random):
         redirect_url_name=reverse('editar_servico_jardinagem_agendado', kwargs={'userid': userid, 'id_random': id_random}),
         redirect_close_button=reverse('servicos_agendados_jardinagem', kwargs={'userid': userid}),
         permission_edit=permission_edit,
+        permission_exclude=permission_exclude,
         url_rehabilitate=reverse(
             'cancelar_servico_jardinagem',
             kwargs={
@@ -237,6 +245,13 @@ def editar_servico_jardinagem_agendado(request, userid, id_random):
             }
         ),
         userid=userid,
+        url_if_delete=reverse(
+            'IfDeleteServicoAgendadoJardinagem',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+            }
+        ),
     )
 
 
@@ -420,4 +435,51 @@ def view_detailing_jardinagem(request, userid, id_random):
         permission_view=permission_view,
         permission_edit=permission_edit,
         userid=userid
+    )
+
+
+def IfDeleteServicoAgendadoJardinagem(request, userid, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+    return GenericIfDeleteView(
+        request,
+        model=ServicoJardinagemAgendado,
+        id_random=id_random,
+        permission_type='jardinagem',
+        permission_to_access=['323: Pode excluir serviços agendados'],
+        access_filters={
+            "Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "Areas__localidade__unidade__empresasecundaria__id_random__in": empresas_secundarias_ids,
+        },
+        template_name="DataTableAndForms/IfDelete.html",
+        app_name="Deletar serviço",
+        url_delete=reverse(
+            'DeleteServicoAgendadoJardinagem',
+            kwargs={
+                'id_random': id_random,
+            }
+        ),
+        redirect_close_button=reverse('servicos_agendados_jardinagem', kwargs={'userid': request.user.id_random})
+    )
+
+
+
+def DeleteServicoAgendadoJardinagem(request, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+    return GenericDeleteView(
+        request,
+        model=ServicoJardinagemAgendado,
+        id_random=id_random,
+        permission_type='jardinagem',
+        permission_to_access=['323: Pode excluir serviços agendados'],
+        access_filters={
+            "Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "Areas__localidade__unidade__empresasecundaria__id_random__in": empresas_secundarias_ids,
+        },
+        redirect_close_button=reverse('servicos_agendados_jardinagem', kwargs={'userid': request.user.id_random}),
     )

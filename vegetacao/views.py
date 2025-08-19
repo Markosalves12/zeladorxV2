@@ -1,13 +1,11 @@
 from django.shortcuts import reverse
 from vegetacao.models import CatalogoVegetacao
 from vegetacao.forms import CatalogoVegetacaoForm
-from utils.views import generic_view, edit_generic_view, gerneric_alter_status
+from utils.views import generic_view, edit_generic_view, gerneric_alter_status, GenericIfDeleteView, GenericDeleteView
 from permissionscontrol.utils import validate_permissions
 from empresasecundario.utils import define_empresas
 from areas.models_jardinagem import AreasJardins
 from areas.forms_jardinagem import AreasJardinsForms
-from django.shortcuts import redirect
-from django.contrib import messages
 
 
 # Create your views here.
@@ -133,7 +131,14 @@ def editar_vegetacao(request, userid, id_random):
                 'new_status': 'Mobilizado',
             }
         ),
-        userid=userid
+        userid=userid,
+        url_if_delete=reverse(
+            'IfDeleteCatalogoVegetacao',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+            }
+        ),
     )
 
 
@@ -220,4 +225,53 @@ def areas_associadas_vegetacao(request, userid, id_random):
         permission_edit=permission_edit,
         permission_crate=permission_crate,
         userid=userid,
+    )
+
+
+
+
+def IfDeleteCatalogoVegetacao(request, userid, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+    return GenericIfDeleteView(
+        request,
+        model=CatalogoVegetacao,
+        id_random=id_random,
+        permission_type='jardinagem',
+        permission_to_access=['353: Pode excluir vegetações'],
+        access_filters={
+            "EmpresaSecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "EmpresaSecundaria__id_random__in": empresas_secundarias_ids
+        },
+        template_name="DataTableAndForms/IfDelete.html",
+        app_name="Deletar vegetação",
+        url_delete=reverse(
+            'DeleteCatalogoVegetacao',
+            kwargs={
+                'id_random': id_random,
+            }
+        ),
+        redirect_close_button=reverse('vegetacao', kwargs={'userid': request.user.id_random})
+    )
+
+
+
+def DeleteCatalogoVegetacao(request, id_random):
+    empresas = define_empresas(request=request, userid=request.user.id_random)
+    empresas_primarias_ids = empresas['empresas_primarias_ids']
+    empresas_secundarias_ids = empresas['empresas_secundarias_ids']
+
+    return GenericDeleteView(
+        request,
+        model=CatalogoVegetacao,
+        id_random=id_random,
+        permission_type='jardinagem',
+        permission_to_access=['353: Pode excluir vegetações'],
+        access_filters={
+            "EmpresaSecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
+            "EmpresaSecundaria__id_random__in": empresas_secundarias_ids
+        },
+        redirect_close_button=reverse('vegetacao', kwargs={'userid': request.user.id_random}),
     )

@@ -3,7 +3,9 @@ from servicos.views_limpeza_predial import (agendar_servico_limpeza_predial, ser
                                             editar_servico_limpeza_predial_agendado,
                                             realizar_servico_limpeza_predial_agendado,
                                             cancelar_servico_limpeza_predial, concluir_servico_limpeza_predial,
-                                            view_detailing_limpeza_predial)
+                                            view_detailing_limpeza_predial,
+                                            IfDeleteServicoAgendadoLimpezaPredial,
+                                            DeleteServicoAgendadoLimpezaPredial)
 
 urlpatterns = [
     path(
@@ -41,4 +43,15 @@ urlpatterns = [
         view_detailing_limpeza_predial,
         name='view_detailing_limpeza_predial'
     ),
+
+    path(
+        'delete-servico-limpeza-predial-agendado/<str:userid>/<str:id_random>/',
+        IfDeleteServicoAgendadoLimpezaPredial,
+        name='IfDeleteServicoAgendadoLimpezaPredial'
+    ),
+    path(
+        'DeleteServicoAgendadoLimpezaPredial/<str:id_random>/',
+        DeleteServicoAgendadoLimpezaPredial,
+        name="DeleteServicoAgendadoLimpezaPredial"
+    )
 ]

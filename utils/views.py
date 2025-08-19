@@ -9,8 +9,11 @@ from empresaprimaria.models import EmpresaPrimaria
 from unidade.forms import UnidadeForms
 from unidade.models import Unidade
 from empresasecundario.utils import define_empresas
-
+from permissionscontrol.utils import validate_permissions
 from utils.utils import paginate
+from django.db import router
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.admin.utils import NestedObjects
 
 
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
@@ -161,7 +164,8 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
 def edit_generic_view(request, model_class, form_class, template_name, id_random, app_name, redirect_url_name,
                       url_desmobilize, url_rehabilitate, userid,
                       redirect_close_button, link_tipos=None, permission_edit=False, permission_exclude=False,
-                      permission_desmobilize=False, permission_rehabilitate=False, id_random_especial=False
+                      permission_desmobilize=False, permission_rehabilitate=False, id_random_especial=False,
+                      url_if_delete=False,
                       ):
     if not request.user.is_authenticated:
         return redirect('logout')
@@ -238,6 +242,7 @@ def edit_generic_view(request, model_class, form_class, template_name, id_random
             'permission_rehabilitate': permission_rehabilitate,
             'url_desmobilize': url_desmobilize,
             'url_rehabilitate': url_rehabilitate,
+            'url_if_delete': url_if_delete,
             'objeto': objeto
         }
     )
@@ -455,3 +460,109 @@ def generic_view_maps(request, model, form_class, template_name, app_name,
             **fig_mapa_localidades,
         }
     )
+
+
+def flatten_nested(obj_list, depth=0):
+    """
+    Converte estrutura aninhada do Django Admin (nested()) em lista formatada.
+    """
+    flat = []
+    for item in obj_list:
+        if isinstance(item, list):
+            flat.extend(flatten_nested(item, depth + 1))
+        else:
+            flat.append(f"{'  ' * depth}- {str(item)}")
+    return flat
+
+
+
+def GenericIfDeleteView(
+    request,
+    *,
+    model,
+    id_random: str,
+    permission_type: str,
+    permission_to_access: list,
+    access_filters: dict,
+    template_name: str,
+    app_name: str,
+    url_delete: str,
+    redirect_close_button: str,
+):
+    user_id_random = request.user.id_random
+
+    # Validação de permissão
+    permission_exclude = validate_permissions(
+        request=request,
+        userid=user_id_random,
+        permission_type=permission_type,
+        permission_to_access=permission_to_access
+    )
+
+    # Busca com filtros de acesso (ex: organização, empresa)
+    instance = model.objects.get(id_random=id_random, **access_filters)
+
+    # Coleta de objetos relacionados que seriam deletados
+    collector = NestedObjects(using=router.db_for_write(model))
+    collector.collect([instance])
+    nested_tree = collector.nested()
+    deletions_list = flatten_nested(nested_tree)
+
+    return render(
+        request=request,
+        template_name=template_name,
+        context={
+            "app_name": app_name,
+            'permission_exclude': permission_exclude,
+            "objeto_principal": str(instance),
+            "resumo": {
+                    model.__name__: len(objs)
+                    for model, objs in collector.model_objs.items()
+            },
+            "objetos_em_cascata": deletions_list,
+            "total_items":sum({
+                    model.__name__: len(objs)
+                    for model, objs in collector.model_objs.items()
+            }.values()),
+            "url_delete": url_delete,
+            "redirect_close_button": redirect_close_button
+        }
+    )
+
+
+
+
+def GenericDeleteView(
+    request,
+    *,
+    model,
+    id_random: str,
+    permission_type: str,
+    permission_to_access: list,
+    access_filters: dict,
+    redirect_close_button,
+):
+    user_id_random = request.user.id_random
+
+    # 1. Validação de permissão
+    has_permission = validate_permissions(
+        request=request,
+        userid=user_id_random,
+        permission_type=permission_type,
+        permission_to_access=permission_to_access
+    )
+
+    if not has_permission:
+        return redirect(redirect_close_button)
+
+    # 2. Busca com filtros de acesso (escopo de empresas, etc.)
+    try:
+        instance = model.objects.get(id_random=id_random, **access_filters)
+    except model.DoesNotExist:
+        return redirect()
+
+    # 3. Deletar objeto (em cascata, conforme relações)
+    instance_repr = str(instance)
+    instance.delete()
+
+    return redirect(redirect_close_button)
