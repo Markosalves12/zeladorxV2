@@ -356,12 +356,69 @@
                 <p>Gerais</p>
               </a>
             </li>
-<!--            <li class="nav-item">-->
-<!--              <a href="{% url 'configurar_notificacoes_limpeza_predial' userid %}" class="nav-link active">-->
-<!--                <i class="far fa-circle nav-icon"></i>-->
-<!--                <p>Limpeza predial</p>-->
-<!--              </a>-->
-<!--            </li>-->
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-edit"></i>
+          <p>
+            Solicitações
+            {% if n_solicitacoes_jardinagem|add:n_solicitacoes_limpeza_predial > 0 %}
+              <span class="badge badge-danger right">
+                {{ n_solicitacoes_jardinagem|add:n_solicitacoes_limpeza_predial }}
+              </span>
+            {% endif %}
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+          <li class="nav-item">
+            <a href="{% url 'solicitacoes_jardinagem' userid %}" class="nav-link active d-flex justify-content-between align-items-center">
+              <div>
+                <i class="far fa-circle nav-icon"></i>
+                <p class="d-inline">Jardinagem</p>
+              </div>
+              {% if n_solicitacoes_jardinagem > 0 %}
+                <span class="badge badge-danger ml-2">{{ n_solicitacoes_jardinagem }}</span>
+              {% endif %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'solicitacoes_limpeza_predial' userid %}" class="nav-link active d-flex justify-content-between align-items-center">
+              <div>
+                <i class="far fa-circle nav-icon"></i>
+                <p class="d-inline">Limpeza Predial</p>
+              </div>
+              {% if n_solicitacoes_limpeza_predial > 0 %}
+                <span class="badge badge-danger ml-2">{{ n_solicitacoes_limpeza_predial }}</span>
+              {% endif %}
+            </a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="nav-item">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-edit"></i>
+          <p>
+            QR Codes
+            <i class="right fas fa-angle-left"></i>
+          </p>
+        </a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{% url 'qr_codes_jardinagem' userid %}" class="nav-link active">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Jardinagem</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'qr_codes_limpeza_predial' userid %}" class="nav-link active">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Limpeza predial</p>
+              </a>
+            </li>
         </ul>
       </li>
 
@@ -415,39 +472,6 @@
           </li>
         </ul>
       </li>
-
-<!--      <li class="nav-header">Calendários</li>-->
-<!--      <li class="nav-item">-->
-<!--        <a href="{% url 'calendario_jardinagem' userid %}" class="nav-link active">-->
-<!--          <i class="nav-icon far fa-calendar-alt"></i>-->
-<!--          <p>-->
-<!--            Calendário-->
-<!--            <span class="badge badge-info right"></span>-->
-<!--          </p>-->
-<!--        </a>-->
-<!--      </li>-->
-<!--      <li class="nav-header">Kanbans</li>-->
-<!--      <li class="nav-item">-->
-<!--        <a href="{% url 'kanban_jardinagem' userid %}" class="nav-link active">-->
-<!--          <i class="nav-icon fas fa-columns"></i>-->
-<!--          <p>-->
-<!--            Kanban Board-->
-<!--            <span class="badge badge-info right"></span>-->
-<!--          </p>-->
-<!--        </a>-->
-<!--      </li>-->
-<!--      <li class="nav-header">Gantts</li>-->
-<!--      <li class="nav-item">-->
-<!--        <a href="{% url 'gantt_jardinagem' userid %}" class="nav-link active">-->
-<!--          <i class="nav-icon fas fa-columns"></i>-->
-<!--          <p>-->
-<!--            Gantt Graphs-->
-<!--            <span class="badge badge-info right"></span>-->
-<!--          </p>-->
-<!--        </a>-->
-<!--      </li>-->
-
-
       <li class="nav-header">Dashboards</li>
       <li class="nav-item">
         <a href="#" class="nav-link active">

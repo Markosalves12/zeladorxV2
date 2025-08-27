@@ -160,9 +160,15 @@
                                                         {{ dado|get_item:coluna.nome }}
                                                     </span>
                                                 </td>
-                                            {% elif dado|get_item:coluna.nome == "Concluído" %}
+                                            {% elif dado|get_item:coluna.nome == "Concluído" or dado|get_item:coluna.nome == "Aprovado" %}
                                                 <td>
                                                     <span class="badge bg-success">
+                                                        {{ dado|get_item:coluna.nome }}
+                                                    </span>
+                                                </td>
+                                            {% elif dado|get_item:coluna.nome == "Rejeitado" %}
+                                                <td>
+                                                    <span class="badge bg-danger">
                                                         {{ dado|get_item:coluna.nome }}
                                                     </span>
                                                 </td>
