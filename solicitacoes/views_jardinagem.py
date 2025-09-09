@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.urls import reverse
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
 
+
 # Create your views here.
 def solicitacoes_jardinagem(request, userid):
     empresas = define_empresas(request=request, userid=userid)
@@ -33,14 +34,14 @@ def solicitacoes_jardinagem(request, userid):
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['252: Pode visualizar áreas de jardinagem']
+        permission_to_access=['432: Pode visualizar solicitacoes']
     )
 
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['251: Pode editar áreas de jardinagem']
+        permission_to_access=['431: Pode editar solicitacoes']
     )
 
     colunas = [
@@ -90,14 +91,28 @@ def editar_solicitacao_jardinagem(request, userid, id_random):
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['321: Pode editar serviços agendados']
+        permission_to_access=['431: Pode editar solicitacoes']
     )
 
     permission_exclude = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['323: Pode excluir serviços agendados']
+        permission_to_access=['433: Pode excluir solicitacoes']
+    )
+
+    permission_desmobilize = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['434: Pode Rejeitar/aceitar solicitacoes']
+    )
+
+    permission_rehabilitate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='jardinagem',
+        permission_to_access=['434: Pode Rejeitar/aceitar solicitacoes']
     )
 
     area = SolicitacoesJardinagem.objects.get(id_random=id_random).Areas.id_random
@@ -113,8 +128,8 @@ def editar_solicitacao_jardinagem(request, userid, id_random):
         redirect_close_button=reverse('servicos_agendados_jardinagem', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
-        permission_desmobilize=True,
-        permission_rehabilitate=True,
+        permission_desmobilize=permission_desmobilize,
+        permission_rehabilitate=permission_rehabilitate,
         url_rehabilitate=reverse(
             'accept_solicitacao_jardinagem',
             kwargs={
@@ -150,6 +165,8 @@ def solicitar_servico_jardinagem(request, id_randomqr, id_randomarea):
     # Recupera o QR Code pelo id_random
     try:
         qr_code = QRCodeAreaJardinagem.objects.get(id_random=id_randomqr)
+        if qr_code.status == "Desmobilizado":
+            raise QRCodeAreaJardinagem.DoesNotExist
 
     except QRCodeAreaJardinagem.DoesNotExist:
         # Caso não exista, renderiza a página customizada
@@ -330,10 +347,6 @@ def confirm_solicitacao_jardinagem(request, type, userid, id_random):
 
     if type == 'calendario':
         redirect_close_button = reverse('calendario_jardinagem', kwargs={'userid': userid})
-    # elif type == 'kanban':
-    #     redirect_close_button = reverse('kanban_jardinagem', kwargs={'userid': userid})
-    # elif type == 'mapas':
-    #     redirect_close_button = reverse('mapas_jardinagem', kwargs={'userid': userid})
 
     return render(
         request=request,

@@ -32,7 +32,7 @@ from relatorios.jardinagem.relatorio_de_servicos_na_area_jardinagem_xlsx_with_ch
 
 urlpatterns = [
     path(
-        'relatorios-de-servicos-jardinagem-xlsx-concluidos/<str:userid>',
+        'relatorios-de-servicos-jardinagem-xlsx-concluidos/<str:userid>/',
         relatorios_de_servicos_jardinagem_xlsx_concluidos,
         name='relatorios_de_servicos_jardinagem_xlsx_concluidos'
     ),

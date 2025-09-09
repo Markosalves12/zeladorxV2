@@ -57,6 +57,24 @@
                                 <div class="card-body">
                                   <h6 class="card-title">Área: {{ dado.Areas }}</h6>
                                   <p class="card-text text-muted">Código QR: {{ dado.codigo }}</p>
+                                  {% if dado.status == "Mobilizado" %}
+                                    <p class="card-text text-muted"> status:
+                                      <span class="badge bg-success">
+                                        {{ dado.status }}
+                                      </span>
+                                    </p>
+                                  {% elif dado.status == "Desmobilizado" %}
+                                    <p class="card-text text-muted"> status:
+                                      <span class="badge bg-warning">
+                                        {{ dado.status }}
+                                      </span>
+                                    </p>
+                                  {% endif %}
+                                  {% if permission_edit %}
+                                    <a href="{{ dado.editar_url }}">
+                                        <button type="button" class="btn btn-block btn-info btn-sm">Ações</button>
+                                    </a>
+                                  {% endif %}
                                 </div>
                               </div>
                             </div>

@@ -36,6 +36,20 @@ class QRCodeAreaJardinagem(models.Model):
         blank=True
     )
 
+
+    status_options = [
+        ('Mobilizado', 'Mobilizado'),
+        ('Desmobilizado', 'Desmobilizado'),
+    ]
+
+    status = models.CharField(
+        max_length=60,
+        blank=False,
+        null=False,
+        choices=status_options,
+        default='Mobilizado'
+    )
+
     def save(self, *args, **kwargs):
         if not self.imagem_qr:
             # 1. Criar QR Code com gradiente vertical verde
@@ -46,7 +60,7 @@ class QRCodeAreaJardinagem(models.Model):
                 border=4,
             )
             qr.add_data(
-                f"https://zeladorx-971186eceb54.herokuapp.com/solicitacoes-jardinagem/{self.id_random}/{self.Areas.id_random}/"
+                f"https://zeladorx-971186eceb54.herokuapp.com/solicitar-servico-jardinagem/{self.id_random}/{self.Areas.id_random}/"
             )
             qr.make(fit=True)
 
@@ -222,6 +236,19 @@ class QRCodeAreaLimpezaPredial(models.Model):
         blank=True
     )
 
+    status_options = [
+        ('Mobilizado', 'Mobilizado'),
+        ('Desmobilizado', 'Desmobilizado'),
+    ]
+
+    status = models.CharField(
+        max_length=60,
+        blank=False,
+        null=False,
+        choices=status_options,
+        default='Mobilizado'
+    )
+
     def save(self, *args, **kwargs):
         if not self.imagem_qr:
             # 1. Criar QR Code com gradiente vertical azul
@@ -232,7 +259,7 @@ class QRCodeAreaLimpezaPredial(models.Model):
                 border=4,
             )
             qr.add_data(
-                f"https://zeladorx-971186eceb54.herokuapp.com/solicitacoes-limpeza-predial/{self.id_random}/{self.Areas.id_random}/"
+                f"https://zeladorx-971186eceb54.herokuapp.com/solicitar-servico-limpeza-predial/{self.id_random}/{self.Areas.id_random}/"
             )
             qr.make(fit=True)
 

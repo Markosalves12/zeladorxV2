@@ -1,6 +1,7 @@
 from django.urls import path
 from solicitacoes.views_qr_codes_limpeza_predial import (qr_codes_limpeza_predial, IfDeleteQRCodeLimpezaPredial,
-                                                         DeleteQRCodeLimpezaPredial)
+                                                         DeleteQRCodeLimpezaPredial, editar_qr_codes_limpeza_predial,
+                                                         alterar_status_qr_codes_limpeza_predial)
 from solicitacoes.views_limpeza_predial import (solicitacoes_limpeza_predial, solicitar_servico_limpeza_predial,
                                                 editar_solicitacao_limpeza_predial, reject_solicitacao_limpeza_predial,
                                                 accept_solicitacao_limpeza_predial, confirm_solicitacao_limpeza_predial)
@@ -14,7 +15,7 @@ urlpatterns = [
         name='solicitacoes_limpeza_predial'
     ),
     path(
-        'qr-codes-limpeza-predial/<str:userid>/',
+        'QRCODE-limpeza-predial/<str:userid>/',
         qr_codes_limpeza_predial,
         name='qr_codes_limpeza_predial'
     ),
@@ -46,17 +47,22 @@ urlpatterns = [
         name='confirm_solicitacao_limpeza_predial'
     ),
     path(
-        'exportar-qr-code-limpeza-predial.png/<str:id_random>/',
+        'exportar-QRCODE-limpeza-predial.png/<str:id_random>/',
         exportar_qr_code_limpeza_predial_png,
         name='exportar_qr_code_limpeza_predial_png'
     ),
     path(
-        'exportar-qr-code-limpeza-predial.pdf/<str:id_random>/',
+        'exportar-QRCODE-limpeza-predial.pdf/<str:id_random>/',
         exportar_qr_code_limpeza_predial_pdf,
         name='exportar_qr_code_limpeza_predial_pdf'
     ),
 
     path('delete-QRCODE-limpeza-predial/<str:userid>/<str:id_random>/', IfDeleteQRCodeLimpezaPredial, name='IfDeleteQRCodeLimpezaPredial'),
     path('DeleteQRCodeLimpezaPredial/<str:id_random>/', DeleteQRCodeLimpezaPredial, name="DeleteQRCodeLimpezaPredial"),
-
+    path('editar-QRCODE-limpeza-predial/<str:userid>/<str:id_random>', editar_qr_codes_limpeza_predial,
+         name='editar_qr_codes_limpeza_predial'),
+    path('alterar-status-QRCODE-limpeza-predial/<str:userid>/<str:id_random>/<str:new_status>',
+         alterar_status_qr_codes_limpeza_predial,
+         name='alterar_status_qr_codes_limpeza_predial'
+         ),
 ]

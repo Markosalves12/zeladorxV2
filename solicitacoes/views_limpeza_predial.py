@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.urls import reverse
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
 
+
 # Create your views here.
 def solicitacoes_limpeza_predial(request, userid):
     empresas = define_empresas(request=request, userid=userid)
@@ -32,15 +33,15 @@ def solicitacoes_limpeza_predial(request, userid):
     permission_view = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
-        permission_to_access=['252: Pode visualizar áreas de jardinagem']
+        permission_type='limpeza_predial',
+        permission_to_access=['432: Pode visualizar solicitacoes']
     )
 
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
         permission_type='jardinagem',
-        permission_to_access=['251: Pode editar áreas de jardinagem']
+        permission_to_access=['431: Pode editar solicitacoes']
     )
 
     colunas = [
@@ -88,15 +89,29 @@ def editar_solicitacao_limpeza_predial(request, userid, id_random):
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
-        permission_to_access=['321: Pode editar serviços agendados']
+        permission_type='limpeza_predial',
+        permission_to_access=['431: Pode editar solicitacoes']
     )
 
     permission_exclude = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
-        permission_to_access=['323: Pode excluir serviços agendados']
+        permission_type='limpeza_predial',
+        permission_to_access=['433: Pode excluir solicitacoes']
+    )
+
+    permission_desmobilize = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['434: Pode Rejeitar/aceitar solicitacoes']
+    )
+
+    permission_rehabilitate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['434: Pode Rejeitar/aceitar solicitacoes']
     )
 
     area = SolicitacoesLimpezaPredial.objects.get(id_random=id_random).Areas.id_random
@@ -112,8 +127,8 @@ def editar_solicitacao_limpeza_predial(request, userid, id_random):
         redirect_close_button=reverse('servicos_agendados_limpeza_predial', kwargs={'userid': userid}),
         permission_edit=permission_edit,
         permission_exclude=permission_exclude,
-        permission_desmobilize=True,
-        permission_rehabilitate=True,
+        permission_desmobilize=permission_desmobilize,
+        permission_rehabilitate=permission_rehabilitate,
         url_rehabilitate=reverse(
             'accept_solicitacao_limpeza_predial',
             kwargs={
@@ -149,6 +164,8 @@ def solicitar_servico_limpeza_predial(request, id_randomqr, id_randomarea):
     # Recupera o QR Code pelo id_random
     try:
         qr_code = QRCodeAreaLimpezaPredial.objects.get(id_random=id_randomqr)
+        if qr_code.status == "Desmobilizado":
+            raise QRCodeAreaLimpezaPredial.DoesNotExist
 
     except QRCodeAreaLimpezaPredial.DoesNotExist:
         # Caso não exista, renderiza a página customizada
@@ -303,7 +320,7 @@ def confirm_solicitacao_limpeza_predial(request, type, userid, id_random):
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
+        permission_type='limpeza_predial',
         permission_to_access=['320: Pode agendar novos serviços']
     )
 
@@ -329,10 +346,6 @@ def confirm_solicitacao_limpeza_predial(request, type, userid, id_random):
 
     if type == 'calendario':
         redirect_close_button = reverse('calendario_limpeza_predial', kwargs={'userid': userid})
-    # elif type == 'kanban':
-    #     redirect_close_button = reverse('kanban_jardinagem', kwargs={'userid': userid})
-    # elif type == 'mapas':
-    #     redirect_close_button = reverse('mapas_jardinagem', kwargs={'userid': userid})
 
     return render(
         request=request,

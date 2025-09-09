@@ -2,7 +2,8 @@ from solicitacoes.models import SolicitacoesJardinagem, SolicitacoesLimpezaPredi
 from empresasecundario.utils import define_empresas
 
 def solicitacoes_jardinagem(request):
-    empresas = define_empresas(request=request, userid=request.user.id_random)
+    userid = request.session.get('userid', '')
+    empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 
@@ -18,7 +19,8 @@ def solicitacoes_jardinagem(request):
     }
 
 def solicitacoes_limpeza_predial(request):
-    empresas = define_empresas(request=request, userid=request.user.id_random)
+    userid = request.session.get('userid', '')
+    empresas = define_empresas(request=request, userid=userid)
     empresas_primarias_ids = empresas['empresas_primarias_ids']
     empresas_secundarias_ids = empresas['empresas_secundarias_ids']
 

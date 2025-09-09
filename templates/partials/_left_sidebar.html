@@ -1,4 +1,5 @@
 {% load static %}
+{% load request_filters %}
 <div class="sidebar">
   <!-- Sidebar user panel (optional) -->
   <div class="mb-3">
@@ -364,37 +365,32 @@
           <i class="nav-icon fas fa-edit"></i>
           <p>
             Solicitações
-            {% if n_solicitacoes_jardinagem|add:n_solicitacoes_limpeza_predial > 0 %}
-              <span class="badge badge-danger right">
-                {{ n_solicitacoes_jardinagem|add:n_solicitacoes_limpeza_predial }}
-              </span>
-            {% endif %}
             <i class="right fas fa-angle-left"></i>
           </p>
         </a>
         <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="{% url 'solicitacoes_jardinagem' userid %}" class="nav-link active d-flex justify-content-between align-items-center">
-              <div>
-                <i class="far fa-circle nav-icon"></i>
-                <p class="d-inline">Jardinagem</p>
-              </div>
-              {% if n_solicitacoes_jardinagem > 0 %}
-                <span class="badge badge-danger ml-2">{{ n_solicitacoes_jardinagem }}</span>
-              {% endif %}
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'solicitacoes_limpeza_predial' userid %}" class="nav-link active d-flex justify-content-between align-items-center">
-              <div>
-                <i class="far fa-circle nav-icon"></i>
-                <p class="d-inline">Limpeza Predial</p>
-              </div>
-              {% if n_solicitacoes_limpeza_predial > 0 %}
-                <span class="badge badge-danger ml-2">{{ n_solicitacoes_limpeza_predial }}</span>
-              {% endif %}
-            </a>
-          </li>
+          {% if habilitar_jardinagem %}
+            <li class="nav-item">
+              <a href="{% url 'solicitacoes_jardinagem' userid %}" class="nav-link active d-flex justify-content-between align-items-center">
+                <div>
+                  <i class="far fa-circle nav-icon"></i>
+                  <p class="d-inline">Jardinagem</p>
+                </div>
+
+              </a>
+            </li>
+          {% endif %}
+          {% if habilitar_limpeza %}
+            <li class="nav-item">
+              <a href="{% url 'solicitacoes_limpeza_predial' userid %}" class="nav-link active d-flex justify-content-between align-items-center">
+                <div>
+                  <i class="far fa-circle nav-icon"></i>
+                  <p class="d-inline">Limpeza Predial</p>
+                </div>
+
+              </a>
+            </li>
+          {% endif %}
         </ul>
       </li>
 
@@ -407,18 +403,22 @@
           </p>
         </a>
         <ul class="nav nav-treeview">
+          {% if habilitar_jardinagem %}
             <li class="nav-item">
               <a href="{% url 'qr_codes_jardinagem' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Jardinagem</p>
               </a>
             </li>
+          {% endif %}
+          {% if habilitar_limpeza %}
             <li class="nav-item">
               <a href="{% url 'qr_codes_limpeza_predial' userid %}" class="nav-link active">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Limpeza predial</p>
               </a>
             </li>
+          {% endif %}
         </ul>
       </li>
 

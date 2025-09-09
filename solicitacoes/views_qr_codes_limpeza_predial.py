@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from empresasecundario.utils import define_empresas
 from permissionscontrol.utils import validate_permissions
-from utils.views import generic_view, GenericIfDeleteView, GenericDeleteView
+from utils.views import generic_view, GenericIfDeleteView, GenericDeleteView, edit_generic_view, gerneric_alter_status
 from solicitacoes.models import QRCodeAreaLimpezaPredial
 from solicitacoes.forms_limpeza_predial import QRCodeAreaLimpezaPredialForms
 
@@ -14,7 +14,7 @@ def qr_codes_limpeza_predial(request, userid):
     setores = empresas['setores']
 
     tipos = [
-        {'nome': 'Tipo de solicitação', 'link': ''},
+        {'nome': 'QR Code            ', 'link': ''},
     ]
 
     if setores['habilitar_jardinagem_secundaria'] and setores['habilitar_jardinagem']:
@@ -29,22 +29,22 @@ def qr_codes_limpeza_predial(request, userid):
     permission_view = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
-        permission_to_access=['252: Pode visualizar áreas de jardinagem']
+        permission_type='limpeza_predial',
+        permission_to_access=['422: Pode visualizar QR codes']
     )
 
     permission_edit = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
-        permission_to_access=['251: Pode editar áreas de jardinagem']
+        permission_type='limpeza_predial',
+        permission_to_access=['421: Pode editar QR codes']
     )
 
     permission_crate = validate_permissions(
         request=request,
         userid=userid,
-        permission_type='jardinagem',
-        permission_to_access=['250: Pode criar novas áreas de jardinagem']
+        permission_type='limpeza_predial',
+        permission_to_access=['420: Pode criar QR codes']
     )
 
     colunas = [
@@ -52,6 +52,7 @@ def qr_codes_limpeza_predial(request, userid):
         {'nome': 'Areas', 'label': 'Área'},
         {'nome': 'codigo', 'label': 'Código'},
         {'nome': 'imagem_qr', 'label': 'QR código'},
+        {'nome': 'status', 'label': 'status'},
     ]
 
     return generic_view(
@@ -63,7 +64,7 @@ def qr_codes_limpeza_predial(request, userid):
         form_class=QRCodeAreaLimpezaPredialForms,
         template_name='DataTableAndForms/ViewQRcodesLP.html',
         columns=colunas,
-        edition_rout='editar_area_jardins',
+        edition_rout='editar_qr_codes_limpeza_predial',
         history_rout='historico_de_servicos_areas_jardinagem',
         app_name='QR Codes disponiveis',
         form_search=QRCodeAreaLimpezaPredialForms(request=request, userid=userid, type='search'),
@@ -83,6 +84,87 @@ def qr_codes_limpeza_predial(request, userid):
     )
 
 
+def editar_qr_codes_limpeza_predial(request, userid, id_random):
+    permission_edit = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['421: Pode editar QR codes']
+    )
+
+    permission_exclude = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['423: Pode excluir QR codes']
+    )
+
+    permission_desmobilize = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['424: Pode desmobilizar QR codes']
+    )
+
+    permission_rehabilitate = validate_permissions(
+        request=request,
+        userid=userid,
+        permission_type='limpeza_predial',
+        permission_to_access=['425: Pode reabilitar QR codes']
+    )
+
+    return edit_generic_view(
+        request=request,
+        model_class=QRCodeAreaLimpezaPredial,
+        form_class=QRCodeAreaLimpezaPredialForms,
+        template_name='DataTableAndForms/EditObject.html',
+        id_random=id_random,
+        app_name='Editar QR code',
+        redirect_url_name=reverse('editar_qr_codes_limpeza_predial', kwargs={'userid': userid, 'id_random': id_random}),
+        redirect_close_button=reverse('qr_codes_limpeza_predial', kwargs={'userid': userid}),
+        permission_edit=permission_edit,
+        permission_exclude=permission_exclude,
+        permission_desmobilize=permission_desmobilize,
+        permission_rehabilitate=permission_rehabilitate,
+        url_desmobilize=reverse(
+            'alterar_status_qr_codes_limpeza_predial',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+                'new_status': 'Desmobilizado',
+            }
+        ),
+        url_rehabilitate=reverse(
+            'alterar_status_qr_codes_limpeza_predial',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+                'new_status': 'Mobilizado',
+            }
+        ),
+        userid=userid,
+        url_if_delete=reverse(
+            'IfDeleteQRCodeLimpezaPredial',
+            kwargs={
+                'userid': userid,
+                'id_random': id_random,
+            }
+        ),
+    )
+
+
+def alterar_status_qr_codes_limpeza_predial(request, userid, id_random, new_status):
+    objeto = QRCodeAreaLimpezaPredial.objects.get(id_random=id_random)
+    return gerneric_alter_status(
+        request=request,
+        model_class=QRCodeAreaLimpezaPredial,
+        redirect_url_name=reverse('editar_qr_codes_limpeza_predial', kwargs={'userid': userid, 'id_random': id_random}),
+        id_random=id_random,
+        new_status=new_status,
+        userid=userid,
+        message=f'{objeto.codigo} reabilitado com sucesso' if new_status == 'Mobilizado' else f'{objeto.codigo} desmobilizado com sucesso'
+    )
+
 
 def IfDeleteQRCodeLimpezaPredial(request, userid, id_random):
     empresas = define_empresas(request=request, userid=request.user.id_random)
@@ -93,8 +175,8 @@ def IfDeleteQRCodeLimpezaPredial(request, userid, id_random):
         request,
         model=QRCodeAreaLimpezaPredial,
         id_random=id_random,
-        permission_type='jardinagem',
-        permission_to_access=['253: Pode excluir áreas de jardinagem'],
+        permission_type='limpeza_predial',
+        permission_to_access=['423: Pode excluir QR codes'],
         access_filters={
             "Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
             "Areas__localidade__unidade__empresasecundaria__id_random__in": empresas_secundarias_ids,
@@ -121,8 +203,8 @@ def DeleteQRCodeLimpezaPredial(request, id_random):
         request,
         model=QRCodeAreaLimpezaPredial,
         id_random=id_random,
-        permission_type='jardinagem',
-        permission_to_access=['253: Pode excluir áreas de jardinagem'],
+        permission_type='limpeza_predial',
+        permission_to_access=['423: Pode excluir QR codes'],
         access_filters={
             "Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in": empresas_primarias_ids,
             "Areas__localidade__unidade__empresasecundaria__id_random__in": empresas_secundarias_ids,

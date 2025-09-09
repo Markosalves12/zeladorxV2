@@ -4,10 +4,10 @@ from solicitacoes.models import (QRCodeAreaJardinagem, SolicitacoesJardinagem,
 
 # Register your models here.
 class QRCodeAreaJardinagemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'id_random', 'Areas', 'imagem_qr', )
-    list_display_links = ('id', 'id_random', 'Areas', 'imagem_qr', )
-    search_fields = ('id', 'id_random', 'Areas', 'imagem_qr', )
-    list_filter = ('id', 'id_random', 'Areas', 'imagem_qr', )
+    list_display = ('id', 'id_random', 'Areas', 'imagem_qr', 'status', )
+    list_display_links = ('id', 'id_random', 'Areas', 'imagem_qr', 'status', )
+    search_fields = ('id', 'id_random', 'Areas', 'imagem_qr', 'status', )
+    list_filter = ('id', 'id_random', 'Areas', 'imagem_qr', 'status', )
 
     list_per_page = 20
 
@@ -23,10 +23,10 @@ class SolicitacoesJardinagemAdmin(admin.ModelAdmin):
 
 
 class QRCodeAreaLimpezaPredialAdmin(admin.ModelAdmin):
-    list_display = ('id', 'id_random', 'Areas', 'imagem_qr', )
-    list_display_links = ('id', 'id_random', 'Areas', 'imagem_qr', )
-    search_fields = ('id', 'id_random', 'Areas', 'imagem_qr', )
-    list_filter = ('id', 'id_random', 'Areas', 'imagem_qr', )
+    list_display = ('id', 'id_random', 'Areas', 'imagem_qr', 'status', )
+    list_display_links = ('id', 'id_random', 'Areas', 'imagem_qr', 'status', )
+    search_fields = ('id', 'id_random', 'Areas', 'imagem_qr', 'status', )
+    list_filter = ('id', 'id_random', 'Areas', 'imagem_qr','status', )
 
     list_per_page = 20
 
