@@ -9,56 +9,89 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-import os.path
+
+import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 from django.contrib.messages import constants as messages
+
+# Google Cloud desativado para ambiente local
+# from google.oauth2 import service_account
+
 import django_heroku
-from google.oauth2 import service_account
-import dj_database_url
+# import dj_database_url
+
 
 load_dotenv()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+# ============================================================
+# BASE
+# ============================================================
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
+# ============================================================
+# SEGURANÇA
+# ============================================================
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+
+# ============================================================
+# E-MAIL
+# ============================================================
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+
+EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
+
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
+
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+# ============================================================
+# AUTENTICAÇÃO
+# ============================================================
+
 AUTH_USER_MODEL = 'gerente.Gerente'
+
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.AllowAllUsersModelBackend',
     'gerente.backends.CaseInsensitiveModelBackend',
 )
 
 
-# Application definition
+# ============================================================
+# APLICAÇÕES
+# ============================================================
 
 INSTALLED_APPS = [
+
+    # Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Aplicações do projeto
     'areas.apps.AreasConfig',
     'catalogo_de_servicos.apps.CatalogoDeServicosConfig',
     'dashboards.apps.DashboardsConfig',
@@ -87,93 +120,181 @@ INSTALLED_APPS = [
     'gantt.apps.GanttConfig',
     'mapas.apps.MapasConfig',
     'retornos.apps.RetornosConfig',
+
+    # Storage
     'storages',
+
+    # Django REST Framework
     'rest_framework',
     'rest_framework.authtoken',
+
+    # Solicitações
     'solicitacoes.apps.SolicitacoesConfig',
 ]
 
+
+# ============================================================
+# MIDDLEWARE
+# ============================================================
+
 MIDDLEWARE = [
+
     'django.middleware.security.SecurityMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
+
     'django.middleware.common.CommonMiddleware',
+
     'django.middleware.csrf.CsrfViewMiddleware',
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+
     'django.contrib.messages.middleware.MessageMiddleware',
+
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+# ============================================================
+# URLS
+# ============================================================
+
 ROOT_URLCONF = 'setup.urls'
 
+
+# ============================================================
+# TEMPLATES
+# ============================================================
+
 TEMPLATES = [
+
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        "DIRS": [os.path.join(BASE_DIR, 'templates')],
+
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
+
         'APP_DIRS': True,
+
         'OPTIONS': {
+
             'context_processors': [
+
                 'django.template.context_processors.debug',
+
                 'django.template.context_processors.request',
+
                 'django.contrib.auth.context_processors.auth',
+
                 'django.contrib.messages.context_processors.messages',
+
                 'zeladorx.context_processors.create_global_parameters',
+
                 'zeladorx.context_processors.define_wallet',
+
                 'authenticate.context_processors.classicate_login',
+
                 # 'solicitacoes.context_processors.solicitacoes_jardinagem',
+
                 # 'solicitacoes.context_processors.solicitacoes_limpeza_predial',
             ],
         },
     },
 ]
 
-# Configuração do Channels (Backend para WebSockets)
+
+# ============================================================
+# DJANGO CHANNELS / WEBSOCKETS
+# ============================================================
+
 CHANNEL_LAYERS = {
+
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",  # Para desenvolvimento, depois podemos usar Redis
+
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+
     },
+
 }
+
+
+# ============================================================
+# WSGI
+# ============================================================
 
 WSGI_APPLICATION = 'setup.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
+# ============================================================
+# DATABASE
+# ============================================================
 
 DATABASES = {
+
     'default': {
+
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'zeladorxv2',  # Nome do seu banco de dados
-        'USER': 'postgresv2',  # Nome do usuário
-        'PASSWORD': 'zeladorxv2',  # Senha em branco se não houver senha
-        'HOST': 'localhost',  # O banco de dados está na mesma máquina
-        'PORT': '5432',  # Porta padrão do PostgreSQL
+
+        'NAME': 'zeladorx',
+
+        'USER': 'postgres',
+
+        'PASSWORD': 'PnCdEL',
+
+        'HOST': 'localhost',
+
+        'PORT': '5432',
+
     }
+
 }
 
+
+# ============================================================
+# DATABASE VIA URL - DESATIVADO
+# ============================================================
+
 # DATABASES = {
-#     'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+#     'default': dj_database_url.config(
+#         conn_max_age=600,
+#         ssl_require=True
+#     )
 # }
 
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+
+# ============================================================
+# PASSWORD VALIDATION
+# ============================================================
 
 AUTH_PASSWORD_VALIDATORS = [
+
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
+
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
+
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
+
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
 
+# ============================================================
+# INTERNATIONALIZATION
+# ============================================================
 
 LANGUAGE_CODE = 'pt-br'
 
@@ -183,57 +304,133 @@ USE_I18N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+# ============================================================
+# STATIC FILES
+# ============================================================
+
+# URL utilizada pelo navegador
+STATIC_URL = '/static/'
 
 
+# Diretório onde o collectstatic irá reunir os arquivos
+STATIC_ROOT = os.path.join(
+    BASE_DIR,
+    'static'
+)
+
+
+# Diretórios adicionais onde o Django procura arquivos estáticos
 STATICFILES_DIRS = [
+
     os.path.join(
-        BASE_DIR, 'setup/static'
-    )
+        BASE_DIR,
+        'setup/static'
+    ),
+
 ]
 
-STATIC_ROOT = os.path.join(
-    BASE_DIR, 'static'
+
+# ============================================================
+# MEDIA FILES
+# ============================================================
+
+# URL utilizada pelo navegador para acessar arquivos enviados
+MEDIA_URL = '/media/'
+
+
+# Diretório físico dos arquivos enviados
+MEDIA_ROOT = os.path.join(
+    BASE_DIR,
+    'media'
 )
 
-STATIC_URL = 'static/'
+
+# ============================================================
+# ARMAZENAMENTO LOCAL
+# ============================================================
 
 STORAGES = {
+
+    # Arquivos enviados pelo sistema/usuário
     "default": {
-        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
-        "OPTIONS": {
-            "bucket_name": "production_zeladorx",
-        },
+
+        "BACKEND":
+            "django.core.files.storage.FileSystemStorage",
+
     },
+
+    # Arquivos estáticos
     "staticfiles": {
-        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
-        "OPTIONS": {
-            "bucket_name": "production_zeladorx",  # Nome do seu bucket
-            "location": "static",  # Diretório dentro do bucket para os arquivos estáticos
-        },
+
+        "BACKEND":
+            "django.contrib.staticfiles.storage.StaticFilesStorage",
+
     },
+
 }
 
-GS_PROJECT_ID = "bucketzeladorx"
 
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, "bucketzeladorx-047b955782da.json")
-)
+# ============================================================
+# GOOGLE CLOUD STORAGE
+# ============================================================
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = f"https://storage.googleapis.com/{STORAGES['default']['OPTIONS']['bucket_name']}/media/"
+# A integração com Google Cloud Storage foi desativada.
+#
+# Antes o projeto utilizava:
+#
+# STORAGES = {
+#     "default": {
+#         "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+#         "OPTIONS": {
+#             "bucket_name": "production_zeladorx",
+#         },
+#     },
+#     "staticfiles": {
+#         "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+#         "OPTIONS": {
+#             "bucket_name": "production_zeladorx",
+#             "location": "static",
+#         },
+#     },
+# }
+#
+# GS_PROJECT_ID = "bucketzeladorx"
+#
+# GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+#     os.path.join(
+#         BASE_DIR,
+#         "bucketzeladorx-047b955782da.json"
+#     )
+# )
+
+
+# ============================================================
+# MESSAGE TAGS
+# ============================================================
 
 MESSAGE_TAGS = {
+
     messages.ERROR: 'danger',
+
     messages.SUCCESS: 'success',
+
     messages.WARNING: 'warning',
-    messages.INFO: 'info'
+
+    messages.INFO: 'info',
+
 }
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
+
+# ============================================================
+# DEFAULT PRIMARY KEY
+# ============================================================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ============================================================
+# DJANGO-HEROKU
+# ============================================================
 
 django_heroku.settings(locals())
