@@ -7,9 +7,21 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 
-# Tiles do OpenStreetMap bloqueiam requisições sem Referer (Django usa
-# SECURE_REFERRER_POLICY="same-origin"). O CARTO é gratuito e não exige token.
-MAP_STYLE = "carto-positron"
+# Tiles do OpenStreetMap/CARTO bloqueiam requisições sem Referer (Django usa
+# SECURE_REFERRER_POLICY="same-origin"). Usamos o fundo gratuito da Esri,
+# sem token, aplicado como camada raster sobre o estilo "white-bg".
+MAP_STYLE = "white-bg"
+MAP_TILES = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+
+
+def _com_mapa_base(fig):
+    fig.update_layout(mapbox_layers=[{
+        "below": "traces",
+        "sourcetype": "raster",
+        "sourceattribution": "Tiles &copy; Esri",
+        "source": [MAP_TILES],
+    }])
+    return fig
 
 
 def get_total_area(queryset, area_field='Areas__dimensao'):
@@ -271,7 +283,7 @@ def plot_map(paginated_queryset, color="#FF0000", scale_factor=2):
             title="<b>Nenhum dado disponível</b>"
         )
 
-        return fig
+        return _com_mapa_base(fig)
 
     # Agrupando os dados por localidade
     grouped_df = df.groupby(["lat_localidade", "long_localidade", "unidade_nome", "localidade_nome"]).agg(
@@ -320,7 +332,7 @@ def plot_map(paginated_queryset, color="#FF0000", scale_factor=2):
         mapbox_center=map_center,
     )
 
-    return fig
+    return _com_mapa_base(fig)
 
 
 def plot_map_distribution_services_by_status(paginated_queryset, scale_factor=5):
@@ -375,7 +387,7 @@ def plot_map_distribution_services_by_status(paginated_queryset, scale_factor=5)
             height=700,
             title="<b>Nenhum dado disponível</b>"
         )
-        return fig
+        return _com_mapa_base(fig)
 
     def apply_circular_offset(group):
         if len(group) > 1:
@@ -472,4 +484,4 @@ def plot_map_distribution_services_by_status(paginated_queryset, scale_factor=5)
         )
     )
 
-    return fig
+    return _com_mapa_base(fig)
