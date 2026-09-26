@@ -1,4 +1,10 @@
+from datetime import timedelta
+
 from django.shortcuts import reverse
+
+
+def _js_date(data):
+    return f"new Date({data.year}, {data.month - 1}, {data.day}, {data.hour}, {data.minute})"
 
 
 def format_event(servico):
@@ -33,13 +39,17 @@ def format_event(servico):
         border_color = "#14a0b6"
         textColor = "#FFFFFF"
 
+    # Serviços ainda não concluídos não têm DataDeConclusao: usa 1h após o início
+    inicio = servico.DataDeInicio or servico.DataDeConclusao
+    if inicio is None:
+        return None
+    fim = servico.DataDeConclusao or (inicio + timedelta(hours=1))
+
     return {
         "id_random": servico.id_random,
         "title": servico.DescricaoDoServico,
-        "start": f"new Date({servico.DataDeInicio.year}, {servico.DataDeInicio.month - 1}, {servico.DataDeInicio.day}, "
-                 f"{servico.DataDeInicio.hour}, {servico.DataDeInicio.minute})",
-        "end": f"new Date({servico.DataDeConclusao.year}, {servico.DataDeConclusao.month - 1}, "
-               f"{servico.DataDeConclusao.day}, {servico.DataDeConclusao.hour}, {servico.DataDeConclusao.minute})",
+        "start": _js_date(inicio),
+        "end": _js_date(fim),
         "allDay": "false",
         "backgroundColor": background_color,
         "borderColor": border_color,
