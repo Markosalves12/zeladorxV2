@@ -119,7 +119,42 @@
     });
   }
 
+  var collapseKey = 'zeladorx.sidebar.collapsed';
+  var desktopQuery = window.matchMedia('(min-width: 992px)');
+
+  function restoreCollapse() {
+    var body = document.body;
+    if (!desktopQuery.matches) {
+      body.classList.remove('sidebar-collapse');
+      return;
+    }
+    if (window.localStorage.getItem(collapseKey) === '1') body.classList.add('sidebar-collapse');
+    else body.classList.remove('sidebar-collapse');
+  }
+
+  function bindCollapsePersistence() {
+    document.querySelectorAll('[data-widget="pushmenu"]').forEach(function (toggle) {
+      toggle.setAttribute('aria-label', 'Recolher ou expandir menu');
+      toggle.addEventListener('click', function () {
+        // O AdminLTE alterna a classe depois do clique; lemos o estado final.
+        window.setTimeout(function () {
+          if (!desktopQuery.matches) return;
+          var collapsed = document.body.classList.contains('sidebar-collapse');
+          window.localStorage.setItem(collapseKey, collapsed ? '1' : '0');
+        }, 60);
+      });
+    });
+    var onChange = function () {
+      document.body.classList.remove('sidebar-open');
+      restoreCollapse();
+    };
+    if (desktopQuery.addEventListener) desktopQuery.addEventListener('change', onChange);
+    else desktopQuery.addListener(onChange);
+  }
+
   function initializeNavigation() {
+    restoreCollapse();
+    bindCollapsePersistence();
     setSectionIcons();
     markCurrentPage();
     restoreGroups();

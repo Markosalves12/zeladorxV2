@@ -14,6 +14,23 @@ from utils.utils import paginate
 from django.db import router
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.admin.utils import NestedObjects
+from django.utils.http import urlencode
+from utils.templatetags.zx_quick_create import safe_return_url
+
+
+def quick_create_redirect(request, objeto, default_url):
+    """'Salvar e voltar': retorna ao formulário de origem com o novo registro."""
+    return_to = safe_return_url(request, request.POST.get('zx_return', ''))
+    if not return_to or objeto is None:
+        return redirect(default_url)
+
+    separator = '&' if '?' in return_to else '?'
+    query = urlencode({
+        'zx_created': objeto.pk,
+        'zx_created_label': str(objeto)[:200],
+        'zx_field': request.POST.get('zx_field', '')[:120],
+    })
+    return redirect(f'{return_to}{separator}{query}')
 
 
 def generic_view(request, model, form_class, template_name, columns, edition_rout, app_name,
@@ -77,7 +94,7 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
         if form.is_valid():
             if configurate_gerente:
                 email = form.cleaned_data['email']
-                form.save()
+                objeto = form.save()
 
                 define_setting(
                     request=request,
@@ -96,17 +113,17 @@ def generic_view(request, model, form_class, template_name, columns, edition_rou
                     message=f'alterações salvas'
                 )
 
-                return redirect(redirect_url)
+                return quick_create_redirect(request, objeto, redirect_url)
 
             else:
-                form.save()
+                objeto = form.save()
 
                 messages.info(
                     request=request,
                     message=f'alterações salvas'
                 )
 
-                return redirect(redirect_url)
+                return quick_create_redirect(request, objeto, redirect_url)
 
         messages.error(
             request=request,

@@ -1,4 +1,4 @@
-{% load static %}
+{% load static zx_quick_create %}
 {% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
@@ -304,6 +304,7 @@
                       <div class="card-body">
                         <div class="form-group">
                           {% csrf_token %}
+                          {% zx_quick_create forms %}
                             <div class="form-group">
                               {% for field in forms.visible_fields %}
                                 <!-- Identifique o campo 'Permissions' para aplicar a lógica de paginação -->
