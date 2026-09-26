@@ -107,10 +107,8 @@ def calendario_limpeza_predial(request, userid):
 
 
     formatted_events = [
-        format_event(
-            servico
-        )
-        for servico in agendado
+        evento for evento in (format_event(servico) for servico in agendado)
+        if evento is not None
     ]
 
     return render(
