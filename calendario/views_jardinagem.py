@@ -126,10 +126,8 @@ def calendario_jardinagem(request, userid):
         agendado = aplicar_filtros_dinamicos(agendado, get_data, filtro_mapeamento)
 
     formatted_events = [
-        format_event(
-            servico
-        )
-        for servico in agendado
+        evento for evento in (format_event(servico) for servico in agendado)
+        if evento is not None
     ]
 
     return render(
