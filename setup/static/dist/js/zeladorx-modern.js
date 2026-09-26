@@ -6,7 +6,7 @@
     'Relatórios': 'fa-chart-bar',
     'Catálogo de serviços': 'fa-clipboard-list',
     'Serviços agendados': 'fa-calendar-check',
-    'Serviços configurados': 'fa-sliders-h',
+    'Serviços configurados': 'fa-tasks',
     'Agendar serviço': 'fa-calendar-plus',
     'Configurar serviço': 'fa-cogs',
     'Unidades': 'fa-building',
@@ -31,16 +31,26 @@
   }
 
   function savedGroups() {
-    try { return JSON.parse(window.localStorage.getItem(storageKey) || '[]'); }
-    catch (error) { return []; }
+    try {
+      var stored = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
+      return Array.isArray(stored) ? stored : [];
+    } catch (error) {
+      return [];
+    }
   }
 
-  function saveGroups() {
+  function openLabels() {
     var open = [];
     document.querySelectorAll('.nav-sidebar > .nav-item.menu-open > .nav-link').forEach(function (link) {
       var label = labelOf(link);
       if (label) open.push(label);
     });
+    return open;
+  }
+
+  function saveGroups(extraLabel) {
+    var open = openLabels();
+    if (extraLabel && open.indexOf(extraLabel) === -1) open.push(extraLabel);
     window.localStorage.setItem(storageKey, JSON.stringify(open));
   }
 
@@ -59,7 +69,10 @@
     var currentPath = window.location.pathname.replace(/\/$/, '');
     document.querySelectorAll('.nav-sidebar a.nav-link[href]').forEach(function (link) {
       var href = link.getAttribute('href');
-      if (!href || href === '#') return;
+      if (!href || href === '#') {
+        link.classList.remove('active');
+        return;
+      }
       var target;
       try { target = new URL(link.href, window.location.origin).pathname.replace(/\/$/, ''); }
       catch (error) { return; }
@@ -68,7 +81,11 @@
         link.classList.add('active');
         var parent = link.closest('.nav-item');
         var group = parent && parent.parentElement ? parent.parentElement.closest('.nav-item') : null;
-        if (group) group.classList.add('menu-open');
+        if (group) {
+          group.classList.add('menu-open');
+          var submenu = group.querySelector(':scope > .nav-treeview');
+          if (submenu) submenu.style.display = 'block';
+        }
       }
     });
   }
@@ -76,31 +93,42 @@
   function restoreGroups() {
     var open = savedGroups();
     document.querySelectorAll('.nav-sidebar > .nav-item > .nav-link').forEach(function (link) {
-      if (open.indexOf(labelOf(link)) !== -1 && link.nextElementSibling) {
+      var submenu = link.nextElementSibling;
+      if (open.indexOf(labelOf(link)) !== -1 && submenu && submenu.classList.contains('nav-treeview')) {
         link.parentElement.classList.add('menu-open');
-        link.nextElementSibling.style.display = 'block';
+        submenu.style.display = 'block';
       }
     });
   }
 
   function bindMenuPersistence() {
     document.querySelectorAll('.nav-sidebar > .nav-item > .nav-link').forEach(function (link) {
-      if (link.getAttribute('href') === '#') {
-        link.addEventListener('click', function (event) {
-          event.preventDefault();
-          window.setTimeout(saveGroups, 220);
-        });
-      }
+      if (link.getAttribute('href') !== '#') return;
+      link.addEventListener('click', function () {
+        var label = labelOf(link);
+        window.setTimeout(function () { saveGroups(label); }, 250);
+      });
     });
     document.querySelectorAll('.nav-treeview a.nav-link').forEach(function (link) {
-      link.addEventListener('click', saveGroups);
+      link.addEventListener('click', function () {
+        var group = link.closest('.nav-treeview');
+        var parent = group ? group.closest('.nav-item') : null;
+        var parentLink = parent ? parent.querySelector(':scope > .nav-link') : null;
+        saveGroups(parentLink ? labelOf(parentLink) : '');
+      });
     });
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
+  function initializeNavigation() {
     setSectionIcons();
     markCurrentPage();
     restoreGroups();
     bindMenuPersistence();
+  }
+
+  document.addEventListener('DOMContentLoaded', initializeNavigation);
+  window.addEventListener('pageshow', function () {
+    markCurrentPage();
+    restoreGroups();
   });
 }());
