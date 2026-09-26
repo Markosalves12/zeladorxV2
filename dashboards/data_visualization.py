@@ -7,6 +7,10 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 
+# Tiles do OpenStreetMap bloqueiam requisições sem Referer (Django usa
+# SECURE_REFERRER_POLICY="same-origin"). O CARTO é gratuito e não exige token.
+MAP_STYLE = "carto-positron"
+
 
 def get_total_area(queryset, area_field='Areas__dimensao'):
     aggregate_result = queryset.aggregate(total_area=Sum(area_field))
@@ -259,7 +263,7 @@ def plot_map(paginated_queryset, color="#FF0000", scale_factor=2):
         ))
 
         fig.update_layout(
-            mapbox_style="open-street-map",
+            mapbox_style=MAP_STYLE,
             mapbox_center=map_center,
             mapbox_zoom=5,
             margin=dict(l=0, r=0, t=50, b=0),
@@ -309,7 +313,7 @@ def plot_map(paginated_queryset, color="#FF0000", scale_factor=2):
 
     # Ajustando layout final
     fig.update_layout(
-        mapbox_style="open-street-map",
+        mapbox_style=MAP_STYLE,
         margin=dict(l=0, r=0, t=50, b=0),
         height=700,
         font=dict(size=18),
@@ -364,7 +368,7 @@ def plot_map_distribution_services_by_status(paginated_queryset, scale_factor=5)
             textposition="top center",
         ))
         fig.update_layout(
-            mapbox_style="open-street-map",
+            mapbox_style=MAP_STYLE,
             mapbox_center=map_center,
             mapbox_zoom=5,
             margin=dict(l=0, r=0, t=50, b=0),
@@ -444,7 +448,7 @@ def plot_map_distribution_services_by_status(paginated_queryset, scale_factor=5)
             ))
 
     fig.update_layout(
-        mapbox_style="open-street-map",
+        mapbox_style=MAP_STYLE,
         mapbox=dict(
             center=map_center,
             zoom=5
