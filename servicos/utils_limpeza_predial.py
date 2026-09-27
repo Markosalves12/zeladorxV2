@@ -242,4 +242,4 @@ def query_servicos_limpeza_predial_agendados_anotados(request, userid, status_li
             default=Value('Desconhecido'),
             output_field=CharField()
         )
-    )
+    ).distinct()
