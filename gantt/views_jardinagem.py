@@ -5,7 +5,7 @@ from django.db.models.functions import Now
 from django.db.models import F, ExpressionWrapper, IntegerField, Q
 from calendario.utils import format_event
 from permissionscontrol.utils import validate_permissions, verify_login
-from utils.utils import aplicar_filtros_dinamicos
+from utils.utils import aplicar_filtros_dinamicos, filtrar_unicos
 from empresasecundario.utils import define_empresas
 from django.db.models import Func
 from gerente.models import Gerente
@@ -111,8 +111,7 @@ def gantt_jardinagem(request, userid):
     # Verificação de permissões
     gerente = Gerente.objects.get(id_random=userid)
     if auto_acompleshed and not gerente.is_superuser:
-        agendado_queryset = agendado_queryset.filter(ColaboradoresEscalados__id_random__in=[userid, 'MuUe1D3pvT3v'])
-
+        agendado_queryset = filtrar_unicos(agendado_queryset, ColaboradoresEscalados__id_random__in=[userid, 'MuUe1D3pvT3v'])
     # Adicionando anotações e refinamento final
     agendado = agendado_queryset.annotate(
         data_atual=Now(),

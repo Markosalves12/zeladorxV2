@@ -1,3 +1,4 @@
+from utils.utils import filtrar_unicos
 from areas.models_limpeza_predial import AreaLimpezaPredial
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial
 from servicos.forms_limpeza_predial import ServicoLimpezaPredialAgendadoForms
@@ -101,9 +102,8 @@ def historico_de_servicos_catologo_de_servicos_limpeza_predial(request, userid, 
         ServicosEscalados=['None'],
         ColaboradoresEscalados=['None'],
         status=['Concluido']
-    ).filter(
-        Servico__ServicosEscalados__id_random=id_random
     ).distinct()
+    objetos = filtrar_unicos(objetos, Servico__ServicosEscalados__id_random=id_random)
 
     return generic_view_history(
         request=request,

@@ -1,3 +1,4 @@
+from utils.utils import filtrar_unicos
 from django.shortcuts import render, redirect, reverse
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms, FatoServicoJardinagemForms
@@ -169,8 +170,7 @@ def servicos_agendados_jardinagem(request, userid):
     # Verificação de permissões
     gerente = Gerente.objects.get(id_random=userid)
     if auto_acompleshed and not gerente.is_superuser:
-        agendado = agendado.filter(ColaboradoresEscalados__id_random__in=[userid, 'MuUe1D3pvT3v'])
-
+        agendado = filtrar_unicos(agendado, ColaboradoresEscalados__id_random__in=[userid, 'MuUe1D3pvT3v'])
     return generic_view(
         request=request,
         model=agendado,

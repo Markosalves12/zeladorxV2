@@ -1,3 +1,4 @@
+from utils.utils import filtrar_unicos
 from areas.models_jardinagem import AreasJardins
 from servicos.models_jardinagem import ServicoJardinagemAgendado
 from servicos.forms_jardinagem import ServicoJaridinagemAgendadoForms
@@ -84,9 +85,9 @@ def historico_de_servicos_catologo_de_servicos_jardinagem(request, userid, id_ra
     )
 
     objetos = ServicoJardinagemAgendado.objects.filter(
-        ServicosEscalados__id_random=id_random,
         status__in=['Concluido']
     )
+    objetos = filtrar_unicos(objetos, ServicosEscalados__id_random=id_random)
 
     return generic_view_history(
         request=request,

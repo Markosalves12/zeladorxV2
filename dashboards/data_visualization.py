@@ -1,3 +1,4 @@
+from utils.utils import filtrar_unicos
 from django.db.models import Sum, Count
 import plotly.graph_objs as go
 from django.db.models.functions import TruncMonth
@@ -211,7 +212,7 @@ def generate_grouped_chart(dados_servicos, filters, field_name, title, label_typ
     Gera um gráfico de barras agrupadas para um conjunto de dados filtrados.
     """
     area, counts, categories = get_total_area_and_counts_by_month(
-        dados_servicos.filter(**filters),
+        filtrar_unicos(dados_servicos, **filters),
         field_name,
         sum_by,
         count_by,
@@ -225,7 +226,7 @@ def generate_chart(dados_servicos, filters, field_name, title, label_type, color
     """
     Gera um gráfico de barras horizontais para um conjunto de dados filtrados.
     """
-    area, counts = get_total_area_by_category(dados_servicos.filter(**filters), field_name, sum_by, count_by)
+    area, counts = get_total_area_by_category(filtrar_unicos(dados_servicos, **filters), field_name, sum_by, count_by)
     return plot_horizontal_bar_chart(area, title, 'Área Total', label_type, counts, color)
 
 

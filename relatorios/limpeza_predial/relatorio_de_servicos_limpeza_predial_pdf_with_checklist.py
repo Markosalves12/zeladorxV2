@@ -5,7 +5,7 @@ from reportlab.pdfgen import canvas
 from io import BytesIO
 import os
 from django.conf import settings
-from utils.utils import generate_id_random, define_range_time
+from utils.utils import generate_id_random, define_range_time, filtrar_unicos
 from relatorios.utils_pdf import (draw_footer, draw_header, add_figures_to_pdf, draw_status_with_background,
                                   draw_request_and_delivery_images, draw_checklist_images, draw_execution_table,
                                   draw_checklist_table)
@@ -46,9 +46,9 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf_with_checklist(request, us
         userid,
         ['Agendado', 'Em andamento', 'Concluido']
     ).filter(
-        status__in=status.split(','),
-        **filters
+        status__in=status.split(',')
     )
+    dados = filtrar_unicos(dados, **filters)
 
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)

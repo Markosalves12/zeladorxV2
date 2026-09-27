@@ -4,7 +4,7 @@ from reportlab.pdfgen import canvas
 from io import BytesIO
 import os
 from django.conf import settings
-from utils.utils import generate_id_random, define_range_time
+from utils.utils import generate_id_random, define_range_time, filtrar_unicos
 from relatorios.utils_pdf import (draw_footer, draw_header, add_figures_to_pdf, draw_status_with_background,
                                   draw_request_and_delivery_images, draw_execution_table)
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial, query_servicos_limpeza_predial_agendados_anotados
@@ -44,9 +44,9 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf(request, userid, status, D
         userid,
         ['Agendado', 'Em andamento', 'Concluido']
     ).filter(
-        status__in=status.split(','),
-        **filters
+        status__in=status.split(',')
     )
+    dados = filtrar_unicos(dados, **filters)
 
     # cria um buffer para inserir os dados no pdf
     buffer = BytesIO()

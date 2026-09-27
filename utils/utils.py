@@ -72,6 +72,42 @@ def resize_image(image, max_width=620):
     img.save(img_io, format=img_format)
     return ContentFile(img_io.getvalue(), image.name)
 
+
+def _lookup_multivalorado(model, lookup):
+    """Indica se o lookup atravessa uma relação ManyToMany/reversa (que duplica linhas no JOIN)."""
+    atual = model
+    for parte in lookup.split('__'):
+        try:
+            campo = atual._meta.get_field(parte)
+        except Exception:
+            return False
+        if not campo.is_relation:
+            return False
+        if campo.many_to_many or campo.one_to_many:
+            return True
+        atual = campo.related_model
+    return False
+
+
+def filtrar_unicos(queryset, **lookups):
+    """
+    Aplica filtros garantindo registros únicos pelo id.
+
+    Filtros que atravessam relações ManyToMany (ex.: ColaboradoresEscalados, ServicosEscalados)
+    viram uma subconsulta por id, para não repetir o mesmo registro na listagem,
+    nos relatórios e nas somas dos dashboards.
+    """
+    simples = {}
+    for lookup, valor in lookups.items():
+        if _lookup_multivalorado(queryset.model, lookup):
+            ids = queryset.model._base_manager.filter(**{lookup: valor}).values('pk')
+            queryset = queryset.filter(pk__in=ids)
+        else:
+            simples[lookup] = valor
+    if simples:
+        queryset = queryset.filter(**simples)
+    return queryset
+
 def aplicar_filtros_dinamicos(queryset, get_data, filtro_mapeamento):
     # Itera sobre os dados enviados no GET
     for field, value in get_data.items():
@@ -82,19 +118,19 @@ def aplicar_filtros_dinamicos(queryset, get_data, filtro_mapeamento):
 
                 # Verifica se o campo é 'DataDeInicio' para aplicar o filtro >=
                 if field == 'DataDeInicio':
-                    queryset = queryset.filter(**{f"{filtro_especifico}__gte": value})
+                    queryset = filtrar_unicos(queryset, **{f"{filtro_especifico}__gte": value})
 
                 # Verifica se o campo é 'DataDeConclusao' para aplicar o filtro <=
                 elif field == 'DataDeConclusao':
-                    queryset = queryset.filter(**{f"{filtro_especifico}__lte": value})
+                    queryset = filtrar_unicos(queryset, **{f"{filtro_especifico}__lte": value})
 
                 # Suporte para múltiplos valores (caso seja uma lista)
                 elif isinstance(value, list):
-                    queryset = queryset.filter(**{f"{filtro_especifico}__in": value})
+                    queryset = filtrar_unicos(queryset, **{f"{filtro_especifico}__in": value})
 
                 else:
                     # Aplica o filtro padrão para outros campos
-                    queryset = queryset.filter(**{filtro_especifico: value})
+                    queryset = filtrar_unicos(queryset, **{filtro_especifico: value})
 
             else:
                 # Log de campos ignorados que não têm mapeamento

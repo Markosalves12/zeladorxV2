@@ -3,7 +3,7 @@ from django.db.models import F, ExpressionWrapper, IntegerField
 from django.db.models.functions import Now
 from empresasecundario.utils import define_empresas
 from dashboards.data_visualization_jardinagem import data_visualization_jardinagem_graphs
-from utils.utils import define_range_time
+from utils.utils import define_range_time, filtrar_unicos
 from permissionscontrol.utils import validate_permissions
 from gerente.models import Gerente
 
@@ -33,8 +33,7 @@ def colect_dados_jardinagem(request, userid):
 
     gerente = Gerente.objects.get(id_random=userid)
     if auto_acompleshed and not gerente.is_superuser:
-        dados = dados.filter(ColaboradoresEscalados__id_random__in=[userid, 'MuUe1D3pvT3v'])
-
+        dados = filtrar_unicos(dados, ColaboradoresEscalados__id_random__in=[userid, 'MuUe1D3pvT3v'])
     return dados
 
 def graphs_jardinagem_to_html(request, userid, agendado):

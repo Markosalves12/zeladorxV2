@@ -4,7 +4,7 @@ from servicos.utils_limpeza_predial import (colect_dados_fato_servico_limpeza_pr
                                             colect_dados_agendamentos_limpeza_predial)
 from checklists.models import CheckListLimpezaPredial  # Import do modelo de checklist
 from django.http import HttpResponse
-from utils.utils import generate_id_random
+from utils.utils import generate_id_random, filtrar_unicos
 from datetime import datetime
 from django.shortcuts import redirect
 from permissionscontrol.utils import verify_login
@@ -47,8 +47,7 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_excel_with_checklist(r
 
     # Aplica filtros baseados no tipo
     if type == 'catalogo_de_servicos':
-        dados = dados.filter(Servico__ServicosEscalados__id_random=id_random)
-
+        dados = filtrar_unicos(dados, Servico__ServicosEscalados__id_random=id_random)
     elif type == 'configuracao':
         dados = dados.filter(Servico__id_configuracao=id_random)
 

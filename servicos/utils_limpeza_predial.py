@@ -1,3 +1,4 @@
+from utils.utils import filtrar_unicos
 from servicos.models_limpeza_predial import FatoServicoLimpezaPredial, ServicoLimpezaPredialAgendado
 from django.db.models import (ExpressionWrapper, F, CharField,
                               IntegerField, DurationField, DateTimeField, Value, FloatField,
@@ -5,7 +6,8 @@ from django.db.models import (ExpressionWrapper, F, CharField,
                               )
 from empresasecundario.utils import define_empresas
 from django.utils import timezone
-from django.db.models.functions import ExtractDay
+from django.db.models.functions import ExtractDay, Cast
+from django.contrib.postgres.aggregates import StringAgg
 
 def colect_dados_fato_servico_limpeza_predial(request, userid, DataDeInicio, DataDeConclusao, ServicosEscalados,
                                          ColaboradoresEscalados, TipoServico, Areas, status=list):
@@ -80,12 +82,12 @@ def colect_dados_fato_servico_limpeza_predial(request, userid, DataDeInicio, Dat
         depois=ExpressionWrapper(
             F('foto_entrega'),
             output_field=CharField()
-        ),
+        )
     ).distinct().filter(
-        **filters,
         Servico__Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-        Servico__Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        Servico__Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids
     )
+    dados = filtrar_unicos(dados, **filters)
 
     return dados
 
@@ -113,18 +115,15 @@ def colect_dados_agendamentos_limpeza_predial(request, userid, DataDeInicio, Dat
         filters['tipo_agendamento'] = TipoServico
 
     if ServicosEscalados and ServicosEscalados != ["None"]:
-        filters['servicos_solicitados_id__in'] = ServicosEscalados
+        filters['ServicosEscalados__id__in'] = ServicosEscalados
 
     if ColaboradoresEscalados and ColaboradoresEscalados != ["None"]:
-        filters['colaboradores_chamados_id__in'] = ColaboradoresEscalados
+        filters['ColaboradoresEscalados__id__in'] = ColaboradoresEscalados
 
     dados = ServicoLimpezaPredialAgendado.objects.annotate(
         # tipo de empresa
         tipodeempresa=Value('Limpeza predial', output_field=CharField()),
-        empresaprestadora=ExpressionWrapper(
-            F('ServicosEscalados__EmpresaSecundaria__nome'),
-            output_field=CharField()
-        ),
+        empresaprestadora=StringAgg(Cast(F('ServicosEscalados__EmpresaSecundaria__nome'), CharField()), delimiter=', ', distinct=True),
         # id de agendamento --> id_random
         id_agendamento=ExpressionWrapper(
             F('id'),
@@ -150,18 +149,9 @@ def colect_dados_agendamentos_limpeza_predial(request, userid, DataDeInicio, Dat
             output_field=CharField()
         ),
         # serviços solicitados --> ServicosEscalados
-        servicos_solicitados=ExpressionWrapper(
-            F('ServicosEscalados__nome'),
-            output_field=CharField()
-        ),
-        servicos_solicitados_id=ExpressionWrapper(
-            F('ServicosEscalados__id'),
-            output_field=CharField()
-        ),
-        servicos_solicitados_id_random=ExpressionWrapper(
-            F('ServicosEscalados__id_random'),
-            output_field=CharField()
-        ),
+        servicos_solicitados=StringAgg(Cast(F('ServicosEscalados__nome'), CharField()), delimiter=', ', distinct=True),
+        servicos_solicitados_id=StringAgg(Cast(F('ServicosEscalados__id'), CharField()), delimiter=', ', distinct=True),
+        servicos_solicitados_id_random=StringAgg(Cast(F('ServicosEscalados__id_random'), CharField()), delimiter=', ', distinct=True),
         # data/hora de inicio --> DataDeInicio
         data_de_inicio=ExpressionWrapper(
             F('DataDeInicio'),
@@ -211,12 +201,12 @@ def colect_dados_agendamentos_limpeza_predial(request, userid, DataDeInicio, Dat
         unidade=ExpressionWrapper(
             F('Areas__localidade__unidade__nome'),
             output_field=CharField()
-        ),
+        )
     ).distinct().filter(
-        **filters,
         Areas__localidade__unidade__empresasecundaria__empresaprimaria__id_random__in=empresas_primarias_ids,
-        Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids,
+        Areas__localidade__unidade__empresasecundaria__id_random__in=empresas_secundarias_ids
     )
+    dados = filtrar_unicos(dados, **filters)
 
     return dados
 

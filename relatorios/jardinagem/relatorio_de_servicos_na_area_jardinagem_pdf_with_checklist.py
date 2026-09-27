@@ -6,7 +6,7 @@ from reportlab.pdfgen import canvas
 from io import BytesIO
 import os
 from django.conf import settings
-from utils.utils import generate_id_random
+from utils.utils import generate_id_random, filtrar_unicos
 from relatorios.utils_pdf import (draw_footer, draw_header, add_figures_to_pdf, draw_status_with_background,
                                   draw_checklist_table, draw_execution_table, draw_all_images_intercalated)
 from datetime import datetime
@@ -43,23 +43,19 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist(request,
         userid,
         ['Agendado', 'Em andamento', 'Concluido']
     ).filter(
-        status__in=['Concluido'],
-        **filters
+        status__in=['Concluido']
     )
+    dados = filtrar_unicos(dados, **filters)
 
     # Query data based on type
     if type == 'catalogo_de_servicos':
-        dados = dados.filter(ServicosEscalados__id_random=id_random)
-
+        dados = filtrar_unicos(dados, ServicosEscalados__id_random=id_random)
     elif type == 'configuracao':
-        dados = dados.filter(**filters, id_configuracao=id_random)
-
+        dados = filtrar_unicos(dados, **filters, id_configuracao=id_random)
     elif type == 'areas':
-        dados = dados.filter(**filters, Areas__id_random=id_random)
-
+        dados = filtrar_unicos(dados, **filters, Areas__id_random=id_random)
     elif type == 'gerente':
-        dados = dados.filter(ColaboradoresEscalados__id_random=id_random)
-
+        dados = filtrar_unicos(dados, ColaboradoresEscalados__id_random=id_random)
     # Create PDF buffer
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)

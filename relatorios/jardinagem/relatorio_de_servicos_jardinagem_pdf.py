@@ -6,7 +6,7 @@ import os
 from django.conf import settings
 from relatorios.utils_pdf import (draw_footer, draw_header, add_figures_to_pdf, draw_status_with_background,
                                   draw_execution_table, draw_request_and_delivery_images)
-from utils.utils import generate_id_random, define_range_time
+from utils.utils import generate_id_random, define_range_time, filtrar_unicos
 from datetime import datetime
 from relatorios.jardinagem.utils import (graphs_jardinagem_proximo_to_reports,
                                          graphs_jardinagem_atrasado_to_reports,
@@ -44,9 +44,9 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDe
         userid,
         ['Agendado', 'Em andamento', 'Concluido']
     ).filter(
-        status__in=status.split(','),
-        **filters
+        status__in=status.split(',')
     )
+    dados = filtrar_unicos(dados, **filters)
 
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)

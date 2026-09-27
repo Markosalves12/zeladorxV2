@@ -2,7 +2,7 @@ import openpyxl
 from servicos.headers_report_jardinagem import headers_report_services, headers_report_schedules
 from servicos.utils_jardinagem import colect_dados_fato_servico_jardinagem, colect_dados_agendamentos_jardinagem
 from django.http import HttpResponse
-from utils.utils import generate_id_random
+from utils.utils import generate_id_random, filtrar_unicos
 from datetime import datetime
 from permissionscontrol.utils import verify_login
 from django.shortcuts import redirect
@@ -41,8 +41,7 @@ def exportar_relatorio_de_serivos_na_area_Jardinagem_excel(request, userid, id_r
 
     # Adicione os dados do relatório ao arquivo Excel
     if type == 'catalogo_de_servicos':
-        dados = dados.filter(Servico__ServicosEscalados__id_random=id_random)
-
+        dados = filtrar_unicos(dados, Servico__ServicosEscalados__id_random=id_random)
     elif type == 'configuracao':
         dados = dados.filter(Servico__id_configuracao=id_random)
 

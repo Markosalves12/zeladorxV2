@@ -5,7 +5,7 @@ from reportlab.pdfgen import canvas
 from io import BytesIO
 import os
 from django.conf import settings
-from utils.utils import generate_id_random
+from utils.utils import generate_id_random, filtrar_unicos
 from relatorios.utils_pdf import (draw_footer, draw_header, add_figures_to_pdf, draw_status_with_background,
                                   draw_request_and_delivery_images, draw_execution_table)
 from relatorios.limpeza_predial.utils import graphs_limpeza_predial_concluido_to_reports
@@ -42,13 +42,12 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf(request, userid, i
         userid,
         ['Agendado', 'Em andamento', 'Concluido']
     ).filter(
-        status__in=['Concluido'],
-        **filters
+        status__in=['Concluido']
     )
+    dados = filtrar_unicos(dados, **filters)
 
     if type == 'catalogo_de_servicos':
-        dados = dados.filter(ServicosEscalados__id_random=id_random)
-
+        dados = filtrar_unicos(dados, ServicosEscalados__id_random=id_random)
     elif type == 'configuracao':
         dados = dados.filter(id_configuracao=id_random)
 
