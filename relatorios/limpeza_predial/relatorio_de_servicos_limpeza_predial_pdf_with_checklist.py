@@ -6,7 +6,7 @@ from io import BytesIO
 import os
 from django.conf import settings
 from utils.utils import generate_id_random, define_range_time, filtrar_unicos
-from relatorios.utils_pdf import (draw_footer, draw_header, add_figures_to_pdf, draw_status_with_background,
+from relatorios.utils_pdf import (agrupar_execucoes_por_agendamento, draw_footer, draw_header, add_figures_to_pdf, draw_status_with_background,
                                   draw_request_and_delivery_images, draw_checklist_images, draw_execution_table,
                                   draw_checklist_table)
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial, query_servicos_limpeza_predial_agendados_anotados
@@ -67,22 +67,26 @@ def exportar_relatorio_de_serivos_limpeza_predial_pdf_with_checklist(request, us
     p.setFont("Helvetica", 10)
 
 
+    # Carrega relacionamentos de uma vez e busca os acompanhamentos em uma única consulta
+    dados = dados.select_related('Areas').prefetch_related('ServicosEscalados')
+    execucoes_por_agendamento = agrupar_execucoes_por_agendamento(colect_dados_fato_servico_limpeza_predial(
+        request=request,
+        userid=userid,
+        DataDeInicio=DataDeInicio,
+        DataDeConclusao=DataDeConclusao,
+        ServicosEscalados=ServicosEscalados,
+        ColaboradoresEscalados=ColaboradoresEscalados,
+        TipoServico=TipoServico,
+        Areas=Areas,
+        status=status.split(',')
+    ), dados)
+
     if len(dados) > 0:
         for dado in dados:
             y = draw_status_with_background(p, x, y, dado, dado.dias_diferenca)
 
             # Adicionar tabela de dados de execução após a foto de conclusão
-            execucao_dados = colect_dados_fato_servico_limpeza_predial(
-                request=request,
-                userid=userid,
-                DataDeInicio=DataDeInicio,
-                DataDeConclusao=DataDeConclusao,
-                ServicosEscalados=ServicosEscalados,
-                ColaboradoresEscalados=ColaboradoresEscalados,
-                TipoServico=TipoServico,
-                Areas=Areas,
-                status=status.split(',')
-            ).filter(id_agendamento=dado.id)
+            execucao_dados = execucoes_por_agendamento.get(dado.id, [])
 
             for execucao_dado in execucao_dados:
                 y = draw_request_and_delivery_images(p, x, y, width, height, execucao_dado, header_image_path)

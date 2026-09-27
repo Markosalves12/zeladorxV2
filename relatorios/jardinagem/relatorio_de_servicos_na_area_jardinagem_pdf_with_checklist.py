@@ -7,7 +7,7 @@ from io import BytesIO
 import os
 from django.conf import settings
 from utils.utils import generate_id_random, filtrar_unicos
-from relatorios.utils_pdf import (draw_footer, draw_header, add_figures_to_pdf, draw_status_with_background,
+from relatorios.utils_pdf import (agrupar_execucoes_por_agendamento, draw_footer, draw_header, add_figures_to_pdf, draw_status_with_background,
                                   draw_checklist_table, draw_execution_table, draw_all_images_intercalated)
 from datetime import datetime
 from relatorios.jardinagem.utils import graphs_jardinagem_concluido_to_reports
@@ -72,6 +72,20 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist(request,
     p.setFont("Helvetica", 10)
 
     # Process each service entry
+    # Carrega relacionamentos de uma vez e busca os acompanhamentos em uma única consulta
+    dados = dados.select_related('Areas').prefetch_related('ServicosEscalados', 'ColaboradoresEscalados')
+    execucoes_por_agendamento = agrupar_execucoes_por_agendamento(colect_dados_fato_servico_jardinagem(
+        request=request,
+        userid=userid,
+        DataDeInicio=DataDeInicio,
+        DataDeConclusao=DataDeConclusao,
+        ServicosEscalados=ServicosEscalados,
+        ColaboradoresEscalados=ColaboradoresEscalados,
+        TipoServico=TipoServico,
+        Areas=Areas,
+        status=['Concluido']
+    ), dados)
+
     if len(dados) > 0:
         for dado in dados:
             y = draw_status_with_background(p, x, y, dado, dado.dias_diferenca, permission_type="jardinagem")
@@ -88,17 +102,7 @@ def exportar_relatorio_de_serivos_na_area_jardinagem_pdf_with_checklist(request,
             )
 
             # Adicionar dados de execução como tabela após as imagens
-            execucao_dados = colect_dados_fato_servico_jardinagem(
-                request=request,
-                userid=userid,
-                DataDeInicio=DataDeInicio,
-                DataDeConclusao=DataDeConclusao,
-                ServicosEscalados=ServicosEscalados,
-                ColaboradoresEscalados=ColaboradoresEscalados,
-                TipoServico=TipoServico,
-                Areas=Areas,
-                status=['Concluido']
-            ).filter(id_agendamento=dado.id)
+            execucao_dados = execucoes_por_agendamento.get(dado.id, [])
 
             # Desenhar a tabela de execução
             y, page_number = draw_execution_table(

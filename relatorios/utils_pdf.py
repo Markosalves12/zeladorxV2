@@ -12,10 +12,67 @@ def calculate_new_dimensions(img_width, img_height):
     return new_width, new_height
 
 
+# Lado máximo (em pixels) das fotos embutidas no PDF. As fotos continuam sendo
+# desenhadas no mesmo tamanho de antes; apenas a resolução interna é reduzida,
+# o que deixa a geração e o download do relatório muito mais rápidos.
+PDF_IMAGE_MAX_SIDE = 1000
+PDF_IMAGE_CACHE_LIMIT = 64
+_pdf_image_cache = {}
+
+
+def _image_cache_key(image_source):
+    name = getattr(image_source, 'name', None)
+    return name if name else str(image_source)
+
+
+def load_pdf_image(image_source):
+    """
+    Carrega uma imagem (caminho local ou arquivo do storage), reduz a resolução
+    e devolve (ImageReader, largura_original, altura_original).
+    O resultado fica em cache para não baixar/decodificar a mesma imagem várias vezes.
+    """
+    key = _image_cache_key(image_source)
+    if key in _pdf_image_cache:
+        return _pdf_image_cache[key]
+
+    from PIL import Image
+    from io import BytesIO
+
+    if hasattr(image_source, 'open') and not isinstance(image_source, str):
+        image_source.open('rb')
+        try:
+            raw = BytesIO(image_source.read())
+        finally:
+            image_source.close()
+        img = Image.open(raw)
+    else:
+        img = Image.open(image_source)
+
+    original_width, original_height = img.size
+
+    if img.mode in ('RGBA', 'LA', 'P'):
+        img = img.convert('RGBA')
+        background = Image.new('RGB', img.size, (255, 255, 255))
+        background.paste(img, mask=img.split()[-1])
+        img = background
+    elif img.mode != 'RGB':
+        img = img.convert('RGB')
+
+    img.thumbnail((PDF_IMAGE_MAX_SIDE, PDF_IMAGE_MAX_SIDE))
+    compressed = BytesIO()
+    img.save(compressed, format='JPEG', quality=75, optimize=True)
+    compressed.seek(0)
+
+    result = (ImageReader(compressed), original_width, original_height)
+    if len(_pdf_image_cache) >= PDF_IMAGE_CACHE_LIMIT:
+        _pdf_image_cache.pop(next(iter(_pdf_image_cache)))
+    _pdf_image_cache[key] = result
+    return result
+
+
 def draw_image(image_path, x, y, p):
     try:
-        img_data = ImageReader(image_path)
-        img_width, img_height = img_data.getSize()
+        img_data, img_width, img_height = load_pdf_image(image_path)
         new_width, new_height = calculate_new_dimensions(img_width, img_height)
         p.drawImage(img_data, x, y - new_height, width=new_width, height=new_height, mask='auto')
         return new_height
@@ -24,21 +81,56 @@ def draw_image(image_path, x, y, p):
         return 0
 
 
+def agrupar_execucoes_por_agendamento(execucoes, dados):
+    """
+    Busca os acompanhamentos uma única vez e agrupa por agendamento,
+    sem repetir o mesmo acompanhamento (id único).
+    """
+    ids_agendamentos = {dado.id for dado in dados}
+    agrupados = {}
+    vistos = set()
+    for execucao in execucoes.filter(id_agendamento__in=ids_agendamentos).order_by('id'):
+        if execucao.id in vistos:
+            continue
+        vistos.add(execucao.id)
+        agrupados.setdefault(execucao.id_agendamento, []).append(execucao)
+    return agrupados
+
+
+def carregar_checklists(dado, checklist_model):
+    """Checklist do agendamento, consultado uma única vez por serviço."""
+    cache = getattr(dado, '_checklists_pdf', None)
+    if cache is None:
+        cache = list(
+            checklist_model.objects.filter(servico_agendado__id=dado.id)
+            .select_related('servico_agendado').distinct().order_by('id')
+        )
+        dado._checklists_pdf = cache
+    return cache
+
+
 def draw_footer(c, width, is_last_page=False):
     c.setFont("Helvetica", 9)
     if is_last_page:
         last_page_text = "zeladorX"
         c.drawString((width - c.stringWidth(last_page_text, fontSize=12)) / 2, 50, last_page_text)
 
-def save_plotly_fig_as_image(fig, file_path):
-    """Save Plotly figure as an image."""
-    pio.write_image(fig, file_path)
+def save_plotly_fig_as_image(fig, file_path=None):
+    """Converte a figura Plotly em PNG na memória (sem gravar em disco)."""
+    from io import BytesIO
+    return BytesIO(pio.to_image(fig, format='png'))
+
+_header_cache = {}
+
 
 def draw_header(c, header_image_path, width, height):
     # se o endereço da imagem existir
     if os.path.exists(header_image_path):
         # abri a imagem enviada como parametro
-        header_image = ImageReader(header_image_path)
+        header_image = _header_cache.get(header_image_path)
+        if header_image is None:
+            header_image = ImageReader(header_image_path)
+            _header_cache[header_image_path] = header_image
         # captura as dimensões da imagem
         header_img_width, header_img_height = header_image.getSize()
         # centraliza a imagem no topo
@@ -76,19 +168,11 @@ def add_figures_to_pdf(c, fig_dict, start_y, start_page, width, height, header_i
     y = start_y
     page_number = start_page
 
-    # Define o caminho do diretório onde as imagens serão salvas usando BASE_DIR
-    image_dir = os.path.join(settings.BASE_DIR, 'media', 'images')
-
-    # Cria o diretório se ele não existir
-    if not os.path.exists(image_dir):
-        os.makedirs(image_dir)
-
     for fig_name, fig_html in fig_dict.items():
-        fig_file_path = os.path.join(image_dir, f'{fig_name}.png')
-        save_plotly_fig_as_image(fig_html, fig_file_path)
+        fig_buffer = save_plotly_fig_as_image(fig_html)
 
-        if os.path.exists(fig_file_path):
-            fig_image = ImageReader(fig_file_path)
+        if fig_buffer:
+            fig_image = ImageReader(fig_buffer)
             fig_img_width, fig_img_height = fig_image.getSize()
             if y - fig_img_height / 3 < 50:
                 draw_footer(c, page_number, is_last_page=False)
@@ -230,7 +314,7 @@ def draw_checklist_table(p, x, y, width, height, dado, model, header_image_path)
         y: Nova posição y após desenhar a tabela.
     """
     # Filtrar os dados do checklist com base no modelo fornecido
-    dados_checklist = model.objects.filter(servico_agendado__id_random=dado.id_random)
+    dados_checklist = carregar_checklists(dado, model)
     if not dados_checklist:
         return y  # Retorna a posição y sem alterações se não houver dados
 
@@ -411,13 +495,13 @@ def draw_request_and_delivery_images(p, x, y, width, height, dado, header_image_
     if permission_type == "jardinagem":
         # Adiciona a imagem da solicitação
         if dado.foto_solicitacao:
-            images.append(("Na solicitação", dado.foto_solicitacao.url))
+            images.append(("Na solicitação", dado.foto_solicitacao))
         else:
             images.append(("Na solicitação", os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')))
 
     # Adiciona a imagem da entrega
     if dado.foto_entrega:
-        images.append(("Na entrega", dado.foto_entrega.url))
+        images.append(("Na entrega", dado.foto_entrega))
     else:
         images.append(("Na entrega", os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png')))
 
@@ -470,22 +554,22 @@ def draw_all_images_intercalated(p, x, y, width, height, dado, header_image_path
 
     # Adiciona a imagem da solicitação
     if dado.foto_solicitacao:
-        images.append(("Na solicitação", dado.foto_solicitacao.url, False))
+        images.append(("Na solicitação", dado.foto_solicitacao, False))
     else:
         images.append(("Na solicitação", os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png'), False))
 
     # Adiciona as imagens do checklist
-    dados_checklist = checklist_model.objects.filter(servico_agendado__id_random=dado.id_random)
+    dados_checklist = carregar_checklists(dado, checklist_model)
     for checklist in dados_checklist:
         if checklist.foto_comprovacao:
-            images.append((checklist.descricao, checklist.foto_comprovacao.url, True, checklist.status, checklist.atualizado_em))
+            images.append((checklist.descricao, checklist.foto_comprovacao, True, checklist.status, checklist.atualizado_em))
         else:
             images.append((checklist.descricao, os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png'),
                            True, checklist.status, checklist.atualizado_em))
 
     # Adiciona a imagem da entrega
     if dado.foto_entrega:
-        images.append(("Na entrega", dado.foto_entrega.url, False))
+        images.append(("Na entrega", dado.foto_entrega, False))
     else:
         images.append(("Na entrega", os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png'), False))
 
@@ -583,10 +667,10 @@ def draw_checklist_images(p, x, y, width, height, dado, header_image_path, check
     images = []
 
     # Adiciona as imagens do checklist
-    dados_checklist = checklist_model.objects.filter(servico_agendado__id_random=dado.id_random)
+    dados_checklist = carregar_checklists(dado, checklist_model)
     for checklist in dados_checklist:
         if checklist.foto_comprovacao:
-            images.append((checklist.descricao, checklist.foto_comprovacao.url, checklist.status, checklist.atualizado_em))
+            images.append((checklist.descricao, checklist.foto_comprovacao, checklist.status, checklist.atualizado_em))
         else:
             images.append((checklist.descricao, os.path.join(settings.STATICFILES_DIRS[0], 'dist/img/not found.png'),
                            checklist.status, checklist.atualizado_em))
