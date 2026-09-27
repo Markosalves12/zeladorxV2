@@ -1,3 +1,4 @@
+from relatorios.utils_pdf_json import relatorio_pdf_json
 from servicos.utils_limpeza_predial import colect_dados_fato_servico_limpeza_predial, query_servicos_limpeza_predial_agendados_anotados
 from checklists.models import CheckListLimpezaPredial  # Import the checklist model
 from django.http import HttpResponse
@@ -104,6 +105,10 @@ def exportar_relatorio_de_serivos_na_area_limpeza_predial_pdf_with_checklist(req
         Areas=Areas,
         status=['Concluido']
     ), dados)
+
+    # PDF montado no navegador: devolve os mesmos dados em JSON
+    if request.GET.get('formato') == 'json':
+        return relatorio_pdf_json(dados, execucoes_por_agendamento, permission_type='limpeza_predial', status=['Concluido'], checklist_model=CheckListLimpezaPredial)
 
     if len(dados) > 0:
         for dado in dados:

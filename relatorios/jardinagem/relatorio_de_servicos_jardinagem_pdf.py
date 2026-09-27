@@ -1,3 +1,4 @@
+from relatorios.utils_pdf_json import relatorio_pdf_json
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -75,6 +76,10 @@ def exportar_relatorio_de_serivos_Jardinagem_pdf(request, userid, status, DataDe
         Areas=Areas,
         status=status.split(',')
     ), dados)
+
+    # PDF montado no navegador: devolve os mesmos dados em JSON
+    if request.GET.get('formato') == 'json':
+        return relatorio_pdf_json(dados, execucoes_por_agendamento, permission_type='jardinagem', status=status)
 
     if len(dados) > 0:
         for dado in dados:
