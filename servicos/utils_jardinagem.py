@@ -268,4 +268,4 @@ def query_servicos_jardinagem_agendados_anotados(request, userid, status_list):
             default=Value('Desconhecido'),
             output_field=CharField()
         )
-    )
+    ).distinct()
