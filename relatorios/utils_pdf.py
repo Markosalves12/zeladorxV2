@@ -184,16 +184,16 @@ def draw_status_with_background(p, x, y, dado, dias_diferenca, permission_type=N
 
     # Adicionar os parágrafos iniciais com informações adicionais
     p.setFont("Helvetica", 10)
-    p.drawString(x, y, f'Data de Início: {dado.DataDeInicio.strftime("%d/%m/%Y %H:%M")}')
+    p.drawString(x, y, f'Data de Início: {dado.DataDeInicio.strftime("%d/%m/%Y %H:%M") if dado.DataDeInicio else "-"}')
     y -= 20
 
-    p.drawString(x, y, f'Data de Conclusão: {dado.DataDeConclusao.strftime("%d/%m/%Y %H:%M")}')
+    p.drawString(x, y, f'Data de Conclusão: {dado.DataDeConclusao.strftime("%d/%m/%Y %H:%M") if dado.DataDeConclusao else "Não concluído"}')
     y -= 20
 
     p.drawString(x, y, f"Área atendida: {dado.Areas}")
     y -= 20
 
-    p.drawString(x, y, f"Tamanho da área atendida: {dado.Areas.dimensao} M²")
+    p.drawString(x, y, f"Tamanho da área atendida: {dado.Areas.dimensao if dado.Areas else "-"} M²")
     y -= 20
 
     p.drawString(x, y, "Serviços Escalados:")
