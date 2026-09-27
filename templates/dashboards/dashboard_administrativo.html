@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-133LPT73ZQ"></script>
@@ -37,7 +37,7 @@
   <!-- summernote -->
   <link rel="stylesheet" href="{% static 'plugins/summernote/summernote-bs4.min.css' %}">
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="hold-transition sidebar-mini layout-fixed zx-dashboard-page">
 <div class="wrapper">
 
   <!-- Preloader -->
@@ -70,12 +70,12 @@
     {% include 'partials/_left_sidebar_links.html' %}
 
     <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
+    <section class="content zx-dashboard-content">
+      <div class="container-fluid zx-dashboard-shell">
         {% if permission_view %}
           {% include 'partials/_form_search.html' %}
-          <!-- Small boxes (Stat box) -->
-          <div class="row">
+          <!-- Indicadores principais -->
+          <div class="row zx-kpi-grid">
             <div class="col-lg-3 col-6">
               <!-- small box -->
               <div class="small-box">
@@ -83,7 +83,7 @@
                   <h3>{{ unidades }}</h3>
                   <p>Unidades</p>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer">Visão consolidada <i class="fas fa-chart-line" aria-hidden="true"></i></a>
               </div>
             </div>
             <!-- ./col -->
@@ -94,7 +94,7 @@
                   <h3>{{ localidades }}<sup style="font-size: 20px"></sup></h3>
                   <p>Localidades</p>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer">Visão consolidada <i class="fas fa-chart-line" aria-hidden="true"></i></a>
               </div>
             </div>
             <!-- ./col -->
@@ -105,7 +105,7 @@
                   <h3>{{ area_total_mobilizada }}</h3>
                   <p>Área total mobilizada</p>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer">Visão consolidada <i class="fas fa-chart-line" aria-hidden="true"></i></a>
               </div>
             </div>
             <!-- ./col -->
@@ -116,11 +116,11 @@
                   <h3>{{ area_total_desmobilizada }}</h3>
                   <p>Área total desmobilizada</p>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer">Visão consolidada <i class="fas fa-chart-line" aria-hidden="true"></i></a>
               </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row zx-chart-grid">
             {% if por_terreno %}
               <section class="col-lg-6 connectedSortable">
               <div class="card">

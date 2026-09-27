@@ -9,3 +9,5 @@
 - Dropdowns obrigatórios ganham botão "Novo" via `{% zx_quick_create forms %}` (utils/templatetags/zx_quick_create.py) + `dist/js/zeladorx-quick-create.js`; novos cadastros entram em `QUICK_CREATE_ROUTES`. Motivo: um único ponto genérico, sem alterar cada form.
 - "Salvar e voltar" é tratado em `generic_view` por `quick_create_redirect`, aceitando só caminhos internos. Motivo: evitar redirecionamento aberto.
 - Recolhimento da sidebar respeita `sidebar-collapse`/`sidebar-open` do AdminLTE e é persistido em localStorage (`zeladorx.sidebar.collapsed`).
+
+- Style the four management/admin dashboards through the `zx-dashboard-page` scope and render Plotly figures in the browser, because dashboard presentation must remain isolated from shared business logic and server-side chart rendering.

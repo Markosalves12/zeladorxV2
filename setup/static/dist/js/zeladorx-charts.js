@@ -27,9 +27,34 @@
     var fig;
     try { fig = JSON.parse(el.dataset.figure); } catch (e) { return; }
     carregarPlotly().then(function (Plotly) {
-      var layout = Object.assign({ autosize: true, paper_bgcolor: 'rgba(0,0,0,0)',
-        font: { family: 'Manrope, sans-serif' } }, fig.layout || {});
-      Plotly.newPlot(el, fig.data || [], layout, { responsive: true, displaylogo: false, locale: 'pt-BR' });
+      var styles = window.getComputedStyle(document.documentElement);
+      var textColor = styles.getPropertyValue('--zx-text').trim() || '#202124';
+      var mutedColor = styles.getPropertyValue('--zx-muted').trim() || '#68707C';
+      var borderColor = styles.getPropertyValue('--zx-border').trim() || '#DFE3EB';
+      var primaryColor = styles.getPropertyValue('--zx-primary').trim() || '#0B57D0';
+      var successColor = styles.getPropertyValue('--zx-success').trim() || '#137333';
+      var warningColor = styles.getPropertyValue('--zx-warning').trim() || '#F9AB00';
+      var dangerColor = styles.getPropertyValue('--zx-danger').trim() || '#B3261E';
+      var layout = Object.assign({
+        autosize: true,
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        colorway: [primaryColor, successColor, warningColor, dangerColor, '#0097A7', '#7B61A8'],
+        font: { family: 'Manrope, sans-serif', color: textColor, size: 12 },
+        hoverlabel: { bgcolor: textColor, bordercolor: textColor, font: { color: '#FFFFFF' } },
+        margin: { l: 54, r: 18, t: 48, b: 48 }
+      }, fig.layout || {});
+      layout.font = Object.assign({ family: 'Manrope, sans-serif', color: textColor, size: 12 }, layout.font || {});
+      layout.title = Object.assign({ font: { family: 'Sora, sans-serif', color: textColor, size: 15 }, x: 0.01, xanchor: 'left' }, layout.title || {});
+      layout.margin = Object.assign({ l: 54, r: 18, t: 48, b: 48 }, layout.margin || {});
+      layout.xaxis = Object.assign({ gridcolor: borderColor, zerolinecolor: borderColor, tickfont: { color: mutedColor }, automargin: true }, layout.xaxis || {});
+      layout.yaxis = Object.assign({ gridcolor: borderColor, zerolinecolor: borderColor, tickfont: { color: mutedColor }, automargin: true }, layout.yaxis || {});
+      Plotly.newPlot(el, fig.data || [], layout, {
+        responsive: true,
+        displaylogo: false,
+        locale: 'pt-BR',
+        modeBarButtonsToRemove: ['select2d', 'lasso2d', 'autoScale2d']
+      });
     }).catch(function () {
       el.innerHTML = '<p class="text-muted p-3">Não foi possível carregar o gráfico. Verifique a conexão.</p>';
     });
