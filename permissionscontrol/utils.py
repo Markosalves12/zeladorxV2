@@ -13,24 +13,8 @@ def verify_login(request, userid):
     return False
 
 def configurate_permissions(request, model_class, email):
-    objeto = get_object_or_404(model_class, email=email)
-    # Jardinagem
-    permissions = PermissionsAccessJardinagem(
-        Gerente=objeto,
-    )
-    permissions.save()
-
-    # limpeza predial
-    permissions = PermissionsAccessLimpezaPredial(
-        Gerente=objeto,
-    )
-    permissions.save()
-    # especials
-
-    permissions = PermissionsAccessEspecials(
-        Gerente=objeto,
-    )
-    permissions.save()
+    from gerente.configuracao_inicial import configurar_gerente
+    configurar_gerente(get_object_or_404(model_class, email=email))
 
 
 def validate_permissions(request, userid, permission_type, permission_to_access):
