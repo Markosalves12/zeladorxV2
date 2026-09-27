@@ -37,7 +37,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SEGURANÇA
 # ============================================================
 
-SECRET_KEY = str(os.getenv('SECRET_KEY'))
+# Login compartilhado da família: a SECRET_KEY precisa ser a MESMA do ChatChannels
+SECRET_KEY_PADRAO = 'django-insecure-t+_dily3s3qm+@4k()5@$g3t&2$=6dvz-#h01i%@3t(7*4*!si'
+SECRET_KEY = os.getenv('SECRET_KEY') or SECRET_KEY_PADRAO
+# SECRET_KEY = str(os.getenv('SECRET_KEY'))
+SESSION_COOKIE_NAME = 'sessionid'  # mesmo cookie do ChatChannels
 
 DEBUG = True
 
